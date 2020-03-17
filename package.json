@@ -5,6 +5,17 @@
   "license": "MIT",
   "private": true,
   "bin": {
-    "ng-dev": "./bundle.js"
+    "ng-dev": "./cli.js",
+    "ts-circular-deps": "./ts-circular-dependencies/index.js"
+  },
+  "peerDependencies": {
+    "chalk": "^2.3.1",
+    "glob": "7.1.2",
+    "minimatch": "^3.0.4",
+    "shelljs": "^0.8.3",
+    "typescript": "~3.7.4",
+    "yaml": "^1.7.2",
+    "yargs": "13.1.0",
+    "tslib": "^1.10.0"
   }
 }
