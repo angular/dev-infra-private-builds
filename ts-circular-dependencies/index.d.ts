@@ -7,14 +7,12 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/dev-infra-private/ts-circular-dependencies" />
+import { CircularDependenciesTestConfig } from './config';
 /**
  * Runs the ts-circular-dependencies tool.
- * @param baseDir Base directory which is used to build up relative file paths in goldens.
  * @param approve Whether the detected circular dependencies should be approved.
- * @param goldenFile Path to the golden file.
- * @param glob Glob that is used to collect all source files which should be checked/approved.
- * @param printWarnings Whether warnings should be printed. Warnings for unresolved modules/files
- *     are not printed by default.
+ * @param config Configuration for the current circular dependencies test.
+ * @param printWarnings Whether warnings should be printed out.
  * @returns Status code.
  */
-export declare function main(baseDir: string, approve: boolean, goldenFile: string, glob: string, printWarnings: boolean): number;
+export declare function main(approve: boolean, config: CircularDependenciesTestConfig, printWarnings: boolean): number;
