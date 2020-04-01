@@ -7,7 +7,9 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/dev-infra-private/ts-circular-dependencies" />
+import * as yargs from 'yargs';
 import { CircularDependenciesTestConfig } from './config';
+export declare function tsCircularDependenciesBuilder(localYargs: yargs.Argv): yargs.Argv;
 /**
  * Runs the ts-circular-dependencies tool.
  * @param approve Whether the detected circular dependencies should be approved.
