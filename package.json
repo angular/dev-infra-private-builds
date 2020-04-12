@@ -1,0 +1,21 @@
+{
+  "name": "@angular/dev-infra-private",
+  "version": "0.0.0",
+  "description": "INTERNAL USE ONLY - Angular internal DevInfra tooling/scripts - INTERNAL USE ONLY",
+  "license": "MIT",
+  "private": true,
+  "bin": {
+    "ng-dev": "./cli.js",
+    "ts-circular-deps": "./ts-circular-dependencies/index.js"
+  },
+  "peerDependencies": {
+    "chalk": "^2.3.1",
+    "glob": "7.1.2",
+    "minimatch": "^3.0.4",
+    "shelljs": "^0.8.3",
+    "typescript": "~3.8.3",
+    "yaml": "^1.7.2",
+    "yargs": "15.3.0",
+    "tslib": "^1.10.0"
+  }
+}
