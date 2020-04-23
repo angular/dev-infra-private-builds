@@ -1,0 +1,64 @@
+load("@build_bazel_rules_nodejs//:index.bzl", "pkg_npm")
+load("@npm_bazel_typescript//:index.bzl", "ts_library")
+
+ts_library(
+    name = "cli",
+    srcs = [
+        "cli.ts",
+    ],
+    module_name = "@angular/dev-infra-private",
+    deps = [
+        "@npm_dev_infra//commit-message",
+        "@npm_dev_infra//pullapprove",
+        "@npm_dev_infra//ts-circular-dependencies",
+        "@npm_dev_infra//utils:config",
+        "@npm//@types/node",
+        "@npm//@types/yargs",
+        "@npm//yargs",
+    ],
+)
+
+genrule(
+    name = "package-json",
+    srcs = [
+        "tmpl-package.json",
+        "//:package.json",
+    ],
+    outs = ["package.json"],
+    cmd = """
+        $(execpath //tools:inline-package-json-deps) $(execpath tmpl-package.json) \
+            $(execpath //:package.json) $@
+    """,
+    tools = ["//tools:inline-package-json-deps"],
+)
+
+pkg_npm(
+    name = "npm_package",
+    srcs = [
+        "BUILD.bazel",
+        "@npm_dev_infra//benchmark:files",
+    ],
+    substitutions = {
+        # angular/angular should not consume it's own packages, so we use
+        # substitutions to replace these in the deployed version of dev-infra.
+        "@npm_dev_infra//": "@npm_dev_infra//",
+        "@npm//@angular/benchpress": "@npm//@angular/benchpress",
+        "@npm_angular_bazel//src:esm5.bzl": "@npm_angular_bazel//src:esm5.bzl",
+        "@npm//:node_modules/zone.js/dist/zone.js": "@npm//:node_modules/zone.js/dist/zone.js",
+        "@npm//@angular/core": "@npm//@angular/core",
+        "@npm//@angular/platform-browser": "@npm//@angular/platform-browser",
+
+        # This substitution is particularly verbose because we need to make sure
+        # that only things available via Angular Bazel are imported from
+        # tools/defaults.bzl.
+        "load\(\"//tools:defaults.bzl\", \"ng_module\"\)": "load(\"@npm_angular_bazel//:index.bzl\", \"ng_module\")",
+    },
+    visibility = ["//visibility:public"],
+    deps = [
+        ":cli",
+        ":package-json",
+        "@npm_dev_infra//benchmark/driver-utilities",
+        "@npm_dev_infra//commit-message",
+        "@npm_dev_infra//ts-circular-dependencies",
+    ],
+)
