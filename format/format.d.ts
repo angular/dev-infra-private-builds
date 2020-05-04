@@ -9,8 +9,8 @@
 /**
  * Format provided files in place.
  */
-export declare function formatFiles(unfilteredFiles: string[]): Promise<void>;
+export declare function formatFiles(files: string[]): Promise<void>;
 /**
  * Check provided files for formatting correctness.
  */
-export declare function checkFiles(unfilteredFiles: string[]): Promise<void>;
+export declare function checkFiles(files: string[]): Promise<void>;

@@ -7,5 +7,7 @@
  */
 /// <amd-module name="@angular/dev-infra-private/format/config" />
 export interface FormatConfig {
-    matchers: string[];
+    [keyof: string]: boolean | {
+        matchers: string[];
+    };
 }
