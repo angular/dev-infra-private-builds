@@ -6,23 +6,18 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/dev-infra-private/utils/config" />
-/** The common configuration for ng-dev. */
-declare type CommonConfig = {};
 /**
- * The configuration for the specific ng-dev command, providing both the common
- * ng-dev config as well as the specific config of a subcommand.
+ * Gets the path of the directory for the repository base.
  */
-export declare type NgDevConfig<T = {}> = CommonConfig & T;
-/**
- * Get the configuration from the file system, returning the already loaded copy if it
- * is defined.
- */
-export declare function getConfig(): NgDevConfig;
-/**
- * Asserts the provided array of error messages is empty. If any errors are in the array,
- * logs the errors and exit the process as a failure.
- */
-export declare function assertNoErrors(errors: string[]): void;
-/** Gets the path of the directory for the repository base. */
 export declare function getRepoBaseDir(): string;
-export {};
+/**
+ * Retrieve the configuration from the .ng-dev-config.js file.
+ */
+export declare function getAngularDevConfig<K, T>(supressError?: boolean): DevInfraConfig<K, T>;
+/**
+ * Interface exressing the expected structure of the DevInfraConfig.
+ * Allows for providing a typing for a part of the config to read.
+ */
+export interface DevInfraConfig<K, T> {
+    [K: string]: T;
+}
