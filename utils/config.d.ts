@@ -7,7 +7,12 @@
  */
 /// <amd-module name="@angular/dev-infra-private/utils/config" />
 /** The common configuration for ng-dev. */
-declare type CommonConfig = {};
+declare type CommonConfig = {
+    github: {
+        owner: string;
+        name: string;
+    };
+};
 /**
  * The configuration for the specific ng-dev command, providing both the common
  * ng-dev config as well as the specific config of a subcommand.
