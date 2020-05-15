@@ -6,6 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/dev-infra-private/commit-message/config" />
+import { NgDevConfig } from '../utils/config';
 export interface CommitMessageConfig {
     maxLineLength: number;
     minBodyLength: number;
@@ -13,6 +14,6 @@ export interface CommitMessageConfig {
     scopes: string[];
 }
 /** Retrieve and validate the config as `CommitMessageConfig`. */
-export declare function getCommitMessageConfig(): Required<Partial<{
+export declare function getCommitMessageConfig(): Required<Partial<NgDevConfig<{
     commitMessage: CommitMessageConfig;
-}>>;
+}>>>;
