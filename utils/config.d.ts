@@ -6,12 +6,19 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/dev-infra-private/utils/config" />
+/**
+ * Describes the Github configuration for dev-infra. This configuration is
+ * used for API requests, determining the upstream remote, etc.
+ */
+export interface GithubConfig {
+    /** Owner name of the repository. */
+    owner: string;
+    /** Name of the repository. */
+    name: string;
+}
 /** The common configuration for ng-dev. */
 declare type CommonConfig = {
-    github: {
-        owner: string;
-        name: string;
-    };
+    github: GithubConfig;
 };
 /**
  * The configuration for the specific ng-dev command, providing both the common

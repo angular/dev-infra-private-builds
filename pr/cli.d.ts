@@ -7,5 +7,5 @@
  */
 /// <amd-module name="@angular/dev-infra-private/pr/cli" />
 import * as yargs from 'yargs';
-/** Build the parser for the pr commands. */
+/** Build the parser for pull request commands. */
 export declare function buildPrParser(localYargs: yargs.Argv): yargs.Argv;
