@@ -24,7 +24,13 @@
   "peerDependencies": {
     "@bazel/buildifier": "^0.29.0",
     "clang-format": "^1.4.0",
+    "ts-node": "^8.6.2",
     "tslib": "^2.0.0",
     "typescript": "~3.9.2"
+  },
+  "peerDependenciesMeta": {
+    "ts-node": {
+      "optional": true
+    }
   }
 }

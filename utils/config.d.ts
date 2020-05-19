@@ -26,8 +26,8 @@ declare type CommonConfig = {
  */
 export declare type NgDevConfig<T = {}> = CommonConfig & T;
 /**
- * Get the configuration from the file system, returning the already loaded copy if it
- * is defined.
+ * Get the configuration from the file system, returning the already loaded
+ * copy if it is defined.
  */
 export declare function getConfig(): NgDevConfig;
 /**
