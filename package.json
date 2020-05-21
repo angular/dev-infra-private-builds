@@ -1,0 +1,37 @@
+{
+  "name": "@angular/dev-infra-private",
+  "version": "0.0.0",
+  "description": "INTERNAL USE ONLY - Angular internal DevInfra tooling/scripts - INTERNAL USE ONLY",
+  "license": "MIT",
+  "private": true,
+  "bin": {
+    "ng-dev": "./cli.js",
+    "ts-circular-deps": "./ts-circular-dependencies/index.js"
+  },
+  "dependencies": {
+    "@octokit/graphql": "^4.3.1",
+    "chalk": "^2.3.1",
+    "cli-progress": "^3.7.0",
+    "glob": "7.1.2",
+    "inquirer": "^7.1.0",
+    "minimatch": "^3.0.4",
+    "multimatch": "^4.0.0",
+    "semver": "^6.3.0",
+    "shelljs": "^0.8.3",
+    "typed-graphqlify": "^2.3.0",
+    "yaml": "^1.7.2",
+    "yargs": "15.3.0"
+  },
+  "peerDependencies": {
+    "@bazel/buildifier": "^0.29.0",
+    "clang-format": "^1.4.0",
+    "ts-node": "^8.6.2",
+    "tslib": "^2.0.0",
+    "typescript": "~3.9.2"
+  },
+  "peerDependenciesMeta": {
+    "ts-node": {
+      "optional": true
+    }
+  }
+}
