@@ -6,7 +6,6 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/dev-infra-private/pr/merge/strategies/api-merge" />
-import { PullsMergeParams } from '@octokit/rest';
 import { GithubApiMergeMethod } from '../config';
 import { PullRequestFailure } from '../failures';
 import { GitClient } from '../git';
@@ -38,7 +37,7 @@ export declare class GithubApiMergeStrategy extends MergeStrategy {
      * strategy, we cannot start an interactive rebase because we merge using the Github API.
      * The Github API only allows modifications to PR title and body for squash merges.
      */
-    _promptCommitMessageEdit(pullRequest: PullRequest, mergeOptions: PullsMergeParams): Promise<void>;
+    private _promptCommitMessageEdit;
     /**
      * Gets a commit message for the given pull request. Github by default concatenates
      * multiple commit messages if a PR is merged in squash mode. We try to replicate this
