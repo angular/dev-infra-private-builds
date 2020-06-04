@@ -8,6 +8,10 @@
 /// <amd-module name="@angular/dev-infra-private/pullapprove/logging" />
 import { PullApproveGroupResult } from './group';
 /** Create logs for each pullapprove group result. */
-export declare function logGroup(group: PullApproveGroupResult, matched?: boolean): void;
+export declare function logGroup(group: PullApproveGroupResult, matched?: boolean, printMessageFn?: {
+    (...text: string[]): void;
+    group(text: string, collapsed?: boolean | undefined): void;
+    groupEnd(): void;
+}): void;
 /** Logs a header within a text drawn box. */
 export declare function logHeader(...params: string[]): void;
