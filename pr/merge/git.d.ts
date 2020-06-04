@@ -64,8 +64,8 @@ export declare class GitClient {
         error: string;
     }>;
     /**
-     * Retrieves the OAuth scopes for the loaded Github token, returning the already retrived
-     * list of OAuth scopes if available.
+     * Retrieves the OAuth scopes for the loaded Github token, returning the already
+     * retrieved list of OAuth scopes if available.
      **/
-    private getAuthScopes;
+    private getAuthScopesForToken;
 }
