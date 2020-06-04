@@ -32,5 +32,5 @@ export declare class PullRequestFailure {
     static unknownMergeError(): PullRequestFailure;
     static unableToFixupCommitMessageSquashOnly(): PullRequestFailure;
     static notFound(): PullRequestFailure;
-    static insufficientPermissionsToMerge(): PullRequestFailure;
+    static insufficientPermissionsToMerge(message?: string): PullRequestFailure;
 }

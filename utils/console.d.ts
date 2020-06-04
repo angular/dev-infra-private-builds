@@ -29,17 +29,42 @@ export declare enum LOG_LEVELS {
 /** Default log level for the tool. */
 export declare const DEFAULT_LOG_LEVEL = LOG_LEVELS.INFO;
 /** Write to the console for at INFO logging level */
-export declare function info(...text: string[]): void;
-export declare function info(color: typeof chalk, ...text: string[]): void;
+export declare const info: {
+    (...text: string[]): void;
+    /** Start a group at the LOG_LEVEL, optionally starting it as collapsed. */
+    group(text: string, collapsed?: boolean): void;
+    /** End the group at the LOG_LEVEL. */
+    groupEnd(): void;
+};
 /** Write to the console for at ERROR logging level */
-export declare function error(...text: string[]): void;
-export declare function error(color: typeof chalk, ...text: string[]): void;
+export declare const error: {
+    (...text: string[]): void;
+    /** Start a group at the LOG_LEVEL, optionally starting it as collapsed. */
+    group(text: string, collapsed?: boolean): void;
+    /** End the group at the LOG_LEVEL. */
+    groupEnd(): void;
+};
 /** Write to the console for at DEBUG logging level */
-export declare function debug(...text: string[]): void;
-export declare function debug(color: typeof chalk, ...text: string[]): void;
+export declare const debug: {
+    (...text: string[]): void;
+    /** Start a group at the LOG_LEVEL, optionally starting it as collapsed. */
+    group(text: string, collapsed?: boolean): void;
+    /** End the group at the LOG_LEVEL. */
+    groupEnd(): void;
+};
 /** Write to the console for at LOG logging level */
-export declare function log(...text: string[]): void;
-export declare function log(color: typeof chalk, ...text: string[]): void;
+export declare const log: {
+    (...text: string[]): void;
+    /** Start a group at the LOG_LEVEL, optionally starting it as collapsed. */
+    group(text: string, collapsed?: boolean): void;
+    /** End the group at the LOG_LEVEL. */
+    groupEnd(): void;
+};
 /** Write to the console for at WARN logging level */
-export declare function warn(...text: string[]): void;
-export declare function warn(color: typeof chalk, ...text: string[]): void;
+export declare const warn: {
+    (...text: string[]): void;
+    /** Start a group at the LOG_LEVEL, optionally starting it as collapsed. */
+    group(text: string, collapsed?: boolean): void;
+    /** End the group at the LOG_LEVEL. */
+    groupEnd(): void;
+};

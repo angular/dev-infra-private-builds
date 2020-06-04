@@ -35,6 +35,8 @@ export declare class GitClient {
     repoGitUrl: string;
     /** Instance of the authenticated Github octokit API. */
     api: Octokit;
+    /** The OAuth scopes available for the provided Github token. */
+    private _oauthScopes;
     /** Regular expression that matches the provided Github token. */
     private _tokenRegex;
     constructor(_projectRoot: string, _githubToken: string, _config: MergeConfigWithRemote);
@@ -54,4 +56,16 @@ export declare class GitClient {
     hasUncommittedChanges(): boolean;
     /** Sanitizes a given message by omitting the provided Github token if present. */
     omitGithubTokenFromMessage(value: string): string;
+    /**
+     * Assert the GitClient instance is using a token with permissions for the all of the
+     * provided OAuth scopes.
+     */
+    hasOauthScopes(...requestedScopes: string[]): Promise<true | {
+        error: string;
+    }>;
+    /**
+     * Retrieves the OAuth scopes for the loaded Github token, returning the already retrived
+     * list of OAuth scopes if available.
+     **/
+    private getAuthScopes;
 }
