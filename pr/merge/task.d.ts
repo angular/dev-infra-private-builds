@@ -14,7 +14,8 @@ export declare const enum MergeStatus {
     UNKNOWN_GIT_ERROR = 0,
     DIRTY_WORKING_DIR = 1,
     SUCCESS = 2,
-    FAILED = 3
+    FAILED = 3,
+    GITHUB_ERROR = 4
 }
 /** Result of a pull request merge. */
 export interface MergeResult {
