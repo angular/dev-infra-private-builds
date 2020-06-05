@@ -6,8 +6,8 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/dev-infra-private/pr/merge/strategies/strategy" />
+import { GitClient } from '../../../utils/git';
 import { PullRequestFailure } from '../failures';
-import { GitClient } from '../git';
 import { PullRequest } from '../pull-request';
 /**
  * Name of a temporary branch that contains the head of a currently-processed PR. Note

@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/dev-infra-private/pr/merge/config" />
-import { NgDevConfig } from '../../utils/config';
+import { GitClientConfig, NgDevConfig } from '../../utils/config';
 import { GithubApiMergeStrategyConfig } from './strategies/api-merge';
 /**
  * Possible merge methods supported by the Github API.
@@ -27,22 +27,13 @@ export interface TargetLabel {
      */
     branches: string[] | ((githubTargetBranch: string) => string[]);
 }
-/** Describes the remote used for merging pull requests. */
-export interface MergeRemote {
-    /** Owner name of the repository. */
-    owner: string;
-    /** Name of the repository. */
-    name: string;
-    /** Whether SSH should be used for merging pull requests. */
-    useSsh?: boolean;
-}
 /**
  * Configuration for the merge script with all remote options specified. The
  * default `MergeConfig` has does not require any of these options as defaults
  * are provided by the common dev-infra github configuration.
  */
 export declare type MergeConfigWithRemote = MergeConfig & {
-    remote: MergeRemote;
+    remote: GitClientConfig;
 };
 /** Configuration for the merge script. */
 export interface MergeConfig {
@@ -50,7 +41,7 @@ export interface MergeConfig {
      * Configuration for the upstream remote. All of these options are optional as
      * defaults are provided by the common dev-infra github configuration.
      */
-    remote?: Partial<MergeRemote>;
+    remote?: GitClientConfig;
     /** List of target labels. */
     labels: TargetLabel[];
     /** Required base commits for given branches. */
