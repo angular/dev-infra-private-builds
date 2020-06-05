@@ -6,9 +6,9 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/dev-infra-private/pr/merge/strategies/api-merge" />
+import { GitClient } from '../../../utils/git';
 import { GithubApiMergeMethod } from '../config';
 import { PullRequestFailure } from '../failures';
-import { GitClient } from '../git';
 import { PullRequest } from '../pull-request';
 import { MergeStrategy } from './strategy';
 /** Configuration for the Github API merge strategy. */

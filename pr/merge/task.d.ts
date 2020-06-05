@@ -6,9 +6,9 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/dev-infra-private/pr/merge/task" />
+import { GitClient } from '../../utils/git';
 import { MergeConfigWithRemote } from './config';
 import { PullRequestFailure } from './failures';
-import { GitClient } from './git';
 /** Describes the status of a pull request merge. */
 export declare const enum MergeStatus {
     UNKNOWN_GIT_ERROR = 0,
