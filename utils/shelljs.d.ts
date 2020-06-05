@@ -6,5 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/dev-infra-private/utils/shelljs" />
-import { ShellString } from 'shelljs';
-export declare function exec(cmd: string): ShellString;
+import { ExecOptions, ShellString } from 'shelljs';
+export declare function exec(cmd: string, opts?: ExecOptions & {
+    async?: false;
+}): ShellString;
