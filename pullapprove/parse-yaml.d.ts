@@ -1,7 +1,7 @@
 /// <amd-module name="@angular/dev-infra-private/pullapprove/parse-yaml" />
 export interface PullApproveGroupConfig {
     conditions?: string[];
-    reviewers: {
+    reviewers?: {
         users: string[];
         teams?: string[];
     } | {
