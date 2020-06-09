@@ -7,6 +7,8 @@
  */
 /// <amd-module name="@angular/dev-infra-private/utils/shelljs" />
 import { ExecOptions, ShellString } from 'shelljs';
-export declare function exec(cmd: string, opts?: ExecOptions & {
-    async?: false;
-}): ShellString;
+/**
+ * Runs an given command as child process. By default, child process
+ * output will not be printed.
+ */
+export declare function exec(cmd: string, opts?: Omit<ExecOptions, 'async'>): ShellString;
