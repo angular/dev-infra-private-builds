@@ -30,7 +30,7 @@ export declare class GitCommandError extends Error {
  *     loads the config from the default location.
  **/
 export declare class GitClient {
-    private _githubToken;
+    private _githubToken?;
     private _config;
     /** Short-hand for accessing the remote configuration. */
     remoteConfig: import("@angular/dev-infra-private/utils/config").GithubConfig;
@@ -47,9 +47,12 @@ export declare class GitClient {
     private _projectRoot;
     /** The OAuth scopes available for the provided Github token. */
     private _oauthScopes;
-    /** Regular expression that matches the provided Github token. */
-    private _tokenRegex;
-    constructor(_githubToken?: string, _config?: Pick<NgDevConfig, 'github'>);
+    /**
+     * Regular expression that matches the provided Github token. Used for
+     * sanitizing the token from Git child process output.
+     */
+    private _githubTokenRegex;
+    constructor(_githubToken?: string | undefined, _config?: Pick<NgDevConfig, 'github'>);
     /** Executes the given git command. Throws if the command fails. */
     run(args: string[], options?: SpawnSyncOptions): Omit<SpawnSyncReturns<string>, 'status'>;
     /**
