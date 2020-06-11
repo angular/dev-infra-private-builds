@@ -28,7 +28,7 @@
     "@angular/core": "^9.0.0",
     "@angular/platform-browser": "^9.0.0",
     "@angular/benchpress": "^0.1.0",
-    "@angular-devkit/build-optimizer": "0.901.0",
+    "@angular-devkit/build-optimizer": "0.1000.0-rc.2",
     "@bazel/buildifier": "^0.29.0",
     "@bazel/protractor": "1.7.0",
     "@bazel/terser": "1.7.0",
@@ -45,7 +45,7 @@
     "selenium-webdriver": "3.5.0",
     "ts-node": "^8.6.2",
     "tslib": "^2.0.0",
-    "typescript": "~3.9.2",
+    "typescript": "~3.9.5",
     "zone.js": "^0.10.3"
   },
   "peerDependenciesMeta": {
