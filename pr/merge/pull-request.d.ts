@@ -10,8 +10,6 @@ import { PullRequestFailure } from './failures';
 import { PullRequestMergeTask } from './task';
 /** Interface that describes a pull request. */
 export interface PullRequest {
-    /** URL to the pull request. */
-    url: string;
     /** Number of the pull request. */
     prNumber: number;
     /** Title of the pull request. */
@@ -28,8 +26,6 @@ export interface PullRequest {
     requiredBaseSha?: string;
     /** Whether the pull request commit message fixup. */
     needsCommitMessageFixup: boolean;
-    /** Whether the pull request has a caretaker note. */
-    hasCaretakerNote: boolean;
 }
 /**
  * Loads and validates the specified pull request against the given configuration.
