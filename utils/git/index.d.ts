@@ -11,8 +11,6 @@ import { SpawnSyncOptions, SpawnSyncReturns } from 'child_process';
 import { NgDevConfig } from '../config';
 import { _GithubClient } from './_github';
 export { GithubApiRequestError } from './_github';
-/** Describes a function that can be used to test for given Github OAuth scopes. */
-export declare type OAuthScopeTestFunction = (scopes: string[], missing: string[]) => void;
 /** Error for failed Git commands. */
 export declare class GitCommandError extends Error {
     args: string[];
@@ -73,7 +71,7 @@ export declare class GitClient {
      * Assert the GitClient instance is using a token with permissions for the all of the
      * provided OAuth scopes.
      */
-    hasOauthScopes(testFn: OAuthScopeTestFunction): Promise<true | {
+    hasOauthScopes(...requestedScopes: string[]): Promise<true | {
         error: string;
     }>;
     /**
