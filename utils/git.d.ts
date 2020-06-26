@@ -63,8 +63,8 @@ export declare class GitClient {
     runGraceful(args: string[], options?: SpawnSyncOptions): SpawnSyncReturns<string>;
     /** Whether the given branch contains the specified SHA. */
     hasCommit(branchName: string, sha: string): boolean;
-    /** Gets the currently checked out branch. */
-    getCurrentBranch(): string;
+    /** Gets the currently checked out branch or revision. */
+    getCurrentBranchOrRevision(): string;
     /** Gets whether the current Git repository has uncommitted changes. */
     hasUncommittedChanges(): boolean;
     /** Whether the repo has any local changes. */

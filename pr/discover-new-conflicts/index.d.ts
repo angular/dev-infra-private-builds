@@ -9,5 +9,5 @@
 import { NgDevConfig } from '../../utils/config';
 /** Checks if the provided PR will cause new conflicts in other pending PRs. */
 export declare function discoverNewConflictsForPr(newPrNumber: number, updatedAfter: number, config?: Pick<NgDevConfig, 'github'>): Promise<void>;
-/** Reset git back to the provided branch. */
-export declare function cleanUpGitState(branch: string): void;
+/** Reset git back to the provided branch or revision. */
+export declare function cleanUpGitState(previousBranchOrRevision: string): void;
