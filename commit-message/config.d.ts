@@ -10,6 +10,7 @@ import { NgDevConfig } from '../utils/config';
 export interface CommitMessageConfig {
     maxLineLength: number;
     minBodyLength: number;
+    minBodyLengthTypeExcludes?: string[];
     types: string[];
     scopes: string[];
 }
