@@ -46,6 +46,7 @@ export declare abstract class MergeStrategy {
      */
     protected cherryPickIntoTargetBranches(revisionRange: string, targetBranches: string[], options?: {
         dryRun?: boolean;
+        linkToOriginalCommits?: boolean;
     }): string[];
     /**
      * Fetches the given target branches. Also accepts a list of additional refspecs that
