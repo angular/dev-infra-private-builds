@@ -39,6 +39,7 @@ pkg_npm(
     name = "npm_package",
     srcs = [
         "BUILD.bazel",
+        "@npm_angular_dev_infra_private//bazel:files",
         "@npm_angular_dev_infra_private//benchmark:files",
     ],
     substitutions = {
