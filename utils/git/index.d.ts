@@ -5,16 +5,12 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-/// <amd-module name="@angular/dev-infra-private/utils/git" />
+/// <amd-module name="@angular/dev-infra-private/utils/git/index" />
 /// <reference types="node" />
-import * as Octokit from '@octokit/rest';
 import { SpawnSyncOptions, SpawnSyncReturns } from 'child_process';
-import { NgDevConfig } from './config';
-/** Error for failed Github API requests. */
-export declare class GithubApiRequestError extends Error {
-    status: number;
-    constructor(status: number, message: string);
-}
+import { NgDevConfig } from '../config';
+import { _GithubClient } from './_github';
+export { GithubApiRequestError } from './_github';
 /** Error for failed Git commands. */
 export declare class GitCommandError extends Error {
     args: string[];
@@ -42,7 +38,7 @@ export declare class GitClient {
     /** URL that resolves to the configured repository. */
     repoGitUrl: string;
     /** Instance of the authenticated Github octokit API. */
-    api: Octokit;
+    github: _GithubClient;
     /** The file path of project's root directory. */
     private _projectRoot;
     /** The OAuth scopes available for the provided Github token. */
@@ -79,8 +75,7 @@ export declare class GitClient {
         error: string;
     }>;
     /**
-     * Retrieves the OAuth scopes for the loaded Github token, returning the already
-     * retrieved list of OAuth scopes if available.
+     * Retrieve the OAuth scopes for the loaded Github token.
      **/
     private getAuthScopesForToken;
 }
