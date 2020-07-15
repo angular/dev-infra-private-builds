@@ -10,7 +10,7 @@ load("@npm_bazel_protractor//:index.bzl", "protractor_web_test_suite")
 def benchmark_test(name, server, tags = [], **kwargs):
     protractor_web_test_suite(
         name = name,
-        browsers = ["@npm_angular_dev_infra_private//browsers/chromium:chromium"],
+        browsers = ["@npm_angular_dev_infra_private//browsers:chromium"],
         configuration = "@npm_angular_dev_infra_private//benchmark/component_benchmark:protractor-perf.conf.js",
         on_prepare = "@npm_angular_dev_infra_private//benchmark/component_benchmark:start-server.js",
         server = server,
