@@ -1,4 +1,5 @@
 /// <amd-module name="@angular/dev-infra-private/pullapprove/parse-yaml" />
+import { PullApproveGroup } from './group';
 export interface PullApproveGroupConfig {
     conditions?: string[];
     reviewers?: {
@@ -21,3 +22,5 @@ export interface PullApproveConfig {
     };
 }
 export declare function parsePullApproveYaml(rawYaml: string): PullApproveConfig;
+/** Parses all of the groups defined in the pullapprove yaml. */
+export declare function getGroupsFromYaml(pullApproveYamlRaw: string): PullApproveGroup[];

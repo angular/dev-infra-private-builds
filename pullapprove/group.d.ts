@@ -10,7 +10,7 @@ import { PullApproveGroupConfig } from './parse-yaml';
 /** A condition for a group. */
 interface GroupCondition {
     expression: string;
-    checkFn: (files: string[]) => boolean;
+    checkFn: (files: string[], groups: PullApproveGroup[]) => boolean;
     matchedFiles: Set<string>;
 }
 /** Result of testing files against the group. */
@@ -24,9 +24,10 @@ export interface PullApproveGroupResult {
 /** A PullApprove group to be able to test files against. */
 export declare class PullApproveGroup {
     groupName: string;
+    readonly precedingGroups: PullApproveGroup[];
     /** List of conditions for the group. */
     conditions: GroupCondition[];
-    constructor(groupName: string, config: PullApproveGroupConfig);
+    constructor(groupName: string, config: PullApproveGroupConfig, precedingGroups?: PullApproveGroup[]);
     private _captureConditions;
     /**
      * Tests a provided file path to determine if it would be considered matched by
