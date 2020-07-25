@@ -12,6 +12,7 @@ interface GroupCondition {
     expression: string;
     checkFn: (files: string[], groups: PullApproveGroup[]) => boolean;
     matchedFiles: Set<string>;
+    unverifiable: boolean;
 }
 /** Result of testing files against the group. */
 export interface PullApproveGroupResult {
@@ -20,6 +21,7 @@ export interface PullApproveGroupResult {
     matchedCount: number;
     unmatchedConditions: GroupCondition[];
     unmatchedCount: number;
+    unverifiableConditions: GroupCondition[];
 }
 /** A PullApprove group to be able to test files against. */
 export declare class PullApproveGroup {
