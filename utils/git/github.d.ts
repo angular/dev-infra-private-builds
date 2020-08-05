@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-/// <amd-module name="@angular/dev-infra-private/utils/git/_github" />
+/// <amd-module name="@angular/dev-infra-private/utils/git/github" />
 import * as Octokit from '@octokit/rest';
 import { RequestParameters } from '@octokit/types';
 import { query } from 'typed-graphqlify';
@@ -17,10 +17,10 @@ export declare class GithubApiRequestError extends Error {
 /**
  * A Github client for interacting with the Github APIs.
  *
- * Additionally, provides convienience methods for actions which require multiple requests, or
+ * Additionally, provides convenience methods for actions which require multiple requests, or
  * would provide value from memoized style responses.
  **/
-export declare class _GithubClient extends Octokit {
+export declare class GithubClient extends Octokit {
     /** The Github GraphQL (v4) API. */
     graqhql: GithubGraphqlClient;
     /** The current user based on checking against the Github API. */

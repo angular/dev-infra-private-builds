@@ -7,7 +7,10 @@
  */
 /// <amd-module name="@angular/dev-infra-private/pr/merge/config" />
 import { GitClientConfig, NgDevConfig } from '../../utils/config';
+import { GithubClient } from '../../utils/git/github';
 import { GithubApiMergeStrategyConfig } from './strategies/api-merge';
+/** Describes possible values that can be returned for `branches` of a target label. */
+export declare type TargetLabelBranchResult = string[] | Promise<string[]>;
 /**
  * Possible merge methods supported by the Github API.
  * https://developer.github.com/v3/pulls/#merge-a-pull-request-merge-button.
@@ -24,8 +27,11 @@ export interface TargetLabel {
      * List of branches a pull request with this target label should be merged into.
      * Can also be wrapped in a function that accepts the target branch specified in the
      * Github Web UI. This is useful for supporting labels like `target: development-branch`.
+     *
+     * @throws {InvalidTargetLabelError} Invalid label has been applied to pull request.
+     * @throws {InvalidTargetBranchError} Invalid Github target branch has been selected.
      */
-    branches: string[] | ((githubTargetBranch: string) => string[]);
+    branches: TargetLabelBranchResult | ((githubTargetBranch: string) => TargetLabelBranchResult);
 }
 /**
  * Configuration for the merge script with all remote options specified. The
@@ -71,10 +77,10 @@ export interface MergeConfig {
  * the dev-infra configuration is loaded as that could slow-down other commands.
  */
 export declare type DevInfraMergeConfig = NgDevConfig<{
-    'merge': () => MergeConfig;
+    'merge': (api: GithubClient) => MergeConfig | Promise<MergeConfig>;
 }>;
 /** Loads and validates the merge configuration. */
-export declare function loadAndValidateConfig(): {
-    config?: MergeConfigWithRemote;
+export declare function loadAndValidateConfig(config: Partial<DevInfraMergeConfig>, api: GithubClient): Promise<{
+    config?: MergeConfig;
     errors?: string[];
-};
+}>;

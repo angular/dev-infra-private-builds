@@ -19,6 +19,7 @@
     "inquirer": "^7.1.0",
     "minimatch": "^3.0.4",
     "multimatch": "^4.0.0",
+    "node-fetch": "^2.6.0",
     "node-uuid": "1.4.8",
     "semver": "^6.3.0",
     "shelljs": "^0.8.3",
