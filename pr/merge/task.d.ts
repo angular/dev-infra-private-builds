@@ -31,12 +31,9 @@ export interface MergeResult {
  * labels that have been resolved through the merge script configuration.
  */
 export declare class PullRequestMergeTask {
-    projectRoot: string;
     config: MergeConfigWithRemote;
-    private _githubToken;
-    /** Git client that can be used to execute Git commands. */
     git: GitClient;
-    constructor(projectRoot: string, config: MergeConfigWithRemote, _githubToken: string);
+    constructor(config: MergeConfigWithRemote, git: GitClient);
     /**
      * Merges the given pull request and pushes it upstream.
      * @param prNumber Pull request that should be merged.

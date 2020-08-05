@@ -9,8 +9,7 @@
 /// <reference types="node" />
 import { SpawnSyncOptions, SpawnSyncReturns } from 'child_process';
 import { NgDevConfig } from '../config';
-import { _GithubClient } from './_github';
-export { GithubApiRequestError } from './_github';
+import { GithubClient } from './github';
 /** Describes a function that can be used to test for given Github OAuth scopes. */
 export declare type OAuthScopeTestFunction = (scopes: string[], missing: string[]) => void;
 /** Error for failed Git commands. */
@@ -30,6 +29,7 @@ export declare class GitCommandError extends Error {
 export declare class GitClient {
     private _githubToken?;
     private _config;
+    private _projectRoot;
     /** Short-hand for accessing the remote configuration. */
     remoteConfig: import("@angular/dev-infra-private/utils/config").GithubConfig;
     /** Octokit request parameters object for targeting the configured remote. */
@@ -40,9 +40,7 @@ export declare class GitClient {
     /** URL that resolves to the configured repository. */
     repoGitUrl: string;
     /** Instance of the authenticated Github octokit API. */
-    github: _GithubClient;
-    /** The file path of project's root directory. */
-    private _projectRoot;
+    github: GithubClient;
     /** The OAuth scopes available for the provided Github token. */
     private _oauthScopes;
     /**
@@ -50,7 +48,7 @@ export declare class GitClient {
      * sanitizing the token from Git child process output.
      */
     private _githubTokenRegex;
-    constructor(_githubToken?: string | undefined, _config?: Pick<NgDevConfig, 'github'>);
+    constructor(_githubToken?: string | undefined, _config?: Pick<NgDevConfig, 'github'>, _projectRoot?: string);
     /** Executes the given git command. Throws if the command fails. */
     run(args: string[], options?: SpawnSyncOptions): Omit<SpawnSyncReturns<string>, 'status'>;
     /**
