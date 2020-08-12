@@ -18,4 +18,11 @@
  * as they are expected to become tracked files.
  */
 export declare function allChangedFilesSince(sha?: string): string[];
+/**
+ * A list of all staged files which have been modified.
+ *
+ * Only added, created and modified files are listed as others (deleted, renamed, etc) aren't
+ * changed or available as content to act upon.
+ */
+export declare function allStagedFiles(): string[];
 export declare function allFiles(): string[];
