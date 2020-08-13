@@ -11,10 +11,23 @@ export interface CommitMessageConfig {
     maxLineLength: number;
     minBodyLength: number;
     minBodyLengthTypeExcludes?: string[];
-    types: string[];
     scopes: string[];
 }
 /** Retrieve and validate the config as `CommitMessageConfig`. */
 export declare function getCommitMessageConfig(): Required<Partial<NgDevConfig<{
     commitMessage: CommitMessageConfig;
 }>>>;
+/** Scope requirement level to be set for each commit type.  */
+export declare enum ScopeRequirement {
+    Required = 0,
+    Optional = 1,
+    Forbidden = 2
+}
+/** A commit type */
+export interface CommitType {
+    scope: ScopeRequirement;
+}
+/** The valid commit types for Angular commit messages. */
+export declare const COMMIT_TYPES: {
+    [key: string]: CommitType;
+};
