@@ -9,7 +9,11 @@
 /// <amd-module name="@angular/dev-infra-private/ts-circular-dependencies" />
 import * as yargs from 'yargs';
 import { CircularDependenciesTestConfig } from './config';
-export declare function tsCircularDependenciesBuilder(localYargs: yargs.Argv): yargs.Argv;
+export declare function tsCircularDependenciesBuilder(localYargs: yargs.Argv): yargs.Argv<{
+    config: string;
+} & {
+    warnings: boolean | undefined;
+}>;
 /**
  * Runs the ts-circular-dependencies tool.
  * @param approve Whether the detected circular dependencies should be approved.

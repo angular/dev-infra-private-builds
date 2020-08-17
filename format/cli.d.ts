@@ -8,4 +8,10 @@
  */
 import * as yargs from 'yargs';
 /** Build the parser for the format commands. */
-export declare function buildFormatParser(localYargs: yargs.Argv): yargs.Argv;
+export declare function buildFormatParser(localYargs: yargs.Argv): yargs.Argv<{
+    check: boolean;
+} & {
+    shaOrRef: string | undefined;
+} & {
+    files: string[] | undefined;
+}>;

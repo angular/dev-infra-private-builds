@@ -26,7 +26,7 @@
     "tslib": "^2.0.0",
     "typed-graphqlify": "^2.3.0",
     "yaml": "^1.7.2",
-    "yargs": "15.3.0"
+    "yargs": "^15.4.1"
   },
   "peerDependencies": {
     "@bazel/buildifier": "^0.29.0",
