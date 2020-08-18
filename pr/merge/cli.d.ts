@@ -7,7 +7,12 @@
  */
 /// <amd-module name="@angular/dev-infra-private/pr/merge/cli" />
 import { Arguments, Argv } from 'yargs';
+/** The options available to the merge command via CLI. */
+export interface MergeCommandOptions {
+    'github-token'?: string;
+    'pr-number': number;
+}
 /** Builds the options for the merge command. */
-export declare function buildMergeCommand(yargs: Argv): Argv;
+export declare function buildMergeCommand(yargs: Argv): Argv<MergeCommandOptions>;
 /** Handles the merge command. i.e. performs the merge of a specified pull request. */
-export declare function handleMergeCommand(args: Arguments): Promise<void>;
+export declare function handleMergeCommand(args: Arguments<MergeCommandOptions>): Promise<void>;
