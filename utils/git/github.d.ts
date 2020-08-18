@@ -22,7 +22,7 @@ export declare class GithubApiRequestError extends Error {
  **/
 export declare class GithubClient extends Octokit {
     /** The Github GraphQL (v4) API. */
-    graqhql: GithubGraphqlClient;
+    graphql: GithubGraphqlClient;
     /** The current user based on checking against the Github API. */
     private _currentUser;
     constructor(token?: string);

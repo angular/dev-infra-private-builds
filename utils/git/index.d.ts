@@ -66,6 +66,12 @@ export declare class GitClient {
     /** Sanitizes a given message by omitting the provided Github token if present. */
     omitGithubTokenFromMessage(value: string): string;
     /**
+     * Checks out a requested branch or revision, optionally cleaning the state of the repository
+     * before attempting the checking. Returns a boolean indicating whether the branch or revision
+     * was cleanly checked out.
+     */
+    checkout(branchOrRevision: string, cleanState: boolean): boolean;
+    /**
      * Assert the GitClient instance is using a token with permissions for the all of the
      * provided OAuth scopes.
      */
