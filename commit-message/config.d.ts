@@ -25,6 +25,8 @@ export declare enum ScopeRequirement {
 }
 /** A commit type */
 export interface CommitType {
+    description: string;
+    name: string;
     scope: ScopeRequirement;
 }
 /** The valid commit types for Angular commit messages. */
