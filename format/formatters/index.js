@@ -16,7 +16,7 @@
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.getActiveFormatters = void 0;
+    exports.Formatter = exports.getActiveFormatters = void 0;
     var config_1 = require("@angular/dev-infra-private/format/config");
     var buildifier_1 = require("@angular/dev-infra-private/format/formatters/buildifier");
     var clang_format_1 = require("@angular/dev-infra-private/format/formatters/clang-format");

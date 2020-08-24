@@ -34,7 +34,7 @@
     "protractor": "^5.4.2",
     "selenium-webdriver": "3.5.0",
     "ts-node": "^8.6.2",
-    "typescript": "~3.9.5"
+    "typescript": "~4.0.2"
   },
   "peerDependenciesMeta": {
     "@bazel/buildifier": {

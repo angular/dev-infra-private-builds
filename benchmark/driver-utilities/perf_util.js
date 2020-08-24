@@ -18,7 +18,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.runBenchmark = void 0;
+    exports.runBenchmark = exports.verifyNoBrowserErrors = void 0;
     /**
      * @license
      * Copyright Google LLC All Rights Reserved.
