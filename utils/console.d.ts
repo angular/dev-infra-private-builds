@@ -8,6 +8,7 @@
 /// <amd-module name="@angular/dev-infra-private/utils/console" />
 import chalk from 'chalk';
 import { ListChoiceOptions } from 'inquirer';
+import { Arguments } from 'yargs';
 /** Reexport of chalk colors for convenient access. */
 export declare const red: typeof chalk;
 export declare const green: typeof chalk;
@@ -78,3 +79,12 @@ export declare const warn: {
     /** End the group at the LOG_LEVEL. */
     groupEnd(): void;
 };
+/**
+ * Enable writing the logged outputs to the log file on process exit, sets initial lines from the
+ * command execution, containing information about the timing and command parameters.
+ *
+ * This is expected to be called only once during a command run, and should be called by the
+ * middleware of yargs to enable the file logging before the rest of the command parsing and
+ * response is executed.
+ */
+export declare function captureLogOutputForCommand(argv: Arguments): void;
