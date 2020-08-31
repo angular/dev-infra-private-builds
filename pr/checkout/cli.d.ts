@@ -9,9 +9,7 @@
 import { CommandModule } from 'yargs';
 export interface CheckoutOptions {
     prNumber: number;
-    'github-token'?: string;
+    githubToken: string;
 }
-/** URL to the Github page where personal access tokens can be generated. */
-export declare const GITHUB_TOKEN_GENERATE_URL = "https://github.com/settings/tokens";
 /** yargs command module for checking out a PR  */
 export declare const CheckoutCommandModule: CommandModule<{}, CheckoutOptions>;
