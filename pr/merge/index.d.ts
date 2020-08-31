@@ -7,8 +7,6 @@
  */
 /// <amd-module name="@angular/dev-infra-private/pr/merge" />
 import { MergeConfigWithRemote } from './config';
-/** URL to the Github page where personal access tokens can be generated. */
-export declare const GITHUB_TOKEN_GENERATE_URL = "https://github.com/settings/tokens";
 /**
  * Merges a given pull request based on labels configured in the given merge configuration.
  * Pull requests can be merged with different strategies such as the Github API merge
