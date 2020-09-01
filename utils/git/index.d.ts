@@ -54,7 +54,7 @@ export declare class GitClient {
     /**
      * Spawns a given Git command process. Does not throw if the command fails. Additionally,
      * if there is any stderr output, the output will be printed. This makes it easier to
-     * debug failed commands.
+     * info failed commands.
      */
     runGraceful(args: string[], options?: SpawnSyncOptions): SpawnSyncReturns<string>;
     /** Whether the given branch contains the specified SHA. */
