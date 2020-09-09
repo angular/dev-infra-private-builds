@@ -44,4 +44,14 @@ export declare function getConfig(): NgDevConfig;
 export declare function assertNoErrors(errors: string[]): void;
 /** Gets the path of the directory for the repository base. */
 export declare function getRepoBaseDir(): string;
+/**
+ * Get the local user configuration from the file system, returning the already loaded copy if it is
+ * defined.
+ *
+ * @returns The user configuration object, or an empty object if no user configuration file is
+ * present. The object is an untyped object as there are no required user configurations.
+ */
+export declare function getUserConfig(): {
+    [x: string]: any;
+};
 export {};
