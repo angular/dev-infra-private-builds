@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-/// <amd-module name="@angular/dev-infra-private/caretaker/service-statuses/github" />
+/// <amd-module name="@angular/dev-infra-private/caretaker/check/github" />
 import { GitClient } from '../../utils/git';
 import { CaretakerConfig } from '../config';
 /** Retrieve the number of matching issues for each github query. */

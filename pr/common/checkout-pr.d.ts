@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-/// <amd-module name="angular/dev-infra/pr/common/checkout-pr" />
+/// <amd-module name="@angular/dev-infra-private/pr/common/checkout-pr" />
 export declare class UnexpectedLocalChangesError extends Error {
     constructor(m: string);
 }
