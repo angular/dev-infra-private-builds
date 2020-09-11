@@ -11,7 +11,7 @@
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define("@angular/dev-infra-private/caretaker/service-statuses/github", ["require", "exports", "tslib", "typed-graphqlify", "@angular/dev-infra-private/utils/console"], factory);
+        define("@angular/dev-infra-private/caretaker/check/github", ["require", "exports", "tslib", "typed-graphqlify", "@angular/dev-infra-private/utils/console"], factory);
     }
 })(function (require, exports) {
     "use strict";

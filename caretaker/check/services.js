@@ -11,7 +11,7 @@
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define("@angular/dev-infra-private/caretaker/service-statuses/services", ["require", "exports", "tslib", "node-fetch", "@angular/dev-infra-private/utils/console"], factory);
+        define("@angular/dev-infra-private/caretaker/check/services", ["require", "exports", "tslib", "node-fetch", "@angular/dev-infra-private/utils/console"], factory);
     }
 })(function (require, exports) {
     "use strict";

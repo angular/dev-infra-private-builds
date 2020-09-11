@@ -11,7 +11,7 @@
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define("angular/dev-infra/caretaker/config", ["require", "exports", "@angular/dev-infra-private/utils/config"], factory);
+        define("@angular/dev-infra-private/caretaker/config", ["require", "exports", "@angular/dev-infra-private/utils/config"], factory);
     }
 })(function (require, exports) {
     "use strict";
