@@ -1,6 +1,6 @@
 /// <amd-module name="@angular/dev-infra-private/benchmark/driver-utilities/perf_util" />
 export { verifyNoBrowserErrors } from './e2e_util';
-export declare function runBenchmark(config: {
+export declare function runBenchmark({ id, url, params, ignoreBrowserSynchronization, microMetrics, work, prepare, setup, }: {
     id: string;
     url: string;
     params: {
@@ -11,7 +11,7 @@ export declare function runBenchmark(config: {
     microMetrics?: {
         [key: string]: string;
     };
-    work?: () => void;
-    prepare?: () => void;
-    setup?: () => void;
+    work?: (() => void) | (() => Promise<unknown>);
+    prepare?: (() => void) | (() => Promise<unknown>);
+    setup?: (() => void) | (() => Promise<unknown>);
 }): Promise<any>;
