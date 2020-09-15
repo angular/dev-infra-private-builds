@@ -7,6 +7,7 @@
  */
 /// <amd-module name="@angular/dev-infra-private/commit-message/config" />
 import { NgDevConfig } from '../utils/config';
+/** Configuration for commit-message comands. */
 export interface CommitMessageConfig {
     maxLineLength: number;
     minBodyLength: number;
