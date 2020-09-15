@@ -8,4 +8,4 @@
  */
 import * as yargs from 'yargs';
 /** Build the parser for the commit-message commands. */
-export declare function buildCommitMessageParser(localYargs: yargs.Argv): yargs.Argv<any>;
+export declare function buildCommitMessageParser(localYargs: yargs.Argv): yargs.Argv<import("@angular/dev-infra-private/commit-message/validate-range/cli").ValidateRangeOptions>;
