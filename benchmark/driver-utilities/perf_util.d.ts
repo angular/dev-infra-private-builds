@@ -2,8 +2,8 @@
 export { verifyNoBrowserErrors } from './e2e_util';
 export declare function runBenchmark({ id, url, params, ignoreBrowserSynchronization, microMetrics, work, prepare, setup, }: {
     id: string;
-    url?: string;
-    params?: {
+    url: string;
+    params: {
         name: string;
         value: any;
     }[];
