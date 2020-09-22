@@ -7,7 +7,7 @@
  */
 /// <amd-module name="@angular/dev-infra-private/benchmark/driver-utilities/e2e_util" />
 export declare function openBrowser(config: {
-    url: string;
+    url?: string;
     params?: {
         name: string;
         value: any;
