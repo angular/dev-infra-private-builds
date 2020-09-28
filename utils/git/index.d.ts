@@ -18,37 +18,37 @@ export declare class GitCommandError extends Error {
     constructor(client: GitClient, args: string[]);
 }
 /**
- * Common client for performing Git interactions.
+ * Common client for performing Git interactions with a given remote.
  *
  * Takes in two optional arguments:
- *   _githubToken: the token used for authentifation in github interactions, by default empty
+ *   `githubToken`: the token used for authentication in Github interactions, by default empty
  *     allowing readonly actions.
- *   _config: The dev-infra configuration containing GitClientConfig information, by default
- *     loads the config from the default location.
+ *   `config`: The dev-infra configuration containing information about the remote. By default
+ *     the dev-infra configuration is loaded with its Github configuration.
  **/
 export declare class GitClient {
-    private _githubToken?;
+    githubToken?: string | undefined;
     private _config;
     private _projectRoot;
-    /** Short-hand for accessing the remote configuration. */
+    /** Short-hand for accessing the default remote configuration. */
     remoteConfig: import("@angular/dev-infra-private/utils/config").GithubConfig;
     /** Octokit request parameters object for targeting the configured remote. */
     remoteParams: {
         owner: string;
         repo: string;
     };
-    /** URL that resolves to the configured repository. */
+    /** Git URL that resolves to the configured repository. */
     repoGitUrl: string;
     /** Instance of the authenticated Github octokit API. */
     github: GithubClient;
     /** The OAuth scopes available for the provided Github token. */
-    private _oauthScopes;
+    private _cachedOauthScopes;
     /**
      * Regular expression that matches the provided Github token. Used for
      * sanitizing the token from Git child process output.
      */
     private _githubTokenRegex;
-    constructor(_githubToken?: string | undefined, _config?: Pick<NgDevConfig, 'github'>, _projectRoot?: string);
+    constructor(githubToken?: string | undefined, _config?: Pick<NgDevConfig, 'github'>, _projectRoot?: string);
     /** Executes the given git command. Throws if the command fails. */
     run(args: string[], options?: SpawnSyncOptions): Omit<SpawnSyncReturns<string>, 'status'>;
     /**
