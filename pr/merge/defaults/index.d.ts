@@ -7,5 +7,4 @@
  */
 /// <amd-module name="@angular/dev-infra-private/pr/merge/defaults/index" />
 export * from './labels';
-export * from './branches';
 export * from './lts-branch';
