@@ -82,7 +82,7 @@ function extractBannerIfConfigured() {
     // Don't assume BUILD_SCM_VERSION exists
     if (versionTag) {
       const version = versionTag.split(' ')[1].trim();
-      banner = banner.replace(/0.0.0/, version);
+      banner = banner.replace(/0.0.0-PLACEHOLDER/, version);
     }
   }
   return banner;
