@@ -1,6 +1,6 @@
 load("@npm_angular_dev_infra_private//benchmark/ng_rollup_bundle:ng_rollup_bundle.bzl", "ng_rollup_bundle")
-load("@npm//@angular/bazel:index.bzl", "ng_module")
-load("@npm//@bazel/typescript:index.bzl", "ts_devserver", "ts_library")
+load("@npm_angular_bazel//:index.bzl", "ng_module")
+load("@npm_bazel_typescript//:index.bzl", "ts_devserver", "ts_library")
 load(":benchmark_test.bzl", "benchmark_test")
 
 def copy_default_file(origin, destination):
