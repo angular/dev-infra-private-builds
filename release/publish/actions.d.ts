@@ -26,7 +26,7 @@ export interface PullRequest {
     /** Branch name in the fork that defines this pull request. */
     forkBranch: string;
 }
-/** Constructor type for a instantiating a release action */
+/** Constructor type for instantiating a release action */
 export interface ReleaseActionConstructor<T extends ReleaseAction = ReleaseAction> {
     /** Whether the release action is currently active. */
     isActive(active: ActiveReleaseTrains): Promise<boolean>;
