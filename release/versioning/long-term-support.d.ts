@@ -24,18 +24,6 @@ export interface LtsBranch {
     /** NPM dist tag for the LTS version. */
     npmDistTag: string;
 }
-/**
- * Number of months a major version in Angular is actively supported. See:
- * https://angular.io/guide/releases#support-policy-and-schedule.
- */
-export declare const majorActiveSupportDuration = 6;
-/**
- * Number of months a major version has active long-term support. See:
- * https://angular.io/guide/releases#support-policy-and-schedule.
- */
-export declare const majorActiveTermSupportDuration = 12;
-/** Regular expression that matches LTS NPM dist tags. */
-export declare const ltsNpmDistTagRegex: RegExp;
 /** Finds all long-term support release trains from the specified NPM package. */
 export declare function fetchLongTermSupportBranchesFromNpm(config: ReleaseConfig): Promise<LtsBranches>;
 /**
