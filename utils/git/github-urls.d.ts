@@ -16,5 +16,5 @@ export declare const GITHUB_TOKEN_GENERATE_URL = "https://github.com/settings/to
 export declare function addTokenToGitHttpsUrl(githubHttpsUrl: string, token: string): string;
 /** Gets the repository Git URL for the given github config. */
 export declare function getRepositoryGitUrl(config: GithubConfig, githubToken?: string): string;
-/** Gets a Github URL that refers to a lists of recent commits within a specified branch. */
+/** Gets a Github URL that refers to a list of recent commits within a specified branch. */
 export declare function getListCommitsInBranchUrl({ remoteParams }: GitClient, branchName: string): string;
