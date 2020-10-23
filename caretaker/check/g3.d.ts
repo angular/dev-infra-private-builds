@@ -6,6 +6,6 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/dev-infra-private/caretaker/check/g3" />
-import { GitClient } from '../../utils/git';
+import { GitClient } from '../../utils/git/index';
 /** Compare the upstream master to the upstream g3 branch, if it exists. */
 export declare function printG3Comparison(git: GitClient): Promise<void>;

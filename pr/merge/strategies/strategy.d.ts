@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/dev-infra-private/pr/merge/strategies/strategy" />
-import { GitClient } from '../../../utils/git';
+import { GitClient } from '../../../utils/git/index';
 import { PullRequestFailure } from '../failures';
 import { PullRequest } from '../pull-request';
 /**

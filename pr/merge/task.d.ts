@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/dev-infra-private/pr/merge/task" />
-import { GitClient } from '../../utils/git';
+import { GitClient } from '../../utils/git/index';
 import { MergeConfigWithRemote } from './config';
 import { PullRequestFailure } from './failures';
 /** Describes the status of a pull request merge. */
