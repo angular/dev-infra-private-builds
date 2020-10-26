@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/dev-infra-private/format/run-commands-parallel" />
-import { FormatterAction } from './formatters';
+import { FormatterAction } from './formatters/index';
 /**
  * Run the provided commands in parallel for each provided file.
  *
