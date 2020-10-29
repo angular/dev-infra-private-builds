@@ -30,6 +30,8 @@ export declare class GitClient {
     githubToken?: string | undefined;
     private _config;
     private _projectRoot;
+    /** Whether verbose logging of Git actions should be used. */
+    static LOG_COMMANDS: boolean;
     /** Short-hand for accessing the default remote configuration. */
     remoteConfig: import("@angular/dev-infra-private/utils/config").GithubConfig;
     /** Octokit request parameters object for targeting the configured remote. */
