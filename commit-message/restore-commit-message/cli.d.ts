@@ -8,7 +8,9 @@
 /// <amd-module name="@angular/dev-infra-private/commit-message/restore-commit-message/cli" />
 import { CommandModule } from 'yargs';
 export interface RestoreCommitMessageOptions {
-    fileEnvVariable: string[];
+    file?: string;
+    source?: string;
+    fileEnvVariable?: string;
 }
 /** yargs command module describing the command.  */
 export declare const RestoreCommitMessageModule: CommandModule<{}, RestoreCommitMessageOptions>;
