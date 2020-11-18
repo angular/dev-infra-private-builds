@@ -12,7 +12,7 @@ export interface ValidateCommitMessageResult {
     commit: ParsedCommitMessage;
 }
 /** Validate a commit message against using the local repo's config. */
-export declare function validateCommitMessage(commitMsg: string, options?: ValidateCommitMessageOptions): ValidateCommitMessageResult;
+export declare function validateCommitMessage(commitMsg: string | ParsedCommitMessage, options?: ValidateCommitMessageOptions): ValidateCommitMessageResult;
 /** Print the error messages from the commit message validation to the console. */
 export declare function printValidationErrors(errors: string[], print?: {
     (...text: string[]): void;
