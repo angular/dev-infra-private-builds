@@ -20,3 +20,5 @@ export interface ParsedCommitMessage {
 }
 /** Parse a full commit message into its composite parts. */
 export declare function parseCommitMessage(commitMsg: string): ParsedCommitMessage;
+/** Retrieve and parse each commit message in a provide range. */
+export declare function parseCommitMessagesForRange(range: string): ParsedCommitMessage[];
