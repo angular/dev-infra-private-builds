@@ -165,4 +165,6 @@ export declare abstract class ReleaseAction {
     private _publishBuiltPackageToNpm;
     /** Checks whether the given commit represents a staging commit for the specified version. */
     private _isCommitForVersionStaging;
+    /** Verify the version of each generated package exact matches the specified version. */
+    private _verifyPackageVersions;
 }
