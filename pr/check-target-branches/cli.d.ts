@@ -9,7 +9,6 @@
 import { CommandModule } from 'yargs';
 export interface CheckTargetBranchesOptions {
     pr: number;
-    json: boolean;
 }
 /** yargs command module describing the command.  */
 export declare const CheckTargetBranchesModule: CommandModule<{}, CheckTargetBranchesOptions>;
