@@ -6,6 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/dev-infra-private/release/stamping/env-stamp" />
+export declare type EnvStampMode = 'snapshot' | 'release';
 /**
  * Log the environment variables expected by bazel for stamping.
  *
@@ -16,4 +17,4 @@
  * Note: git operations, especially git status, take a long time inside mounted docker volumes
  * in Windows or OSX hosts (https://github.com/docker/for-win/issues/188).
  */
-export declare function buildEnvStamp(): void;
+export declare function buildEnvStamp(mode: EnvStampMode): void;
