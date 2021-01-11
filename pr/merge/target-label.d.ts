@@ -24,7 +24,7 @@ export declare class InvalidTargetLabelError {
     constructor(failureMessage: string);
 }
 /** Gets the target label from the specified pull request labels. */
-export declare function getTargetLabelFromPullRequest(config: Pick<MergeConfig, 'labels'>, labels: string[]): TargetLabel | null;
+export declare function getTargetLabelFromPullRequest(config: Pick<MergeConfig, 'labels'>, labels: string[]): TargetLabel;
 /**
  * Gets the branches from the specified target label.
  *
