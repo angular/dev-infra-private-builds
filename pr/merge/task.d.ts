@@ -25,6 +25,9 @@ export interface MergeResult {
     /** List of pull request failures. */
     failure?: PullRequestFailure;
 }
+export interface PullRequestMergeTaskFlags {
+    branchPrompt: boolean;
+}
 /**
  * Class that accepts a merge script configuration and Github token. It provides
  * a programmatic interface for merging multiple pull requests based on their
@@ -33,7 +36,8 @@ export interface MergeResult {
 export declare class PullRequestMergeTask {
     config: MergeConfigWithRemote;
     git: GitClient;
-    constructor(config: MergeConfigWithRemote, git: GitClient);
+    private flags;
+    constructor(config: MergeConfigWithRemote, git: GitClient, flags: Partial<PullRequestMergeTaskFlags>);
     /**
      * Merges the given pull request and pushes it upstream.
      * @param prNumber Pull request that should be merged.
