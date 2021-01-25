@@ -30,6 +30,8 @@ export interface ReleaseConfig {
      * @returns A pattern matching the notes for a given version (including the header).
      */
     extractReleaseNotesPattern?: (version: semver.SemVer) => RegExp;
+    /** The list of github labels to add to the release PRs. */
+    releasePrLabels?: string[];
 }
 /** Configuration for releases in the dev-infra configuration. */
 export declare type DevInfraReleaseConfig = NgDevConfig<{
