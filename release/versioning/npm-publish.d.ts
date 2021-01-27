@@ -17,3 +17,18 @@ export declare function runNpmPublish(packagePath: string, distTag: string, regi
  * @throws With the process log output if the tagging failed.
  */
 export declare function setNpmTagForPackage(packageName: string, distTag: string, version: semver.SemVer, registryUrl: string | undefined): Promise<void>;
+/**
+ * Checks whether the user is currently logged into NPM.
+ * @returns Whether the user is currently logged into NPM.
+ */
+export declare function npmIsLoggedIn(registryUrl: string | undefined): Promise<boolean>;
+/**
+ * Log into NPM at a provided registry.
+ * @throws With the process log output if the login fails.
+ */
+export declare function npmLogin(registryUrl: string | undefined): Promise<void>;
+/**
+ * Log out of NPM at a provided registry.
+ * @returns Whether the user was logged out of NPM.
+ */
+export declare function npmLogout(registryUrl: string | undefined): Promise<boolean>;
