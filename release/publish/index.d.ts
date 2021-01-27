@@ -20,9 +20,13 @@ export declare class ReleaseTool {
     protected _projectRoot: string;
     /** Client for interacting with the Github API and the local Git command. */
     private _git;
+    /** The previous git commit to return back to after the release tool runs. */
+    private previousGitBranchOrRevision;
     constructor(_config: ReleaseConfig, _github: GithubConfig, _githubToken: string, _projectRoot: string);
     /** Runs the interactive release tool. */
     run(): Promise<CompletionState>;
+    /** Run post release tool cleanups. */
+    private cleanup;
     /** Prompts the caretaker for a release action that should be performed. */
     private _promptForReleaseAction;
     /**
@@ -35,4 +39,9 @@ export declare class ReleaseTool {
      * @returns a boolean indicating success or failure.
      */
     private _verifyRunningFromNextBranch;
+    /**
+     * Verifies that the user is logged into NPM at the correct registry, if defined for the release.
+     * @returns a boolean indicating whether the user is logged into NPM.
+     */
+    private _verifyNpmLoginState;
 }

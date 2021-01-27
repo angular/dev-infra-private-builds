@@ -1,5 +1,5 @@
 load("@npm_angular_dev_infra_private//benchmark/ng_rollup_bundle:ng_rollup_bundle.bzl", "ng_rollup_bundle")
-load("//tools:defaults.bzl", "ng_module")
+load("@npm//@angular/bazel:index.bzl", "ng_module")
 load("@npm//@bazel/typescript:index.bzl", "ts_devserver", "ts_library")
 load(":benchmark_test.bzl", "benchmark_test")
 
