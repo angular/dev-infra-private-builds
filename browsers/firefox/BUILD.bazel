@@ -31,7 +31,7 @@ web_test_archive(
         "@io_bazel_rules_webtesting//common/conditions:linux": {"FIREFOX": "firefox/firefox"},
         "@io_bazel_rules_webtesting//common/conditions:mac": {"FIREFOX": "Firefox.app/Contents/MacOS/firefox"},
     }),
-    visibility = ["@npm_angular_dev_infra_private//browsers:__subpackages__"],
+    visibility = ["@npm//@angular/dev-infra-private/browsers:__subpackages__"],
 )
 
 # Override of geckodriver web_test_archive so that the archive is selected based on platform.
@@ -44,7 +44,7 @@ web_test_archive(
     }),
     extract = "build",
     named_files = {"GECKODRIVER": "geckodriver"},
-    visibility = ["@npm_angular_dev_infra_private//browsers:__subpackages__"],
+    visibility = ["@npm//@angular/dev-infra-private/browsers:__subpackages__"],
 )
 
 browser(

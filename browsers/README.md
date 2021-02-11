@@ -7,7 +7,7 @@ We manually keep the configuration of these two tools in sync to create a consis
 
 ## Bazel
 
-Bazel `karma_web_test_suite` and `protractor_web_test_suite` targets will use Chromium or Firefox provisioned by `@npm_angular_dev_infra_private//browsers`.
+Bazel `karma_web_test_suite` and `protractor_web_test_suite` targets will use Chromium or Firefox provisioned by `@npm//@angular/dev-infra-private/browsers`.
 The version of Chrome and Firefox are specified in the `chromium.bzl` and `firefox.bzl` files in `/dev-infra/browsers`.
 
 The process of updating the Chrome or Firefox version is not straightforward, but below are dedicated sections for each browser.

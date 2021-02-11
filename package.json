@@ -21,11 +21,11 @@
     "inquirer-autocomplete-prompt": "^1.0.2",
     "minimatch": "^3.0.4",
     "multimatch": "^4.0.0",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "node-uuid": "1.4.8",
     "ora": "^5.0.0",
     "semver": "^6.3.0",
-    "shelljs": "^0.8.3",
+    "shelljs": "^0.8.4",
     "tslib": "^2.0.0",
     "typed-graphqlify": "^2.3.0",
     "yaml": "^1.10.0",
@@ -52,12 +52,6 @@
     },
     "ts-node": {
       "optional": true
-    }
-  },
-  "bazelWorkspaces": {
-    "npm_angular_dev_infra_private": {
-      "version": "0.0.0-PLACEHOLDER",
-      "rootPath": "."
     }
   }
 }
