@@ -4,7 +4,7 @@ package(default_visibility = ["//visibility:public"])
 filegroup(
     name = "files",
     srcs = glob(["*"]) + [
-        "@npm_angular_dev_infra_private//browsers/chromium:files",
-        "@npm_angular_dev_infra_private//browsers/firefox:files",
+        "@npm//@angular/dev-infra-private/browsers/chromium:files",
+        "@npm//@angular/dev-infra-private/browsers/firefox:files",
     ],
 )
