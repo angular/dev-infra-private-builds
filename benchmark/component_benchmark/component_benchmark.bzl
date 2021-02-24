@@ -133,7 +133,7 @@ def component_benchmark(
     # The server for our application.
     concatjs_devserver(
         name = server,
-        bootstrap = ["@npm//:node_modules/zone.js/dist/zone.js"],
+        bootstrap = ["@npm//zone.js"],
         port = 4200,
         static_files = assets + styles,
         deps = [":" + app_main + ".min_debug.js"],
