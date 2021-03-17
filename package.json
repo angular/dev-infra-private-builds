@@ -26,7 +26,7 @@
     "ora": "^5.0.0",
     "semver": "^6.3.0",
     "shelljs": "^0.8.4",
-    "tslib": "^2.0.0",
+    "tslib": "^2.1.0",
     "typed-graphqlify": "^2.3.0",
     "yaml": "^1.10.0",
     "yargs": "^16.1.1",
@@ -35,7 +35,7 @@
     "protractor": "^5.4.2",
     "selenium-webdriver": "3.5.0",
     "ts-node": "^8.6.2",
-    "typescript": "~4.1.2"
+    "typescript": "~4.2.3"
   },
   "peerDependenciesMeta": {
     "@bazel/buildifier": {
