@@ -28,8 +28,8 @@ function log_verbose(...m) {
 const useBuildOptimizer = TMPL_build_optimizer;
 const bannerFile = TMPL_banner_file;
 const ivyEnabled = 'TMPL_angular_ivy_enabled' === 'True';
-// `bazel_stamp_file` is a substitution that is applied by `@bazel/rollup`.
-const stampDataFile = bazel_stamp_file;
+// `bazel_version_file` is a substitution that is applied by `@bazel/rollup`.
+const stampDataFile = bazel_version_file;
 
 log_verbose(`running with
   cwd: ${process.cwd()}
@@ -82,7 +82,7 @@ function extractBannerIfConfigured() {
     // Don't assume BUILD_SCM_VERSION exists
     if (versionTag) {
       const version = versionTag.split(' ')[1].trim();
-      banner = banner.replace(/0.0.0/, version);
+      banner = banner.replace(/0.0.0-PLACEHOLDER/, version);
     }
   }
   return banner;

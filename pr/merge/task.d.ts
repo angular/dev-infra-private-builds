@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/dev-infra-private/pr/merge/task" />
-import { GitClient } from '../../utils/git';
+import { GitClient } from '../../utils/git/index';
 import { MergeConfigWithRemote } from './config';
 import { PullRequestFailure } from './failures';
 /** Describes the status of a pull request merge. */
@@ -25,6 +25,9 @@ export interface MergeResult {
     /** List of pull request failures. */
     failure?: PullRequestFailure;
 }
+export interface PullRequestMergeTaskFlags {
+    branchPrompt: boolean;
+}
 /**
  * Class that accepts a merge script configuration and Github token. It provides
  * a programmatic interface for merging multiple pull requests based on their
@@ -33,7 +36,8 @@ export interface MergeResult {
 export declare class PullRequestMergeTask {
     config: MergeConfigWithRemote;
     git: GitClient;
-    constructor(config: MergeConfigWithRemote, git: GitClient);
+    private flags;
+    constructor(config: MergeConfigWithRemote, git: GitClient, flags: Partial<PullRequestMergeTaskFlags>);
     /**
      * Merges the given pull request and pushes it upstream.
      * @param prNumber Pull request that should be merged.

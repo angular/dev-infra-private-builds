@@ -6,9 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/dev-infra-private/pr/merge" />
-import { MergeConfigWithRemote } from './config';
-/** URL to the Github page where personal access tokens can be generated. */
-export declare const GITHUB_TOKEN_GENERATE_URL = "https://github.com/settings/tokens";
+import { PullRequestMergeTaskFlags } from './task';
 /**
  * Merges a given pull request based on labels configured in the given merge configuration.
  * Pull requests can be merged with different strategies such as the Github API merge
@@ -22,4 +20,4 @@ export declare const GITHUB_TOKEN_GENERATE_URL = "https://github.com/settings/to
  * @param projectRoot Path to the local Git project that is used for merging.
  * @param config Configuration for merging pull requests.
  */
-export declare function mergePullRequest(prNumber: number, githubToken: string, projectRoot?: string, config?: MergeConfigWithRemote): Promise<void>;
+export declare function mergePullRequest(prNumber: number, githubToken: string, flags: PullRequestMergeTaskFlags): Promise<void>;

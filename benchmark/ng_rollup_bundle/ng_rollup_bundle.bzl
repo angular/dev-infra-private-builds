@@ -4,9 +4,9 @@
 # found in the LICENSE file at https://angular.io/license
 
 load("@build_bazel_rules_nodejs//:index.bzl", "npm_package_bin")
-load("@npm_bazel_terser//:index.bzl", "terser_minified")
-load("@npm_bazel_rollup//:index.bzl", "rollup_bundle")
-load("@npm_angular_dev_infra_private//bazel:expand_template.bzl", "expand_template")
+load("@npm//@bazel/terser:index.bzl", "terser_minified")
+load("@npm//@bazel/rollup:index.bzl", "rollup_bundle")
+load("@npm//@angular/dev-infra-private/bazel:expand_template.bzl", "expand_template")
 
 def ng_rollup_bundle(
         name,
@@ -42,7 +42,7 @@ def ng_rollup_bundle(
 
     expand_template(
         name = "%s_rollup_config" % name,
-        template = "@npm_angular_dev_infra_private//benchmark/ng_rollup_bundle:rollup.config-tmpl.js",
+        template = "@npm//@angular/dev-infra-private/benchmark/ng_rollup_bundle:rollup.config-tmpl.js",
         output_name = "%s_rollup_config.js" % name,
         configuration_env_vars = ["angular_ivy_enabled"],
         data = config_data,
@@ -76,7 +76,7 @@ def ng_rollup_bundle(
 
     common_terser_options = {
         "visibility": visibility,
-        "config_file": "@npm_angular_dev_infra_private//benchmark/ng_rollup_bundle:terser_config.json",
+        "config_file": "@npm//@angular/dev-infra-private/benchmark/ng_rollup_bundle:terser_config.json",
         # TODO: Enable source maps for better debugging when `@bazel/terser` pre-declares
         # JS and map outputs. Tracked with: DEV-120
         "sourcemap": False,
@@ -89,7 +89,7 @@ def ng_rollup_bundle(
 
     npm_package_bin(
         name = "_%s_brotli" % name,
-        tool = "@npm_angular_dev_infra_private//benchmark/brotli-cli",
+        tool = "@npm//@angular/dev-infra-private/benchmark/brotli-cli",
         data = [name + ".min.js"],
         outs = [name + ".min.js.br"],
         args = [

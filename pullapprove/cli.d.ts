@@ -8,4 +8,4 @@
  */
 import * as yargs from 'yargs';
 /** Build the parser for the pullapprove commands. */
-export declare function buildPullapproveParser(localYargs: yargs.Argv): yargs.Argv;
+export declare function buildPullapproveParser(localYargs: yargs.Argv): yargs.Argv<{}>;

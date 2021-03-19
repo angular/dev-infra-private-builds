@@ -25,7 +25,6 @@ export declare class PullRequestFailure {
     static failingCiJobs(): PullRequestFailure;
     static pendingCiJobs(): PullRequestFailure;
     static notMergeReady(): PullRequestFailure;
-    static noTargetLabel(): PullRequestFailure;
     static mismatchingTargetBranch(allowedBranches: string[]): PullRequestFailure;
     static unsatisfiedBaseSha(): PullRequestFailure;
     static mergeConflicts(failedBranches: string[]): PullRequestFailure;
