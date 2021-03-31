@@ -29,7 +29,7 @@
     "tslib": "^2.1.0",
     "typed-graphqlify": "^2.3.0",
     "yaml": "^1.10.0",
-    "yargs": "^16.1.1",
+    "yargs": "^16.2.0",
     "@bazel/buildifier": "^0.29.0",
     "clang-format": "^1.4.0",
     "protractor": "^5.4.2",
