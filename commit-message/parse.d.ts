@@ -38,7 +38,28 @@ export interface Commit {
     /** Whether the commit is a revert commit. */
     isRevert: boolean;
 }
+/**
+ * A list of tuples expressing the fields to extract from each commit log entry. The tuple contains
+ * two values, the first is the key for the property and the second is the template shortcut for the
+ * git log command.
+ */
+declare const commitFields: {
+    hash: string;
+    shortHash: string;
+    author: string;
+};
+/** The additional fields to be included in commit log entries for parsing. */
+export declare type CommitFields = typeof commitFields;
+/** The commit fields described as git log format entries for parsing. */
+export declare const commitFieldsAsFormat: (fields: CommitFields) => string;
+/**
+ * The git log format template to create git log entries for parsing.
+ *
+ * The conventional commits parser expects to parse the standard git log raw body (%B) into its
+ * component parts. Additionally it will parse additional fields with keys defined by
+ * `-{key name}-` separated by new lines.
+ * */
+export declare const gitLogFormatForParsing: string;
 /** Parse a full commit message into its composite parts. */
-export declare function parseCommitMessage(fullText: string): Commit;
-/** Retrieve and parse each commit message in a provide range. */
-export declare function parseCommitMessagesForRange(range: string): Commit[];
+export declare function parseCommitMessage(fullText: string | Buffer): Commit;
+export {};

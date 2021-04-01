@@ -12,5 +12,5 @@ export interface ValidateFileOptions {
     fileEnvVariable?: string;
     error: boolean;
 }
-/** yargs command module describing the command.  */
+/** yargs command module describing the command. */
 export declare const ValidateFileModule: CommandModule<{}, ValidateFileOptions>;
