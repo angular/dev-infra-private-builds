@@ -8,6 +8,7 @@
 /// <amd-module name="@angular/dev-infra-private/utils/git/index" />
 /// <reference types="node" />
 import { SpawnSyncOptions, SpawnSyncReturns } from 'child_process';
+import { SemVer } from 'semver';
 import { NgDevConfig } from '../config';
 import { GithubClient } from './github';
 /** Describes a function that can be used to test for given Github OAuth scopes. */
@@ -75,6 +76,8 @@ export declare class GitClient {
      * was cleanly checked out.
      */
     checkout(branchOrRevision: string, cleanState: boolean): boolean;
+    /** Gets the latest git tag on the current branch that matches SemVer. */
+    getLatestSemverTag(): SemVer;
     /**
      * Assert the GitClient instance is using a token with permissions for the all of the
      * provided OAuth scopes.
