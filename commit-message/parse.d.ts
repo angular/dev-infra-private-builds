@@ -38,12 +38,6 @@ export interface Commit {
     /** Whether the commit is a revert commit. */
     isRevert: boolean;
 }
-/** A parsed commit which originated from a Git Log entry */
-export interface CommitFromGitLog extends Commit {
-    author: string;
-    hash: string;
-    shortHash: string;
-}
 /**
  * A list of tuples expressing the fields to extract from each commit log entry. The tuple contains
  * two values, the first is the key for the property and the second is the template shortcut for the
@@ -66,8 +60,6 @@ export declare const commitFieldsAsFormat: (fields: CommitFields) => string;
  * `-{key name}-` separated by new lines.
  * */
 export declare const gitLogFormatForParsing: string;
-/** Parse a commit message into its composite parts. */
-export declare const parseCommitMessage: (fullText: string) => Commit;
-/** Parse a commit message from a git log entry into its composite parts. */
-export declare const parseCommitFromGitLog: (fullText: Buffer) => CommitFromGitLog;
+/** Parse a full commit message into its composite parts. */
+export declare function parseCommitMessage(fullText: string | Buffer): Commit;
 export {};

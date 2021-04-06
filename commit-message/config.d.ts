@@ -24,16 +24,11 @@ export declare enum ScopeRequirement {
     Optional = 1,
     Forbidden = 2
 }
-export declare enum ReleaseNotesLevel {
-    Hidden = 0,
-    Visible = 1
-}
 /** A commit type */
 export interface CommitType {
     description: string;
     name: string;
     scope: ScopeRequirement;
-    releaseNotesLevel: ReleaseNotesLevel;
 }
 /** The valid commit types for Angular commit messages. */
 export declare const COMMIT_TYPES: {
