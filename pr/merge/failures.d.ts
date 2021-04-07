@@ -6,6 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/dev-infra-private/pr/merge/failures" />
+import { TargetLabel } from './config';
 /**
  * Class that can be used to describe pull request failures. A failure
  * is described through a human-readable message and a flag indicating
@@ -32,4 +33,6 @@ export declare class PullRequestFailure {
     static unableToFixupCommitMessageSquashOnly(): PullRequestFailure;
     static notFound(): PullRequestFailure;
     static insufficientPermissionsToMerge(message?: string): PullRequestFailure;
+    static hasBreakingChanges(label: TargetLabel): PullRequestFailure;
+    static hasFeatureCommits(label: TargetLabel): PullRequestFailure;
 }
