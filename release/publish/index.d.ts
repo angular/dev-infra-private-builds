@@ -7,7 +7,7 @@
  */
 /// <amd-module name="@angular/dev-infra-private/release/publish" />
 import { GithubConfig } from '../../utils/config';
-import { ReleaseConfig } from '../config';
+import { ReleaseConfig } from '../config/index';
 export declare enum CompletionState {
     SUCCESS = 0,
     FATAL_ERROR = 1,
