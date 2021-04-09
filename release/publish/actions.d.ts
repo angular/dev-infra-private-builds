@@ -8,7 +8,7 @@
 /// <amd-module name="@angular/dev-infra-private/release/publish/actions" />
 import * as semver from 'semver';
 import { GitClient } from '../../utils/git/index';
-import { ReleaseConfig } from '../config';
+import { ReleaseConfig } from '../config/index';
 import { ActiveReleaseTrains } from '../versioning/active-release-trains';
 /** Interface describing a Github repository. */
 export interface GithubRepo {
