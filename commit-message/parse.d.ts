@@ -6,6 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/dev-infra-private/commit-message/parse" />
+/// <reference types="node" />
 import { Commit as ParsedCommit } from 'conventional-commits-parser';
 /** A parsed commit, containing the information needed to validate the commit. */
 export interface Commit {
