@@ -20,8 +20,8 @@ export declare const TEMP_PR_HEAD_BRANCH = "merge_pr_head";
  * merges it into the determined target branches.
  */
 export declare abstract class MergeStrategy {
-    protected git: GitClient;
-    constructor(git: GitClient);
+    protected git: GitClient<true>;
+    constructor(git: GitClient<true>);
     /**
      * Prepares a merge of the given pull request. The strategy by default will
      * fetch all target branches and the pull request into local temporary branches.
