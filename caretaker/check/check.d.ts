@@ -7,4 +7,4 @@
  */
 /// <amd-module name="@angular/dev-infra-private/caretaker/check/check" />
 /** Check the status of services which Angular caretakers need to monitor. */
-export declare function checkServiceStatuses(githubToken: string): Promise<void>;
+export declare function checkServiceStatuses(): Promise<void>;

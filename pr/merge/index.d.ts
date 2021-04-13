@@ -20,4 +20,4 @@ import { PullRequestMergeTaskFlags } from './task';
  * @param projectRoot Path to the local Git project that is used for merging.
  * @param config Configuration for merging pull requests.
  */
-export declare function mergePullRequest(prNumber: number, githubToken: string, flags: PullRequestMergeTaskFlags): Promise<void>;
+export declare function mergePullRequest(prNumber: number, flags: PullRequestMergeTaskFlags): Promise<void>;
