@@ -32,6 +32,22 @@ export interface ReleaseConfig {
     extractReleaseNotesPattern?: (version: semver.SemVer) => RegExp;
     /** The list of github labels to add to the release PRs. */
     releasePrLabels?: string[];
+    /** Configuration for creating release notes during publishing. */
+    releaseNotes?: ReleaseNotesConfig;
+}
+/** Configuration for creating release notes during publishing. */
+export interface ReleaseNotesConfig {
+    /** Whether to prompt for and include a release title in the generated release notes. */
+    useReleaseTitle?: boolean;
+    /** List of commit scopes to disclude from generated release notes. */
+    hiddenScopes?: string[];
+    /**
+     * List of commit groups, either {npmScope}/{scope} or {scope}, to use for ordering.
+     *
+     * Each group for the release notes, will appear in the order provided in groupOrder and any other
+     * groups will appear after these groups, sorted by `Array.sort`'s default sorting order.
+     */
+    groupOrder?: string[];
 }
 /** Configuration for releases in the dev-infra configuration. */
 export declare type DevInfraReleaseConfig = NgDevConfig<{

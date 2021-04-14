@@ -8,6 +8,6 @@
 /// <amd-module name="@angular/dev-infra-private/utils/github" />
 import { GitClient } from './git/index';
 /** Get a PR from github  */
-export declare function getPr<PrSchema>(prSchema: PrSchema, prNumber: number, git: GitClient): Promise<PrSchema>;
+export declare function getPr<PrSchema>(prSchema: PrSchema, prNumber: number, git: GitClient<true>): Promise<PrSchema>;
 /** Get all pending PRs from github  */
-export declare function getPendingPrs<PrSchema>(prSchema: PrSchema, git: GitClient): Promise<PrSchema[]>;
+export declare function getPendingPrs<PrSchema>(prSchema: PrSchema, git: GitClient<true>): Promise<PrSchema[]>;

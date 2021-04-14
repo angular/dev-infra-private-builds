@@ -8,7 +8,8 @@
 /// <amd-module name="@angular/dev-infra-private/commit-message/validate-range/cli" />
 import { CommandModule } from 'yargs';
 export interface ValidateRangeOptions {
-    range: string;
+    startingRef: string;
+    endingRef: string;
 }
-/** yargs command module describing the command.  */
+/** yargs command module describing the command. */
 export declare const ValidateRangeModule: CommandModule<{}, ValidateRangeOptions>;

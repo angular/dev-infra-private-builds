@@ -20,6 +20,6 @@ export declare function convertReferenceChainToGolden(refs: ReferenceChain[], ba
  * added circular dependencies, or fixed circular dependencies.
  */
 export declare function compareGoldens(actual: Golden, expected: Golden): {
-    newCircularDeps: ReferenceChain<string>[];
-    fixedCircularDeps: ReferenceChain<string>[];
+    newCircularDeps: CircularDependency[];
+    fixedCircularDeps: CircularDependency[];
 };

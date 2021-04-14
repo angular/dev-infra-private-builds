@@ -12,5 +12,5 @@ export interface RestoreCommitMessageOptions {
     source?: string;
     fileEnvVariable?: string;
 }
-/** yargs command module describing the command.  */
+/** yargs command module describing the command. */
 export declare const RestoreCommitMessageModule: CommandModule<{}, RestoreCommitMessageOptions>;

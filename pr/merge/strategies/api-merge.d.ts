@@ -30,7 +30,7 @@ export interface GithubApiMergeStrategyConfig {
  */
 export declare class GithubApiMergeStrategy extends MergeStrategy {
     private _config;
-    constructor(git: GitClient, _config: GithubApiMergeStrategyConfig);
+    constructor(git: GitClient<true>, _config: GithubApiMergeStrategyConfig);
     merge(pullRequest: PullRequest): Promise<PullRequestFailure | null>;
     /**
      * Prompts the user for the commit message changes. Unlike as in the autosquash merge

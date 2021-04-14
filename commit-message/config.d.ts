@@ -18,17 +18,22 @@ export interface CommitMessageConfig {
 export declare function getCommitMessageConfig(): Required<Partial<NgDevConfig<{
     commitMessage: CommitMessageConfig;
 }>>>;
-/** Scope requirement level to be set for each commit type.  */
+/** Scope requirement level to be set for each commit type. */
 export declare enum ScopeRequirement {
     Required = 0,
     Optional = 1,
     Forbidden = 2
+}
+export declare enum ReleaseNotesLevel {
+    Hidden = 0,
+    Visible = 1
 }
 /** A commit type */
 export interface CommitType {
     description: string;
     name: string;
     scope: ScopeRequirement;
+    releaseNotesLevel: ReleaseNotesLevel;
 }
 /** The valid commit types for Angular commit messages. */
 export declare const COMMIT_TYPES: {

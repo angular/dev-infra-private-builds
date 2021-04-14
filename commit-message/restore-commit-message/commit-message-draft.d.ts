@@ -1,4 +1,4 @@
-/// <amd-module name="@angular/dev-infra-private/commit-message/commit-message-draft" />
+/// <amd-module name="@angular/dev-infra-private/commit-message/restore-commit-message/commit-message-draft" />
 /** Load the commit message draft from the file system if it exists. */
 export declare function loadCommitMessageDraft(basePath: string): string;
 /** Remove the commit message draft from the file system. */

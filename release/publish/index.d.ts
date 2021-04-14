@@ -7,7 +7,7 @@
  */
 /// <amd-module name="@angular/dev-infra-private/release/publish" />
 import { GithubConfig } from '../../utils/config';
-import { ReleaseConfig } from '../config';
+import { ReleaseConfig } from '../config/index';
 export declare enum CompletionState {
     SUCCESS = 0,
     FATAL_ERROR = 1,
@@ -18,7 +18,7 @@ export declare class ReleaseTool {
     protected _github: GithubConfig;
     protected _githubToken: string;
     protected _projectRoot: string;
-    /** Client for interacting with the Github API and the local Git command. */
+    /** The singleton instance of the GitClient. */
     private _git;
     /** The previous git commit to return back to after the release tool runs. */
     private previousGitBranchOrRevision;
