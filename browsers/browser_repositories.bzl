@@ -19,8 +19,8 @@ Unlike the rules_webtesting browser_repositories, this function defines
 separate repositories for each platform
 """
 
-load("@npm_angular_dev_infra_private//browsers/chromium:chromium.bzl", "define_chromium_repositories")
-load("@npm_angular_dev_infra_private//browsers/firefox:firefox.bzl", "define_firefox_repositories")
+load("@npm//@angular/dev-infra-private/browsers/chromium:chromium.bzl", "define_chromium_repositories")
+load("@npm//@angular/dev-infra-private/browsers/firefox:firefox.bzl", "define_firefox_repositories")
 
 def browser_repositories():
     """Load pinned rules_webtesting browser versions."""

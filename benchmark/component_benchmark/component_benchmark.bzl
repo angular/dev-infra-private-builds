@@ -1,6 +1,7 @@
-load("@npm_angular_dev_infra_private//benchmark/ng_rollup_bundle:ng_rollup_bundle.bzl", "ng_rollup_bundle")
+load("@npm//@angular/dev-infra-private/benchmark/ng_rollup_bundle:ng_rollup_bundle.bzl", "ng_rollup_bundle")
 load("@npm//@angular/bazel:index.bzl", "ng_module")
-load("@npm//@bazel/typescript:index.bzl", "ts_devserver", "ts_library")
+load("@npm//@bazel/typescript:index.bzl", "ts_library")
+load("@npm//@bazel/concatjs:index.bzl", "concatjs_devserver")
 load(":benchmark_test.bzl", "benchmark_test")
 
 def copy_default_file(origin, destination):
@@ -13,7 +14,7 @@ def copy_default_file(origin, destination):
     """
     native.genrule(
         name = "copy_default_" + origin + "_file_genrule",
-        srcs = ["@npm_angular_dev_infra_private//benchmark/component_benchmark/defaults:" + origin],
+        srcs = ["@npm//@angular/dev-infra-private/benchmark/component_benchmark/defaults:" + origin],
         outs = [destination],
         cmd = "cat $(SRCS) >> $@",
     )
@@ -110,10 +111,10 @@ def component_benchmark(
         # Creates ngFactory and ngSummary to be imported by the app's entry point.
         generate_ve_shims = True,
         deps = ng_deps,
-        tsconfig = "@npm_angular_dev_infra_private//benchmark/component_benchmark:tsconfig-e2e.json",
+        tsconfig = "@npm//@angular/dev-infra-private/benchmark/component_benchmark:tsconfig-e2e.json",
     )
 
-    # Bundle the application (needed by ts_devserver).
+    # Bundle the application (needed by concatjs_devserver).
     ng_rollup_bundle(
         name = app_main,
         entry_point = entry_point,
@@ -123,20 +124,20 @@ def component_benchmark(
     # The ts_library for the driver that runs tests against the benchmark app.
     ts_library(
         name = benchmark_driver,
-        tsconfig = "@npm_angular_dev_infra_private//benchmark/component_benchmark:tsconfig-e2e.json",
+        tsconfig = "@npm//@angular/dev-infra-private/benchmark/component_benchmark:tsconfig-e2e.json",
         testonly = True,
         srcs = [driver],
         deps = driver_deps,
     )
 
     # The server for our application.
-    ts_devserver(
+    concatjs_devserver(
         name = server,
-        bootstrap = ["@npm//:node_modules/zone.js/dist/zone.js"],
+        bootstrap = ["@npm//zone.js"],
         port = 4200,
         static_files = assets + styles,
         deps = [":" + app_main + ".min_debug.js"],
-        additional_root_paths = ["@npm_angular_dev_infra_private//benchmark/component_benchmark/defaults"],
+        additional_root_paths = ["@npm//@angular/dev-infra-private/benchmark/component_benchmark/defaults"],
         serving_path = "/app_bundle.js",
     )
 

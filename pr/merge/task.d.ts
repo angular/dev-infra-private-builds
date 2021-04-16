@@ -35,9 +35,9 @@ export interface PullRequestMergeTaskFlags {
  */
 export declare class PullRequestMergeTask {
     config: MergeConfigWithRemote;
-    git: GitClient;
+    git: GitClient<true>;
     private flags;
-    constructor(config: MergeConfigWithRemote, git: GitClient, flags: Partial<PullRequestMergeTaskFlags>);
+    constructor(config: MergeConfigWithRemote, git: GitClient<true>, flags: Partial<PullRequestMergeTaskFlags>);
     /**
      * Merges the given pull request and pushes it upstream.
      * @param prNumber Pull request that should be merged.

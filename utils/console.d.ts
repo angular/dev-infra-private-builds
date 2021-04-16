@@ -7,7 +7,6 @@
  */
 /// <amd-module name="@angular/dev-infra-private/utils/console" />
 import chalk from 'chalk';
-import { ListChoiceOptions } from 'inquirer';
 import { Arguments } from 'yargs';
 /** Reexport of chalk colors for convenient access. */
 export declare const red: typeof chalk;
@@ -17,13 +16,6 @@ export declare const bold: typeof chalk;
 export declare const blue: typeof chalk;
 /** Prompts the user with a confirmation question and a specified message. */
 export declare function promptConfirm(message: string, defaultValue?: boolean): Promise<boolean>;
-/** Prompts the user to select an option from a filterable autocomplete list. */
-export declare function promptAutocomplete(message: string, choices: (string | ListChoiceOptions)[]): Promise<string>;
-/**
- * Prompts the user to select an option from a filterable autocomplete list, with an option to
- * choose no value.
- */
-export declare function promptAutocomplete(message: string, choices: (string | ListChoiceOptions)[], noChoiceText?: string): Promise<string | false>;
 /** Prompts the user for one line of input. */
 export declare function promptInput(message: string): Promise<string>;
 /**

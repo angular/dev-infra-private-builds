@@ -8,7 +8,7 @@
 /// <amd-module name="@angular/dev-infra-private/release/publish/actions" />
 import * as semver from 'semver';
 import { GitClient } from '../../utils/git/index';
-import { ReleaseConfig } from '../config';
+import { ReleaseConfig } from '../config/index';
 import { ActiveReleaseTrains } from '../versioning/active-release-trains';
 /** Interface describing a Github repository. */
 export interface GithubRepo {
@@ -31,7 +31,7 @@ export interface ReleaseActionConstructor<T extends ReleaseAction = ReleaseActio
     /** Whether the release action is currently active. */
     isActive(active: ActiveReleaseTrains): Promise<boolean>;
     /** Constructs a release action. */
-    new (...args: [ActiveReleaseTrains, GitClient, ReleaseConfig, string]): T;
+    new (...args: [ActiveReleaseTrains, GitClient<true>, ReleaseConfig, string]): T;
 }
 /**
  * Abstract base class for a release action. A release action is selectable by the caretaker
@@ -40,7 +40,7 @@ export interface ReleaseActionConstructor<T extends ReleaseAction = ReleaseActio
  */
 export declare abstract class ReleaseAction {
     protected active: ActiveReleaseTrains;
-    protected git: GitClient;
+    protected git: GitClient<true>;
     protected config: ReleaseConfig;
     protected projectDir: string;
     /** Whether the release action is currently active. */
@@ -55,7 +55,7 @@ export declare abstract class ReleaseAction {
     abstract perform(): Promise<void>;
     /** Cached found fork of the configured project. */
     private _cachedForkRepo;
-    constructor(active: ActiveReleaseTrains, git: GitClient, config: ReleaseConfig, projectDir: string);
+    constructor(active: ActiveReleaseTrains, git: GitClient<true>, config: ReleaseConfig, projectDir: string);
     /** Updates the version in the project top-level `package.json` file. */
     protected updateProjectVersion(newVersion: semver.SemVer): Promise<void>;
     /** Gets the most recent commit of a specified branch. */

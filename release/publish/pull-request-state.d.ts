@@ -10,4 +10,4 @@ import { GitClient } from '../../utils/git/index';
 /** State of a pull request in Github. */
 export declare type PullRequestState = 'merged' | 'closed' | 'open';
 /** Gets whether a given pull request has been merged. */
-export declare function getPullRequestState(api: GitClient, id: number): Promise<PullRequestState>;
+export declare function getPullRequestState(api: GitClient<boolean>, id: number): Promise<PullRequestState>;

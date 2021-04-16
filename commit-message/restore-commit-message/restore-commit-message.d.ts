@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/dev-infra-private/commit-message/restore-commit-message/restore-commit-message" />
-import { CommitMsgSource } from '../commit-message-source';
+import { CommitMsgSource } from './commit-message-source';
 /**
  * Restore the commit message draft to the git to be used as the default commit message.
  *
