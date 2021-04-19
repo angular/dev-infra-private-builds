@@ -16,8 +16,6 @@ import { PullRequestMergeTaskFlags } from './task';
  * See {@link GithubApiMergeStrategy} and {@link AutosquashMergeStrategy}
  *
  * @param prNumber Number of the pull request that should be merged.
- * @param githubToken Github token used for merging (i.e. fetching and pushing)
- * @param projectRoot Path to the local Git project that is used for merging.
- * @param config Configuration for merging pull requests.
+ * @param flags Configuration options for merging pull requests.
  */
 export declare function mergePullRequest(prNumber: number, flags: PullRequestMergeTaskFlags): Promise<void>;
