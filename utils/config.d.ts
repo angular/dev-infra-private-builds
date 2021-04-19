@@ -37,13 +37,12 @@ export declare type NgDevConfig<T = {}> = CommonConfig & T;
  * copy if it is defined.
  */
 export declare function getConfig(): NgDevConfig;
+export declare function getConfig(baseDir?: string): NgDevConfig;
 /**
  * Asserts the provided array of error messages is empty. If any errors are in the array,
  * logs the errors and exit the process as a failure.
  */
 export declare function assertNoErrors(errors: string[]): void;
-/** Gets the path of the directory for the repository base. */
-export declare function getRepoBaseDir(): string;
 /**
  * Get the local user configuration from the file system, returning the already loaded copy if it is
  * defined.
