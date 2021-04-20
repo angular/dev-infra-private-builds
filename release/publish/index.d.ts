@@ -16,13 +16,12 @@ export declare enum CompletionState {
 export declare class ReleaseTool {
     protected _config: ReleaseConfig;
     protected _github: GithubConfig;
-    protected _githubToken: string;
     protected _projectRoot: string;
     /** The singleton instance of the GitClient. */
     private _git;
     /** The previous git commit to return back to after the release tool runs. */
     private previousGitBranchOrRevision;
-    constructor(_config: ReleaseConfig, _github: GithubConfig, _githubToken: string, _projectRoot: string);
+    constructor(_config: ReleaseConfig, _github: GithubConfig, _projectRoot: string);
     /** Runs the interactive release tool. */
     run(): Promise<CompletionState>;
     /** Run post release tool cleanups. */
