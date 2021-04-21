@@ -9,6 +9,7 @@
 /// <reference types="node" />
 import { SpawnSyncOptions, SpawnSyncReturns } from 'child_process';
 import { SemVer } from 'semver';
+import { GithubConfig, NgDevConfig } from '../config';
 import { GithubClient } from './github';
 /** Describes a function that can be used to test for given Github OAuth scopes. */
 export declare type OAuthScopeTestFunction = (scopes: string[], missing: string[]) => void;
@@ -28,8 +29,6 @@ export declare class GitCommandError extends Error {
  **/
 export declare class GitClient<Authenticated extends boolean> {
     githubToken: Authenticated extends true ? string : undefined;
-    private _config;
-    private _projectRoot;
     /*************************************************
      * Singleton definition and configuration.       *
      *************************************************/
@@ -49,6 +48,8 @@ export declare class GitClient<Authenticated extends boolean> {
     static getAuthenticatedInstance(): GitClient<true>;
     /** Build the authenticated GitClient instance. */
     static authenticateWithToken(token: string): void;
+    /** The configuration, containing the github specific configuration. */
+    private config;
     /** Whether verbose logging of Git actions should be used. */
     private verboseLogging;
     /** The OAuth scopes available for the provided Github token. */
@@ -59,22 +60,22 @@ export declare class GitClient<Authenticated extends boolean> {
      */
     private _githubTokenRegex;
     /** Short-hand for accessing the default remote configuration. */
-    remoteConfig: import("@angular/dev-infra-private/utils/config").GithubConfig;
+    remoteConfig: GithubConfig;
     /** Octokit request parameters object for targeting the configured remote. */
     remoteParams: {
         owner: string;
         repo: string;
     };
-    /** Instance of the authenticated Github octokit API. */
+    /** Instance of the Github octokit API. */
     github: GithubClient;
+    /** The full path to the root of the repository base. */
+    baseDir: string;
     /**
      * @param githubToken The github token used for authentication, if provided.
      * @param _config The configuration, containing the github specific configuration.
-     * @param _projectRoot The full path to the root of the repository base.
+     * @param baseDir The full path to the root of the repository base.
      */
-    protected constructor(githubToken: Authenticated extends true ? string : undefined, _config?: {
-        github: import("@angular/dev-infra-private/utils/config").GithubConfig;
-    }, _projectRoot?: string);
+    protected constructor(githubToken: Authenticated extends true ? string : undefined, config?: NgDevConfig, baseDir?: string);
     /** Set the verbose logging state of the GitClient instance. */
     setVerboseLoggingState(verbose: boolean): this;
     /** Executes the given git command. Throws if the command fails. */
@@ -105,6 +106,14 @@ export declare class GitClient<Authenticated extends boolean> {
     checkout(branchOrRevision: string, cleanState: boolean): boolean;
     /** Gets the latest git tag on the current branch that matches SemVer. */
     getLatestSemverTag(): SemVer;
+    /** Gets the path of the directory for the repository base. */
+    getBaseDir(): string;
+    /** Retrieve a list of all files in the repostitory changed since the provided shaOrRef. */
+    allChangesFilesSince(shaOrRef?: string): string[];
+    /** Retrieve a list of all files currently staged in the repostitory. */
+    allStagedFiles(): string[];
+    /** Retrieve a list of all files tracked in the repostitory. */
+    allFiles(): string[];
     /**
      * Assert the GitClient instance is using a token with permissions for the all of the
      * provided OAuth scopes.
@@ -116,4 +125,5 @@ export declare class GitClient<Authenticated extends boolean> {
      * Retrieve the OAuth scopes for the loaded Github token.
      **/
     private getAuthScopesForToken;
+    private determineBaseDir;
 }
