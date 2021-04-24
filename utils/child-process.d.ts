@@ -17,13 +17,15 @@ export interface SpawnedProcessOptions extends Omit<SpawnOptions, 'stdio'> {
 export interface SpawnedProcessResult {
     /** Captured stdout in string format. */
     stdout: string;
+    /** Captured stderr in string format. */
+    stderr: string;
 }
 /**
  * Spawns a given command with the specified arguments inside a shell. All process stdout
  * output is captured and returned as resolution on completion. Depending on the chosen
  * output mode, stdout/stderr output is also printed to the console, or only on error.
  *
- * @returns a Promise resolving with captured stdout on success. The promise
+ * @returns a Promise resolving with captured stdout and stderr on success. The promise
  *   rejects on command failure.
  */
 export declare function spawnWithDebugOutput(command: string, args: string[], options?: SpawnedProcessOptions): Promise<SpawnedProcessResult>;
