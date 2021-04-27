@@ -34,6 +34,14 @@ export declare class ReleaseTool {
      */
     private _verifyNoUncommittedChanges;
     /**
+     * Verifies the current environment contains /usr/bin/python which points to the Python3
+     * interpreter.  python is required by our tooling in bazel as it contains scripts setting
+     * `#! /usr/bin/env python`.
+     *
+     * @returns a boolean indicating success or failure.
+     */
+    private _verifyEnvironmentHasPython3Symlink;
+    /**
      * Verifies that the next branch from the configured repository is checked out.
      * @returns a boolean indicating success or failure.
      */
