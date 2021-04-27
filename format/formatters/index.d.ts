@@ -8,8 +8,9 @@
 /// <amd-module name="@angular/dev-infra-private/format/formatters/index" />
 import { Buildifier } from './buildifier';
 import { ClangFormat } from './clang-format';
+import { Prettier } from './prettier';
 /**
  * Get all defined formatters which are active based on the current loaded config.
  */
-export declare function getActiveFormatters(): (Buildifier | ClangFormat)[];
+export declare function getActiveFormatters(): (Buildifier | ClangFormat | Prettier)[];
 export { Formatter, FormatterAction } from './base-formatter';
