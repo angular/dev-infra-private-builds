@@ -18,7 +18,7 @@ interface FormatterActionMetadata {
  * The base class for formatters to run against provided files.
  */
 export declare abstract class Formatter {
-    private config;
+    protected config: FormatConfig;
     protected git: GitClient<false>;
     /**
      * The name of the formatter, this is used for identification in logging and for enabling and
