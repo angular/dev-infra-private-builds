@@ -15,7 +15,7 @@ export declare class Prettier extends Formatter {
     binaryFilePath: string;
     defaultFileMatcher: string[];
     /**
-     * The configuration path of the pretter config, obtained during construction to prevent needing
+     * The configuration path of the prettier config, obtained during construction to prevent needing
      * to discover it repeatedly for each execution.
      */
     private configPath;
