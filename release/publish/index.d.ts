@@ -16,13 +16,12 @@ export declare enum CompletionState {
 export declare class ReleaseTool {
     protected _config: ReleaseConfig;
     protected _github: GithubConfig;
-    protected _githubToken: string;
     protected _projectRoot: string;
     /** The singleton instance of the GitClient. */
     private _git;
     /** The previous git commit to return back to after the release tool runs. */
     private previousGitBranchOrRevision;
-    constructor(_config: ReleaseConfig, _github: GithubConfig, _githubToken: string, _projectRoot: string);
+    constructor(_config: ReleaseConfig, _github: GithubConfig, _projectRoot: string);
     /** Runs the interactive release tool. */
     run(): Promise<CompletionState>;
     /** Run post release tool cleanups. */
@@ -34,6 +33,14 @@ export declare class ReleaseTool {
      * @returns a boolean indicating success or failure.
      */
     private _verifyNoUncommittedChanges;
+    /**
+     * Verifies the current environment contains /usr/bin/python which points to the Python3
+     * interpreter.  python is required by our tooling in bazel as it contains scripts setting
+     * `#! /usr/bin/env python`.
+     *
+     * @returns a boolean indicating success or failure.
+     */
+    private _verifyEnvironmentHasPython3Symlink;
     /**
      * Verifies that the next branch from the configured repository is checked out.
      * @returns a boolean indicating success or failure.
