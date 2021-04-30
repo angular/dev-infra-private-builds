@@ -106,6 +106,8 @@ export declare class GitClient<Authenticated extends boolean> {
     checkout(branchOrRevision: string, cleanState: boolean): boolean;
     /** Gets the latest git tag on the current branch that matches SemVer. */
     getLatestSemverTag(): SemVer;
+    /** Gets the path of the directory for the repository base. */
+    getBaseDir(): string;
     /** Retrieve a list of all files in the repostitory changed since the provided shaOrRef. */
     allChangesFilesSince(shaOrRef?: string): string[];
     /** Retrieve a list of all files currently staged in the repostitory. */
