@@ -21,13 +21,6 @@ export interface SpawnedProcessResult {
     stderr: string;
 }
 /**
- * Spawns a given command with the specified arguments inside an interactive shell. All process
- * stdin, stdout and stderr output is printed to the current console.
- *
- * @returns a Promise resolving on success, and rejecting on command failure with the status code.
- */
-export declare function spawnInteractiveCommand(command: string, args: string[], options?: Omit<SpawnOptions, 'stdio'>): Promise<void>;
-/**
  * Spawns a given command with the specified arguments inside a shell. All process stdout
  * output is captured and returned as resolution on completion. Depending on the chosen
  * output mode, stdout/stderr output is also printed to the console, or only on error.

@@ -24,7 +24,7 @@ export declare function setNpmTagForPackage(packageName: string, distTag: string
 export declare function npmIsLoggedIn(registryUrl: string | undefined): Promise<boolean>;
 /**
  * Log into NPM at a provided registry.
- * @throws With the `npm login` status code if the login failed.
+ * @throws With the process log output if the login fails.
  */
 export declare function npmLogin(registryUrl: string | undefined): Promise<void>;
 /**
