@@ -34,10 +34,8 @@ export declare class ReleaseTool {
      */
     private _verifyNoUncommittedChanges;
     /**
-     * Verifies the current environment contains /usr/bin/python which points to the Python3
-     * interpreter.  python is required by our tooling in bazel as it contains scripts setting
-     * `#! /usr/bin/env python`.
-     *
+     * Verifies that Python can be resolved within scripts and points to a compatible version. Python
+     * is required in Bazel actions as there can be tools (such as `skydoc`) that rely on it.
      * @returns a boolean indicating success or failure.
      */
     private _verifyEnvironmentHasPython3Symlink;
