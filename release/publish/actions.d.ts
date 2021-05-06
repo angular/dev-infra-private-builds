@@ -10,7 +10,6 @@ import * as semver from 'semver';
 import { GitClient } from '../../utils/git/index';
 import { ReleaseConfig } from '../config/index';
 import { ActiveReleaseTrains } from '../versioning/active-release-trains';
-import { ReleaseNotes } from './release-notes/release-notes';
 /** Interface describing a Github repository. */
 export interface GithubRepo {
     owner: string;
@@ -63,6 +62,10 @@ export declare abstract class ReleaseAction {
     private _getCommitOfBranch;
     /** Verifies that the latest commit for the given branch is passing all statuses. */
     protected verifyPassingGithubStatus(branchName: string): Promise<void>;
+    /** Generates the changelog for the specified for the current `HEAD`. */
+    private _generateReleaseNotesForHead;
+    /** Extract the release notes for the given version from the changelog file. */
+    private _extractReleaseNotesForVersion;
     /**
      * Prompts the user for potential release notes edits that need to be made. Once
      * confirmed, a new commit for the release point is created.
@@ -113,7 +116,7 @@ export declare abstract class ReleaseAction {
      * the current Git `HEAD`. This is useful for cherry-picking the changelog.
      * @returns A boolean indicating whether the release notes have been prepended.
      */
-    protected prependReleaseNotesToChangelog(releaseNotes: ReleaseNotes): Promise<void>;
+    protected prependReleaseNotesFromVersionBranch(version: semver.SemVer, containingBranch: string): Promise<boolean>;
     /** Checks out an upstream branch with a detached head. */
     protected checkoutUpstreamBranch(branchName: string): Promise<void>;
     /**
@@ -123,29 +126,29 @@ export declare abstract class ReleaseAction {
      */
     protected createCommit(message: string, files: string[]): Promise<void>;
     /**
+     * Creates a cherry-pick commit for the release notes of the specified version that
+     * has been pushed to the given branch.
+     * @returns a boolean indicating whether the commit has been created successfully.
+     */
+    protected createCherryPickReleaseNotesCommitFrom(version: semver.SemVer, branchName: string): Promise<boolean>;
+    /**
      * Stages the specified new version for the current branch and creates a
      * pull request that targets the given base branch.
      * @returns an object describing the created pull request.
      */
-    protected stageVersionForBranchAndCreatePullRequest(newVersion: semver.SemVer, pullRequestBaseBranch: string): Promise<{
-        releaseNotes: ReleaseNotes;
-        pullRequest: PullRequest;
-    }>;
+    protected stageVersionForBranchAndCreatePullRequest(newVersion: semver.SemVer, pullRequestBaseBranch: string): Promise<PullRequest>;
     /**
      * Checks out the specified target branch, verifies its CI status and stages
      * the specified new version in order to create a pull request.
      * @returns an object describing the created pull request.
      */
-    protected checkoutBranchAndStageVersion(newVersion: semver.SemVer, stagingBranch: string): Promise<{
-        releaseNotes: ReleaseNotes;
-        pullRequest: PullRequest;
-    }>;
+    protected checkoutBranchAndStageVersion(newVersion: semver.SemVer, stagingBranch: string): Promise<PullRequest>;
     /**
      * Cherry-picks the release notes of a version that have been pushed to a given branch
      * into the `next` primary development branch. A pull request is created for this.
      * @returns a boolean indicating successful creation of the cherry-pick pull request.
      */
-    protected cherryPickChangelogIntoNextBranch(releaseNotes: ReleaseNotes, stagingBranch: string): Promise<boolean>;
+    protected cherryPickChangelogIntoNextBranch(newVersion: semver.SemVer, stagingBranch: string): Promise<boolean>;
     /**
      * Creates a Github release for the specified version in the configured project.
      * The release is created by tagging the specified commit SHA.

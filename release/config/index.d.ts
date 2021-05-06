@@ -6,6 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/dev-infra-private/release/config" />
+import * as semver from 'semver';
 import { NgDevConfig } from '../../utils/config';
 /** Interface describing a built package. */
 export interface BuiltPackage {
@@ -22,10 +23,17 @@ export interface ReleaseConfig {
     npmPackages: string[];
     /** Builds release packages and returns a list of paths pointing to the output. */
     buildPackages: () => Promise<BuiltPackage[] | null>;
+    /** Generates the release notes from the most recent tag to `HEAD`. */
+    generateReleaseNotesForHead: (outputPath: string) => Promise<void>;
+    /**
+     * Gets a pattern for extracting the release notes of the a given version.
+     * @returns A pattern matching the notes for a given version (including the header).
+     */
+    extractReleaseNotesPattern?: (version: semver.SemVer) => RegExp;
     /** The list of github labels to add to the release PRs. */
     releasePrLabels?: string[];
     /** Configuration for creating release notes during publishing. */
-    releaseNotes: ReleaseNotesConfig;
+    releaseNotes?: ReleaseNotesConfig;
 }
 /** Configuration for creating release notes during publishing. */
 export interface ReleaseNotesConfig {

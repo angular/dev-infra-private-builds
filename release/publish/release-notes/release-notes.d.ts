@@ -1,23 +1,28 @@
 /// <amd-module name="@angular/dev-infra-private/release/publish/release-notes/release-notes" />
 import * as semver from 'semver';
-import { ReleaseConfig } from '../../config/index';
+/**
+ * Gets the default pattern for extracting release notes for the given version.
+ * This pattern matches for the conventional-changelog Angular preset.
+ */
+export declare function getDefaultExtractReleaseNotesPattern(version: semver.SemVer): RegExp;
 /** Gets the path for the changelog file in a given project. */
 export declare function getLocalChangelogFilePath(projectDir: string): string;
 /** Release note generation. */
 export declare class ReleaseNotes {
-    readonly version: semver.SemVer;
-    private config;
-    /** Construct a release note generation instance. */
-    static fromLatestTagToHead(version: semver.SemVer, config: ReleaseConfig): Promise<ReleaseNotes>;
+    private version;
     /** An instance of GitClient. */
     private git;
+    /** The github configuration. */
+    private readonly github;
+    /** The configuration for the release notes generation. */
+    private readonly config;
+    /** A promise resolving to a list of Commits since the latest semver tag on the branch. */
+    private commits;
     /** The RenderContext to be used during rendering. */
     private renderContext;
     /** The title to use for the release. */
     private title;
-    /** A promise resolving to a list of Commits since the latest semver tag on the branch. */
-    private commits;
-    private constructor();
+    constructor(version: semver.SemVer);
     /** Retrieve the release note generated for a Github Release. */
     getGithubReleaseEntry(): Promise<string>;
     /** Retrieve the release note generated for a CHANGELOG entry. */
