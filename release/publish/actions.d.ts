@@ -157,7 +157,7 @@ export declare abstract class ReleaseAction {
      * @param publishBranch Name of the branch that contains the new version.
      * @param npmDistTag NPM dist tag where the version should be published to.
      */
-    protected buildAndPublish(newVersion: semver.SemVer, publishBranch: string, npmDistTag: string): Promise<void>;
+    protected buildAndPublish(releaseNotes: ReleaseNotes, publishBranch: string, npmDistTag: string): Promise<void>;
     /** Publishes the given built package to NPM with the specified NPM dist tag. */
     private _publishBuiltPackageToNpm;
     /** Checks whether the given commit represents a staging commit for the specified version. */
