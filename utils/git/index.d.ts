@@ -18,6 +18,10 @@ export declare class GitCommandError extends Error {
     args: string[];
     constructor(client: GitClient<boolean>, args: string[]);
 }
+/** The options available for `GitClient`'s `run` and `runGraceful` methods. */
+declare type GitClientRunOptions = SpawnSyncOptions & {
+    verboseLogging?: boolean;
+};
 /**
  * Common client for performing Git interactions with a given remote.
  *
@@ -48,10 +52,12 @@ export declare class GitClient<Authenticated extends boolean> {
     static getAuthenticatedInstance(): GitClient<true>;
     /** Build the authenticated GitClient instance. */
     static authenticateWithToken(token: string): void;
+    /** Set the verbose logging state of the GitClient class. */
+    static setVerboseLoggingState(verbose: boolean): void;
+    /** Whether verbose logging of Git actions should be used. */
+    private static verboseLogging;
     /** The configuration, containing the github specific configuration. */
     private config;
-    /** Whether verbose logging of Git actions should be used. */
-    private verboseLogging;
     /** The OAuth scopes available for the provided Github token. */
     private _cachedOauthScopes;
     /**
@@ -76,16 +82,14 @@ export declare class GitClient<Authenticated extends boolean> {
      * @param baseDir The full path to the root of the repository base.
      */
     protected constructor(githubToken: Authenticated extends true ? string : undefined, config?: NgDevConfig, baseDir?: string);
-    /** Set the verbose logging state of the GitClient instance. */
-    setVerboseLoggingState(verbose: boolean): this;
     /** Executes the given git command. Throws if the command fails. */
-    run(args: string[], options?: SpawnSyncOptions): Omit<SpawnSyncReturns<string>, 'status'>;
+    run(args: string[], options?: GitClientRunOptions): Omit<SpawnSyncReturns<string>, 'status'>;
     /**
      * Spawns a given Git command process. Does not throw if the command fails. Additionally,
      * if there is any stderr output, the output will be printed. This makes it easier to
      * info failed commands.
      */
-    runGraceful(args: string[], options?: SpawnSyncOptions): SpawnSyncReturns<string>;
+    runGraceful(args: string[], options?: GitClientRunOptions): SpawnSyncReturns<string>;
     /** Git URL that resolves to the configured repository. */
     getRepoGitUrl(): string;
     /** Whether the given branch contains the specified SHA. */
@@ -125,3 +129,4 @@ export declare class GitClient<Authenticated extends boolean> {
     private getAuthScopesForToken;
     private determineBaseDir;
 }
+export {};
