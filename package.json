@@ -19,7 +19,7 @@
     "conventional-commits-parser": "^3.2.1",
     "ejs": "^3.1.6",
     "git-raw-commits": "^2.0.10",
-    "glob": "7.1.6",
+    "glob": "7.1.7",
     "inquirer": "^8.0.0",
     "minimatch": "^3.0.4",
     "multimatch": "^5.0.0",
