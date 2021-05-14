@@ -23,8 +23,3 @@ export declare function invokeReleaseBuildCommand(): Promise<BuiltPackage[]>;
  * the configured project with the currently checked out revision.
  */
 export declare function invokeYarnInstallCommand(projectDir: string): Promise<void>;
-/**
- * Invokes the `yarn bazel clean` command in order to clean the output tree and ensure new artifacts
- * are created for builds.
- */
-export declare function invokeBazelCleanCommand(projectDir: string): Promise<void>;
