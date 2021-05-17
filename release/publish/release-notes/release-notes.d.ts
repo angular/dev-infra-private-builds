@@ -1,14 +1,15 @@
 /// <amd-module name="@angular/dev-infra-private/release/publish/release-notes/release-notes" />
 import * as semver from 'semver';
-import { ReleaseConfig } from '../../config/index';
+import { CommitFromGitLog } from '../../../commit-message/parse';
+import { DevInfraReleaseConfig } from '../../config/index';
 /** Gets the path for the changelog file in a given project. */
 export declare function getLocalChangelogFilePath(projectDir: string): string;
 /** Release note generation. */
 export declare class ReleaseNotes {
-    readonly version: semver.SemVer;
-    private config;
-    /** Construct a release note generation instance. */
-    static fromLatestTagToHead(version: semver.SemVer, config: ReleaseConfig): Promise<ReleaseNotes>;
+    version: semver.SemVer;
+    private startingRef;
+    private endingRef;
+    static fromRange(version: semver.SemVer, startingRef: string, endingRef: string): Promise<ReleaseNotes>;
     /** An instance of GitClient. */
     private git;
     /** The RenderContext to be used during rendering. */
@@ -17,7 +18,9 @@ export declare class ReleaseNotes {
     private title;
     /** A promise resolving to a list of Commits since the latest semver tag on the branch. */
     private commits;
-    private constructor();
+    /** The configuration for release notes. */
+    private config;
+    protected constructor(version: semver.SemVer, startingRef: string, endingRef: string);
     /** Retrieve the release note generated for a Github Release. */
     getGithubReleaseEntry(): Promise<string>;
     /** Retrieve the release note generated for a CHANGELOG entry. */
@@ -29,4 +32,6 @@ export declare class ReleaseNotes {
     promptForReleaseTitle(): Promise<string | false>;
     /** Build the render context data object for constructing the RenderContext instance. */
     private generateRenderContext;
+    protected getCommitsInRange(from: string, to?: string): Promise<CommitFromGitLog[]>;
+    protected getReleaseConfig(config?: Partial<DevInfraReleaseConfig>): import("@angular/dev-infra-private/release/config").ReleaseConfig;
 }
