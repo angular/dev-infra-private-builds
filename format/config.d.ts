@@ -11,7 +11,7 @@ interface Formatter {
     matchers: string[];
 }
 export interface FormatConfig {
-    [keyof: string]: boolean | Formatter;
+    [key: string]: boolean | Formatter;
 }
 /** Retrieve and validate the config as `FormatConfig`. */
 export declare function getFormatConfig(): Required<Partial<NgDevConfig<{
