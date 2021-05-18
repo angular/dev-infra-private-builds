@@ -1,0 +1,68 @@
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+import { __awaiter } from "tslib";
+import * as semver from 'semver';
+import { fetchProjectNpmPackageInfo } from './npm-registry';
+/**
+ * Number of months a major version in Angular is actively supported. See:
+ * https://angular.io/guide/releases#support-policy-and-schedule.
+ */
+const majorActiveSupportDuration = 6;
+/**
+ * Number of months a major version has active long-term support. See:
+ * https://angular.io/guide/releases#support-policy-and-schedule.
+ */
+const majorLongTermSupportDuration = 12;
+/** Regular expression that matches LTS NPM dist tags. */
+const ltsNpmDistTagRegex = /^v(\d+)-lts$/;
+/** Finds all long-term support release trains from the specified NPM package. */
+export function fetchLongTermSupportBranchesFromNpm(config) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { 'dist-tags': distTags, time } = yield fetchProjectNpmPackageInfo(config);
+        const today = new Date();
+        const active = [];
+        const inactive = [];
+        // Iterate through the NPM package information and determine active/inactive LTS versions with
+        // their corresponding branches. We assume that an LTS tagged version in NPM belongs to the
+        // last-minor branch of a given major (i.e. we assume there are no outdated LTS NPM dist tags).
+        for (const npmDistTag in distTags) {
+            if (ltsNpmDistTagRegex.test(npmDistTag)) {
+                const version = semver.parse(distTags[npmDistTag]);
+                const branchName = `${version.major}.${version.minor}.x`;
+                const majorReleaseDate = new Date(time[`${version.major}.0.0`]);
+                const ltsEndDate = computeLtsEndDateOfMajor(majorReleaseDate);
+                const ltsBranch = { name: branchName, version, npmDistTag };
+                // Depending on whether the LTS phase is still active, add the branch
+                // to the list of active or inactive LTS branches.
+                if (today <= ltsEndDate) {
+                    active.push(ltsBranch);
+                }
+                else {
+                    inactive.push(ltsBranch);
+                }
+            }
+        }
+        // Sort LTS branches in descending order. i.e. most recent ones first.
+        active.sort((a, b) => semver.rcompare(a.version, b.version));
+        inactive.sort((a, b) => semver.rcompare(a.version, b.version));
+        return { active, inactive };
+    });
+}
+/**
+ * Computes the date when long-term support ends for a major released at the
+ * specified date.
+ */
+export function computeLtsEndDateOfMajor(majorReleaseDate) {
+    return new Date(majorReleaseDate.getFullYear(), majorReleaseDate.getMonth() + majorActiveSupportDuration + majorLongTermSupportDuration, majorReleaseDate.getDate(), majorReleaseDate.getHours(), majorReleaseDate.getMinutes(), majorReleaseDate.getSeconds(), majorReleaseDate.getMilliseconds());
+}
+/** Gets the long-term support NPM dist tag for a given major version. */
+export function getLtsNpmDistTagOfMajor(major) {
+    // LTS versions should be tagged in NPM in the following format: `v{major}-lts`.
+    return `v${major}-lts`;
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoibG9uZy10ZXJtLXN1cHBvcnQuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi8uLi8uLi8uLi8uLi8uLi9kZXYtaW5mcmEvcmVsZWFzZS92ZXJzaW9uaW5nL2xvbmctdGVybS1zdXBwb3J0LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOzs7Ozs7R0FNRzs7QUFFSCxPQUFPLEtBQUssTUFBTSxNQUFNLFFBQVEsQ0FBQztBQUlqQyxPQUFPLEVBQUMsMEJBQTBCLEVBQUMsTUFBTSxnQkFBZ0IsQ0FBQztBQW9CMUQ7OztHQUdHO0FBQ0gsTUFBTSwwQkFBMEIsR0FBRyxDQUFDLENBQUM7QUFFckM7OztHQUdHO0FBQ0gsTUFBTSw0QkFBNEIsR0FBRyxFQUFFLENBQUM7QUFFeEMseURBQXlEO0FBQ3pELE1BQU0sa0JBQWtCLEdBQUcsY0FBYyxDQUFDO0FBRTFDLGlGQUFpRjtBQUNqRixNQUFNLFVBQWdCLG1DQUFtQyxDQUFDLE1BQXFCOztRQUU3RSxNQUFNLEVBQUMsV0FBVyxFQUFFLFFBQVEsRUFBRSxJQUFJLEVBQUMsR0FBRyxNQUFNLDBCQUEwQixDQUFDLE1BQU0sQ0FBQyxDQUFDO1FBQy9FLE1BQU0sS0FBSyxHQUFHLElBQUksSUFBSSxFQUFFLENBQUM7UUFDekIsTUFBTSxNQUFNLEdBQWdCLEVBQUUsQ0FBQztRQUMvQixNQUFNLFFBQVEsR0FBZ0IsRUFBRSxDQUFDO1FBRWpDLDhGQUE4RjtRQUM5RiwyRkFBMkY7UUFDM0YsK0ZBQStGO1FBQy9GLEtBQUssTUFBTSxVQUFVLElBQUksUUFBUSxFQUFFO1lBQ2pDLElBQUksa0JBQWtCLENBQUMsSUFBSSxDQUFDLFVBQVUsQ0FBQyxFQUFFO2dCQUN2QyxNQUFNLE9BQU8sR0FBRyxNQUFNLENBQUMsS0FBSyxDQUFDLFFBQVEsQ0FBQyxVQUFVLENBQUMsQ0FBRSxDQUFDO2dCQUNwRCxNQUFNLFVBQVUsR0FBRyxHQUFHLE9BQU8sQ0FBQyxLQUFLLElBQUksT0FBTyxDQUFDLEtBQUssSUFBSSxDQUFDO2dCQUN6RCxNQUFNLGdCQUFnQixHQUFHLElBQUksSUFBSSxDQUFDLElBQUksQ0FBQyxHQUFHLE9BQU8sQ0FBQyxLQUFLLE1BQU0sQ0FBQyxDQUFDLENBQUM7Z0JBQ2hFLE1BQU0sVUFBVSxHQUFHLHdCQUF3QixDQUFDLGdCQUFnQixDQUFDLENBQUM7Z0JBQzlELE1BQU0sU0FBUyxHQUFjLEVBQUMsSUFBSSxFQUFFLFVBQVUsRUFBRSxPQUFPLEVBQUUsVUFBVSxFQUFDLENBQUM7Z0JBQ3JFLHFFQUFxRTtnQkFDckUsa0RBQWtEO2dCQUNsRCxJQUFJLEtBQUssSUFBSSxVQUFVLEVBQUU7b0JBQ3ZCLE1BQU0sQ0FBQyxJQUFJLENBQUMsU0FBUyxDQUFDLENBQUM7aUJBQ3hCO3FCQUFNO29CQUNMLFFBQVEsQ0FBQyxJQUFJLENBQUMsU0FBUyxDQUFDLENBQUM7aUJBQzFCO2FBQ0Y7U0FDRjtRQUVELHNFQUFzRTtRQUN0RSxNQUFNLENBQUMsSUFBSSxDQUFDLENBQUMsQ0FBQyxFQUFFLENBQUMsRUFBRSxFQUFFLENBQUMsTUFBTSxDQUFDLFFBQVEsQ0FBQyxDQUFDLENBQUMsT0FBTyxFQUFFLENBQUMsQ0FBQyxPQUFPLENBQUMsQ0FBQyxDQUFDO1FBQzdELFFBQVEsQ0FBQyxJQUFJLENBQUMsQ0FBQyxDQUFDLEVBQUUsQ0FBQyxFQUFFLEVBQUUsQ0FBQyxNQUFNLENBQUMsUUFBUSxDQUFDLENBQUMsQ0FBQyxPQUFPLEVBQUUsQ0FBQyxDQUFDLE9BQU8sQ0FBQyxDQUFDLENBQUM7UUFFL0QsT0FBTyxFQUFDLE1BQU0sRUFBRSxRQUFRLEVBQUMsQ0FBQztJQUM1QixDQUFDO0NBQUE7QUFFRDs7O0dBR0c7QUFDSCxNQUFNLFVBQVUsd0JBQXdCLENBQUMsZ0JBQXNCO0lBQzdELE9BQU8sSUFBSSxJQUFJLENBQ1gsZ0JBQWdCLENBQUMsV0FBVyxFQUFFLEVBQzlCLGdCQUFnQixDQUFDLFFBQVEsRUFBRSxHQUFHLDBCQUEwQixHQUFHLDRCQUE0QixFQUN2RixnQkFBZ0IsQ0FBQyxPQUFPLEVBQUUsRUFBRSxnQkFBZ0IsQ0FBQyxRQUFRLEVBQUUsRUFBRSxnQkFBZ0IsQ0FBQyxVQUFVLEVBQUUsRUFDdEYsZ0JBQWdCLENBQUMsVUFBVSxFQUFFLEVBQUUsZ0JBQWdCLENBQUMsZUFBZSxFQUFFLENBQUMsQ0FBQztBQUN6RSxDQUFDO0FBRUQseUVBQXlFO0FBQ3pFLE1BQU0sVUFBVSx1QkFBdUIsQ0FBQyxLQUFhO0lBQ25ELGdGQUFnRjtJQUNoRixPQUFPLElBQUksS0FBSyxNQUFNLENBQUM7QUFDekIsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogQGxpY2Vuc2VcbiAqIENvcHlyaWdodCBHb29nbGUgTExDIEFsbCBSaWdodHMgUmVzZXJ2ZWQuXG4gKlxuICogVXNlIG9mIHRoaXMgc291cmNlIGNvZGUgaXMgZ292ZXJuZWQgYnkgYW4gTUlULXN0eWxlIGxpY2Vuc2UgdGhhdCBjYW4gYmVcbiAqIGZvdW5kIGluIHRoZSBMSUNFTlNFIGZpbGUgYXQgaHR0cHM6Ly9hbmd1bGFyLmlvL2xpY2Vuc2VcbiAqL1xuXG5pbXBvcnQgKiBhcyBzZW12ZXIgZnJvbSAnc2VtdmVyJztcblxuaW1wb3J0IHtSZWxlYXNlQ29uZmlnfSBmcm9tICcuLi9jb25maWcvaW5kZXgnO1xuXG5pbXBvcnQge2ZldGNoUHJvamVjdE5wbVBhY2thZ2VJbmZvfSBmcm9tICcuL25wbS1yZWdpc3RyeSc7XG5cbi8qKiBJbnRlcmZhY2UgZGVzY3JpYmluZyBkZXRlcm1pbmVkIExUUyBicmFuY2hlcy4gKi9cbmV4cG9ydCBpbnRlcmZhY2UgTHRzQnJhbmNoZXMge1xuICAvKiogTGlzdCBvZiBhY3RpdmUgTFRTIHZlcnNpb24gYnJhbmNoZXMuICovXG4gIGFjdGl2ZTogTHRzQnJhbmNoW107XG4gIC8qKiBMaXN0IG9mIGluYWN0aXZlIExUUyB2ZXJzaW9uIGJyYW5jaGVzLiAqL1xuICBpbmFjdGl2ZTogTHRzQnJhbmNoW107XG59XG5cbi8qKiBJbnRlcmZhY2UgZGVzY3JpYmluZyBhbiBMVFMgdmVyc2lvbiBicmFuY2guICovXG5leHBvcnQgaW50ZXJmYWNlIEx0c0JyYW5jaCB7XG4gIC8qKiBOYW1lIG9mIHRoZSBicmFuY2guICovXG4gIG5hbWU6IHN0cmluZztcbiAgLyoqIE1vc3QgcmVjZW50IHZlcnNpb24gZm9yIHRoZSBnaXZlbiBMVFMgYnJhbmNoLiAqL1xuICB2ZXJzaW9uOiBzZW12ZXIuU2VtVmVyO1xuICAvKiogTlBNIGRpc3QgdGFnIGZvciB0aGUgTFRTIHZlcnNpb24uICovXG4gIG5wbURpc3RUYWc6IHN0cmluZztcbn1cblxuLyoqXG4gKiBOdW1iZXIgb2YgbW9udGhzIGEgbWFqb3IgdmVyc2lvbiBpbiBBbmd1bGFyIGlzIGFjdGl2ZWx5IHN1cHBvcnRlZC4gU2VlOlxuICogaHR0cHM6Ly9hbmd1bGFyLmlvL2d1aWRlL3JlbGVhc2VzI3N1cHBvcnQtcG9saWN5LWFuZC1zY2hlZHVsZS5cbiAqL1xuY29uc3QgbWFqb3JBY3RpdmVTdXBwb3J0RHVyYXRpb24gPSA2O1xuXG4vKipcbiAqIE51bWJlciBvZiBtb250aHMgYSBtYWpvciB2ZXJzaW9uIGhhcyBhY3RpdmUgbG9uZy10ZXJtIHN1cHBvcnQuIFNlZTpcbiAqIGh0dHBzOi8vYW5ndWxhci5pby9ndWlkZS9yZWxlYXNlcyNzdXBwb3J0LXBvbGljeS1hbmQtc2NoZWR1bGUuXG4gKi9cbmNvbnN0IG1ham9yTG9uZ1Rlcm1TdXBwb3J0RHVyYXRpb24gPSAxMjtcblxuLyoqIFJlZ3VsYXIgZXhwcmVzc2lvbiB0aGF0IG1hdGNoZXMgTFRTIE5QTSBkaXN0IHRhZ3MuICovXG5jb25zdCBsdHNOcG1EaXN0VGFnUmVnZXggPSAvXnYoXFxkKyktbHRzJC87XG5cbi8qKiBGaW5kcyBhbGwgbG9uZy10ZXJtIHN1cHBvcnQgcmVsZWFzZSB0cmFpbnMgZnJvbSB0aGUgc3BlY2lmaWVkIE5QTSBwYWNrYWdlLiAqL1xuZXhwb3J0IGFzeW5jIGZ1bmN0aW9uIGZldGNoTG9uZ1Rlcm1TdXBwb3J0QnJhbmNoZXNGcm9tTnBtKGNvbmZpZzogUmVsZWFzZUNvbmZpZyk6XG4gICAgUHJvbWlzZTxMdHNCcmFuY2hlcz4ge1xuICBjb25zdCB7J2Rpc3QtdGFncyc6IGRpc3RUYWdzLCB0aW1lfSA9IGF3YWl0IGZldGNoUHJvamVjdE5wbVBhY2thZ2VJbmZvKGNvbmZpZyk7XG4gIGNvbnN0IHRvZGF5ID0gbmV3IERhdGUoKTtcbiAgY29uc3QgYWN0aXZlOiBMdHNCcmFuY2hbXSA9IFtdO1xuICBjb25zdCBpbmFjdGl2ZTogTHRzQnJhbmNoW10gPSBbXTtcblxuICAvLyBJdGVyYXRlIHRocm91Z2ggdGhlIE5QTSBwYWNrYWdlIGluZm9ybWF0aW9uIGFuZCBkZXRlcm1pbmUgYWN0aXZlL2luYWN0aXZlIExUUyB2ZXJzaW9ucyB3aXRoXG4gIC8vIHRoZWlyIGNvcnJlc3BvbmRpbmcgYnJhbmNoZXMuIFdlIGFzc3VtZSB0aGF0IGFuIExUUyB0YWdnZWQgdmVyc2lvbiBpbiBOUE0gYmVsb25ncyB0byB0aGVcbiAgLy8gbGFzdC1taW5vciBicmFuY2ggb2YgYSBnaXZlbiBtYWpvciAoaS5lLiB3ZSBhc3N1bWUgdGhlcmUgYXJlIG5vIG91dGRhdGVkIExUUyBOUE0gZGlzdCB0YWdzKS5cbiAgZm9yIChjb25zdCBucG1EaXN0VGFnIGluIGRpc3RUYWdzKSB7XG4gICAgaWYgKGx0c05wbURpc3RUYWdSZWdleC50ZXN0KG5wbURpc3RUYWcpKSB7XG4gICAgICBjb25zdCB2ZXJzaW9uID0gc2VtdmVyLnBhcnNlKGRpc3RUYWdzW25wbURpc3RUYWddKSE7XG4gICAgICBjb25zdCBicmFuY2hOYW1lID0gYCR7dmVyc2lvbi5tYWpvcn0uJHt2ZXJzaW9uLm1pbm9yfS54YDtcbiAgICAgIGNvbnN0IG1ham9yUmVsZWFzZURhdGUgPSBuZXcgRGF0ZSh0aW1lW2Ake3ZlcnNpb24ubWFqb3J9LjAuMGBdKTtcbiAgICAgIGNvbnN0IGx0c0VuZERhdGUgPSBjb21wdXRlTHRzRW5kRGF0ZU9mTWFqb3IobWFqb3JSZWxlYXNlRGF0ZSk7XG4gICAgICBjb25zdCBsdHNCcmFuY2g6IEx0c0JyYW5jaCA9IHtuYW1lOiBicmFuY2hOYW1lLCB2ZXJzaW9uLCBucG1EaXN0VGFnfTtcbiAgICAgIC8vIERlcGVuZGluZyBvbiB3aGV0aGVyIHRoZSBMVFMgcGhhc2UgaXMgc3RpbGwgYWN0aXZlLCBhZGQgdGhlIGJyYW5jaFxuICAgICAgLy8gdG8gdGhlIGxpc3Qgb2YgYWN0aXZlIG9yIGluYWN0aXZlIExUUyBicmFuY2hlcy5cbiAgICAgIGlmICh0b2RheSA8PSBsdHNFbmREYXRlKSB7XG4gICAgICAgIGFjdGl2ZS5wdXNoKGx0c0JyYW5jaCk7XG4gICAgICB9IGVsc2Uge1xuICAgICAgICBpbmFjdGl2ZS5wdXNoKGx0c0JyYW5jaCk7XG4gICAgICB9XG4gICAgfVxuICB9XG5cbiAgLy8gU29ydCBMVFMgYnJhbmNoZXMgaW4gZGVzY2VuZGluZyBvcmRlci4gaS5lLiBtb3N0IHJlY2VudCBvbmVzIGZpcnN0LlxuICBhY3RpdmUuc29ydCgoYSwgYikgPT4gc2VtdmVyLnJjb21wYXJlKGEudmVyc2lvbiwgYi52ZXJzaW9uKSk7XG4gIGluYWN0aXZlLnNvcnQoKGEsIGIpID0+IHNlbXZlci5yY29tcGFyZShhLnZlcnNpb24sIGIudmVyc2lvbikpO1xuXG4gIHJldHVybiB7YWN0aXZlLCBpbmFjdGl2ZX07XG59XG5cbi8qKlxuICogQ29tcHV0ZXMgdGhlIGRhdGUgd2hlbiBsb25nLXRlcm0gc3VwcG9ydCBlbmRzIGZvciBhIG1ham9yIHJlbGVhc2VkIGF0IHRoZVxuICogc3BlY2lmaWVkIGRhdGUuXG4gKi9cbmV4cG9ydCBmdW5jdGlvbiBjb21wdXRlTHRzRW5kRGF0ZU9mTWFqb3IobWFqb3JSZWxlYXNlRGF0ZTogRGF0ZSk6IERhdGUge1xuICByZXR1cm4gbmV3IERhdGUoXG4gICAgICBtYWpvclJlbGVhc2VEYXRlLmdldEZ1bGxZZWFyKCksXG4gICAgICBtYWpvclJlbGVhc2VEYXRlLmdldE1vbnRoKCkgKyBtYWpvckFjdGl2ZVN1cHBvcnREdXJhdGlvbiArIG1ham9yTG9uZ1Rlcm1TdXBwb3J0RHVyYXRpb24sXG4gICAgICBtYWpvclJlbGVhc2VEYXRlLmdldERhdGUoKSwgbWFqb3JSZWxlYXNlRGF0ZS5nZXRIb3VycygpLCBtYWpvclJlbGVhc2VEYXRlLmdldE1pbnV0ZXMoKSxcbiAgICAgIG1ham9yUmVsZWFzZURhdGUuZ2V0U2Vjb25kcygpLCBtYWpvclJlbGVhc2VEYXRlLmdldE1pbGxpc2Vjb25kcygpKTtcbn1cblxuLyoqIEdldHMgdGhlIGxvbmctdGVybSBzdXBwb3J0IE5QTSBkaXN0IHRhZyBmb3IgYSBnaXZlbiBtYWpvciB2ZXJzaW9uLiAqL1xuZXhwb3J0IGZ1bmN0aW9uIGdldEx0c05wbURpc3RUYWdPZk1ham9yKG1ham9yOiBudW1iZXIpOiBzdHJpbmcge1xuICAvLyBMVFMgdmVyc2lvbnMgc2hvdWxkIGJlIHRhZ2dlZCBpbiBOUE0gaW4gdGhlIGZvbGxvd2luZyBmb3JtYXQ6IGB2e21ham9yfS1sdHNgLlxuICByZXR1cm4gYHYke21ham9yfS1sdHNgO1xufVxuIl19

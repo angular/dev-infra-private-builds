@@ -1,0 +1,28 @@
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+import * as gitCommits_ from 'git-raw-commits';
+import { gitLogFormatForParsing, parseCommitFromGitLog } from './parse';
+// Set `gitCommits` as this imported value to address "Cannot call a namespace" error.
+const gitCommits = gitCommits_;
+/**
+ * Find all commits within the given range and return an object describing those.
+ */
+export function getCommitsInRange(from, to = 'HEAD') {
+    return new Promise((resolve, reject) => {
+        /** List of parsed commit objects. */
+        const commits = [];
+        /** Stream of raw git commit strings in the range provided. */
+        const commitStream = gitCommits({ from, to, format: gitLogFormatForParsing });
+        // Accumulate the parsed commits for each commit from the Readable stream into an array, then
+        // resolve the promise with the array when the Readable stream ends.
+        commitStream.on('data', (commit) => commits.push(parseCommitFromGitLog(commit)));
+        commitStream.on('error', (err) => reject(err));
+        commitStream.on('end', () => resolve(commits));
+    });
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidXRpbHMuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi8uLi8uLi8uLi8uLi9kZXYtaW5mcmEvY29tbWl0LW1lc3NhZ2UvdXRpbHMudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7Ozs7OztHQU1HO0FBQ0gsT0FBTyxLQUFLLFdBQVcsTUFBTSxpQkFBaUIsQ0FBQztBQUUvQyxPQUFPLEVBQW1CLHNCQUFzQixFQUFFLHFCQUFxQixFQUFDLE1BQU0sU0FBUyxDQUFDO0FBRXhGLHNGQUFzRjtBQUN0RixNQUFNLFVBQVUsR0FBRyxXQUFXLENBQUM7QUFHL0I7O0dBRUc7QUFDSCxNQUFNLFVBQVUsaUJBQWlCLENBQUMsSUFBWSxFQUFFLEtBQWEsTUFBTTtJQUNqRSxPQUFPLElBQUksT0FBTyxDQUFDLENBQUMsT0FBTyxFQUFFLE1BQU0sRUFBRSxFQUFFO1FBQ3JDLHFDQUFxQztRQUNyQyxNQUFNLE9BQU8sR0FBdUIsRUFBRSxDQUFDO1FBQ3ZDLDhEQUE4RDtRQUM5RCxNQUFNLFlBQVksR0FBRyxVQUFVLENBQUMsRUFBQyxJQUFJLEVBQUUsRUFBRSxFQUFFLE1BQU0sRUFBRSxzQkFBc0IsRUFBQyxDQUFDLENBQUM7UUFFNUUsNkZBQTZGO1FBQzdGLG9FQUFvRTtRQUNwRSxZQUFZLENBQUMsRUFBRSxDQUFDLE1BQU0sRUFBRSxDQUFDLE1BQWMsRUFBRSxFQUFFLENBQUMsT0FBTyxDQUFDLElBQUksQ0FBQyxxQkFBcUIsQ0FBQyxNQUFNLENBQUMsQ0FBQyxDQUFDLENBQUM7UUFDekYsWUFBWSxDQUFDLEVBQUUsQ0FBQyxPQUFPLEVBQUUsQ0FBQyxHQUFVLEVBQUUsRUFBRSxDQUFDLE1BQU0sQ0FBQyxHQUFHLENBQUMsQ0FBQyxDQUFDO1FBQ3RELFlBQVksQ0FBQyxFQUFFLENBQUMsS0FBSyxFQUFFLEdBQUcsRUFBRSxDQUFDLE9BQU8sQ0FBQyxPQUFPLENBQUMsQ0FBQyxDQUFDO0lBQ2pELENBQUMsQ0FBQyxDQUFDO0FBQ0wsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogQGxpY2Vuc2VcbiAqIENvcHlyaWdodCBHb29nbGUgTExDIEFsbCBSaWdodHMgUmVzZXJ2ZWQuXG4gKlxuICogVXNlIG9mIHRoaXMgc291cmNlIGNvZGUgaXMgZ292ZXJuZWQgYnkgYW4gTUlULXN0eWxlIGxpY2Vuc2UgdGhhdCBjYW4gYmVcbiAqIGZvdW5kIGluIHRoZSBMSUNFTlNFIGZpbGUgYXQgaHR0cHM6Ly9hbmd1bGFyLmlvL2xpY2Vuc2VcbiAqL1xuaW1wb3J0ICogYXMgZ2l0Q29tbWl0c18gZnJvbSAnZ2l0LXJhdy1jb21taXRzJztcblxuaW1wb3J0IHtDb21taXRGcm9tR2l0TG9nLCBnaXRMb2dGb3JtYXRGb3JQYXJzaW5nLCBwYXJzZUNvbW1pdEZyb21HaXRMb2d9IGZyb20gJy4vcGFyc2UnO1xuXG4vLyBTZXQgYGdpdENvbW1pdHNgIGFzIHRoaXMgaW1wb3J0ZWQgdmFsdWUgdG8gYWRkcmVzcyBcIkNhbm5vdCBjYWxsIGEgbmFtZXNwYWNlXCIgZXJyb3IuXG5jb25zdCBnaXRDb21taXRzID0gZ2l0Q29tbWl0c187XG5cblxuLyoqXG4gKiBGaW5kIGFsbCBjb21taXRzIHdpdGhpbiB0aGUgZ2l2ZW4gcmFuZ2UgYW5kIHJldHVybiBhbiBvYmplY3QgZGVzY3JpYmluZyB0aG9zZS5cbiAqL1xuZXhwb3J0IGZ1bmN0aW9uIGdldENvbW1pdHNJblJhbmdlKGZyb206IHN0cmluZywgdG86IHN0cmluZyA9ICdIRUFEJyk6IFByb21pc2U8Q29tbWl0RnJvbUdpdExvZ1tdPiB7XG4gIHJldHVybiBuZXcgUHJvbWlzZSgocmVzb2x2ZSwgcmVqZWN0KSA9PiB7XG4gICAgLyoqIExpc3Qgb2YgcGFyc2VkIGNvbW1pdCBvYmplY3RzLiAqL1xuICAgIGNvbnN0IGNvbW1pdHM6IENvbW1pdEZyb21HaXRMb2dbXSA9IFtdO1xuICAgIC8qKiBTdHJlYW0gb2YgcmF3IGdpdCBjb21taXQgc3RyaW5ncyBpbiB0aGUgcmFuZ2UgcHJvdmlkZWQuICovXG4gICAgY29uc3QgY29tbWl0U3RyZWFtID0gZ2l0Q29tbWl0cyh7ZnJvbSwgdG8sIGZvcm1hdDogZ2l0TG9nRm9ybWF0Rm9yUGFyc2luZ30pO1xuXG4gICAgLy8gQWNjdW11bGF0ZSB0aGUgcGFyc2VkIGNvbW1pdHMgZm9yIGVhY2ggY29tbWl0IGZyb20gdGhlIFJlYWRhYmxlIHN0cmVhbSBpbnRvIGFuIGFycmF5LCB0aGVuXG4gICAgLy8gcmVzb2x2ZSB0aGUgcHJvbWlzZSB3aXRoIHRoZSBhcnJheSB3aGVuIHRoZSBSZWFkYWJsZSBzdHJlYW0gZW5kcy5cbiAgICBjb21taXRTdHJlYW0ub24oJ2RhdGEnLCAoY29tbWl0OiBCdWZmZXIpID0+IGNvbW1pdHMucHVzaChwYXJzZUNvbW1pdEZyb21HaXRMb2coY29tbWl0KSkpO1xuICAgIGNvbW1pdFN0cmVhbS5vbignZXJyb3InLCAoZXJyOiBFcnJvcikgPT4gcmVqZWN0KGVycikpO1xuICAgIGNvbW1pdFN0cmVhbS5vbignZW5kJywgKCkgPT4gcmVzb2x2ZShjb21taXRzKSk7XG4gIH0pO1xufVxuIl19
