@@ -7,11 +7,12 @@
  */
 /// <amd-module name="@angular/dev-infra-private/release/versioning/npm-publish" />
 import * as semver from 'semver';
+import { NpmDistTag } from './npm-registry';
 /**
  * Runs NPM publish within a specified package directory.
  * @throws With the process log output if the publish failed.
  */
-export declare function runNpmPublish(packagePath: string, distTag: string, registryUrl: string | undefined): Promise<void>;
+export declare function runNpmPublish(packagePath: string, distTag: NpmDistTag, registryUrl: string | undefined): Promise<void>;
 /**
  * Sets the NPM tag to the specified version for the given package.
  * @throws With the process log output if the tagging failed.

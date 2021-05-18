@@ -9,6 +9,7 @@
 import * as semver from 'semver';
 import { GitClient } from '../../utils/git/index';
 import { ReleaseConfig } from '../config/index';
+import { NpmDistTag } from '../versioning';
 import { ActiveReleaseTrains } from '../versioning/active-release-trains';
 import { ReleaseNotes } from './release-notes/release-notes';
 /** Interface describing a Github repository. */
@@ -30,7 +31,7 @@ export interface PullRequest {
 /** Constructor type for instantiating a release action */
 export interface ReleaseActionConstructor<T extends ReleaseAction = ReleaseAction> {
     /** Whether the release action is currently active. */
-    isActive(active: ActiveReleaseTrains): Promise<boolean>;
+    isActive(active: ActiveReleaseTrains, config: ReleaseConfig): Promise<boolean>;
     /** Constructs a release action. */
     new (...args: [ActiveReleaseTrains, GitClient<true>, ReleaseConfig, string]): T;
 }
@@ -45,7 +46,7 @@ export declare abstract class ReleaseAction {
     protected config: ReleaseConfig;
     protected projectDir: string;
     /** Whether the release action is currently active. */
-    static isActive(_trains: ActiveReleaseTrains): Promise<boolean>;
+    static isActive(_trains: ActiveReleaseTrains, _config: ReleaseConfig): Promise<boolean>;
     /** Gets the description for a release action. */
     abstract getDescription(): Promise<string>;
     /**
@@ -153,11 +154,11 @@ export declare abstract class ReleaseAction {
     private _createGithubReleaseForVersion;
     /**
      * Builds and publishes the given version in the specified branch.
-     * @param newVersion The new version to be published.
+     * @param releaseNotes The release notes for the version being published.
      * @param publishBranch Name of the branch that contains the new version.
      * @param npmDistTag NPM dist tag where the version should be published to.
      */
-    protected buildAndPublish(releaseNotes: ReleaseNotes, publishBranch: string, npmDistTag: string): Promise<void>;
+    protected buildAndPublish(releaseNotes: ReleaseNotes, publishBranch: string, npmDistTag: NpmDistTag): Promise<void>;
     /** Publishes the given built package to NPM with the specified NPM dist tag. */
     private _publishBuiltPackageToNpm;
     /** Checks whether the given commit represents a staging commit for the specified version. */

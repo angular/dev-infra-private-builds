@@ -8,6 +8,9 @@
 /// <amd-module name="@angular/dev-infra-private/release/versioning/npm-registry" />
 import * as semver from 'semver';
 import { ReleaseConfig } from '../config/index';
+import { LtsNpmDistTag } from './long-term-support';
+/** Type describing the possible NPM dist tags used by Angular packages. */
+export declare type NpmDistTag = 'latest' | 'next' | LtsNpmDistTag;
 /** Type describing an NPM package fetched from the registry. */
 export interface NpmPackageInfo {
     /** Maps of versions and their package JSON objects. */
