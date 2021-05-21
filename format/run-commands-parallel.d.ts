@@ -7,6 +7,13 @@
  */
 /// <amd-module name="@angular/dev-infra-private/format/run-commands-parallel" />
 import { FormatterAction } from './formatters/index';
+/** Interface describing a failure occurred during formatting of a file. */
+export interface FormatFailure {
+    /** Path to the file that failed. */
+    filePath: string;
+    /** Error message reported by the formatter. */
+    message: string;
+}
 /**
  * Run the provided commands in parallel for each provided file.
  *
@@ -19,4 +26,4 @@ import { FormatterAction } from './formatters/index';
  * A promise is returned, completed when the command has completed running for each file.
  * The promise resolves with a list of failures, or `false` if no formatters have matched.
  */
-export declare function runFormatterInParallel(allFiles: string[], action: FormatterAction): Promise<false | string[]>;
+export declare function runFormatterInParallel(allFiles: string[], action: FormatterAction): Promise<false | FormatFailure[]>;
