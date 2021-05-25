@@ -9,9 +9,9 @@
 import * as semver from 'semver';
 import { GitClient } from '../../utils/git/index';
 import { ReleaseConfig } from '../config/index';
+import { ReleaseNotes } from '../notes/release-notes';
 import { NpmDistTag } from '../versioning';
 import { ActiveReleaseTrains } from '../versioning/active-release-trains';
-import { ReleaseNotes } from './release-notes/release-notes';
 /** Interface describing a Github repository. */
 export interface GithubRepo {
     owner: string;

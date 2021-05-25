@@ -5,10 +5,10 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-/// <amd-module name="@angular/dev-infra-private/release/publish/release-notes/context" />
-import { CommitFromGitLog } from '../../../commit-message/parse';
-import { GithubConfig } from '../../../utils/config';
-import { ReleaseNotesConfig } from '../../config/index';
+/// <amd-module name="@angular/dev-infra-private/release/notes/context" />
+import { CommitFromGitLog } from '../../commit-message/parse';
+import { GithubConfig } from '../../utils/config';
+import { ReleaseNotesConfig } from '../config/index';
 /** Data used for context during rendering. */
 export interface RenderContextData {
     title: string | false;

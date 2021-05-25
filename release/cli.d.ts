@@ -8,4 +8,4 @@
  */
 import * as yargs from 'yargs';
 /** Build the parser for the release commands. */
-export declare function buildReleaseParser(localYargs: yargs.Argv): yargs.Argv<import("@angular/dev-infra-private/release/stamping/cli").Options>;
+export declare function buildReleaseParser(localYargs: yargs.Argv): yargs.Argv<import("@angular/dev-infra-private/release/notes/cli").ReleaseNotesOptions>;
