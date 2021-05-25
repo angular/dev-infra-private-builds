@@ -1,9 +1,7 @@
-/// <amd-module name="@angular/dev-infra-private/release/publish/release-notes/release-notes" />
+/// <amd-module name="@angular/dev-infra-private/release/notes/release-notes" />
 import * as semver from 'semver';
-import { CommitFromGitLog } from '../../../commit-message/parse';
-import { DevInfraReleaseConfig } from '../../config/index';
-/** Gets the path for the changelog file in a given project. */
-export declare function getLocalChangelogFilePath(projectDir: string): string;
+import { CommitFromGitLog } from '../../commit-message/parse';
+import { DevInfraReleaseConfig } from '../config/index';
 /** Release note generation. */
 export declare class ReleaseNotes {
     version: semver.SemVer;
