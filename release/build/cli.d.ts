@@ -10,7 +10,6 @@ import { CommandModule } from 'yargs';
 /** Command line options for building a release. */
 export interface ReleaseBuildOptions {
     json: boolean;
-    stampForRelease: boolean;
 }
 /** CLI command module for building release output. */
 export declare const ReleaseBuildCommandModule: CommandModule<{}, ReleaseBuildOptions>;
