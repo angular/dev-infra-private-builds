@@ -37,6 +37,7 @@ export declare class PullRequestFailure {
     static notFound(): PullRequestFailure;
     static insufficientPermissionsToMerge(message?: string): PullRequestFailure;
     static hasBreakingChanges(label: TargetLabel): PullRequestFailure;
+    static hasDeprecations(label: TargetLabel): PullRequestFailure;
     static hasFeatureCommits(label: TargetLabel): PullRequestFailure;
     static missingBreakingChangeLabel(): PullRequestFailure;
     static missingBreakingChangeCommit(): PullRequestFailure;
