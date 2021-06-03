@@ -5,6 +5,7 @@ filegroup(
     srcs = [
         "BUILD.bazel",
         "expand_template.bzl",
+        "@npm//@angular/dev-infra-private/bazel/browsers:files",
         "@npm//@angular/dev-infra-private/bazel/remote-execution:files",
     ],
 )

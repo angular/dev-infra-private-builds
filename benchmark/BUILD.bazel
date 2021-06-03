@@ -5,7 +5,6 @@ filegroup(
     name = "files",
     srcs = glob(["*"]) + [
         "@npm//@angular/dev-infra-private/benchmark/brotli-cli:files",
-        "@npm//@angular/dev-infra-private/browsers:files",
         "@npm//@angular/dev-infra-private/benchmark/component_benchmark:files",
         "@npm//@angular/dev-infra-private/benchmark/ng_rollup_bundle:files",
     ],

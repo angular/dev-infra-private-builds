@@ -78,7 +78,7 @@ export declare class GitClient<Authenticated extends boolean> {
     baseDir: string;
     /**
      * @param githubToken The github token used for authentication, if provided.
-     * @param _config The configuration, containing the github specific configuration.
+     * @param config The configuration, containing the github specific configuration.
      * @param baseDir The full path to the root of the repository base.
      */
     protected constructor(githubToken: Authenticated extends true ? string : undefined, config?: NgDevConfig, baseDir?: string);
@@ -98,8 +98,6 @@ export declare class GitClient<Authenticated extends boolean> {
     getCurrentBranchOrRevision(): string;
     /** Gets whether the current Git repository has uncommitted changes. */
     hasUncommittedChanges(): boolean;
-    /** Whether the repo has any local changes. */
-    hasLocalChanges(): boolean;
     /** Sanitizes a given message by omitting the provided Github token if present. */
     omitGithubTokenFromMessage(value: string): string;
     /**
