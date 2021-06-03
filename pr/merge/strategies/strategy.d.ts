@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/dev-infra-private/pr/merge/strategies/strategy" />
-import { GitClient } from '../../../utils/git/index';
+import { AuthenticatedGitClient } from '../../../utils/git/authenticated-git-client';
 import { PullRequestFailure } from '../failures';
 import { PullRequest } from '../pull-request';
 /**
@@ -20,8 +20,8 @@ export declare const TEMP_PR_HEAD_BRANCH = "merge_pr_head";
  * merges it into the determined target branches.
  */
 export declare abstract class MergeStrategy {
-    protected git: GitClient<true>;
-    constructor(git: GitClient<true>);
+    protected git: AuthenticatedGitClient;
+    constructor(git: AuthenticatedGitClient);
     /**
      * Prepares a merge of the given pull request. The strategy by default will
      * fetch all target branches and the pull request into local temporary branches.

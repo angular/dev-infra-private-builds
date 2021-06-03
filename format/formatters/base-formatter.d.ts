@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/dev-infra-private/format/formatters/base-formatter" />
-import { GitClient } from '../../utils/git/index';
+import { GitClient } from '../../utils/git/git-client';
 import { FormatConfig } from '../config';
 export declare type CallbackFunc = (file: string, code: number, stdout: string, stderr: string) => boolean;
 export declare type FormatterAction = 'check' | 'format';
@@ -19,7 +19,7 @@ interface FormatterActionMetadata {
  */
 export declare abstract class Formatter {
     protected config: FormatConfig;
-    protected git: GitClient<false>;
+    protected git: GitClient;
     /**
      * The name of the formatter, this is used for identification in logging and for enabling and
      * configuring the formatter in the config.
