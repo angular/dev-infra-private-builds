@@ -26,28 +26,12 @@ export declare class GithubApiRequestError extends Error {
     status: number;
     constructor(status: number, message: string);
 }
-/** Error for failed Github API requests. */
-export declare class GithubGraphqlClientError extends Error {
-}
-/**
- * A Github client for interacting with the Github APIs.
- *
- * Additionally, provides convenience methods for actions which require multiple requests, or
- * would provide value from memoized style responses.
- **/
+/** A Github client for interacting with the Github APIs. */
 export declare class GithubClient {
-    private token?;
-    /** The graphql instance with authentication set during construction. */
-    private _graphql;
-    /** The Octokit instance actually performing API requests. */
+    private _octokitOptions?;
+    /** The octokit instance actually performing API requests. */
     private _octokit;
-    /**
-     * @param token The github authentication token for Github Rest and Graphql API requests.
-     */
-    constructor(token?: string | undefined);
-    /** Perform a query using Github's Graphql API. */
-    graphql<T extends GraphqlQueryObject>(queryObject: T, params?: RequestParameters): Promise<T>;
-    pulls: {
+    readonly pulls: {
         checkIfMerged: {
             (params?: (Octokit.RequestOptions & Octokit.PullsCheckIfMergedParamsDeprecatedNumber) | undefined): Promise<Octokit.AnyResponse>;
             (params?: (Octokit.RequestOptions & Octokit.PullsCheckIfMergedParams) | undefined): Promise<Octokit.AnyResponse>;
@@ -187,7 +171,7 @@ export declare class GithubClient {
             endpoint: Octokit.Endpoint;
         };
     };
-    repos: {
+    readonly repos: {
         acceptInvitation: {
             (params?: (Octokit.RequestOptions & Octokit.ReposAcceptInvitationParams) | undefined): Promise<Octokit.AnyResponse>;
             endpoint: Octokit.Endpoint;
@@ -791,7 +775,7 @@ export declare class GithubClient {
             endpoint: Octokit.Endpoint;
         };
     };
-    issues: {
+    readonly issues: {
         addAssignees: {
             (params?: (Octokit.RequestOptions & Octokit.IssuesAddAssigneesParamsDeprecatedNumber) | undefined): Promise<Octokit.Response<Octokit.IssuesAddAssigneesResponse>>;
             (params?: (Octokit.RequestOptions & Octokit.IssuesAddAssigneesParams) | undefined): Promise<Octokit.Response<Octokit.IssuesAddAssigneesResponse>>;
@@ -970,7 +954,7 @@ export declare class GithubClient {
             endpoint: Octokit.Endpoint;
         };
     };
-    git: {
+    readonly git: {
         createBlob: {
             (params?: (Octokit.RequestOptions & Octokit.GitCreateBlobParams) | undefined): Promise<Octokit.Response<Octokit.GitCreateBlobResponse>>;
             endpoint: Octokit.Endpoint;
@@ -1028,11 +1012,24 @@ export declare class GithubClient {
             endpoint: Octokit.Endpoint;
         };
     };
-    paginate: Octokit.Paginate;
-    rateLimit: {
+    readonly paginate: Octokit.Paginate;
+    readonly rateLimit: {
         get: {
             (params?: (Octokit.RequestOptions & Octokit.EmptyParams) | undefined): Promise<Octokit.Response<Octokit.RateLimitGetResponse>>;
             endpoint: Octokit.Endpoint;
         };
     };
+    constructor(_octokitOptions?: Octokit.Options | undefined);
+}
+/**
+ * Extension of the `GithubClient` that provides utilities which are specific
+ * to authenticated instances.
+ */
+export declare class AuthenticatedGithubClient extends GithubClient {
+    private _token;
+    /** The graphql instance with authentication set during construction. */
+    private _graphql;
+    constructor(_token: string);
+    /** Perform a query using Github's Graphql API. */
+    graphql<T extends GraphqlQueryObject>(queryObject: T, params?: RequestParameters): Promise<T>;
 }

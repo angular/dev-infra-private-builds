@@ -17,7 +17,7 @@ export declare class ReleaseTool {
     protected _config: ReleaseConfig;
     protected _github: GithubConfig;
     protected _projectRoot: string;
-    /** The singleton instance of the GitClient. */
+    /** The singleton instance of the authenticated git client. */
     private _git;
     /** The previous git commit to return back to after the release tool runs. */
     private previousGitBranchOrRevision;

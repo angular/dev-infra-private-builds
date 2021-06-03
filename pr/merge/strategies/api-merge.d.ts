@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/dev-infra-private/pr/merge/strategies/api-merge" />
-import { GitClient } from '../../../utils/git/index';
+import { AuthenticatedGitClient } from '../../../utils/git/authenticated-git-client';
 import { GithubApiMergeMethod } from '../config';
 import { PullRequestFailure } from '../failures';
 import { PullRequest } from '../pull-request';
@@ -30,7 +30,7 @@ export interface GithubApiMergeStrategyConfig {
  */
 export declare class GithubApiMergeStrategy extends MergeStrategy {
     private _config;
-    constructor(git: GitClient<true>, _config: GithubApiMergeStrategyConfig);
+    constructor(git: AuthenticatedGitClient, _config: GithubApiMergeStrategyConfig);
     merge(pullRequest: PullRequest): Promise<PullRequestFailure | null>;
     /**
      * Prompts the user for the commit message changes. Unlike as in the autosquash merge
