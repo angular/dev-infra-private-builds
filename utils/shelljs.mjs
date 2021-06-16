@@ -1,0 +1,17 @@
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+import { __assign } from "tslib";
+import { exec as _exec } from 'shelljs';
+/**
+ * Runs an given command as child process. By default, child process
+ * output will not be printed.
+ */
+export function exec(cmd, opts) {
+    return _exec(cmd, __assign(__assign({ silent: true }, opts), { async: false }));
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoic2hlbGxqcy5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL2Rldi1pbmZyYS91dGlscy9zaGVsbGpzLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOzs7Ozs7R0FNRzs7QUFFSCxPQUFPLEVBQUMsSUFBSSxJQUFJLEtBQUssRUFBMkIsTUFBTSxTQUFTLENBQUM7QUFFaEU7OztHQUdHO0FBQ0gsTUFBTSxVQUFVLElBQUksQ0FBQyxHQUFXLEVBQUUsSUFBaUM7SUFDakUsT0FBTyxLQUFLLENBQUMsR0FBRyxzQkFBRyxNQUFNLEVBQUUsSUFBSSxJQUFLLElBQUksS0FBRSxLQUFLLEVBQUUsS0FBSyxJQUFFLENBQUM7QUFDM0QsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogQGxpY2Vuc2VcbiAqIENvcHlyaWdodCBHb29nbGUgTExDIEFsbCBSaWdodHMgUmVzZXJ2ZWQuXG4gKlxuICogVXNlIG9mIHRoaXMgc291cmNlIGNvZGUgaXMgZ292ZXJuZWQgYnkgYW4gTUlULXN0eWxlIGxpY2Vuc2UgdGhhdCBjYW4gYmVcbiAqIGZvdW5kIGluIHRoZSBMSUNFTlNFIGZpbGUgYXQgaHR0cHM6Ly9hbmd1bGFyLmlvL2xpY2Vuc2VcbiAqL1xuXG5pbXBvcnQge2V4ZWMgYXMgX2V4ZWMsIEV4ZWNPcHRpb25zLCBTaGVsbFN0cmluZ30gZnJvbSAnc2hlbGxqcyc7XG5cbi8qKlxuICogUnVucyBhbiBnaXZlbiBjb21tYW5kIGFzIGNoaWxkIHByb2Nlc3MuIEJ5IGRlZmF1bHQsIGNoaWxkIHByb2Nlc3NcbiAqIG91dHB1dCB3aWxsIG5vdCBiZSBwcmludGVkLlxuICovXG5leHBvcnQgZnVuY3Rpb24gZXhlYyhjbWQ6IHN0cmluZywgb3B0cz86IE9taXQ8RXhlY09wdGlvbnMsICdhc3luYyc+KTogU2hlbGxTdHJpbmcge1xuICByZXR1cm4gX2V4ZWMoY21kLCB7c2lsZW50OiB0cnVlLCAuLi5vcHRzLCBhc3luYzogZmFsc2V9KTtcbn1cbiJdfQ==
