@@ -14,6 +14,10 @@ interface GroupCondition {
     matchedFiles: Set<string>;
     unverifiable: boolean;
 }
+interface GroupReviewers {
+    users?: string[];
+    teams?: string[];
+}
 /** Result of testing files against the group. */
 export interface PullApproveGroupResult {
     groupName: string;
@@ -28,7 +32,9 @@ export declare class PullApproveGroup {
     groupName: string;
     readonly precedingGroups: PullApproveGroup[];
     /** List of conditions for the group. */
-    conditions: GroupCondition[];
+    readonly conditions: GroupCondition[];
+    /** List of reviewers for the group. */
+    readonly reviewers: GroupReviewers;
     constructor(groupName: string, config: PullApproveGroupConfig, precedingGroups?: PullApproveGroup[]);
     private _captureConditions;
     /**
