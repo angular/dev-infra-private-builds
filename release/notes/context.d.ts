@@ -61,6 +61,19 @@ export declare class RenderContext {
      * unique value for the provided field across all commits in the list.
      */
     unique(field: keyof CommitFromGitLog): (commit: CommitFromGitLog) => boolean;
+    /**
+     * Convert a commit object to a Markdown link.
+     */
+    commitToLink(commit: CommitFromGitLog): string;
+    /**
+     * Convert a pull request number to a Markdown link.
+     */
+    pullRequestToLink(prNumber: number): string;
+    /**
+     * Transform a commit message header by replacing the parenthesized pull request reference at the
+     * end of the line (which is added by merge tooling) to a Markdown link.
+     */
+    replaceCommitHeaderPullRequestNumber(header: string): string;
 }
 /**
  * Builds a date stamp for stamping in release notes.
