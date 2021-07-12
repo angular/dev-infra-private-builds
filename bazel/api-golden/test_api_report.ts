@@ -41,12 +41,7 @@ export async function testApiGolden(
   const tempDir = process.env.TEST_TMPDIR ?? process.cwd();
 
   const configObject: IConfigFile = {
-    compiler: {
-      overrideTsconfig:
-          // We disable inclusion of all `@types` installed as this throws-off API reports
-          // and causes different goldens when the API test is run outside sandbox.
-          {files: [indexFilePath], compilerOptions: {types: [], lib: ['esnext', 'dom']}}
-    },
+    compiler: {overrideTsconfig: {files: [indexFilePath]}},
     projectFolder: dirname(packageJsonPath),
     mainEntryPointFilePath: indexFilePath,
     dtsRollup: {enabled: false},
