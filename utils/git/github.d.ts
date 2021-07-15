@@ -11439,7 +11439,7 @@ export declare class GithubClient {
                 owner: string;
                 repo: string;
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<number[][], 200> | import("@octokit/types").OctokitResponse<{
-                [key: string]: unknown;
+                [key: string]: any;
             }, 202>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
@@ -12009,7 +12009,7 @@ export declare class GithubClient {
                 owner: string;
                 repo: string;
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
-                [key: string]: unknown;
+                [key: string]: any;
             }, 202> | import("@octokit/types").OctokitResponse<{
                 days: number[];
                 total: number;
@@ -12234,7 +12234,7 @@ export declare class GithubClient {
                 owner: string;
                 repo: string;
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
-                [key: string]: unknown;
+                [key: string]: any;
             }, 202> | import("@octokit/types").OctokitResponse<{
                 author: {
                     name?: string | null | undefined;
@@ -12870,7 +12870,7 @@ export declare class GithubClient {
                     caa_error?: string | null | undefined;
                 } | null | undefined;
             }, 200> | import("@octokit/types").OctokitResponse<{
-                [key: string]: unknown;
+                [key: string]: any;
             }, 202>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
@@ -18361,7 +18361,7 @@ export declare class GithubClient {
                 hook_id: number;
                 delivery_id: number;
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
-                [key: string]: unknown;
+                [key: string]: any;
             }, 202>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
