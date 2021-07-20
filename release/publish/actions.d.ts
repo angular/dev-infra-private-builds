@@ -58,6 +58,8 @@ export declare abstract class ReleaseAction {
     /** Cached found fork of the configured project. */
     private _cachedForkRepo;
     constructor(active: ActiveReleaseTrains, git: AuthenticatedGitClient, config: ReleaseConfig, projectDir: string);
+    /** Retrieves the version in the project top-level `package.json` file. */
+    private getProjectVersion;
     /** Updates the version in the project top-level `package.json` file. */
     protected updateProjectVersion(newVersion: semver.SemVer): Promise<void>;
     /** Gets the most recent commit of a specified branch. */
