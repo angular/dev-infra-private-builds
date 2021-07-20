@@ -68,8 +68,6 @@ export declare class GitClient {
     checkout(branchOrRevision: string, cleanState: boolean): boolean;
     /** Gets the latest git tag on the current branch that matches SemVer. */
     getLatestSemverTag(): SemVer;
-    /** Retrieves the git tag matching the provided SemVer, if it exists. */
-    getMatchingTagForSemver(semver: SemVer): string;
     /** Retrieve a list of all files in the repository changed since the provided shaOrRef. */
     allChangesFilesSince(shaOrRef?: string): string[];
     /** Retrieve a list of all files currently staged in the repostitory. */
