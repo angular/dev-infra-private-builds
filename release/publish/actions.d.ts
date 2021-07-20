@@ -108,7 +108,7 @@ export declare abstract class ReleaseAction {
      * API is 10 seconds (to not exceed any rate limits). If the pull request is closed without
      * merge, the script will abort gracefully (considering a manual user abort).
      */
-    protected waitForPullRequestToBeMerged(id: number, interval?: number): Promise<void>;
+    protected waitForPullRequestToBeMerged({ id }: PullRequest, interval?: number): Promise<void>;
     /**
      * Prepend releases notes for a version published in a given branch to the changelog in
      * the current Git `HEAD`. This is useful for cherry-picking the changelog.
