@@ -6,6 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/dev-infra-private/format/formatters/prettier" />
+/// <reference types="node" />
 import { Formatter } from './base-formatter';
 /**
  * Formatter for running prettier against Typescript and Javascript files.
@@ -22,11 +23,11 @@ export declare class Prettier extends Formatter {
     actions: {
         check: {
             commandFlags: string;
-            callback: (_: string, code: number, stdout: string) => boolean;
+            callback: (_: string, code: number | NodeJS.Signals, stdout: string) => boolean;
         };
         format: {
             commandFlags: string;
-            callback: (file: string, code: number, _: string, stderr: string) => boolean;
+            callback: (file: string, code: number | NodeJS.Signals, _: string, stderr: string) => boolean;
         };
     };
 }

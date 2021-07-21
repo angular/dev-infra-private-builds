@@ -6,9 +6,10 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <amd-module name="@angular/dev-infra-private/format/formatters/base-formatter" />
+/// <reference types="node" />
 import { GitClient } from '../../utils/git/git-client';
 import { FormatConfig } from '../config';
-export declare type CallbackFunc = (file: string, code: number, stdout: string, stderr: string) => boolean;
+export declare type CallbackFunc = (file: string, code: number | NodeJS.Signals, stdout: string, stderr: string) => boolean;
 export declare type FormatterAction = 'check' | 'format';
 interface FormatterActionMetadata {
     commandFlags: string;
