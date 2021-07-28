@@ -1,0 +1,56 @@
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+import { PullApproveGroupArray, PullApproveStringArray } from './pullapprove_arrays';
+import { getOrCreateGlob } from './utils';
+/**
+ * Context that is provided to conditions. Conditions can use various helpers
+ * that PullApprove provides. We try to mock them here. Consult the official
+ * docs for more details: https://docs.pullapprove.com/config/conditions.
+ */
+const conditionContext = {
+    'len': (value) => value.length,
+    'contains_any_globs': (files, patterns) => {
+        // Note: Do not always create globs for the same pattern again. This method
+        // could be called for each source file. Creating glob's is expensive.
+        return files.some(f => patterns.some(pattern => getOrCreateGlob(pattern).match(f)));
+    },
+};
+/**
+ * Converts a given condition to a function that accepts a set of files. The returned
+ * function can be called to check if the set of files matches the condition.
+ */
+export function convertConditionToFunction(expr) {
+    // Creates a dynamic function with the specified expression.
+    // The first parameter will be `files` as that corresponds to the supported `files` variable that
+    // can be accessed in PullApprove condition expressions. The second parameter is the list of
+    // PullApproveGroups that are accessible in the condition expressions. The followed parameters
+    // correspond to other context variables provided by PullApprove for conditions.
+    const evaluateFn = new Function('files', 'groups', ...Object.keys(conditionContext), `
+    return (${transformExpressionToJs(expr)});
+  `);
+    // Create a function that calls the dynamically constructed function which mimics
+    // the condition expression that is usually evaluated with Python in PullApprove.
+    return (files, groups) => {
+        const result = evaluateFn(new PullApproveStringArray(...files), new PullApproveGroupArray(...groups), ...Object.values(conditionContext));
+        // If an array is returned, we consider the condition as active if the array is not
+        // empty. This matches PullApprove's condition evaluation that is based on Python.
+        if (Array.isArray(result)) {
+            return result.length !== 0;
+        }
+        return !!result;
+    };
+}
+/**
+ * Transforms a condition expression from PullApprove that is based on python
+ * so that it can be run inside JavaScript. Current transformations:
+ *   1. `not <..>` -> `!<..>`
+ */
+function transformExpressionToJs(expression) {
+    return expression.replace(/not\s+/g, '!');
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY29uZGl0aW9uX2V2YWx1YXRvci5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL2Rldi1pbmZyYS9wdWxsYXBwcm92ZS9jb25kaXRpb25fZXZhbHVhdG9yLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOzs7Ozs7R0FNRztBQUdILE9BQU8sRUFBQyxxQkFBcUIsRUFBRSxzQkFBc0IsRUFBQyxNQUFNLHNCQUFzQixDQUFDO0FBQ25GLE9BQU8sRUFBQyxlQUFlLEVBQUMsTUFBTSxTQUFTLENBQUM7QUFFeEM7Ozs7R0FJRztBQUNILE1BQU0sZ0JBQWdCLEdBQUc7SUFDdkIsS0FBSyxFQUFFLENBQUMsS0FBWSxFQUFFLEVBQUUsQ0FBQyxLQUFLLENBQUMsTUFBTTtJQUNyQyxvQkFBb0IsRUFBRSxDQUFDLEtBQTZCLEVBQUUsUUFBa0IsRUFBRSxFQUFFO1FBQzFFLDJFQUEyRTtRQUMzRSxzRUFBc0U7UUFDdEUsT0FBTyxLQUFLLENBQUMsSUFBSSxDQUFDLENBQUMsQ0FBQyxFQUFFLENBQUMsUUFBUSxDQUFDLElBQUksQ0FBQyxPQUFPLENBQUMsRUFBRSxDQUFDLGVBQWUsQ0FBQyxPQUFPLENBQUMsQ0FBQyxLQUFLLENBQUMsQ0FBQyxDQUFDLENBQUMsQ0FBQyxDQUFDO0lBQ3RGLENBQUM7Q0FDRixDQUFDO0FBRUY7OztHQUdHO0FBQ0gsTUFBTSxVQUFVLDBCQUEwQixDQUFDLElBQVk7SUFFckQsNERBQTREO0lBQzVELGlHQUFpRztJQUNqRyw0RkFBNEY7SUFDNUYsOEZBQThGO0lBQzlGLGdGQUFnRjtJQUNoRixNQUFNLFVBQVUsR0FBRyxJQUFJLFFBQVEsQ0FBQyxPQUFPLEVBQUUsUUFBUSxFQUFFLEdBQUcsTUFBTSxDQUFDLElBQUksQ0FBQyxnQkFBZ0IsQ0FBQyxFQUFFO2NBQ3pFLHVCQUF1QixDQUFDLElBQUksQ0FBQztHQUN4QyxDQUFDLENBQUM7SUFFSCxpRkFBaUY7SUFDakYsaUZBQWlGO0lBQ2pGLE9BQU8sQ0FBQyxLQUFLLEVBQUUsTUFBTSxFQUFFLEVBQUU7UUFDdkIsTUFBTSxNQUFNLEdBQUcsVUFBVSxDQUNyQixJQUFJLHNCQUFzQixDQUFDLEdBQUcsS0FBSyxDQUFDLEVBQUUsSUFBSSxxQkFBcUIsQ0FBQyxHQUFHLE1BQU0sQ0FBQyxFQUMxRSxHQUFHLE1BQU0sQ0FBQyxNQUFNLENBQUMsZ0JBQWdCLENBQUMsQ0FBQyxDQUFDO1FBQ3hDLG1GQUFtRjtRQUNuRixrRkFBa0Y7UUFDbEYsSUFBSSxLQUFLLENBQUMsT0FBTyxDQUFDLE1BQU0sQ0FBQyxFQUFFO1lBQ3pCLE9BQU8sTUFBTSxDQUFDLE1BQU0sS0FBSyxDQUFDLENBQUM7U0FDNUI7UUFDRCxPQUFPLENBQUMsQ0FBQyxNQUFNLENBQUM7SUFDbEIsQ0FBQyxDQUFDO0FBQ0osQ0FBQztBQUVEOzs7O0dBSUc7QUFDSCxTQUFTLHVCQUF1QixDQUFDLFVBQWtCO0lBQ2pELE9BQU8sVUFBVSxDQUFDLE9BQU8sQ0FBQyxTQUFTLEVBQUUsR0FBRyxDQUFDLENBQUM7QUFDNUMsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogQGxpY2Vuc2VcbiAqIENvcHlyaWdodCBHb29nbGUgTExDIEFsbCBSaWdodHMgUmVzZXJ2ZWQuXG4gKlxuICogVXNlIG9mIHRoaXMgc291cmNlIGNvZGUgaXMgZ292ZXJuZWQgYnkgYW4gTUlULXN0eWxlIGxpY2Vuc2UgdGhhdCBjYW4gYmVcbiAqIGZvdW5kIGluIHRoZSBMSUNFTlNFIGZpbGUgYXQgaHR0cHM6Ly9hbmd1bGFyLmlvL2xpY2Vuc2VcbiAqL1xuXG5pbXBvcnQge1B1bGxBcHByb3ZlR3JvdXB9IGZyb20gJy4vZ3JvdXAnO1xuaW1wb3J0IHtQdWxsQXBwcm92ZUdyb3VwQXJyYXksIFB1bGxBcHByb3ZlU3RyaW5nQXJyYXl9IGZyb20gJy4vcHVsbGFwcHJvdmVfYXJyYXlzJztcbmltcG9ydCB7Z2V0T3JDcmVhdGVHbG9ifSBmcm9tICcuL3V0aWxzJztcblxuLyoqXG4gKiBDb250ZXh0IHRoYXQgaXMgcHJvdmlkZWQgdG8gY29uZGl0aW9ucy4gQ29uZGl0aW9ucyBjYW4gdXNlIHZhcmlvdXMgaGVscGVyc1xuICogdGhhdCBQdWxsQXBwcm92ZSBwcm92aWRlcy4gV2UgdHJ5IHRvIG1vY2sgdGhlbSBoZXJlLiBDb25zdWx0IHRoZSBvZmZpY2lhbFxuICogZG9jcyBmb3IgbW9yZSBkZXRhaWxzOiBodHRwczovL2RvY3MucHVsbGFwcHJvdmUuY29tL2NvbmZpZy9jb25kaXRpb25zLlxuICovXG5jb25zdCBjb25kaXRpb25Db250ZXh0ID0ge1xuICAnbGVuJzogKHZhbHVlOiBhbnlbXSkgPT4gdmFsdWUubGVuZ3RoLFxuICAnY29udGFpbnNfYW55X2dsb2JzJzogKGZpbGVzOiBQdWxsQXBwcm92ZVN0cmluZ0FycmF5LCBwYXR0ZXJuczogc3RyaW5nW10pID0+IHtcbiAgICAvLyBOb3RlOiBEbyBub3QgYWx3YXlzIGNyZWF0ZSBnbG9icyBmb3IgdGhlIHNhbWUgcGF0dGVybiBhZ2Fpbi4gVGhpcyBtZXRob2RcbiAgICAvLyBjb3VsZCBiZSBjYWxsZWQgZm9yIGVhY2ggc291cmNlIGZpbGUuIENyZWF0aW5nIGdsb2IncyBpcyBleHBlbnNpdmUuXG4gICAgcmV0dXJuIGZpbGVzLnNvbWUoZiA9PiBwYXR0ZXJucy5zb21lKHBhdHRlcm4gPT4gZ2V0T3JDcmVhdGVHbG9iKHBhdHRlcm4pLm1hdGNoKGYpKSk7XG4gIH0sXG59O1xuXG4vKipcbiAqIENvbnZlcnRzIGEgZ2l2ZW4gY29uZGl0aW9uIHRvIGEgZnVuY3Rpb24gdGhhdCBhY2NlcHRzIGEgc2V0IG9mIGZpbGVzLiBUaGUgcmV0dXJuZWRcbiAqIGZ1bmN0aW9uIGNhbiBiZSBjYWxsZWQgdG8gY2hlY2sgaWYgdGhlIHNldCBvZiBmaWxlcyBtYXRjaGVzIHRoZSBjb25kaXRpb24uXG4gKi9cbmV4cG9ydCBmdW5jdGlvbiBjb252ZXJ0Q29uZGl0aW9uVG9GdW5jdGlvbihleHByOiBzdHJpbmcpOiAoXG4gICAgZmlsZXM6IHN0cmluZ1tdLCBncm91cHM6IFB1bGxBcHByb3ZlR3JvdXBbXSkgPT4gYm9vbGVhbiB7XG4gIC8vIENyZWF0ZXMgYSBkeW5hbWljIGZ1bmN0aW9uIHdpdGggdGhlIHNwZWNpZmllZCBleHByZXNzaW9uLlxuICAvLyBUaGUgZmlyc3QgcGFyYW1ldGVyIHdpbGwgYmUgYGZpbGVzYCBhcyB0aGF0IGNvcnJlc3BvbmRzIHRvIHRoZSBzdXBwb3J0ZWQgYGZpbGVzYCB2YXJpYWJsZSB0aGF0XG4gIC8vIGNhbiBiZSBhY2Nlc3NlZCBpbiBQdWxsQXBwcm92ZSBjb25kaXRpb24gZXhwcmVzc2lvbnMuIFRoZSBzZWNvbmQgcGFyYW1ldGVyIGlzIHRoZSBsaXN0IG9mXG4gIC8vIFB1bGxBcHByb3ZlR3JvdXBzIHRoYXQgYXJlIGFjY2Vzc2libGUgaW4gdGhlIGNvbmRpdGlvbiBleHByZXNzaW9ucy4gVGhlIGZvbGxvd2VkIHBhcmFtZXRlcnNcbiAgLy8gY29ycmVzcG9uZCB0byBvdGhlciBjb250ZXh0IHZhcmlhYmxlcyBwcm92aWRlZCBieSBQdWxsQXBwcm92ZSBmb3IgY29uZGl0aW9ucy5cbiAgY29uc3QgZXZhbHVhdGVGbiA9IG5ldyBGdW5jdGlvbignZmlsZXMnLCAnZ3JvdXBzJywgLi4uT2JqZWN0LmtleXMoY29uZGl0aW9uQ29udGV4dCksIGBcbiAgICByZXR1cm4gKCR7dHJhbnNmb3JtRXhwcmVzc2lvblRvSnMoZXhwcil9KTtcbiAgYCk7XG5cbiAgLy8gQ3JlYXRlIGEgZnVuY3Rpb24gdGhhdCBjYWxscyB0aGUgZHluYW1pY2FsbHkgY29uc3RydWN0ZWQgZnVuY3Rpb24gd2hpY2ggbWltaWNzXG4gIC8vIHRoZSBjb25kaXRpb24gZXhwcmVzc2lvbiB0aGF0IGlzIHVzdWFsbHkgZXZhbHVhdGVkIHdpdGggUHl0aG9uIGluIFB1bGxBcHByb3ZlLlxuICByZXR1cm4gKGZpbGVzLCBncm91cHMpID0+IHtcbiAgICBjb25zdCByZXN1bHQgPSBldmFsdWF0ZUZuKFxuICAgICAgICBuZXcgUHVsbEFwcHJvdmVTdHJpbmdBcnJheSguLi5maWxlcyksIG5ldyBQdWxsQXBwcm92ZUdyb3VwQXJyYXkoLi4uZ3JvdXBzKSxcbiAgICAgICAgLi4uT2JqZWN0LnZhbHVlcyhjb25kaXRpb25Db250ZXh0KSk7XG4gICAgLy8gSWYgYW4gYXJyYXkgaXMgcmV0dXJuZWQsIHdlIGNvbnNpZGVyIHRoZSBjb25kaXRpb24gYXMgYWN0aXZlIGlmIHRoZSBhcnJheSBpcyBub3RcbiAgICAvLyBlbXB0eS4gVGhpcyBtYXRjaGVzIFB1bGxBcHByb3ZlJ3MgY29uZGl0aW9uIGV2YWx1YXRpb24gdGhhdCBpcyBiYXNlZCBvbiBQeXRob24uXG4gICAgaWYgKEFycmF5LmlzQXJyYXkocmVzdWx0KSkge1xuICAgICAgcmV0dXJuIHJlc3VsdC5sZW5ndGggIT09IDA7XG4gICAgfVxuICAgIHJldHVybiAhIXJlc3VsdDtcbiAgfTtcbn1cblxuLyoqXG4gKiBUcmFuc2Zvcm1zIGEgY29uZGl0aW9uIGV4cHJlc3Npb24gZnJvbSBQdWxsQXBwcm92ZSB0aGF0IGlzIGJhc2VkIG9uIHB5dGhvblxuICogc28gdGhhdCBpdCBjYW4gYmUgcnVuIGluc2lkZSBKYXZhU2NyaXB0LiBDdXJyZW50IHRyYW5zZm9ybWF0aW9uczpcbiAqICAgMS4gYG5vdCA8Li4+YCAtPiBgITwuLj5gXG4gKi9cbmZ1bmN0aW9uIHRyYW5zZm9ybUV4cHJlc3Npb25Ub0pzKGV4cHJlc3Npb246IHN0cmluZyk6IHN0cmluZyB7XG4gIHJldHVybiBleHByZXNzaW9uLnJlcGxhY2UoL25vdFxccysvZywgJyEnKTtcbn1cbiJdfQ==
