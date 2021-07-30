@@ -349,7 +349,7 @@ export declare class GithubClient {
                         watchers_count: number;
                         created_at: string;
                         updated_at: string;
-                    };
+                    } | null;
                     sha: string;
                     user: {
                         avatar_url: string;
@@ -1272,7 +1272,7 @@ export declare class GithubClient {
                         watchers_count: number;
                         created_at: string;
                         updated_at: string;
-                    };
+                    } | null;
                     sha: string;
                     user: {
                         avatar_url: string;
@@ -5065,7 +5065,7 @@ export declare class GithubClient {
                         watchers_count: number;
                         created_at: string;
                         updated_at: string;
-                    };
+                    } | null;
                     sha: string;
                     user: {
                         avatar_url: string;
@@ -9019,6 +9019,7 @@ export declare class GithubClient {
                 }[];
                 body_html?: string | undefined;
                 body_text?: string | undefined;
+                mentions_count?: number | undefined;
                 discussion_url?: string | undefined;
                 reactions?: {
                     url: string;
@@ -12713,6 +12714,7 @@ export declare class GithubClient {
                 }[];
                 body_html?: string | undefined;
                 body_text?: string | undefined;
+                mentions_count?: number | undefined;
                 discussion_url?: string | undefined;
                 reactions?: {
                     url: string;
@@ -13125,6 +13127,7 @@ export declare class GithubClient {
                 }[];
                 body_html?: string | undefined;
                 body_text?: string | undefined;
+                mentions_count?: number | undefined;
                 discussion_url?: string | undefined;
                 reactions?: {
                     url: string;
@@ -13275,6 +13278,7 @@ export declare class GithubClient {
                 }[];
                 body_html?: string | undefined;
                 body_text?: string | undefined;
+                mentions_count?: number | undefined;
                 discussion_url?: string | undefined;
                 reactions?: {
                     url: string;
@@ -18074,6 +18078,7 @@ export declare class GithubClient {
                 }[];
                 body_html?: string | undefined;
                 body_text?: string | undefined;
+                mentions_count?: number | undefined;
                 discussion_url?: string | undefined;
                 reactions?: {
                     url: string;
@@ -21308,6 +21313,7 @@ export declare class GithubClient {
                 }[];
                 body_html?: string | undefined;
                 body_text?: string | undefined;
+                mentions_count?: number | undefined;
                 discussion_url?: string | undefined;
                 reactions?: {
                     url: string;
@@ -21496,7 +21502,7 @@ export declare class GithubClient {
                 repo: string;
                 release_id: number;
             } & {
-                name?: string | undefined;
+                name: string;
                 label?: string | undefined;
             } & {
                 data: string;
