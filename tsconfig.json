@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
+    "module": "CommonJS",
+    "target": "es2020",
+    "lib": ["es2020"],
     "strict": true,
-    "downlevelIteration": true,
-    "noImplicitAny": true,
-    "noImplicitOverride": true
+    "moduleResolution": "node"
   }
 }
