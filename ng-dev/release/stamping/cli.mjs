@@ -1,0 +1,29 @@
+"use strict";
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.BuildEnvStampCommand = void 0;
+const env_stamp_1 = require("./env-stamp");
+function builder(args) {
+    return args.option('mode', {
+        demandOption: true,
+        description: 'Whether the env-stamp should be built for a snapshot or release',
+        choices: ['snapshot', 'release'],
+    });
+}
+async function handler({ mode }) {
+    env_stamp_1.buildEnvStamp(mode);
+}
+/** CLI command module for building the environment stamp. */
+exports.BuildEnvStampCommand = {
+    builder,
+    handler,
+    command: 'build-env-stamp',
+    describe: 'Build the environment stamping information',
+};
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY2xpLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vLi4vLi4vLi4vLi4vbmctZGV2L3JlbGVhc2Uvc3RhbXBpbmcvY2xpLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7QUFBQTs7Ozs7O0dBTUc7OztBQUlILDJDQUF3RDtBQU14RCxTQUFTLE9BQU8sQ0FBQyxJQUFVO0lBQ3pCLE9BQU8sSUFBSSxDQUFDLE1BQU0sQ0FBQyxNQUFNLEVBQUU7UUFDekIsWUFBWSxFQUFFLElBQUk7UUFDbEIsV0FBVyxFQUFFLGlFQUFpRTtRQUM5RSxPQUFPLEVBQUUsQ0FBQyxVQUFtQixFQUFFLFNBQWtCLENBQUM7S0FDbkQsQ0FBQyxDQUFDO0FBQ0wsQ0FBQztBQUVELEtBQUssVUFBVSxPQUFPLENBQUMsRUFBQyxJQUFJLEVBQXFCO0lBQy9DLHlCQUFhLENBQUMsSUFBSSxDQUFDLENBQUM7QUFDdEIsQ0FBQztBQUVELDZEQUE2RDtBQUNoRCxRQUFBLG9CQUFvQixHQUErQjtJQUM5RCxPQUFPO0lBQ1AsT0FBTztJQUNQLE9BQU8sRUFBRSxpQkFBaUI7SUFDMUIsUUFBUSxFQUFFLDRDQUE0QztDQUN2RCxDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiLyoqXG4gKiBAbGljZW5zZVxuICogQ29weXJpZ2h0IEdvb2dsZSBMTEMgQWxsIFJpZ2h0cyBSZXNlcnZlZC5cbiAqXG4gKiBVc2Ugb2YgdGhpcyBzb3VyY2UgY29kZSBpcyBnb3Zlcm5lZCBieSBhbiBNSVQtc3R5bGUgbGljZW5zZSB0aGF0IGNhbiBiZVxuICogZm91bmQgaW4gdGhlIExJQ0VOU0UgZmlsZSBhdCBodHRwczovL2FuZ3VsYXIuaW8vbGljZW5zZVxuICovXG5cbmltcG9ydCB7QXJndW1lbnRzLCBBcmd2LCBDb21tYW5kTW9kdWxlfSBmcm9tICd5YXJncyc7XG5cbmltcG9ydCB7YnVpbGRFbnZTdGFtcCwgRW52U3RhbXBNb2RlfSBmcm9tICcuL2Vudi1zdGFtcCc7XG5cbmV4cG9ydCBpbnRlcmZhY2UgT3B0aW9ucyB7XG4gIG1vZGU6IEVudlN0YW1wTW9kZTtcbn1cblxuZnVuY3Rpb24gYnVpbGRlcihhcmdzOiBBcmd2KTogQXJndjxPcHRpb25zPiB7XG4gIHJldHVybiBhcmdzLm9wdGlvbignbW9kZScsIHtcbiAgICBkZW1hbmRPcHRpb246IHRydWUsXG4gICAgZGVzY3JpcHRpb246ICdXaGV0aGVyIHRoZSBlbnYtc3RhbXAgc2hvdWxkIGJlIGJ1aWx0IGZvciBhIHNuYXBzaG90IG9yIHJlbGVhc2UnLFxuICAgIGNob2ljZXM6IFsnc25hcHNob3QnIGFzIGNvbnN0LCAncmVsZWFzZScgYXMgY29uc3RdLFxuICB9KTtcbn1cblxuYXN5bmMgZnVuY3Rpb24gaGFuZGxlcih7bW9kZX06IEFyZ3VtZW50czxPcHRpb25zPikge1xuICBidWlsZEVudlN0YW1wKG1vZGUpO1xufVxuXG4vKiogQ0xJIGNvbW1hbmQgbW9kdWxlIGZvciBidWlsZGluZyB0aGUgZW52aXJvbm1lbnQgc3RhbXAuICovXG5leHBvcnQgY29uc3QgQnVpbGRFbnZTdGFtcENvbW1hbmQ6IENvbW1hbmRNb2R1bGU8e30sIE9wdGlvbnM+ID0ge1xuICBidWlsZGVyLFxuICBoYW5kbGVyLFxuICBjb21tYW5kOiAnYnVpbGQtZW52LXN0YW1wJyxcbiAgZGVzY3JpYmU6ICdCdWlsZCB0aGUgZW52aXJvbm1lbnQgc3RhbXBpbmcgaW5mb3JtYXRpb24nLFxufTtcbiJdfQ==

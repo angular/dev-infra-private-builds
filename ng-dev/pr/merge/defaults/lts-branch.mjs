@@ -1,0 +1,60 @@
+"use strict";
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.assertActiveLtsBranch = void 0;
+const semver = require("semver");
+const versioning_1 = require("../../../release/versioning");
+const console_1 = require("../../../utils/console");
+const target_label_1 = require("../target-label");
+/**
+ * Asserts that the given branch corresponds to an active LTS version-branch that can receive
+ * backport fixes. Throws an error if LTS expired or an invalid branch is selected.
+ *
+ * @param repo Repository containing the given branch. Used for Github API queries.
+ * @param releaseConfig Configuration for releases. Used to query NPM about past publishes.
+ * @param branchName Branch that is checked to be an active LTS version-branch.
+ * */
+async function assertActiveLtsBranch(repo, releaseConfig, branchName) {
+    const version = await versioning_1.getVersionOfBranch(repo, branchName);
+    const { 'dist-tags': distTags, time } = await versioning_1.fetchProjectNpmPackageInfo(releaseConfig);
+    // LTS versions should be tagged in NPM in the following format: `v{major}-lts`.
+    const ltsNpmTag = versioning_1.getLtsNpmDistTagOfMajor(version.major);
+    const ltsVersion = semver.parse(distTags[ltsNpmTag]);
+    // Ensure that there is an LTS version tagged for the given version-branch major. e.g.
+    // if the version branch is `9.2.x` then we want to make sure that there is an LTS
+    // version tagged in NPM for `v9`, following the `v{major}-lts` tag convention.
+    if (ltsVersion === null) {
+        throw new target_label_1.InvalidTargetBranchError(`No LTS version tagged for v${version.major} in NPM.`);
+    }
+    // Ensure that the correct branch is used for the LTS version. We do not want to merge
+    // changes to older minor version branches that do not reflect the current LTS version.
+    if (branchName !== `${ltsVersion.major}.${ltsVersion.minor}.x`) {
+        throw new target_label_1.InvalidTargetBranchError(`Not using last-minor branch for v${version.major} LTS version. PR ` +
+            `should be updated to target: ${ltsVersion.major}.${ltsVersion.minor}.x`);
+    }
+    const today = new Date();
+    const majorReleaseDate = new Date(time[`${version.major}.0.0`]);
+    const ltsEndDate = versioning_1.computeLtsEndDateOfMajor(majorReleaseDate);
+    // Check if LTS has already expired for the targeted major version. If so, we do not
+    // allow the merge as per our LTS guarantees. Can be forcibly overridden if desired.
+    // See: https://angular.io/guide/releases#support-policy-and-schedule.
+    if (today > ltsEndDate) {
+        const ltsEndDateText = ltsEndDate.toLocaleDateString('en-US');
+        console_1.warn(console_1.red(`Long-term support ended for v${version.major} on ${ltsEndDateText}.`));
+        console_1.warn(console_1.yellow(`Merging of pull requests for this major is generally not ` +
+            `desired, but can be forcibly ignored.`));
+        if (await console_1.promptConfirm('Do you want to forcibly proceed with merging?')) {
+            return;
+        }
+        throw new target_label_1.InvalidTargetBranchError(`Long-term supported ended for v${version.major} on ${ltsEndDateText}. ` +
+            `Pull request cannot be merged into the ${branchName} branch.`);
+    }
+}
+exports.assertActiveLtsBranch = assertActiveLtsBranch;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoibHRzLWJyYW5jaC5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uLy4uLy4uL25nLWRldi9wci9tZXJnZS9kZWZhdWx0cy9sdHMtYnJhbmNoLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7QUFBQTs7Ozs7O0dBTUc7OztBQUVILGlDQUFpQztBQUdqQyw0REFNcUM7QUFDckMsb0RBQXdFO0FBQ3hFLGtEQUF5RDtBQUV6RDs7Ozs7OztLQU9LO0FBQ0UsS0FBSyxVQUFVLHFCQUFxQixDQUN6QyxJQUF3QixFQUN4QixhQUE0QixFQUM1QixVQUFrQjtJQUVsQixNQUFNLE9BQU8sR0FBRyxNQUFNLCtCQUFrQixDQUFDLElBQUksRUFBRSxVQUFVLENBQUMsQ0FBQztJQUMzRCxNQUFNLEVBQUMsV0FBVyxFQUFFLFFBQVEsRUFBRSxJQUFJLEVBQUMsR0FBRyxNQUFNLHVDQUEwQixDQUFDLGFBQWEsQ0FBQyxDQUFDO0lBRXRGLGdGQUFnRjtJQUNoRixNQUFNLFNBQVMsR0FBRyxvQ0FBdUIsQ0FBQyxPQUFPLENBQUMsS0FBSyxDQUFDLENBQUM7SUFDekQsTUFBTSxVQUFVLEdBQUcsTUFBTSxDQUFDLEtBQUssQ0FBQyxRQUFRLENBQUMsU0FBUyxDQUFDLENBQUMsQ0FBQztJQUVyRCxzRkFBc0Y7SUFDdEYsa0ZBQWtGO0lBQ2xGLCtFQUErRTtJQUMvRSxJQUFJLFVBQVUsS0FBSyxJQUFJLEVBQUU7UUFDdkIsTUFBTSxJQUFJLHVDQUF3QixDQUFDLDhCQUE4QixPQUFPLENBQUMsS0FBSyxVQUFVLENBQUMsQ0FBQztLQUMzRjtJQUVELHNGQUFzRjtJQUN0Rix1RkFBdUY7SUFDdkYsSUFBSSxVQUFVLEtBQUssR0FBRyxVQUFVLENBQUMsS0FBSyxJQUFJLFVBQVUsQ0FBQyxLQUFLLElBQUksRUFBRTtRQUM5RCxNQUFNLElBQUksdUNBQXdCLENBQ2hDLG9DQUFvQyxPQUFPLENBQUMsS0FBSyxtQkFBbUI7WUFDbEUsZ0NBQWdDLFVBQVUsQ0FBQyxLQUFLLElBQUksVUFBVSxDQUFDLEtBQUssSUFBSSxDQUMzRSxDQUFDO0tBQ0g7SUFFRCxNQUFNLEtBQUssR0FBRyxJQUFJLElBQUksRUFBRSxDQUFDO0lBQ3pCLE1BQU0sZ0JBQWdCLEdBQUcsSUFBSSxJQUFJLENBQUMsSUFBSSxDQUFDLEdBQUcsT0FBTyxDQUFDLEtBQUssTUFBTSxDQUFDLENBQUMsQ0FBQztJQUNoRSxNQUFNLFVBQVUsR0FBRyxxQ0FBd0IsQ0FBQyxnQkFBZ0IsQ0FBQyxDQUFDO0lBRTlELG9GQUFvRjtJQUNwRixvRkFBb0Y7SUFDcEYsc0VBQXNFO0lBQ3RFLElBQUksS0FBSyxHQUFHLFVBQVUsRUFBRTtRQUN0QixNQUFNLGNBQWMsR0FBRyxVQUFVLENBQUMsa0JBQWtCLENBQUMsT0FBTyxDQUFDLENBQUM7UUFDOUQsY0FBSSxDQUFDLGFBQUcsQ0FBQyxnQ0FBZ0MsT0FBTyxDQUFDLEtBQUssT0FBTyxjQUFjLEdBQUcsQ0FBQyxDQUFDLENBQUM7UUFDakYsY0FBSSxDQUNGLGdCQUFNLENBQ0osMkRBQTJEO1lBQ3pELHVDQUF1QyxDQUMxQyxDQUNGLENBQUM7UUFDRixJQUFJLE1BQU0sdUJBQWEsQ0FBQywrQ0FBK0MsQ0FBQyxFQUFFO1lBQ3hFLE9BQU87U0FDUjtRQUNELE1BQU0sSUFBSSx1Q0FBd0IsQ0FDaEMsa0NBQWtDLE9BQU8sQ0FBQyxLQUFLLE9BQU8sY0FBYyxJQUFJO1lBQ3RFLDBDQUEwQyxVQUFVLFVBQVUsQ0FDakUsQ0FBQztLQUNIO0FBQ0gsQ0FBQztBQXBERCxzREFvREMiLCJzb3VyY2VzQ29udGVudCI6WyIvKipcbiAqIEBsaWNlbnNlXG4gKiBDb3B5cmlnaHQgR29vZ2xlIExMQyBBbGwgUmlnaHRzIFJlc2VydmVkLlxuICpcbiAqIFVzZSBvZiB0aGlzIHNvdXJjZSBjb2RlIGlzIGdvdmVybmVkIGJ5IGFuIE1JVC1zdHlsZSBsaWNlbnNlIHRoYXQgY2FuIGJlXG4gKiBmb3VuZCBpbiB0aGUgTElDRU5TRSBmaWxlIGF0IGh0dHBzOi8vYW5ndWxhci5pby9saWNlbnNlXG4gKi9cblxuaW1wb3J0ICogYXMgc2VtdmVyIGZyb20gJ3NlbXZlcic7XG5cbmltcG9ydCB7UmVsZWFzZUNvbmZpZ30gZnJvbSAnLi4vLi4vLi4vcmVsZWFzZS9jb25maWcvaW5kZXgnO1xuaW1wb3J0IHtcbiAgY29tcHV0ZUx0c0VuZERhdGVPZk1ham9yLFxuICBmZXRjaFByb2plY3ROcG1QYWNrYWdlSW5mbyxcbiAgZ2V0THRzTnBtRGlzdFRhZ09mTWFqb3IsXG4gIGdldFZlcnNpb25PZkJyYW5jaCxcbiAgUmVsZWFzZVJlcG9XaXRoQXBpLFxufSBmcm9tICcuLi8uLi8uLi9yZWxlYXNlL3ZlcnNpb25pbmcnO1xuaW1wb3J0IHtwcm9tcHRDb25maXJtLCByZWQsIHdhcm4sIHllbGxvd30gZnJvbSAnLi4vLi4vLi4vdXRpbHMvY29uc29sZSc7XG5pbXBvcnQge0ludmFsaWRUYXJnZXRCcmFuY2hFcnJvcn0gZnJvbSAnLi4vdGFyZ2V0LWxhYmVsJztcblxuLyoqXG4gKiBBc3NlcnRzIHRoYXQgdGhlIGdpdmVuIGJyYW5jaCBjb3JyZXNwb25kcyB0byBhbiBhY3RpdmUgTFRTIHZlcnNpb24tYnJhbmNoIHRoYXQgY2FuIHJlY2VpdmVcbiAqIGJhY2twb3J0IGZpeGVzLiBUaHJvd3MgYW4gZXJyb3IgaWYgTFRTIGV4cGlyZWQgb3IgYW4gaW52YWxpZCBicmFuY2ggaXMgc2VsZWN0ZWQuXG4gKlxuICogQHBhcmFtIHJlcG8gUmVwb3NpdG9yeSBjb250YWluaW5nIHRoZSBnaXZlbiBicmFuY2guIFVzZWQgZm9yIEdpdGh1YiBBUEkgcXVlcmllcy5cbiAqIEBwYXJhbSByZWxlYXNlQ29uZmlnIENvbmZpZ3VyYXRpb24gZm9yIHJlbGVhc2VzLiBVc2VkIHRvIHF1ZXJ5IE5QTSBhYm91dCBwYXN0IHB1Ymxpc2hlcy5cbiAqIEBwYXJhbSBicmFuY2hOYW1lIEJyYW5jaCB0aGF0IGlzIGNoZWNrZWQgdG8gYmUgYW4gYWN0aXZlIExUUyB2ZXJzaW9uLWJyYW5jaC5cbiAqICovXG5leHBvcnQgYXN5bmMgZnVuY3Rpb24gYXNzZXJ0QWN0aXZlTHRzQnJhbmNoKFxuICByZXBvOiBSZWxlYXNlUmVwb1dpdGhBcGksXG4gIHJlbGVhc2VDb25maWc6IFJlbGVhc2VDb25maWcsXG4gIGJyYW5jaE5hbWU6IHN0cmluZyxcbikge1xuICBjb25zdCB2ZXJzaW9uID0gYXdhaXQgZ2V0VmVyc2lvbk9mQnJhbmNoKHJlcG8sIGJyYW5jaE5hbWUpO1xuICBjb25zdCB7J2Rpc3QtdGFncyc6IGRpc3RUYWdzLCB0aW1lfSA9IGF3YWl0IGZldGNoUHJvamVjdE5wbVBhY2thZ2VJbmZvKHJlbGVhc2VDb25maWcpO1xuXG4gIC8vIExUUyB2ZXJzaW9ucyBzaG91bGQgYmUgdGFnZ2VkIGluIE5QTSBpbiB0aGUgZm9sbG93aW5nIGZvcm1hdDogYHZ7bWFqb3J9LWx0c2AuXG4gIGNvbnN0IGx0c05wbVRhZyA9IGdldEx0c05wbURpc3RUYWdPZk1ham9yKHZlcnNpb24ubWFqb3IpO1xuICBjb25zdCBsdHNWZXJzaW9uID0gc2VtdmVyLnBhcnNlKGRpc3RUYWdzW2x0c05wbVRhZ10pO1xuXG4gIC8vIEVuc3VyZSB0aGF0IHRoZXJlIGlzIGFuIExUUyB2ZXJzaW9uIHRhZ2dlZCBmb3IgdGhlIGdpdmVuIHZlcnNpb24tYnJhbmNoIG1ham9yLiBlLmcuXG4gIC8vIGlmIHRoZSB2ZXJzaW9uIGJyYW5jaCBpcyBgOS4yLnhgIHRoZW4gd2Ugd2FudCB0byBtYWtlIHN1cmUgdGhhdCB0aGVyZSBpcyBhbiBMVFNcbiAgLy8gdmVyc2lvbiB0YWdnZWQgaW4gTlBNIGZvciBgdjlgLCBmb2xsb3dpbmcgdGhlIGB2e21ham9yfS1sdHNgIHRhZyBjb252ZW50aW9uLlxuICBpZiAobHRzVmVyc2lvbiA9PT0gbnVsbCkge1xuICAgIHRocm93IG5ldyBJbnZhbGlkVGFyZ2V0QnJhbmNoRXJyb3IoYE5vIExUUyB2ZXJzaW9uIHRhZ2dlZCBmb3IgdiR7dmVyc2lvbi5tYWpvcn0gaW4gTlBNLmApO1xuICB9XG5cbiAgLy8gRW5zdXJlIHRoYXQgdGhlIGNvcnJlY3QgYnJhbmNoIGlzIHVzZWQgZm9yIHRoZSBMVFMgdmVyc2lvbi4gV2UgZG8gbm90IHdhbnQgdG8gbWVyZ2VcbiAgLy8gY2hhbmdlcyB0byBvbGRlciBtaW5vciB2ZXJzaW9uIGJyYW5jaGVzIHRoYXQgZG8gbm90IHJlZmxlY3QgdGhlIGN1cnJlbnQgTFRTIHZlcnNpb24uXG4gIGlmIChicmFuY2hOYW1lICE9PSBgJHtsdHNWZXJzaW9uLm1ham9yfS4ke2x0c1ZlcnNpb24ubWlub3J9LnhgKSB7XG4gICAgdGhyb3cgbmV3IEludmFsaWRUYXJnZXRCcmFuY2hFcnJvcihcbiAgICAgIGBOb3QgdXNpbmcgbGFzdC1taW5vciBicmFuY2ggZm9yIHYke3ZlcnNpb24ubWFqb3J9IExUUyB2ZXJzaW9uLiBQUiBgICtcbiAgICAgICAgYHNob3VsZCBiZSB1cGRhdGVkIHRvIHRhcmdldDogJHtsdHNWZXJzaW9uLm1ham9yfS4ke2x0c1ZlcnNpb24ubWlub3J9LnhgLFxuICAgICk7XG4gIH1cblxuICBjb25zdCB0b2RheSA9IG5ldyBEYXRlKCk7XG4gIGNvbnN0IG1ham9yUmVsZWFzZURhdGUgPSBuZXcgRGF0ZSh0aW1lW2Ake3ZlcnNpb24ubWFqb3J9LjAuMGBdKTtcbiAgY29uc3QgbHRzRW5kRGF0ZSA9IGNvbXB1dGVMdHNFbmREYXRlT2ZNYWpvcihtYWpvclJlbGVhc2VEYXRlKTtcblxuICAvLyBDaGVjayBpZiBMVFMgaGFzIGFscmVhZHkgZXhwaXJlZCBmb3IgdGhlIHRhcmdldGVkIG1ham9yIHZlcnNpb24uIElmIHNvLCB3ZSBkbyBub3RcbiAgLy8gYWxsb3cgdGhlIG1lcmdlIGFzIHBlciBvdXIgTFRTIGd1YXJhbnRlZXMuIENhbiBiZSBmb3JjaWJseSBvdmVycmlkZGVuIGlmIGRlc2lyZWQuXG4gIC8vIFNlZTogaHR0cHM6Ly9hbmd1bGFyLmlvL2d1aWRlL3JlbGVhc2VzI3N1cHBvcnQtcG9saWN5LWFuZC1zY2hlZHVsZS5cbiAgaWYgKHRvZGF5ID4gbHRzRW5kRGF0ZSkge1xuICAgIGNvbnN0IGx0c0VuZERhdGVUZXh0ID0gbHRzRW5kRGF0ZS50b0xvY2FsZURhdGVTdHJpbmcoJ2VuLVVTJyk7XG4gICAgd2FybihyZWQoYExvbmctdGVybSBzdXBwb3J0IGVuZGVkIGZvciB2JHt2ZXJzaW9uLm1ham9yfSBvbiAke2x0c0VuZERhdGVUZXh0fS5gKSk7XG4gICAgd2FybihcbiAgICAgIHllbGxvdyhcbiAgICAgICAgYE1lcmdpbmcgb2YgcHVsbCByZXF1ZXN0cyBmb3IgdGhpcyBtYWpvciBpcyBnZW5lcmFsbHkgbm90IGAgK1xuICAgICAgICAgIGBkZXNpcmVkLCBidXQgY2FuIGJlIGZvcmNpYmx5IGlnbm9yZWQuYCxcbiAgICAgICksXG4gICAgKTtcbiAgICBpZiAoYXdhaXQgcHJvbXB0Q29uZmlybSgnRG8geW91IHdhbnQgdG8gZm9yY2libHkgcHJvY2VlZCB3aXRoIG1lcmdpbmc/JykpIHtcbiAgICAgIHJldHVybjtcbiAgICB9XG4gICAgdGhyb3cgbmV3IEludmFsaWRUYXJnZXRCcmFuY2hFcnJvcihcbiAgICAgIGBMb25nLXRlcm0gc3VwcG9ydGVkIGVuZGVkIGZvciB2JHt2ZXJzaW9uLm1ham9yfSBvbiAke2x0c0VuZERhdGVUZXh0fS4gYCArXG4gICAgICAgIGBQdWxsIHJlcXVlc3QgY2Fubm90IGJlIG1lcmdlZCBpbnRvIHRoZSAke2JyYW5jaE5hbWV9IGJyYW5jaC5gLFxuICAgICk7XG4gIH1cbn1cbiJdfQ==

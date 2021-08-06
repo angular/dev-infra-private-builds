@@ -1,0 +1,47 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.validateFile = void 0;
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+const fs_1 = require("fs");
+const path_1 = require("path");
+const console_1 = require("../../utils/console");
+const git_client_1 = require("../../utils/git/git-client");
+const commit_message_draft_1 = require("../restore-commit-message/commit-message-draft");
+const validate_1 = require("../validate");
+/** Validate commit message at the provided file path. */
+function validateFile(filePath, isErrorMode) {
+    const git = git_client_1.GitClient.get();
+    const commitMessage = fs_1.readFileSync(path_1.resolve(git.baseDir, filePath), 'utf8');
+    const { valid, errors } = validate_1.validateCommitMessage(commitMessage);
+    if (valid) {
+        console_1.info(`${console_1.green('√')}  Valid commit message`);
+        commit_message_draft_1.deleteCommitMessageDraft(filePath);
+        process.exitCode = 0;
+        return;
+    }
+    /** Function used to print to the console log. */
+    let printFn = isErrorMode ? console_1.error : console_1.log;
+    printFn(`${isErrorMode ? console_1.red('✘') : console_1.yellow('!')}  Invalid commit message`);
+    validate_1.printValidationErrors(errors, printFn);
+    if (isErrorMode) {
+        printFn(console_1.red('Aborting commit attempt due to invalid commit message.'));
+        printFn(console_1.red('Commit message aborted as failure rather than warning due to local configuration.'));
+    }
+    else {
+        printFn(console_1.yellow('Before this commit can be merged into the upstream repository, it must be'));
+        printFn(console_1.yellow('amended to follow commit message guidelines.'));
+    }
+    // On all invalid commit messages, the commit message should be saved as a draft to be
+    // restored on the next commit attempt.
+    commit_message_draft_1.saveCommitMessageDraft(filePath, commitMessage);
+    // Set the correct exit code based on if invalid commit message is an error.
+    process.exitCode = isErrorMode ? 1 : 0;
+}
+exports.validateFile = validateFile;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidmFsaWRhdGUtZmlsZS5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uLy4uL25nLWRldi9jb21taXQtbWVzc2FnZS92YWxpZGF0ZS1maWxlL3ZhbGlkYXRlLWZpbGUudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7O0FBQUE7Ozs7OztHQU1HO0FBQ0gsMkJBQWdDO0FBQ2hDLCtCQUE2QjtBQUU3QixpREFBeUU7QUFDekUsMkRBQXFEO0FBRXJELHlGQUd3RDtBQUN4RCwwQ0FBeUU7QUFFekUseURBQXlEO0FBQ3pELFNBQWdCLFlBQVksQ0FBQyxRQUFnQixFQUFFLFdBQW9CO0lBQ2pFLE1BQU0sR0FBRyxHQUFHLHNCQUFTLENBQUMsR0FBRyxFQUFFLENBQUM7SUFDNUIsTUFBTSxhQUFhLEdBQUcsaUJBQVksQ0FBQyxjQUFPLENBQUMsR0FBRyxDQUFDLE9BQU8sRUFBRSxRQUFRLENBQUMsRUFBRSxNQUFNLENBQUMsQ0FBQztJQUMzRSxNQUFNLEVBQUMsS0FBSyxFQUFFLE1BQU0sRUFBQyxHQUFHLGdDQUFxQixDQUFDLGFBQWEsQ0FBQyxDQUFDO0lBQzdELElBQUksS0FBSyxFQUFFO1FBQ1QsY0FBSSxDQUFDLEdBQUcsZUFBSyxDQUFDLEdBQUcsQ0FBQyx3QkFBd0IsQ0FBQyxDQUFDO1FBQzVDLCtDQUF3QixDQUFDLFFBQVEsQ0FBQyxDQUFDO1FBQ25DLE9BQU8sQ0FBQyxRQUFRLEdBQUcsQ0FBQyxDQUFDO1FBQ3JCLE9BQU87S0FDUjtJQUVELGlEQUFpRDtJQUNqRCxJQUFJLE9BQU8sR0FBRyxXQUFXLENBQUMsQ0FBQyxDQUFDLGVBQUssQ0FBQyxDQUFDLENBQUMsYUFBRyxDQUFDO0lBRXhDLE9BQU8sQ0FBQyxHQUFHLFdBQVcsQ0FBQyxDQUFDLENBQUMsYUFBRyxDQUFDLEdBQUcsQ0FBQyxDQUFDLENBQUMsQ0FBQyxnQkFBTSxDQUFDLEdBQUcsQ0FBQywwQkFBMEIsQ0FBQyxDQUFDO0lBQzNFLGdDQUFxQixDQUFDLE1BQU0sRUFBRSxPQUFPLENBQUMsQ0FBQztJQUN2QyxJQUFJLFdBQVcsRUFBRTtRQUNmLE9BQU8sQ0FBQyxhQUFHLENBQUMsd0RBQXdELENBQUMsQ0FBQyxDQUFDO1FBQ3ZFLE9BQU8sQ0FDTCxhQUFHLENBQUMsbUZBQW1GLENBQUMsQ0FDekYsQ0FBQztLQUNIO1NBQU07UUFDTCxPQUFPLENBQUMsZ0JBQU0sQ0FBQywyRUFBMkUsQ0FBQyxDQUFDLENBQUM7UUFDN0YsT0FBTyxDQUFDLGdCQUFNLENBQUMsOENBQThDLENBQUMsQ0FBQyxDQUFDO0tBQ2pFO0lBRUQsc0ZBQXNGO0lBQ3RGLHVDQUF1QztJQUN2Qyw2Q0FBc0IsQ0FBQyxRQUFRLEVBQUUsYUFBYSxDQUFDLENBQUM7SUFDaEQsNEVBQTRFO0lBQzVFLE9BQU8sQ0FBQyxRQUFRLEdBQUcsV0FBVyxDQUFDLENBQUMsQ0FBQyxDQUFDLENBQUMsQ0FBQyxDQUFDLENBQUMsQ0FBQztBQUN6QyxDQUFDO0FBL0JELG9DQStCQyIsInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogQGxpY2Vuc2VcbiAqIENvcHlyaWdodCBHb29nbGUgTExDIEFsbCBSaWdodHMgUmVzZXJ2ZWQuXG4gKlxuICogVXNlIG9mIHRoaXMgc291cmNlIGNvZGUgaXMgZ292ZXJuZWQgYnkgYW4gTUlULXN0eWxlIGxpY2Vuc2UgdGhhdCBjYW4gYmVcbiAqIGZvdW5kIGluIHRoZSBMSUNFTlNFIGZpbGUgYXQgaHR0cHM6Ly9hbmd1bGFyLmlvL2xpY2Vuc2VcbiAqL1xuaW1wb3J0IHtyZWFkRmlsZVN5bmN9IGZyb20gJ2ZzJztcbmltcG9ydCB7cmVzb2x2ZX0gZnJvbSAncGF0aCc7XG5cbmltcG9ydCB7ZXJyb3IsIGdyZWVuLCBpbmZvLCBsb2csIHJlZCwgeWVsbG93fSBmcm9tICcuLi8uLi91dGlscy9jb25zb2xlJztcbmltcG9ydCB7R2l0Q2xpZW50fSBmcm9tICcuLi8uLi91dGlscy9naXQvZ2l0LWNsaWVudCc7XG5cbmltcG9ydCB7XG4gIGRlbGV0ZUNvbW1pdE1lc3NhZ2VEcmFmdCxcbiAgc2F2ZUNvbW1pdE1lc3NhZ2VEcmFmdCxcbn0gZnJvbSAnLi4vcmVzdG9yZS1jb21taXQtbWVzc2FnZS9jb21taXQtbWVzc2FnZS1kcmFmdCc7XG5pbXBvcnQge3ByaW50VmFsaWRhdGlvbkVycm9ycywgdmFsaWRhdGVDb21taXRNZXNzYWdlfSBmcm9tICcuLi92YWxpZGF0ZSc7XG5cbi8qKiBWYWxpZGF0ZSBjb21taXQgbWVzc2FnZSBhdCB0aGUgcHJvdmlkZWQgZmlsZSBwYXRoLiAqL1xuZXhwb3J0IGZ1bmN0aW9uIHZhbGlkYXRlRmlsZShmaWxlUGF0aDogc3RyaW5nLCBpc0Vycm9yTW9kZTogYm9vbGVhbikge1xuICBjb25zdCBnaXQgPSBHaXRDbGllbnQuZ2V0KCk7XG4gIGNvbnN0IGNvbW1pdE1lc3NhZ2UgPSByZWFkRmlsZVN5bmMocmVzb2x2ZShnaXQuYmFzZURpciwgZmlsZVBhdGgpLCAndXRmOCcpO1xuICBjb25zdCB7dmFsaWQsIGVycm9yc30gPSB2YWxpZGF0ZUNvbW1pdE1lc3NhZ2UoY29tbWl0TWVzc2FnZSk7XG4gIGlmICh2YWxpZCkge1xuICAgIGluZm8oYCR7Z3JlZW4oJ+KImicpfSAgVmFsaWQgY29tbWl0IG1lc3NhZ2VgKTtcbiAgICBkZWxldGVDb21taXRNZXNzYWdlRHJhZnQoZmlsZVBhdGgpO1xuICAgIHByb2Nlc3MuZXhpdENvZGUgPSAwO1xuICAgIHJldHVybjtcbiAgfVxuXG4gIC8qKiBGdW5jdGlvbiB1c2VkIHRvIHByaW50IHRvIHRoZSBjb25zb2xlIGxvZy4gKi9cbiAgbGV0IHByaW50Rm4gPSBpc0Vycm9yTW9kZSA/IGVycm9yIDogbG9nO1xuXG4gIHByaW50Rm4oYCR7aXNFcnJvck1vZGUgPyByZWQoJ+KcmCcpIDogeWVsbG93KCchJyl9ICBJbnZhbGlkIGNvbW1pdCBtZXNzYWdlYCk7XG4gIHByaW50VmFsaWRhdGlvbkVycm9ycyhlcnJvcnMsIHByaW50Rm4pO1xuICBpZiAoaXNFcnJvck1vZGUpIHtcbiAgICBwcmludEZuKHJlZCgnQWJvcnRpbmcgY29tbWl0IGF0dGVtcHQgZHVlIHRvIGludmFsaWQgY29tbWl0IG1lc3NhZ2UuJykpO1xuICAgIHByaW50Rm4oXG4gICAgICByZWQoJ0NvbW1pdCBtZXNzYWdlIGFib3J0ZWQgYXMgZmFpbHVyZSByYXRoZXIgdGhhbiB3YXJuaW5nIGR1ZSB0byBsb2NhbCBjb25maWd1cmF0aW9uLicpLFxuICAgICk7XG4gIH0gZWxzZSB7XG4gICAgcHJpbnRGbih5ZWxsb3coJ0JlZm9yZSB0aGlzIGNvbW1pdCBjYW4gYmUgbWVyZ2VkIGludG8gdGhlIHVwc3RyZWFtIHJlcG9zaXRvcnksIGl0IG11c3QgYmUnKSk7XG4gICAgcHJpbnRGbih5ZWxsb3coJ2FtZW5kZWQgdG8gZm9sbG93IGNvbW1pdCBtZXNzYWdlIGd1aWRlbGluZXMuJykpO1xuICB9XG5cbiAgLy8gT24gYWxsIGludmFsaWQgY29tbWl0IG1lc3NhZ2VzLCB0aGUgY29tbWl0IG1lc3NhZ2Ugc2hvdWxkIGJlIHNhdmVkIGFzIGEgZHJhZnQgdG8gYmVcbiAgLy8gcmVzdG9yZWQgb24gdGhlIG5leHQgY29tbWl0IGF0dGVtcHQuXG4gIHNhdmVDb21taXRNZXNzYWdlRHJhZnQoZmlsZVBhdGgsIGNvbW1pdE1lc3NhZ2UpO1xuICAvLyBTZXQgdGhlIGNvcnJlY3QgZXhpdCBjb2RlIGJhc2VkIG9uIGlmIGludmFsaWQgY29tbWl0IG1lc3NhZ2UgaXMgYW4gZXJyb3IuXG4gIHByb2Nlc3MuZXhpdENvZGUgPSBpc0Vycm9yTW9kZSA/IDEgOiAwO1xufVxuIl19

@@ -1,0 +1,28 @@
+"use strict";
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.HandoffModule = void 0;
+const github_yargs_1 = require("../../utils/git/github-yargs");
+const update_github_team_1 = require("./update-github-team");
+/** Builds the command. */
+function builder(yargs) {
+    return github_yargs_1.addGithubTokenOption(yargs);
+}
+/** Handles the command. */
+async function handler() {
+    await update_github_team_1.updateCaretakerTeamViaPrompt();
+}
+/** yargs command module for assisting in handing off caretaker.  */
+exports.HandoffModule = {
+    handler,
+    builder,
+    command: 'handoff',
+    describe: 'Run a handoff assistant to aide in moving to the next caretaker',
+};
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY2xpLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vLi4vLi4vLi4vLi4vbmctZGV2L2NhcmV0YWtlci9oYW5kb2ZmL2NsaS50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0FBQUE7Ozs7OztHQU1HOzs7QUFJSCwrREFBa0U7QUFFbEUsNkRBQWtFO0FBTWxFLDBCQUEwQjtBQUMxQixTQUFTLE9BQU8sQ0FBQyxLQUFXO0lBQzFCLE9BQU8sbUNBQW9CLENBQUMsS0FBSyxDQUFDLENBQUM7QUFDckMsQ0FBQztBQUVELDJCQUEyQjtBQUMzQixLQUFLLFVBQVUsT0FBTztJQUNwQixNQUFNLGlEQUE0QixFQUFFLENBQUM7QUFDdkMsQ0FBQztBQUVELG9FQUFvRTtBQUN2RCxRQUFBLGFBQWEsR0FBK0M7SUFDdkUsT0FBTztJQUNQLE9BQU87SUFDUCxPQUFPLEVBQUUsU0FBUztJQUNsQixRQUFRLEVBQUUsaUVBQWlFO0NBQzVFLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyIvKipcbiAqIEBsaWNlbnNlXG4gKiBDb3B5cmlnaHQgR29vZ2xlIExMQyBBbGwgUmlnaHRzIFJlc2VydmVkLlxuICpcbiAqIFVzZSBvZiB0aGlzIHNvdXJjZSBjb2RlIGlzIGdvdmVybmVkIGJ5IGFuIE1JVC1zdHlsZSBsaWNlbnNlIHRoYXQgY2FuIGJlXG4gKiBmb3VuZCBpbiB0aGUgTElDRU5TRSBmaWxlIGF0IGh0dHBzOi8vYW5ndWxhci5pby9saWNlbnNlXG4gKi9cblxuaW1wb3J0IHtBcmd2LCBDb21tYW5kTW9kdWxlfSBmcm9tICd5YXJncyc7XG5cbmltcG9ydCB7YWRkR2l0aHViVG9rZW5PcHRpb259IGZyb20gJy4uLy4uL3V0aWxzL2dpdC9naXRodWIteWFyZ3MnO1xuXG5pbXBvcnQge3VwZGF0ZUNhcmV0YWtlclRlYW1WaWFQcm9tcHR9IGZyb20gJy4vdXBkYXRlLWdpdGh1Yi10ZWFtJztcblxuZXhwb3J0IGludGVyZmFjZSBDYXJldGFrZXJIYW5kb2ZmT3B0aW9ucyB7XG4gIGdpdGh1YlRva2VuOiBzdHJpbmc7XG59XG5cbi8qKiBCdWlsZHMgdGhlIGNvbW1hbmQuICovXG5mdW5jdGlvbiBidWlsZGVyKHlhcmdzOiBBcmd2KSB7XG4gIHJldHVybiBhZGRHaXRodWJUb2tlbk9wdGlvbih5YXJncyk7XG59XG5cbi8qKiBIYW5kbGVzIHRoZSBjb21tYW5kLiAqL1xuYXN5bmMgZnVuY3Rpb24gaGFuZGxlcigpIHtcbiAgYXdhaXQgdXBkYXRlQ2FyZXRha2VyVGVhbVZpYVByb21wdCgpO1xufVxuXG4vKiogeWFyZ3MgY29tbWFuZCBtb2R1bGUgZm9yIGFzc2lzdGluZyBpbiBoYW5kaW5nIG9mZiBjYXJldGFrZXIuICAqL1xuZXhwb3J0IGNvbnN0IEhhbmRvZmZNb2R1bGU6IENvbW1hbmRNb2R1bGU8e30sIENhcmV0YWtlckhhbmRvZmZPcHRpb25zPiA9IHtcbiAgaGFuZGxlcixcbiAgYnVpbGRlcixcbiAgY29tbWFuZDogJ2hhbmRvZmYnLFxuICBkZXNjcmliZTogJ1J1biBhIGhhbmRvZmYgYXNzaXN0YW50IHRvIGFpZGUgaW4gbW92aW5nIHRvIHRoZSBuZXh0IGNhcmV0YWtlcicsXG59O1xuIl19

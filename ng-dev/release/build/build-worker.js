@@ -1,0 +1,29 @@
+"use strict";
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+/*
+ * This file will be spawned as a separate process when the `ng-dev release build` command is
+ * invoked. A separate process allows us to hide any superfluous stdout output from arbitrary
+ * build commands that we cannot control. This is necessary as the `ng-dev release build` command
+ * supports stdout JSON output that should be parsable and not polluted from other stdout messages.
+ */
+const index_1 = require("../config/index");
+// Start the release package building.
+main(process.argv[2] === 'true');
+/** Main function for building the release packages. */
+async function main(stampForRelease) {
+    if (process.send === undefined) {
+        throw Error('This script needs to be invoked as a NodeJS worker.');
+    }
+    const config = index_1.getReleaseConfig();
+    const builtPackages = await config.buildPackages(stampForRelease);
+    // Transfer the built packages back to the parent process.
+    process.send(builtPackages);
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiYnVpbGQtd29ya2VyLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vLi4vLi4vLi4vLi4vbmctZGV2L3JlbGVhc2UvYnVpbGQvYnVpbGQtd29ya2VyLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7QUFBQTs7Ozs7O0dBTUc7O0FBRUg7Ozs7O0dBS0c7QUFFSCwyQ0FBaUQ7QUFFakQsc0NBQXNDO0FBQ3RDLElBQUksQ0FBQyxPQUFPLENBQUMsSUFBSSxDQUFDLENBQUMsQ0FBQyxLQUFLLE1BQU0sQ0FBQyxDQUFDO0FBRWpDLHVEQUF1RDtBQUN2RCxLQUFLLFVBQVUsSUFBSSxDQUFDLGVBQXdCO0lBQzFDLElBQUksT0FBTyxDQUFDLElBQUksS0FBSyxTQUFTLEVBQUU7UUFDOUIsTUFBTSxLQUFLLENBQUMscURBQXFELENBQUMsQ0FBQztLQUNwRTtJQUVELE1BQU0sTUFBTSxHQUFHLHdCQUFnQixFQUFFLENBQUM7SUFDbEMsTUFBTSxhQUFhLEdBQUcsTUFBTSxNQUFNLENBQUMsYUFBYSxDQUFDLGVBQWUsQ0FBQyxDQUFDO0lBRWxFLDBEQUEwRDtJQUMxRCxPQUFPLENBQUMsSUFBSSxDQUFDLGFBQWEsQ0FBQyxDQUFDO0FBQzlCLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyIvKipcbiAqIEBsaWNlbnNlXG4gKiBDb3B5cmlnaHQgR29vZ2xlIExMQyBBbGwgUmlnaHRzIFJlc2VydmVkLlxuICpcbiAqIFVzZSBvZiB0aGlzIHNvdXJjZSBjb2RlIGlzIGdvdmVybmVkIGJ5IGFuIE1JVC1zdHlsZSBsaWNlbnNlIHRoYXQgY2FuIGJlXG4gKiBmb3VuZCBpbiB0aGUgTElDRU5TRSBmaWxlIGF0IGh0dHBzOi8vYW5ndWxhci5pby9saWNlbnNlXG4gKi9cblxuLypcbiAqIFRoaXMgZmlsZSB3aWxsIGJlIHNwYXduZWQgYXMgYSBzZXBhcmF0ZSBwcm9jZXNzIHdoZW4gdGhlIGBuZy1kZXYgcmVsZWFzZSBidWlsZGAgY29tbWFuZCBpc1xuICogaW52b2tlZC4gQSBzZXBhcmF0ZSBwcm9jZXNzIGFsbG93cyB1cyB0byBoaWRlIGFueSBzdXBlcmZsdW91cyBzdGRvdXQgb3V0cHV0IGZyb20gYXJiaXRyYXJ5XG4gKiBidWlsZCBjb21tYW5kcyB0aGF0IHdlIGNhbm5vdCBjb250cm9sLiBUaGlzIGlzIG5lY2Vzc2FyeSBhcyB0aGUgYG5nLWRldiByZWxlYXNlIGJ1aWxkYCBjb21tYW5kXG4gKiBzdXBwb3J0cyBzdGRvdXQgSlNPTiBvdXRwdXQgdGhhdCBzaG91bGQgYmUgcGFyc2FibGUgYW5kIG5vdCBwb2xsdXRlZCBmcm9tIG90aGVyIHN0ZG91dCBtZXNzYWdlcy5cbiAqL1xuXG5pbXBvcnQge2dldFJlbGVhc2VDb25maWd9IGZyb20gJy4uL2NvbmZpZy9pbmRleCc7XG5cbi8vIFN0YXJ0IHRoZSByZWxlYXNlIHBhY2thZ2UgYnVpbGRpbmcuXG5tYWluKHByb2Nlc3MuYXJndlsyXSA9PT0gJ3RydWUnKTtcblxuLyoqIE1haW4gZnVuY3Rpb24gZm9yIGJ1aWxkaW5nIHRoZSByZWxlYXNlIHBhY2thZ2VzLiAqL1xuYXN5bmMgZnVuY3Rpb24gbWFpbihzdGFtcEZvclJlbGVhc2U6IGJvb2xlYW4pIHtcbiAgaWYgKHByb2Nlc3Muc2VuZCA9PT0gdW5kZWZpbmVkKSB7XG4gICAgdGhyb3cgRXJyb3IoJ1RoaXMgc2NyaXB0IG5lZWRzIHRvIGJlIGludm9rZWQgYXMgYSBOb2RlSlMgd29ya2VyLicpO1xuICB9XG5cbiAgY29uc3QgY29uZmlnID0gZ2V0UmVsZWFzZUNvbmZpZygpO1xuICBjb25zdCBidWlsdFBhY2thZ2VzID0gYXdhaXQgY29uZmlnLmJ1aWxkUGFja2FnZXMoc3RhbXBGb3JSZWxlYXNlKTtcblxuICAvLyBUcmFuc2ZlciB0aGUgYnVpbHQgcGFja2FnZXMgYmFjayB0byB0aGUgcGFyZW50IHByb2Nlc3MuXG4gIHByb2Nlc3Muc2VuZChidWlsdFBhY2thZ2VzKTtcbn1cbiJdfQ==

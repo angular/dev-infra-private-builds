@@ -1,0 +1,63 @@
+"use strict";
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getBranchesFromTargetLabel = exports.getTargetLabelFromPullRequest = exports.InvalidTargetLabelError = exports.InvalidTargetBranchError = void 0;
+const string_pattern_1 = require("./string-pattern");
+/**
+ * Unique error that can be thrown in the merge configuration if an
+ * invalid branch is targeted.
+ */
+class InvalidTargetBranchError {
+    constructor(failureMessage) {
+        this.failureMessage = failureMessage;
+    }
+}
+exports.InvalidTargetBranchError = InvalidTargetBranchError;
+/**
+ * Unique error that can be thrown in the merge configuration if an
+ * invalid label has been applied to a pull request.
+ */
+class InvalidTargetLabelError {
+    constructor(failureMessage) {
+        this.failureMessage = failureMessage;
+    }
+}
+exports.InvalidTargetLabelError = InvalidTargetLabelError;
+/** Gets the target label from the specified pull request labels. */
+function getTargetLabelFromPullRequest(config, labels) {
+    /** List of discovered target labels for the PR. */
+    const matches = [];
+    for (const label of labels) {
+        const match = config.labels.find(({ pattern }) => string_pattern_1.matchesPattern(label, pattern));
+        if (match !== undefined) {
+            matches.push(match);
+        }
+    }
+    if (matches.length === 1) {
+        return matches[0];
+    }
+    if (matches.length === 0) {
+        throw new InvalidTargetLabelError('Unable to determine target for the PR as it has no target label.');
+    }
+    throw new InvalidTargetLabelError('Unable to determine target for the PR as it has multiple target labels.');
+}
+exports.getTargetLabelFromPullRequest = getTargetLabelFromPullRequest;
+/**
+ * Gets the branches from the specified target label.
+ *
+ * @throws {InvalidTargetLabelError} Invalid label has been applied to pull request.
+ * @throws {InvalidTargetBranchError} Invalid Github target branch has been selected.
+ */
+async function getBranchesFromTargetLabel(label, githubTargetBranch) {
+    return typeof label.branches === 'function'
+        ? await label.branches(githubTargetBranch)
+        : await label.branches;
+}
+exports.getBranchesFromTargetLabel = getBranchesFromTargetLabel;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidGFyZ2V0LWxhYmVsLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vLi4vLi4vLi4vLi4vbmctZGV2L3ByL21lcmdlL3RhcmdldC1sYWJlbC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0FBQUE7Ozs7OztHQU1HOzs7QUFHSCxxREFBZ0Q7QUFFaEQ7OztHQUdHO0FBQ0gsTUFBYSx3QkFBd0I7SUFDbkMsWUFBbUIsY0FBc0I7UUFBdEIsbUJBQWMsR0FBZCxjQUFjLENBQVE7SUFBRyxDQUFDO0NBQzlDO0FBRkQsNERBRUM7QUFFRDs7O0dBR0c7QUFDSCxNQUFhLHVCQUF1QjtJQUNsQyxZQUFtQixjQUFzQjtRQUF0QixtQkFBYyxHQUFkLGNBQWMsQ0FBUTtJQUFHLENBQUM7Q0FDOUM7QUFGRCwwREFFQztBQUVELG9FQUFvRTtBQUNwRSxTQUFnQiw2QkFBNkIsQ0FDM0MsTUFBbUMsRUFDbkMsTUFBZ0I7SUFFaEIsbURBQW1EO0lBQ25ELE1BQU0sT0FBTyxHQUFHLEVBQUUsQ0FBQztJQUNuQixLQUFLLE1BQU0sS0FBSyxJQUFJLE1BQU0sRUFBRTtRQUMxQixNQUFNLEtBQUssR0FBRyxNQUFNLENBQUMsTUFBTSxDQUFDLElBQUksQ0FBQyxDQUFDLEVBQUMsT0FBTyxFQUFDLEVBQUUsRUFBRSxDQUFDLCtCQUFjLENBQUMsS0FBSyxFQUFFLE9BQU8sQ0FBQyxDQUFDLENBQUM7UUFDaEYsSUFBSSxLQUFLLEtBQUssU0FBUyxFQUFFO1lBQ3ZCLE9BQU8sQ0FBQyxJQUFJLENBQUMsS0FBSyxDQUFDLENBQUM7U0FDckI7S0FDRjtJQUNELElBQUksT0FBTyxDQUFDLE1BQU0sS0FBSyxDQUFDLEVBQUU7UUFDeEIsT0FBTyxPQUFPLENBQUMsQ0FBQyxDQUFDLENBQUM7S0FDbkI7SUFDRCxJQUFJLE9BQU8sQ0FBQyxNQUFNLEtBQUssQ0FBQyxFQUFFO1FBQ3hCLE1BQU0sSUFBSSx1QkFBdUIsQ0FDL0Isa0VBQWtFLENBQ25FLENBQUM7S0FDSDtJQUNELE1BQU0sSUFBSSx1QkFBdUIsQ0FDL0IseUVBQXlFLENBQzFFLENBQUM7QUFDSixDQUFDO0FBdkJELHNFQXVCQztBQUVEOzs7OztHQUtHO0FBQ0ksS0FBSyxVQUFVLDBCQUEwQixDQUM5QyxLQUFrQixFQUNsQixrQkFBMEI7SUFFMUIsT0FBTyxPQUFPLEtBQUssQ0FBQyxRQUFRLEtBQUssVUFBVTtRQUN6QyxDQUFDLENBQUMsTUFBTSxLQUFLLENBQUMsUUFBUSxDQUFDLGtCQUFrQixDQUFDO1FBQzFDLENBQUMsQ0FBQyxNQUFNLEtBQUssQ0FBQyxRQUFRLENBQUM7QUFDM0IsQ0FBQztBQVBELGdFQU9DIiwic291cmNlc0NvbnRlbnQiOlsiLyoqXG4gKiBAbGljZW5zZVxuICogQ29weXJpZ2h0IEdvb2dsZSBMTEMgQWxsIFJpZ2h0cyBSZXNlcnZlZC5cbiAqXG4gKiBVc2Ugb2YgdGhpcyBzb3VyY2UgY29kZSBpcyBnb3Zlcm5lZCBieSBhbiBNSVQtc3R5bGUgbGljZW5zZSB0aGF0IGNhbiBiZVxuICogZm91bmQgaW4gdGhlIExJQ0VOU0UgZmlsZSBhdCBodHRwczovL2FuZ3VsYXIuaW8vbGljZW5zZVxuICovXG5cbmltcG9ydCB7TWVyZ2VDb25maWcsIFRhcmdldExhYmVsfSBmcm9tICcuL2NvbmZpZyc7XG5pbXBvcnQge21hdGNoZXNQYXR0ZXJufSBmcm9tICcuL3N0cmluZy1wYXR0ZXJuJztcblxuLyoqXG4gKiBVbmlxdWUgZXJyb3IgdGhhdCBjYW4gYmUgdGhyb3duIGluIHRoZSBtZXJnZSBjb25maWd1cmF0aW9uIGlmIGFuXG4gKiBpbnZhbGlkIGJyYW5jaCBpcyB0YXJnZXRlZC5cbiAqL1xuZXhwb3J0IGNsYXNzIEludmFsaWRUYXJnZXRCcmFuY2hFcnJvciB7XG4gIGNvbnN0cnVjdG9yKHB1YmxpYyBmYWlsdXJlTWVzc2FnZTogc3RyaW5nKSB7fVxufVxuXG4vKipcbiAqIFVuaXF1ZSBlcnJvciB0aGF0IGNhbiBiZSB0aHJvd24gaW4gdGhlIG1lcmdlIGNvbmZpZ3VyYXRpb24gaWYgYW5cbiAqIGludmFsaWQgbGFiZWwgaGFzIGJlZW4gYXBwbGllZCB0byBhIHB1bGwgcmVxdWVzdC5cbiAqL1xuZXhwb3J0IGNsYXNzIEludmFsaWRUYXJnZXRMYWJlbEVycm9yIHtcbiAgY29uc3RydWN0b3IocHVibGljIGZhaWx1cmVNZXNzYWdlOiBzdHJpbmcpIHt9XG59XG5cbi8qKiBHZXRzIHRoZSB0YXJnZXQgbGFiZWwgZnJvbSB0aGUgc3BlY2lmaWVkIHB1bGwgcmVxdWVzdCBsYWJlbHMuICovXG5leHBvcnQgZnVuY3Rpb24gZ2V0VGFyZ2V0TGFiZWxGcm9tUHVsbFJlcXVlc3QoXG4gIGNvbmZpZzogUGljazxNZXJnZUNvbmZpZywgJ2xhYmVscyc+LFxuICBsYWJlbHM6IHN0cmluZ1tdLFxuKTogVGFyZ2V0TGFiZWwge1xuICAvKiogTGlzdCBvZiBkaXNjb3ZlcmVkIHRhcmdldCBsYWJlbHMgZm9yIHRoZSBQUi4gKi9cbiAgY29uc3QgbWF0Y2hlcyA9IFtdO1xuICBmb3IgKGNvbnN0IGxhYmVsIG9mIGxhYmVscykge1xuICAgIGNvbnN0IG1hdGNoID0gY29uZmlnLmxhYmVscy5maW5kKCh7cGF0dGVybn0pID0+IG1hdGNoZXNQYXR0ZXJuKGxhYmVsLCBwYXR0ZXJuKSk7XG4gICAgaWYgKG1hdGNoICE9PSB1bmRlZmluZWQpIHtcbiAgICAgIG1hdGNoZXMucHVzaChtYXRjaCk7XG4gICAgfVxuICB9XG4gIGlmIChtYXRjaGVzLmxlbmd0aCA9PT0gMSkge1xuICAgIHJldHVybiBtYXRjaGVzWzBdO1xuICB9XG4gIGlmIChtYXRjaGVzLmxlbmd0aCA9PT0gMCkge1xuICAgIHRocm93IG5ldyBJbnZhbGlkVGFyZ2V0TGFiZWxFcnJvcihcbiAgICAgICdVbmFibGUgdG8gZGV0ZXJtaW5lIHRhcmdldCBmb3IgdGhlIFBSIGFzIGl0IGhhcyBubyB0YXJnZXQgbGFiZWwuJyxcbiAgICApO1xuICB9XG4gIHRocm93IG5ldyBJbnZhbGlkVGFyZ2V0TGFiZWxFcnJvcihcbiAgICAnVW5hYmxlIHRvIGRldGVybWluZSB0YXJnZXQgZm9yIHRoZSBQUiBhcyBpdCBoYXMgbXVsdGlwbGUgdGFyZ2V0IGxhYmVscy4nLFxuICApO1xufVxuXG4vKipcbiAqIEdldHMgdGhlIGJyYW5jaGVzIGZyb20gdGhlIHNwZWNpZmllZCB0YXJnZXQgbGFiZWwuXG4gKlxuICogQHRocm93cyB7SW52YWxpZFRhcmdldExhYmVsRXJyb3J9IEludmFsaWQgbGFiZWwgaGFzIGJlZW4gYXBwbGllZCB0byBwdWxsIHJlcXVlc3QuXG4gKiBAdGhyb3dzIHtJbnZhbGlkVGFyZ2V0QnJhbmNoRXJyb3J9IEludmFsaWQgR2l0aHViIHRhcmdldCBicmFuY2ggaGFzIGJlZW4gc2VsZWN0ZWQuXG4gKi9cbmV4cG9ydCBhc3luYyBmdW5jdGlvbiBnZXRCcmFuY2hlc0Zyb21UYXJnZXRMYWJlbChcbiAgbGFiZWw6IFRhcmdldExhYmVsLFxuICBnaXRodWJUYXJnZXRCcmFuY2g6IHN0cmluZyxcbik6IFByb21pc2U8c3RyaW5nW10+IHtcbiAgcmV0dXJuIHR5cGVvZiBsYWJlbC5icmFuY2hlcyA9PT0gJ2Z1bmN0aW9uJ1xuICAgID8gYXdhaXQgbGFiZWwuYnJhbmNoZXMoZ2l0aHViVGFyZ2V0QnJhbmNoKVxuICAgIDogYXdhaXQgbGFiZWwuYnJhbmNoZXM7XG59XG4iXX0=

@@ -1,0 +1,43 @@
+"use strict";
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.CutNewPatchAction = void 0;
+const semver_1 = require("../../../utils/semver");
+const actions_1 = require("../actions");
+/**
+ * Release action that cuts a new patch release for the current latest release-train version
+ * branch (i.e. the patch branch). The patch segment is incremented. The changelog is generated
+ * for the new patch version, but also needs to be cherry-picked into the next development branch.
+ */
+class CutNewPatchAction extends actions_1.ReleaseAction {
+    constructor() {
+        super(...arguments);
+        this._newVersion = semver_1.semverInc(this.active.latest.version, 'patch');
+    }
+    async getDescription() {
+        const { branchName } = this.active.latest;
+        const newVersion = this._newVersion;
+        return `Cut a new patch release for the "${branchName}" branch (v${newVersion}).`;
+    }
+    async perform() {
+        const { branchName } = this.active.latest;
+        const newVersion = this._newVersion;
+        const { pullRequest, releaseNotes } = await this.checkoutBranchAndStageVersion(newVersion, branchName);
+        await this.waitForPullRequestToBeMerged(pullRequest);
+        await this.buildAndPublish(releaseNotes, branchName, 'latest');
+        await this.cherryPickChangelogIntoNextBranch(releaseNotes, branchName);
+    }
+    static async isActive(active) {
+        // Patch versions can be cut at any time. See:
+        // https://hackmd.io/2Le8leq0S6G_R5VEVTNK9A#Release-prompt-options.
+        return true;
+    }
+}
+exports.CutNewPatchAction = CutNewPatchAction;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY3V0LW5ldy1wYXRjaC5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uLy4uLy4uL25nLWRldi9yZWxlYXNlL3B1Ymxpc2gvYWN0aW9ucy9jdXQtbmV3LXBhdGNoLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7QUFBQTs7Ozs7O0dBTUc7OztBQUVILGtEQUFnRDtBQUVoRCx3Q0FBeUM7QUFFekM7Ozs7R0FJRztBQUNILE1BQWEsaUJBQWtCLFNBQVEsdUJBQWE7SUFBcEQ7O1FBQ1UsZ0JBQVcsR0FBRyxrQkFBUyxDQUFDLElBQUksQ0FBQyxNQUFNLENBQUMsTUFBTSxDQUFDLE9BQU8sRUFBRSxPQUFPLENBQUMsQ0FBQztJQTJCdkUsQ0FBQztJQXpCVSxLQUFLLENBQUMsY0FBYztRQUMzQixNQUFNLEVBQUMsVUFBVSxFQUFDLEdBQUcsSUFBSSxDQUFDLE1BQU0sQ0FBQyxNQUFNLENBQUM7UUFDeEMsTUFBTSxVQUFVLEdBQUcsSUFBSSxDQUFDLFdBQVcsQ0FBQztRQUNwQyxPQUFPLG9DQUFvQyxVQUFVLGNBQWMsVUFBVSxJQUFJLENBQUM7SUFDcEYsQ0FBQztJQUVRLEtBQUssQ0FBQyxPQUFPO1FBQ3BCLE1BQU0sRUFBQyxVQUFVLEVBQUMsR0FBRyxJQUFJLENBQUMsTUFBTSxDQUFDLE1BQU0sQ0FBQztRQUN4QyxNQUFNLFVBQVUsR0FBRyxJQUFJLENBQUMsV0FBVyxDQUFDO1FBRXBDLE1BQU0sRUFBQyxXQUFXLEVBQUUsWUFBWSxFQUFDLEdBQUcsTUFBTSxJQUFJLENBQUMsNkJBQTZCLENBQzFFLFVBQVUsRUFDVixVQUFVLENBQ1gsQ0FBQztRQUVGLE1BQU0sSUFBSSxDQUFDLDRCQUE0QixDQUFDLFdBQVcsQ0FBQyxDQUFDO1FBQ3JELE1BQU0sSUFBSSxDQUFDLGVBQWUsQ0FBQyxZQUFZLEVBQUUsVUFBVSxFQUFFLFFBQVEsQ0FBQyxDQUFDO1FBQy9ELE1BQU0sSUFBSSxDQUFDLGlDQUFpQyxDQUFDLFlBQVksRUFBRSxVQUFVLENBQUMsQ0FBQztJQUN6RSxDQUFDO0lBRUQsTUFBTSxDQUFVLEtBQUssQ0FBQyxRQUFRLENBQUMsTUFBMkI7UUFDeEQsOENBQThDO1FBQzlDLG1FQUFtRTtRQUNuRSxPQUFPLElBQUksQ0FBQztJQUNkLENBQUM7Q0FDRjtBQTVCRCw4Q0E0QkMiLCJzb3VyY2VzQ29udGVudCI6WyIvKipcbiAqIEBsaWNlbnNlXG4gKiBDb3B5cmlnaHQgR29vZ2xlIExMQyBBbGwgUmlnaHRzIFJlc2VydmVkLlxuICpcbiAqIFVzZSBvZiB0aGlzIHNvdXJjZSBjb2RlIGlzIGdvdmVybmVkIGJ5IGFuIE1JVC1zdHlsZSBsaWNlbnNlIHRoYXQgY2FuIGJlXG4gKiBmb3VuZCBpbiB0aGUgTElDRU5TRSBmaWxlIGF0IGh0dHBzOi8vYW5ndWxhci5pby9saWNlbnNlXG4gKi9cblxuaW1wb3J0IHtzZW12ZXJJbmN9IGZyb20gJy4uLy4uLy4uL3V0aWxzL3NlbXZlcic7XG5pbXBvcnQge0FjdGl2ZVJlbGVhc2VUcmFpbnN9IGZyb20gJy4uLy4uL3ZlcnNpb25pbmcvYWN0aXZlLXJlbGVhc2UtdHJhaW5zJztcbmltcG9ydCB7UmVsZWFzZUFjdGlvbn0gZnJvbSAnLi4vYWN0aW9ucyc7XG5cbi8qKlxuICogUmVsZWFzZSBhY3Rpb24gdGhhdCBjdXRzIGEgbmV3IHBhdGNoIHJlbGVhc2UgZm9yIHRoZSBjdXJyZW50IGxhdGVzdCByZWxlYXNlLXRyYWluIHZlcnNpb25cbiAqIGJyYW5jaCAoaS5lLiB0aGUgcGF0Y2ggYnJhbmNoKS4gVGhlIHBhdGNoIHNlZ21lbnQgaXMgaW5jcmVtZW50ZWQuIFRoZSBjaGFuZ2Vsb2cgaXMgZ2VuZXJhdGVkXG4gKiBmb3IgdGhlIG5ldyBwYXRjaCB2ZXJzaW9uLCBidXQgYWxzbyBuZWVkcyB0byBiZSBjaGVycnktcGlja2VkIGludG8gdGhlIG5leHQgZGV2ZWxvcG1lbnQgYnJhbmNoLlxuICovXG5leHBvcnQgY2xhc3MgQ3V0TmV3UGF0Y2hBY3Rpb24gZXh0ZW5kcyBSZWxlYXNlQWN0aW9uIHtcbiAgcHJpdmF0ZSBfbmV3VmVyc2lvbiA9IHNlbXZlckluYyh0aGlzLmFjdGl2ZS5sYXRlc3QudmVyc2lvbiwgJ3BhdGNoJyk7XG5cbiAgb3ZlcnJpZGUgYXN5bmMgZ2V0RGVzY3JpcHRpb24oKSB7XG4gICAgY29uc3Qge2JyYW5jaE5hbWV9ID0gdGhpcy5hY3RpdmUubGF0ZXN0O1xuICAgIGNvbnN0IG5ld1ZlcnNpb24gPSB0aGlzLl9uZXdWZXJzaW9uO1xuICAgIHJldHVybiBgQ3V0IGEgbmV3IHBhdGNoIHJlbGVhc2UgZm9yIHRoZSBcIiR7YnJhbmNoTmFtZX1cIiBicmFuY2ggKHYke25ld1ZlcnNpb259KS5gO1xuICB9XG5cbiAgb3ZlcnJpZGUgYXN5bmMgcGVyZm9ybSgpIHtcbiAgICBjb25zdCB7YnJhbmNoTmFtZX0gPSB0aGlzLmFjdGl2ZS5sYXRlc3Q7XG4gICAgY29uc3QgbmV3VmVyc2lvbiA9IHRoaXMuX25ld1ZlcnNpb247XG5cbiAgICBjb25zdCB7cHVsbFJlcXVlc3QsIHJlbGVhc2VOb3Rlc30gPSBhd2FpdCB0aGlzLmNoZWNrb3V0QnJhbmNoQW5kU3RhZ2VWZXJzaW9uKFxuICAgICAgbmV3VmVyc2lvbixcbiAgICAgIGJyYW5jaE5hbWUsXG4gICAgKTtcblxuICAgIGF3YWl0IHRoaXMud2FpdEZvclB1bGxSZXF1ZXN0VG9CZU1lcmdlZChwdWxsUmVxdWVzdCk7XG4gICAgYXdhaXQgdGhpcy5idWlsZEFuZFB1Ymxpc2gocmVsZWFzZU5vdGVzLCBicmFuY2hOYW1lLCAnbGF0ZXN0Jyk7XG4gICAgYXdhaXQgdGhpcy5jaGVycnlQaWNrQ2hhbmdlbG9nSW50b05leHRCcmFuY2gocmVsZWFzZU5vdGVzLCBicmFuY2hOYW1lKTtcbiAgfVxuXG4gIHN0YXRpYyBvdmVycmlkZSBhc3luYyBpc0FjdGl2ZShhY3RpdmU6IEFjdGl2ZVJlbGVhc2VUcmFpbnMpIHtcbiAgICAvLyBQYXRjaCB2ZXJzaW9ucyBjYW4gYmUgY3V0IGF0IGFueSB0aW1lLiBTZWU6XG4gICAgLy8gaHR0cHM6Ly9oYWNrbWQuaW8vMkxlOGxlcTBTNkdfUjVWRVZUTks5QSNSZWxlYXNlLXByb21wdC1vcHRpb25zLlxuICAgIHJldHVybiB0cnVlO1xuICB9XG59XG4iXX0=

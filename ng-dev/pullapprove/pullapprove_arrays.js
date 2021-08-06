@@ -1,0 +1,75 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PullApproveGroupArray = exports.PullApproveStringArray = exports.PullApproveGroupStateDependencyError = void 0;
+const utils_1 = require("./utils");
+class PullApproveGroupStateDependencyError extends Error {
+    constructor(message) {
+        super(message);
+        // Set the prototype explicitly because in ES5, the prototype is accidentally
+        // lost due to a limitation in down-leveling.
+        // https://github.com/Microsoft/TypeScript/wiki/FAQ#why-doesnt-extending-built-ins-like-error-array-and-map-work.
+        Object.setPrototypeOf(this, PullApproveGroupStateDependencyError.prototype);
+        // Error names are displayed in their stack but can't be set in the constructor.
+        this.name = PullApproveGroupStateDependencyError.name;
+    }
+}
+exports.PullApproveGroupStateDependencyError = PullApproveGroupStateDependencyError;
+/**
+ * Superset of a native array. The superset provides methods which mimic the
+ * list data structure used in PullApprove for files in conditions.
+ */
+class PullApproveStringArray extends Array {
+    constructor(...elements) {
+        super(...elements);
+        // Set the prototype explicitly because in ES5, the prototype is accidentally
+        // lost due to a limitation in down-leveling.
+        // https://github.com/Microsoft/TypeScript/wiki/FAQ#why-doesnt-extending-built-ins-like-error-array-and-map-work.
+        Object.setPrototypeOf(this, PullApproveStringArray.prototype);
+    }
+    /** Returns a new array which only includes files that match the given pattern. */
+    include(pattern) {
+        return new PullApproveStringArray(...this.filter((s) => utils_1.getOrCreateGlob(pattern).match(s)));
+    }
+    /** Returns a new array which only includes files that did not match the given pattern. */
+    exclude(pattern) {
+        return new PullApproveStringArray(...this.filter((s) => !utils_1.getOrCreateGlob(pattern).match(s)));
+    }
+}
+exports.PullApproveStringArray = PullApproveStringArray;
+/**
+ * Superset of a native array. The superset provides methods which mimic the
+ * list data structure used in PullApprove for groups in conditions.
+ */
+class PullApproveGroupArray extends Array {
+    constructor(...elements) {
+        super(...elements);
+        // Set the prototype explicitly because in ES5, the prototype is accidentally
+        // lost due to a limitation in down-leveling.
+        // https://github.com/Microsoft/TypeScript/wiki/FAQ#why-doesnt-extending-built-ins-like-error-array-and-map-work.
+        Object.setPrototypeOf(this, PullApproveGroupArray.prototype);
+    }
+    include(pattern) {
+        return new PullApproveGroupArray(...this.filter((s) => s.groupName.match(pattern)));
+    }
+    /** Returns a new array which only includes files that did not match the given pattern. */
+    exclude(pattern) {
+        return new PullApproveGroupArray(...this.filter((s) => s.groupName.match(pattern)));
+    }
+    get pending() {
+        throw new PullApproveGroupStateDependencyError();
+    }
+    get active() {
+        throw new PullApproveGroupStateDependencyError();
+    }
+    get inactive() {
+        throw new PullApproveGroupStateDependencyError();
+    }
+    get rejected() {
+        throw new PullApproveGroupStateDependencyError();
+    }
+    get names() {
+        return this.map((g) => g.groupName);
+    }
+}
+exports.PullApproveGroupArray = PullApproveGroupArray;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicHVsbGFwcHJvdmVfYXJyYXlzLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vLi4vLi4vLi4vbmctZGV2L3B1bGxhcHByb3ZlL3B1bGxhcHByb3ZlX2FycmF5cy50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7QUFRQSxtQ0FBd0M7QUFFeEMsTUFBYSxvQ0FBcUMsU0FBUSxLQUFLO0lBQzdELFlBQVksT0FBZ0I7UUFDMUIsS0FBSyxDQUFDLE9BQU8sQ0FBQyxDQUFDO1FBQ2YsNkVBQTZFO1FBQzdFLDZDQUE2QztRQUM3QyxpSEFBaUg7UUFDakgsTUFBTSxDQUFDLGNBQWMsQ0FBQyxJQUFJLEVBQUUsb0NBQW9DLENBQUMsU0FBUyxDQUFDLENBQUM7UUFDNUUsZ0ZBQWdGO1FBQ2hGLElBQUksQ0FBQyxJQUFJLEdBQUcsb0NBQW9DLENBQUMsSUFBSSxDQUFDO0lBQ3hELENBQUM7Q0FDRjtBQVZELG9GQVVDO0FBRUQ7OztHQUdHO0FBQ0gsTUFBYSxzQkFBdUIsU0FBUSxLQUFhO0lBQ3ZELFlBQVksR0FBRyxRQUFrQjtRQUMvQixLQUFLLENBQUMsR0FBRyxRQUFRLENBQUMsQ0FBQztRQUVuQiw2RUFBNkU7UUFDN0UsNkNBQTZDO1FBQzdDLGlIQUFpSDtRQUNqSCxNQUFNLENBQUMsY0FBYyxDQUFDLElBQUksRUFBRSxzQkFBc0IsQ0FBQyxTQUFTLENBQUMsQ0FBQztJQUNoRSxDQUFDO0lBQ0Qsa0ZBQWtGO0lBQ2xGLE9BQU8sQ0FBQyxPQUFlO1FBQ3JCLE9BQU8sSUFBSSxzQkFBc0IsQ0FBQyxHQUFHLElBQUksQ0FBQyxNQUFNLENBQUMsQ0FBQyxDQUFDLEVBQUUsRUFBRSxDQUFDLHVCQUFlLENBQUMsT0FBTyxDQUFDLENBQUMsS0FBSyxDQUFDLENBQUMsQ0FBQyxDQUFDLENBQUMsQ0FBQztJQUM5RixDQUFDO0lBRUQsMEZBQTBGO0lBQzFGLE9BQU8sQ0FBQyxPQUFlO1FBQ3JCLE9BQU8sSUFBSSxzQkFBc0IsQ0FBQyxHQUFHLElBQUksQ0FBQyxNQUFNLENBQUMsQ0FBQyxDQUFDLEVBQUUsRUFBRSxDQUFDLENBQUMsdUJBQWUsQ0FBQyxPQUFPLENBQUMsQ0FBQyxLQUFLLENBQUMsQ0FBQyxDQUFDLENBQUMsQ0FBQyxDQUFDO0lBQy9GLENBQUM7Q0FDRjtBQWxCRCx3REFrQkM7QUFFRDs7O0dBR0c7QUFDSCxNQUFhLHFCQUFzQixTQUFRLEtBQXVCO0lBQ2hFLFlBQVksR0FBRyxRQUE0QjtRQUN6QyxLQUFLLENBQUMsR0FBRyxRQUFRLENBQUMsQ0FBQztRQUVuQiw2RUFBNkU7UUFDN0UsNkNBQTZDO1FBQzdDLGlIQUFpSDtRQUNqSCxNQUFNLENBQUMsY0FBYyxDQUFDLElBQUksRUFBRSxxQkFBcUIsQ0FBQyxTQUFTLENBQUMsQ0FBQztJQUMvRCxDQUFDO0lBRUQsT0FBTyxDQUFDLE9BQWU7UUFDckIsT0FBTyxJQUFJLHFCQUFxQixDQUFDLEdBQUcsSUFBSSxDQUFDLE1BQU0sQ0FBQyxDQUFDLENBQUMsRUFBRSxFQUFFLENBQUMsQ0FBQyxDQUFDLFNBQVMsQ0FBQyxLQUFLLENBQUMsT0FBTyxDQUFDLENBQUMsQ0FBQyxDQUFDO0lBQ3RGLENBQUM7SUFFRCwwRkFBMEY7SUFDMUYsT0FBTyxDQUFDLE9BQWU7UUFDckIsT0FBTyxJQUFJLHFCQUFxQixDQUFDLEdBQUcsSUFBSSxDQUFDLE1BQU0sQ0FBQyxDQUFDLENBQUMsRUFBRSxFQUFFLENBQUMsQ0FBQyxDQUFDLFNBQVMsQ0FBQyxLQUFLLENBQUMsT0FBTyxDQUFDLENBQUMsQ0FBQyxDQUFDO0lBQ3RGLENBQUM7SUFFRCxJQUFJLE9BQU87UUFDVCxNQUFNLElBQUksb0NBQW9DLEVBQUUsQ0FBQztJQUNuRCxDQUFDO0lBRUQsSUFBSSxNQUFNO1FBQ1IsTUFBTSxJQUFJLG9DQUFvQyxFQUFFLENBQUM7SUFDbkQsQ0FBQztJQUVELElBQUksUUFBUTtRQUNWLE1BQU0sSUFBSSxvQ0FBb0MsRUFBRSxDQUFDO0lBQ25ELENBQUM7SUFFRCxJQUFJLFFBQVE7UUFDVixNQUFNLElBQUksb0NBQW9DLEVBQUUsQ0FBQztJQUNuRCxDQUFDO0lBRUQsSUFBSSxLQUFLO1FBQ1AsT0FBTyxJQUFJLENBQUMsR0FBRyxDQUFDLENBQUMsQ0FBQyxFQUFFLEVBQUUsQ0FBQyxDQUFDLENBQUMsU0FBUyxDQUFDLENBQUM7SUFDdEMsQ0FBQztDQUNGO0FBdENELHNEQXNDQyIsInNvdXJjZXNDb250ZW50IjpbIi8qKlxuICogQGxpY2Vuc2VcbiAqIENvcHlyaWdodCBHb29nbGUgTExDIEFsbCBSaWdodHMgUmVzZXJ2ZWQuXG4gKlxuICogVXNlIG9mIHRoaXMgc291cmNlIGNvZGUgaXMgZ292ZXJuZWQgYnkgYW4gTUlULXN0eWxlIGxpY2Vuc2UgdGhhdCBjYW4gYmVcbiAqIGZvdW5kIGluIHRoZSBMSUNFTlNFIGZpbGUgYXQgaHR0cHM6Ly9hbmd1bGFyLmlvL2xpY2Vuc2VcbiAqL1xuaW1wb3J0IHtQdWxsQXBwcm92ZUdyb3VwfSBmcm9tICcuL2dyb3VwJztcbmltcG9ydCB7Z2V0T3JDcmVhdGVHbG9ifSBmcm9tICcuL3V0aWxzJztcblxuZXhwb3J0IGNsYXNzIFB1bGxBcHByb3ZlR3JvdXBTdGF0ZURlcGVuZGVuY3lFcnJvciBleHRlbmRzIEVycm9yIHtcbiAgY29uc3RydWN0b3IobWVzc2FnZT86IHN0cmluZykge1xuICAgIHN1cGVyKG1lc3NhZ2UpO1xuICAgIC8vIFNldCB0aGUgcHJvdG90eXBlIGV4cGxpY2l0bHkgYmVjYXVzZSBpbiBFUzUsIHRoZSBwcm90b3R5cGUgaXMgYWNjaWRlbnRhbGx5XG4gICAgLy8gbG9zdCBkdWUgdG8gYSBsaW1pdGF0aW9uIGluIGRvd24tbGV2ZWxpbmcuXG4gICAgLy8gaHR0cHM6Ly9naXRodWIuY29tL01pY3Jvc29mdC9UeXBlU2NyaXB0L3dpa2kvRkFRI3doeS1kb2VzbnQtZXh0ZW5kaW5nLWJ1aWx0LWlucy1saWtlLWVycm9yLWFycmF5LWFuZC1tYXAtd29yay5cbiAgICBPYmplY3Quc2V0UHJvdG90eXBlT2YodGhpcywgUHVsbEFwcHJvdmVHcm91cFN0YXRlRGVwZW5kZW5jeUVycm9yLnByb3RvdHlwZSk7XG4gICAgLy8gRXJyb3IgbmFtZXMgYXJlIGRpc3BsYXllZCBpbiB0aGVpciBzdGFjayBidXQgY2FuJ3QgYmUgc2V0IGluIHRoZSBjb25zdHJ1Y3Rvci5cbiAgICB0aGlzLm5hbWUgPSBQdWxsQXBwcm92ZUdyb3VwU3RhdGVEZXBlbmRlbmN5RXJyb3IubmFtZTtcbiAgfVxufVxuXG4vKipcbiAqIFN1cGVyc2V0IG9mIGEgbmF0aXZlIGFycmF5LiBUaGUgc3VwZXJzZXQgcHJvdmlkZXMgbWV0aG9kcyB3aGljaCBtaW1pYyB0aGVcbiAqIGxpc3QgZGF0YSBzdHJ1Y3R1cmUgdXNlZCBpbiBQdWxsQXBwcm92ZSBmb3IgZmlsZXMgaW4gY29uZGl0aW9ucy5cbiAqL1xuZXhwb3J0IGNsYXNzIFB1bGxBcHByb3ZlU3RyaW5nQXJyYXkgZXh0ZW5kcyBBcnJheTxzdHJpbmc+IHtcbiAgY29uc3RydWN0b3IoLi4uZWxlbWVudHM6IHN0cmluZ1tdKSB7XG4gICAgc3VwZXIoLi4uZWxlbWVudHMpO1xuXG4gICAgLy8gU2V0IHRoZSBwcm90b3R5cGUgZXhwbGljaXRseSBiZWNhdXNlIGluIEVTNSwgdGhlIHByb3RvdHlwZSBpcyBhY2NpZGVudGFsbHlcbiAgICAvLyBsb3N0IGR1ZSB0byBhIGxpbWl0YXRpb24gaW4gZG93bi1sZXZlbGluZy5cbiAgICAvLyBodHRwczovL2dpdGh1Yi5jb20vTWljcm9zb2Z0L1R5cGVTY3JpcHQvd2lraS9GQVEjd2h5LWRvZXNudC1leHRlbmRpbmctYnVpbHQtaW5zLWxpa2UtZXJyb3ItYXJyYXktYW5kLW1hcC13b3JrLlxuICAgIE9iamVjdC5zZXRQcm90b3R5cGVPZih0aGlzLCBQdWxsQXBwcm92ZVN0cmluZ0FycmF5LnByb3RvdHlwZSk7XG4gIH1cbiAgLyoqIFJldHVybnMgYSBuZXcgYXJyYXkgd2hpY2ggb25seSBpbmNsdWRlcyBmaWxlcyB0aGF0IG1hdGNoIHRoZSBnaXZlbiBwYXR0ZXJuLiAqL1xuICBpbmNsdWRlKHBhdHRlcm46IHN0cmluZyk6IFB1bGxBcHByb3ZlU3RyaW5nQXJyYXkge1xuICAgIHJldHVybiBuZXcgUHVsbEFwcHJvdmVTdHJpbmdBcnJheSguLi50aGlzLmZpbHRlcigocykgPT4gZ2V0T3JDcmVhdGVHbG9iKHBhdHRlcm4pLm1hdGNoKHMpKSk7XG4gIH1cblxuICAvKiogUmV0dXJucyBhIG5ldyBhcnJheSB3aGljaCBvbmx5IGluY2x1ZGVzIGZpbGVzIHRoYXQgZGlkIG5vdCBtYXRjaCB0aGUgZ2l2ZW4gcGF0dGVybi4gKi9cbiAgZXhjbHVkZShwYXR0ZXJuOiBzdHJpbmcpOiBQdWxsQXBwcm92ZVN0cmluZ0FycmF5IHtcbiAgICByZXR1cm4gbmV3IFB1bGxBcHByb3ZlU3RyaW5nQXJyYXkoLi4udGhpcy5maWx0ZXIoKHMpID0+ICFnZXRPckNyZWF0ZUdsb2IocGF0dGVybikubWF0Y2gocykpKTtcbiAgfVxufVxuXG4vKipcbiAqIFN1cGVyc2V0IG9mIGEgbmF0aXZlIGFycmF5LiBUaGUgc3VwZXJzZXQgcHJvdmlkZXMgbWV0aG9kcyB3aGljaCBtaW1pYyB0aGVcbiAqIGxpc3QgZGF0YSBzdHJ1Y3R1cmUgdXNlZCBpbiBQdWxsQXBwcm92ZSBmb3IgZ3JvdXBzIGluIGNvbmRpdGlvbnMuXG4gKi9cbmV4cG9ydCBjbGFzcyBQdWxsQXBwcm92ZUdyb3VwQXJyYXkgZXh0ZW5kcyBBcnJheTxQdWxsQXBwcm92ZUdyb3VwPiB7XG4gIGNvbnN0cnVjdG9yKC4uLmVsZW1lbnRzOiBQdWxsQXBwcm92ZUdyb3VwW10pIHtcbiAgICBzdXBlciguLi5lbGVtZW50cyk7XG5cbiAgICAvLyBTZXQgdGhlIHByb3RvdHlwZSBleHBsaWNpdGx5IGJlY2F1c2UgaW4gRVM1LCB0aGUgcHJvdG90eXBlIGlzIGFjY2lkZW50YWxseVxuICAgIC8vIGxvc3QgZHVlIHRvIGEgbGltaXRhdGlvbiBpbiBkb3duLWxldmVsaW5nLlxuICAgIC8vIGh0dHBzOi8vZ2l0aHViLmNvbS9NaWNyb3NvZnQvVHlwZVNjcmlwdC93aWtpL0ZBUSN3aHktZG9lc250LWV4dGVuZGluZy1idWlsdC1pbnMtbGlrZS1lcnJvci1hcnJheS1hbmQtbWFwLXdvcmsuXG4gICAgT2JqZWN0LnNldFByb3RvdHlwZU9mKHRoaXMsIFB1bGxBcHByb3ZlR3JvdXBBcnJheS5wcm90b3R5cGUpO1xuICB9XG5cbiAgaW5jbHVkZShwYXR0ZXJuOiBzdHJpbmcpOiBQdWxsQXBwcm92ZUdyb3VwQXJyYXkge1xuICAgIHJldHVybiBuZXcgUHVsbEFwcHJvdmVHcm91cEFycmF5KC4uLnRoaXMuZmlsdGVyKChzKSA9PiBzLmdyb3VwTmFtZS5tYXRjaChwYXR0ZXJuKSkpO1xuICB9XG5cbiAgLyoqIFJldHVybnMgYSBuZXcgYXJyYXkgd2hpY2ggb25seSBpbmNsdWRlcyBmaWxlcyB0aGF0IGRpZCBub3QgbWF0Y2ggdGhlIGdpdmVuIHBhdHRlcm4uICovXG4gIGV4Y2x1ZGUocGF0dGVybjogc3RyaW5nKTogUHVsbEFwcHJvdmVHcm91cEFycmF5IHtcbiAgICByZXR1cm4gbmV3IFB1bGxBcHByb3ZlR3JvdXBBcnJheSguLi50aGlzLmZpbHRlcigocykgPT4gcy5ncm91cE5hbWUubWF0Y2gocGF0dGVybikpKTtcbiAgfVxuXG4gIGdldCBwZW5kaW5nKCkge1xuICAgIHRocm93IG5ldyBQdWxsQXBwcm92ZUdyb3VwU3RhdGVEZXBlbmRlbmN5RXJyb3IoKTtcbiAgfVxuXG4gIGdldCBhY3RpdmUoKSB7XG4gICAgdGhyb3cgbmV3IFB1bGxBcHByb3ZlR3JvdXBTdGF0ZURlcGVuZGVuY3lFcnJvcigpO1xuICB9XG5cbiAgZ2V0IGluYWN0aXZlKCkge1xuICAgIHRocm93IG5ldyBQdWxsQXBwcm92ZUdyb3VwU3RhdGVEZXBlbmRlbmN5RXJyb3IoKTtcbiAgfVxuXG4gIGdldCByZWplY3RlZCgpIHtcbiAgICB0aHJvdyBuZXcgUHVsbEFwcHJvdmVHcm91cFN0YXRlRGVwZW5kZW5jeUVycm9yKCk7XG4gIH1cblxuICBnZXQgbmFtZXMoKSB7XG4gICAgcmV0dXJuIHRoaXMubWFwKChnKSA9PiBnLmdyb3VwTmFtZSk7XG4gIH1cbn1cbiJdfQ==

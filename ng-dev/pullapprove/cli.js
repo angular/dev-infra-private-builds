@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.buildPullapproveParser = void 0;
+const verify_1 = require("./verify");
+/** Build the parser for the pullapprove commands. */
+function buildPullapproveParser(localYargs) {
+    return localYargs
+        .help()
+        .strict()
+        .demandCommand()
+        .command('verify', 'Verify the pullapprove config', {}, () => verify_1.verify());
+}
+exports.buildPullapproveParser = buildPullapproveParser;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY2xpLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vLi4vLi4vLi4vbmctZGV2L3B1bGxhcHByb3ZlL2NsaS50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7QUFRQSxxQ0FBZ0M7QUFFaEMscURBQXFEO0FBQ3JELFNBQWdCLHNCQUFzQixDQUFDLFVBQXNCO0lBQzNELE9BQU8sVUFBVTtTQUNkLElBQUksRUFBRTtTQUNOLE1BQU0sRUFBRTtTQUNSLGFBQWEsRUFBRTtTQUNmLE9BQU8sQ0FBQyxRQUFRLEVBQUUsK0JBQStCLEVBQUUsRUFBRSxFQUFFLEdBQUcsRUFBRSxDQUFDLGVBQU0sRUFBRSxDQUFDLENBQUM7QUFDNUUsQ0FBQztBQU5ELHdEQU1DIiwic291cmNlc0NvbnRlbnQiOlsiLyoqXG4gKiBAbGljZW5zZVxuICogQ29weXJpZ2h0IEdvb2dsZSBMTEMgQWxsIFJpZ2h0cyBSZXNlcnZlZC5cbiAqXG4gKiBVc2Ugb2YgdGhpcyBzb3VyY2UgY29kZSBpcyBnb3Zlcm5lZCBieSBhbiBNSVQtc3R5bGUgbGljZW5zZSB0aGF0IGNhbiBiZVxuICogZm91bmQgaW4gdGhlIExJQ0VOU0UgZmlsZSBhdCBodHRwczovL2FuZ3VsYXIuaW8vbGljZW5zZVxuICovXG5pbXBvcnQgKiBhcyB5YXJncyBmcm9tICd5YXJncyc7XG5pbXBvcnQge3ZlcmlmeX0gZnJvbSAnLi92ZXJpZnknO1xuXG4vKiogQnVpbGQgdGhlIHBhcnNlciBmb3IgdGhlIHB1bGxhcHByb3ZlIGNvbW1hbmRzLiAqL1xuZXhwb3J0IGZ1bmN0aW9uIGJ1aWxkUHVsbGFwcHJvdmVQYXJzZXIobG9jYWxZYXJnczogeWFyZ3MuQXJndikge1xuICByZXR1cm4gbG9jYWxZYXJnc1xuICAgIC5oZWxwKClcbiAgICAuc3RyaWN0KClcbiAgICAuZGVtYW5kQ29tbWFuZCgpXG4gICAgLmNvbW1hbmQoJ3ZlcmlmeScsICdWZXJpZnkgdGhlIHB1bGxhcHByb3ZlIGNvbmZpZycsIHt9LCAoKSA9PiB2ZXJpZnkoKSk7XG59XG4iXX0=

@@ -1,0 +1,23 @@
+"use strict";
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.BaseModule = void 0;
+const authenticated_git_client_1 = require("../../utils/git/authenticated-git-client");
+/** The BaseModule to extend modules for caretaker checks from. */
+class BaseModule {
+    constructor(config) {
+        this.config = config;
+        /** The singleton instance of the authenticated git client. */
+        this.git = authenticated_git_client_1.AuthenticatedGitClient.get();
+        /** The data for the module. */
+        this.data = this.retrieveData();
+    }
+}
+exports.BaseModule = BaseModule;
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiYmFzZS5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uLy4uL25nLWRldi9jYXJldGFrZXIvY2hlY2svYmFzZS50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiO0FBQUE7Ozs7OztHQU1HOzs7QUFHSCx1RkFBZ0Y7QUFHaEYsa0VBQWtFO0FBQ2xFLE1BQXNCLFVBQVU7SUFNOUIsWUFBc0IsTUFBaUQ7UUFBakQsV0FBTSxHQUFOLE1BQU0sQ0FBMkM7UUFMdkUsOERBQThEO1FBQ3BELFFBQUcsR0FBRyxpREFBc0IsQ0FBQyxHQUFHLEVBQUUsQ0FBQztRQUM3QywrQkFBK0I7UUFDdEIsU0FBSSxHQUFHLElBQUksQ0FBQyxZQUFZLEVBQUUsQ0FBQztJQUVzQyxDQUFDO0NBTzVFO0FBYkQsZ0NBYUMiLCJzb3VyY2VzQ29udGVudCI6WyIvKipcbiAqIEBsaWNlbnNlXG4gKiBDb3B5cmlnaHQgR29vZ2xlIExMQyBBbGwgUmlnaHRzIFJlc2VydmVkLlxuICpcbiAqIFVzZSBvZiB0aGlzIHNvdXJjZSBjb2RlIGlzIGdvdmVybmVkIGJ5IGFuIE1JVC1zdHlsZSBsaWNlbnNlIHRoYXQgY2FuIGJlXG4gKiBmb3VuZCBpbiB0aGUgTElDRU5TRSBmaWxlIGF0IGh0dHBzOi8vYW5ndWxhci5pby9saWNlbnNlXG4gKi9cblxuaW1wb3J0IHtOZ0RldkNvbmZpZ30gZnJvbSAnLi4vLi4vdXRpbHMvY29uZmlnJztcbmltcG9ydCB7QXV0aGVudGljYXRlZEdpdENsaWVudH0gZnJvbSAnLi4vLi4vdXRpbHMvZ2l0L2F1dGhlbnRpY2F0ZWQtZ2l0LWNsaWVudCc7XG5pbXBvcnQge0NhcmV0YWtlckNvbmZpZ30gZnJvbSAnLi4vY29uZmlnJztcblxuLyoqIFRoZSBCYXNlTW9kdWxlIHRvIGV4dGVuZCBtb2R1bGVzIGZvciBjYXJldGFrZXIgY2hlY2tzIGZyb20uICovXG5leHBvcnQgYWJzdHJhY3QgY2xhc3MgQmFzZU1vZHVsZTxEYXRhPiB7XG4gIC8qKiBUaGUgc2luZ2xldG9uIGluc3RhbmNlIG9mIHRoZSBhdXRoZW50aWNhdGVkIGdpdCBjbGllbnQuICovXG4gIHByb3RlY3RlZCBnaXQgPSBBdXRoZW50aWNhdGVkR2l0Q2xpZW50LmdldCgpO1xuICAvKiogVGhlIGRhdGEgZm9yIHRoZSBtb2R1bGUuICovXG4gIHJlYWRvbmx5IGRhdGEgPSB0aGlzLnJldHJpZXZlRGF0YSgpO1xuXG4gIGNvbnN0cnVjdG9yKHByb3RlY3RlZCBjb25maWc6IE5nRGV2Q29uZmlnPHtjYXJldGFrZXI6IENhcmV0YWtlckNvbmZpZ30+KSB7fVxuXG4gIC8qKiBBc3luY3Jvbm91c2x5IHJldHJpZXZlIGRhdGEgZm9yIHRoZSBtb2R1bGUuICovXG4gIHByb3RlY3RlZCBhYnN0cmFjdCByZXRyaWV2ZURhdGEoKTogUHJvbWlzZTxEYXRhPjtcblxuICAvKiogUHJpbnQgdGhlIGluZm9ybWF0aW9uIGRpc2NvdmVyZWQgZm9yIHRoZSBtb2R1bGUgdG8gdGhlIHRlcm1pbmFsLiAqL1xuICBhYnN0cmFjdCBwcmludFRvVGVybWluYWwoKTogUHJvbWlzZTx2b2lkPjtcbn1cbiJdfQ==
