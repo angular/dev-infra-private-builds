@@ -58339,6 +58339,7 @@ var require_buildifier = __commonJS({
           check: {
             commandFlags: `${BAZEL_WARNING_FLAG} --lint=warn --mode=check --format=json`,
             callback: (_, code, stdout) => {
+              stdout = stdout || "{}";
               return code !== 0 || !JSON.parse(stdout).success;
             }
           },
