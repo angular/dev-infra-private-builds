@@ -1,13 +1,3 @@
-load("//tools:defaults.bzl", "ts_library")
-
-ts_library(
-    name = "lib",
-    visibility = ["//:npm"],
-    deps = [
-        "@npm//@angular/dev-infra-private/bazel/benchmark/driver-utilities",
-    ],
-)
-
 filegroup(
     name = "static_files",
     srcs = [
