@@ -58173,7 +58173,7 @@ var require_child_process = __commonJS({
         const commandText = `${command} ${args.join(" ")}`;
         console_12.debug(`Executing command: ${commandText}`);
         const childProcess = child_process_1.spawn(command, args, __spreadProps(__spreadValues({}, options), { shell: true, stdio: "inherit" }));
-        childProcess.on("exit", (status) => status === 0 ? resolve() : reject(status));
+        childProcess.on("close", (status) => status === 0 ? resolve() : reject(status));
       });
     }
     exports2.spawnInteractive = spawnInteractive;
@@ -58200,7 +58200,7 @@ var require_child_process = __commonJS({
             process.stderr.write(message);
           }
         });
-        childProcess.on("exit", (exitCode, signal) => {
+        childProcess.on("close", (exitCode, signal) => {
           const exitDescription = exitCode !== null ? `exit code "${exitCode}"` : `signal "${signal}"`;
           const printFn = outputMode === "on-error" ? console_12.error : console_12.debug;
           const status = statusFromExitCodeAndSignal(exitCode, signal);
