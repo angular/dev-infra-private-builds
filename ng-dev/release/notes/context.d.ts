@@ -80,6 +80,10 @@ export declare class RenderContext {
      * Returns unique, sorted and filtered commit authors.
      */
     commitAuthors(commits: CommitFromGitLog[]): string[];
+    /**
+     * Convert a commit object to a Markdown linked badged.
+     */
+    commitToBadge(commit: CommitFromGitLog): string;
 }
 /**
  * Builds a date stamp for stamping in release notes.

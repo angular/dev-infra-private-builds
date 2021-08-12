@@ -61296,6 +61296,23 @@ var require_context = __commonJS({
       commitAuthors(commits) {
         return [...new Set(commits.map((c) => c.author))].filter((a) => !botsAuthorNames.includes(a)).sort();
       }
+      commitToBadge(commit) {
+        let color = "yellow";
+        switch (commit.type) {
+          case "fix":
+            color = "green";
+            break;
+          case "feat":
+            color = "blue";
+            break;
+          case "perf":
+            color = "orange";
+            break;
+        }
+        const url = `https://github.com/${this.data.github.owner}/${this.data.github.name}/commit/${commit.hash}`;
+        const imgSrc = `https://img.shields.io/badge/${commit.shortHash}-${commit.type}-${color}`;
+        return `[![${commit.type} - ${commit.shortHash}](${imgSrc})](${url})`;
+      }
     };
     exports2.RenderContext = RenderContext;
     function buildDateStamp(date = new Date()) {
@@ -61359,7 +61376,7 @@ _%>
 <%_
   for (const commit of group.commits) {
 _%>
-| <%- commitToLink(commit) %> | <%- replaceCommitHeaderPullRequestNumber(commit.header) %> |
+| <%- commitToLink(commit) %> | <%- commit.type %>: <%- replaceCommitHeaderPullRequestNumber(commit.subject) %> |
 <%_
   }
 }
@@ -61435,7 +61452,7 @@ _%>
 <%_
   for (const commit of group.commits) {
 _%>
-| <%- commit.shortHash %> | <%- commit.header %> |
+| <%- commitToBadge(commit) %> | <%- commit.subject %> |
 <%_
   }
 }
