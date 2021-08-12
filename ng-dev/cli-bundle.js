@@ -62677,7 +62677,6 @@ var require_publish2 = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ReleaseTool = exports2.CompletionState = void 0;
     var inquirer_1 = require_inquirer();
-    var child_process_1 = require_child_process();
     var console_12 = require_console();
     var authenticated_git_client_1 = require_authenticated_git_client();
     var active_release_trains_1 = require_active_release_trains();
@@ -62708,7 +62707,7 @@ var require_publish2 = __commonJS({
         console_12.log();
         const { owner, name } = this._github;
         const nextBranchName = version_branches_1.getNextBranchName(this._github);
-        if (!await this._verifyEnvironmentHasPython3Symlink() || !await this._verifyNoUncommittedChanges() || !await this._verifyRunningFromNextBranch(nextBranchName)) {
+        if (!await this._verifyNoUncommittedChanges() || !await this._verifyRunningFromNextBranch(nextBranchName)) {
           return CompletionState.FATAL_ERROR;
         }
         if (!await this._verifyNpmLoginState()) {
@@ -62760,29 +62759,6 @@ var require_publish2 = __commonJS({
           return false;
         }
         return true;
-      }
-      async _verifyEnvironmentHasPython3Symlink() {
-        try {
-          const pyVersion = await child_process_1.spawn("env", ["python", "--version"], { mode: "silent" });
-          const version = pyVersion.stdout.trim() || pyVersion.stderr.trim();
-          if (version.startsWith("Python 3.")) {
-            console_12.debug(`Local python version: ${version}`);
-            return true;
-          }
-          console_12.error(console_12.red(`  \u2718   \`/usr/bin/python\` is currently symlinked to "${version}", please update`));
-          console_12.error(console_12.red("      the symlink to link instead to Python3"));
-          console_12.error();
-          console_12.error(console_12.red("      Googlers: please run the following command to symlink python to python3:"));
-          console_12.error(console_12.red("        sudo ln -s /usr/bin/python3 /usr/bin/python"));
-          return false;
-        } catch {
-          console_12.error(console_12.red("  \u2718   `/usr/bin/python` does not exist, please ensure `/usr/bin/python` is"));
-          console_12.error(console_12.red("      symlinked to Python3."));
-          console_12.error();
-          console_12.error(console_12.red("      Googlers: please run the following command to symlink python to python3:"));
-          console_12.error(console_12.red("        sudo ln -s /usr/bin/python3 /usr/bin/python"));
-        }
-        return false;
       }
       async _verifyRunningFromNextBranch(nextBranchName) {
         const headSha = this._git.run(["rev-parse", "HEAD"]).stdout.trim();

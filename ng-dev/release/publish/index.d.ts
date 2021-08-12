@@ -33,12 +33,6 @@ export declare class ReleaseTool {
      */
     private _verifyNoUncommittedChanges;
     /**
-     * Verifies that Python can be resolved within scripts and points to a compatible version. Python
-     * is required in Bazel actions as there can be tools (such as `skydoc`) that rely on it.
-     * @returns a boolean indicating success or failure.
-     */
-    private _verifyEnvironmentHasPython3Symlink;
-    /**
      * Verifies that the next branch from the configured repository is checked out.
      * @returns a boolean indicating success or failure.
      */
