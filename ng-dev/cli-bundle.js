@@ -49342,17 +49342,11 @@ var require_g3 = __commonJS({
         console_12.info();
       }
       getShaForBranchLatest(branch) {
-        const { owner, name } = this.git.remoteConfig;
-        const fetchResult = this.git.runGraceful([
-          "fetch",
-          "-q",
-          `https://github.com/${owner}/${name}.git`,
-          branch
-        ]);
-        if (fetchResult.status !== 0 && fetchResult.stderr.includes(`couldn't find remote ref ${branch}`)) {
+        if (this.git.runGraceful(["ls-remote", "--exit-code", this.git.getRepoGitUrl(), branch]).status === 2) {
           console_12.debug(`No '${branch}' branch exists on upstream, skipping.`);
           return null;
         }
+        this.git.runGraceful(["fetch", "-q", this.git.getRepoGitUrl(), branch]);
         return this.git.runGraceful(["rev-parse", "FETCH_HEAD"]).stdout.trim();
       }
       getDiffStats(g3Ref, mainRef, includeFiles, excludeFiles) {
@@ -49728,12 +49722,22 @@ var require_cli3 = __commonJS({
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.buildCaretakerParser = void 0;
+    var console_12 = require("console");
     var cli_12 = require_cli();
+    var config_1 = require_config3();
     var cli_22 = require_cli2();
     function buildCaretakerParser(yargs2) {
-      return yargs2.command(cli_12.CheckModule).command(cli_22.HandoffModule);
+      return yargs2.middleware(caretakerCommandCanRun, false).command(cli_12.CheckModule).command(cli_22.HandoffModule);
     }
     exports2.buildCaretakerParser = buildCaretakerParser;
+    function caretakerCommandCanRun(argv) {
+      const config = config_1.getCaretakerConfig();
+      if (config.caretaker === void 0) {
+        console_12.info("The `caretaker` command is not enabled in this repository.");
+        console_12.info(`   To enable it, provide a caretaker config in the repository's .ng-dev/ directory`);
+        process.exit(1);
+      }
+    }
   }
 });
 
