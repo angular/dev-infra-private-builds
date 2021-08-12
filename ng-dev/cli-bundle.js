@@ -61246,27 +61246,21 @@ var require_context = __commonJS({
         }
         return commitGroups;
       }
+      hasBreakingChanges(commit) {
+        return commit.breakingChanges.length !== 0;
+      }
+      hasDeprecations(commit) {
+        return commit.deprecations.length !== 0;
+      }
       includeInReleaseNotes() {
         return (commit) => {
-          if (!typesToIncludeInReleaseNotes.includes(commit.type)) {
-            return false;
-          }
           if (this.hiddenScopes.includes(commit.scope)) {
             return false;
           }
-          return true;
-        };
-      }
-      contains(field) {
-        return (commit) => {
-          const fieldValue = commit[field];
-          if (!fieldValue) {
-            return false;
+          if (this.hasBreakingChanges(commit) || this.hasDeprecations(commit)) {
+            return true;
           }
-          if (Array.isArray(fieldValue) && fieldValue.length === 0) {
-            return false;
-          }
-          return true;
+          return typesToIncludeInReleaseNotes.includes(commit.type);
         };
       }
       unique(field) {
@@ -61310,24 +61304,7 @@ var require_changelog = __commonJS({
 # <%- version %><% if (title) { %> "<%- title %>"<% } %> (<%- dateStamp %>)
 
 <%_
-const commitsInChangelog = commits.filter(includeInReleaseNotes());
-for (const group of asCommitGroups(commitsInChangelog)) {
-_%>
-
-### <%- group.title %>
-| Commit | Description |
-| -- | -- |
-<%_
-  for (const commit of group.commits) {
-_%>
-| <%- commitToLink(commit) %> | <%- replaceCommitHeaderPullRequestNumber(commit.header) %> |
-<%_
-  }
-}
-_%>
-
-<%_
-const breakingChanges = commits.filter(contains('breakingChanges'));
+const breakingChanges = commits.filter(hasBreakingChanges);
 if (breakingChanges.length) {
 _%>
 ## Breaking Changes
@@ -61349,7 +61326,7 @@ _%>
 _%>
 
 <%_
-const deprecations = commits.filter(contains('deprecations'));
+const deprecations = commits.filter(hasDeprecations);
 if (deprecations.length) {
 _%>
 ## Deprecations
@@ -61364,6 +61341,23 @@ _%>
 <%- commit.deprecations[0].text %>
 <%_
     }
+  }
+}
+_%>
+
+<%_
+const commitsInChangelog = commits.filter(includeInReleaseNotes());
+for (const group of asCommitGroups(commitsInChangelog)) {
+_%>
+
+### <%- group.title %>
+| Commit | Description |
+| -- | -- |
+<%_
+  for (const commit of group.commits) {
+_%>
+| <%- commitToLink(commit) %> | <%- replaceCommitHeaderPullRequestNumber(commit.header) %> |
+<%_
   }
 }
 _%>
@@ -61402,24 +61396,7 @@ var require_github_release = __commonJS({
 # <%- version %><% if (title) { %> "<%- title %>"<% } %> (<%- dateStamp %>)
 
 <%_
-const commitsInChangelog = commits.filter(includeInReleaseNotes());
-for (const group of asCommitGroups(commitsInChangelog)) {
-_%>
-
-### <%- group.title %>
-| Commit | Description |
-| -- | -- |
-<%_
-  for (const commit of group.commits) {
-_%>
-| <%- commit.shortHash %> | <%- commit.header %> |
-<%_
-  }
-}
-_%>
-
-<%_
-const breakingChanges = commits.filter(contains('breakingChanges'));
+const breakingChanges = commits.filter(hasBreakingChanges);
 if (breakingChanges.length) {
 _%>
 ## Breaking Changes
@@ -61441,7 +61418,7 @@ _%>
 _%>
 
 <%_
-const deprecations = commits.filter(contains('deprecations'));
+const deprecations = commits.filter(hasDeprecations);
 if (deprecations.length) {
 _%>
 ## Deprecations
@@ -61456,6 +61433,23 @@ _%>
 <%- commit.deprecations[0].text %>
 <%_
     }
+  }
+}
+_%>
+
+<%_
+const commitsInChangelog = commits.filter(includeInReleaseNotes());
+for (const group of asCommitGroups(commitsInChangelog)) {
+_%>
+
+### <%- group.title %>
+| Commit | Description |
+| -- | -- |
+<%_
+  for (const commit of group.commits) {
+_%>
+| <%- commit.shortHash %> | <%- commit.header %> |
+<%_
   }
 }
 _%>
@@ -61553,10 +61547,11 @@ var require_release_notes = __commonJS({
     var get_commits_in_range_1 = require_get_commits_in_range();
     var ReleaseNotes = class {
       constructor(version, commits) {
+        var _a;
         this.version = version;
         this.commits = commits;
         this.git = git_client_1.GitClient.get();
-        this.config = this.getReleaseConfig().releaseNotes;
+        this.config = (_a = this.getReleaseConfig().releaseNotes) != null ? _a : {};
       }
       static async forRange(version, baseRef, headRef) {
         const client = git_client_1.GitClient.get();

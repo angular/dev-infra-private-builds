@@ -45,16 +45,15 @@ export declare class RenderContext {
         title: string;
         commits: CommitFromGitLog[];
     }[];
+    /** Whether the specified commit contains breaking changes. */
+    hasBreakingChanges(commit: CommitFromGitLog): boolean;
+    /** Whether the specified commit contains deprecations. */
+    hasDeprecations(commit: CommitFromGitLog): boolean;
     /**
-     * A filter function for filtering a list of commits to only include commits which should appear
-     * in release notes.
+     * A filter function for filtering a list of commits to only include commits which
+     * should appear in release notes.
      */
     includeInReleaseNotes(): (commit: CommitFromGitLog) => boolean;
-    /**
-     * A filter function for filtering a list of commits to only include commits which contain a
-     * truthy value, or for arrays an array with 1 or more elements, for the provided field.
-     */
-    contains(field: keyof CommitFromGitLog): (commit: CommitFromGitLog) => boolean;
     /**
      * A filter function for filtering a list of commits to only include commits which contain a
      * unique value for the provided field across all commits in the list.
