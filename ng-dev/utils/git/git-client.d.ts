@@ -7,7 +7,6 @@
  */
 /// <reference types="node" />
 import { SpawnSyncOptions, SpawnSyncReturns } from 'child_process';
-import { SemVer } from 'semver';
 import { GithubConfig } from '../config';
 import { GithubClient } from './github';
 /** Error for failed Git commands. */
@@ -38,6 +37,11 @@ export declare class GitClient {
     readonly mainBranchName: string;
     /** Instance of the Github client. */
     readonly github: GithubClient;
+    /**
+     * Path to the Git executable. By default, `git` is assumed to exist
+     * in the shell environment (using `$PATH`).
+     */
+    readonly gitBinPath: string;
     constructor(
     /** The full path to the root of the repository base. */
     baseDir?: string, 
@@ -67,10 +71,6 @@ export declare class GitClient {
      * was cleanly checked out.
      */
     checkout(branchOrRevision: string, cleanState: boolean): boolean;
-    /** Gets the latest git tag on the current branch that matches SemVer. */
-    getLatestSemverTag(): SemVer;
-    /** Retrieves the git tag matching the provided SemVer, if it exists. */
-    getMatchingTagForSemver(semver: SemVer): string;
     /** Retrieve a list of all files in the repository changed since the provided shaOrRef. */
     allChangesFilesSince(shaOrRef?: string): string[];
     /** Retrieve a list of all files currently staged in the repostitory. */

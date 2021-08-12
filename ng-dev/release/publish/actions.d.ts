@@ -121,24 +121,34 @@ export declare abstract class ReleaseAction {
     /**
      * Creates a commit for the specified files with the given message.
      * @param message Message for the created commit
-     * @param files List of project-relative file paths to be commited.
+     * @param files List of project-relative file paths to be committed.
      */
     protected createCommit(message: string, files: string[]): Promise<void>;
     /**
-     * Stages the specified new version for the current branch and creates a
-     * pull request that targets the given base branch.
+     * Stages the specified new version for the current branch and creates a pull request
+     * that targets the given base branch. Assumes the staging branch is already checked-out.
+     *
+     * @param newVersion New version to be staged.
+     * @param compareVersionForReleaseNotes Version used for comparing with the current
+     *   `HEAD` in order build the release notes.
+     * @param pullRequestTargetBranch Branch the pull request should target.
      * @returns an object describing the created pull request.
      */
-    protected stageVersionForBranchAndCreatePullRequest(newVersion: semver.SemVer, pullRequestBaseBranch: string): Promise<{
+    protected stageVersionForBranchAndCreatePullRequest(newVersion: semver.SemVer, compareVersionForReleaseNotes: semver.SemVer, pullRequestTargetBranch: string): Promise<{
         releaseNotes: ReleaseNotes;
         pullRequest: PullRequest;
     }>;
     /**
      * Checks out the specified target branch, verifies its CI status and stages
      * the specified new version in order to create a pull request.
+     *
+     * @param newVersion New version to be staged.
+     * @param compareVersionForReleaseNotes Version used for comparing with `HEAD` of
+     *   the staging branch in order build the release notes.
+     * @param stagingBranch Branch within the new version should be staged.
      * @returns an object describing the created pull request.
      */
-    protected checkoutBranchAndStageVersion(newVersion: semver.SemVer, stagingBranch: string): Promise<{
+    protected checkoutBranchAndStageVersion(newVersion: semver.SemVer, compareVersionForReleaseNotes: semver.SemVer, stagingBranch: string): Promise<{
         releaseNotes: ReleaseNotes;
         pullRequest: PullRequest;
     }>;

@@ -19,5 +19,7 @@ export declare class CutNextPrereleaseAction extends ReleaseAction {
     private _getActivePrereleaseTrain;
     /** Gets the new pre-release version for this release action. */
     private _computeNewVersion;
+    /** Gets the compare version for building release notes of the new pre-release.*/
+    private _getCompareVersionForReleaseNotes;
     static isActive(): Promise<boolean>;
 }

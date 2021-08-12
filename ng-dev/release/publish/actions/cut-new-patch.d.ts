@@ -13,6 +13,7 @@ import { ReleaseAction } from '../actions';
  * for the new patch version, but also needs to be cherry-picked into the next development branch.
  */
 export declare class CutNewPatchAction extends ReleaseAction {
+    private _previousVersion;
     private _newVersion;
     getDescription(): Promise<string>;
     perform(): Promise<void>;

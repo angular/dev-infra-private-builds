@@ -4,20 +4,17 @@ import { DevInfraReleaseConfig } from '../config/index';
 /** Release note generation. */
 export declare class ReleaseNotes {
     version: semver.SemVer;
-    private startingRef;
-    private endingRef;
-    static fromRange(version: semver.SemVer, startingRef: string, endingRef: string): Promise<ReleaseNotes>;
+    private commits;
+    static forRange(version: semver.SemVer, baseRef: string, headRef: string): Promise<ReleaseNotes>;
     /** An instance of GitClient. */
     private git;
     /** The RenderContext to be used during rendering. */
     private renderContext;
     /** The title to use for the release. */
     private title;
-    /** A promise resolving to a list of Commits since the latest semver tag on the branch. */
-    private commits;
     /** The configuration for release notes. */
     private config;
-    protected constructor(version: semver.SemVer, startingRef: string, endingRef: string);
+    protected constructor(version: semver.SemVer, commits: CommitFromGitLog[]);
     /** Retrieve the release note generated for a Github Release. */
     getGithubReleaseEntry(): Promise<string>;
     /** Retrieve the release note generated for a CHANGELOG entry. */
@@ -29,6 +26,5 @@ export declare class ReleaseNotes {
     promptForReleaseTitle(): Promise<string | false>;
     /** Build the render context data object for constructing the RenderContext instance. */
     private generateRenderContext;
-    protected getCommitsInRange(from: string, to?: string): Promise<CommitFromGitLog[]>;
     protected getReleaseConfig(config?: Partial<DevInfraReleaseConfig>): import("../config/index").ReleaseConfig;
 }

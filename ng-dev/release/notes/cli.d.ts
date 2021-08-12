@@ -9,7 +9,7 @@ import { SemVer } from 'semver';
 import { CommandModule } from 'yargs';
 /** Command line options for building a release. */
 export interface ReleaseNotesOptions {
-    from?: string;
+    from: string;
     to: string;
     outFile?: string;
     releaseVersion: SemVer;
