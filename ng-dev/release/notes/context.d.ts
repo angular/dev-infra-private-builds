@@ -72,6 +72,14 @@ export declare class RenderContext {
      * end of the line (which is added by merge tooling) to a Markdown link.
      */
     replaceCommitHeaderPullRequestNumber(header: string): string;
+    /**
+     * Bulletize a paragraph.
+     */
+    bulletizeText(text: string): string;
+    /**
+     * Returns unique, sorted and filtered commit authors.
+     */
+    commitAuthors(commits: CommitFromGitLog[]): string[];
 }
 /**
  * Builds a date stamp for stamping in release notes.

@@ -61216,6 +61216,7 @@ var require_context = __commonJS({
     exports2.buildDateStamp = exports2.RenderContext = void 0;
     var config_1 = require_config4();
     var typesToIncludeInReleaseNotes = Object.values(config_1.COMMIT_TYPES).filter((type) => type.releaseNotesLevel === config_1.ReleaseNotesLevel.Visible).map((type) => type.name);
+    var botsAuthorNames = ["dependabot[bot]", "Renovate Bot"];
     var RenderContext = class {
       constructor(data) {
         this.data = data;
@@ -61234,7 +61235,10 @@ var require_context = __commonJS({
           groups.set(key, groupCommits);
           groupCommits.push(commit);
         });
-        const commitGroups = Array.from(groups.entries()).map(([title, commits2]) => ({ title, commits: commits2 })).sort((a, b) => a.title > b.title ? 1 : a.title < b.title ? -1 : 0);
+        const commitGroups = Array.from(groups.entries()).map(([title, commits2]) => ({
+          title,
+          commits: commits2.sort((a, b) => a.type > b.type ? 1 : a.type < b.type ? -1 : 0)
+        })).sort((a, b) => a.title > b.title ? 1 : a.title < b.title ? -1 : 0);
         if (this.groupOrder.length) {
           for (const groupTitle of this.groupOrder.reverse()) {
             const currentIdx = commitGroups.findIndex((k) => k.title === groupTitle);
@@ -61282,6 +61286,12 @@ var require_context = __commonJS({
       replaceCommitHeaderPullRequestNumber(header) {
         return header.replace(/\(#(\d+)\)$/, (_, g) => `(${this.pullRequestToLink(+g)})`);
       }
+      bulletizeText(text) {
+        return "- " + text.replace(/\\n/g, "\\n  ");
+      }
+      commitAuthors(commits) {
+        return [...new Set(commits.map((c) => c.author))].filter((a) => !botsAuthorNames.includes(a)).sort();
+      }
     };
     exports2.RenderContext = RenderContext;
     function buildDateStamp(date = new Date()) {
@@ -61313,14 +61323,8 @@ _%>
   for (const group of asCommitGroups(breakingChanges)) {
 _%>
 ### <%- group.title %>
-
+<%- group.commits.map(commit => bulletizeText(commit.breakingChanges[0].text)).join('\\n\\n') %>
 <%_
-    for (const commit of group.commits) {
-_%>
-<%- commit.breakingChanges[0].text %>
-
-<%_
-    }
   }
 }
 _%>
@@ -61334,13 +61338,8 @@ _%>
   for (const group of asCommitGroups(deprecations)) {
 _%>
 ### <%- group.title %>
-
+<%- group.commits.map(commit => bulletizeText(commit.deprecations[0].text)).join('\\n\\n') %>
 <%_
-    for (const commit of group.commits) {
-_%>
-<%- commit.deprecations[0].text %>
-<%_
-    }
   }
 }
 _%>
@@ -61363,12 +61362,7 @@ _%>
 _%>
 
 <%_
-const botsAuthorName = ['dependabot[bot]', 'Renovate Bot'];
-const authors = commits
-  .filter(unique('author'))
-  .map(c => c.author)
-  .filter(a => !botsAuthorName.includes(a))
-  .sort();
+const authors = commitAuthors(commits);
 if (authors.length === 1) {
 _%>
 ## Special Thanks:
@@ -61405,14 +61399,8 @@ _%>
   for (const group of asCommitGroups(breakingChanges)) {
 _%>
 ### <%- group.title %>
-
+<%- group.commits.map(commit => bulletizeText(commit.breakingChanges[0].text)).join('\\n\\n') %>
 <%_
-    for (const commit of group.commits) {
-_%>
-<%- commit.breakingChanges[0].text %>
-
-<%_
-    }
   }
 }
 _%>
@@ -61426,13 +61414,8 @@ _%>
   for (const group of asCommitGroups(deprecations)) {
 _%>
 ### <%- group.title %>
-
+<%- group.commits.map(commit => bulletizeText(commit.deprecations[0].text)).join('\\n\\n') %>
 <%_
-    for (const commit of group.commits) {
-_%>
-<%- commit.deprecations[0].text %>
-<%_
-    }
   }
 }
 _%>
@@ -61455,7 +61438,7 @@ _%>
 _%>
 
 <%_
-const authors = commits.filter(unique('author')).map(c => c.author).sort();
+const authors = commitAuthors(commits);
 if (authors.length === 1) {
 _%>
 ## Special Thanks:
