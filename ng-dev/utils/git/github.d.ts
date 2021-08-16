@@ -324,8 +324,10 @@ export declare class GithubClient {
                         open_issues_count: number;
                         permissions?: {
                             admin: boolean;
-                            pull: boolean;
+                            maintain?: boolean | undefined;
                             push: boolean;
+                            triage?: boolean | undefined;
+                            pull: boolean;
                         } | undefined;
                         temp_clone_token?: string | undefined;
                         allow_merge_commit?: boolean | undefined;
@@ -460,8 +462,10 @@ export declare class GithubClient {
                         open_issues_count: number;
                         permissions?: {
                             admin: boolean;
-                            pull: boolean;
+                            maintain?: boolean | undefined;
                             push: boolean;
+                            triage?: boolean | undefined;
+                            pull: boolean;
                         } | undefined;
                         temp_clone_token?: string | undefined;
                         allow_merge_commit?: boolean | undefined;
@@ -1247,8 +1251,10 @@ export declare class GithubClient {
                         open_issues_count: number;
                         permissions?: {
                             admin: boolean;
-                            pull: boolean;
+                            maintain?: boolean | undefined;
                             push: boolean;
+                            triage?: boolean | undefined;
+                            pull: boolean;
                         } | undefined;
                         temp_clone_token?: string | undefined;
                         allow_merge_commit?: boolean | undefined;
@@ -1383,8 +1389,10 @@ export declare class GithubClient {
                         open_issues_count: number;
                         permissions?: {
                             admin: boolean;
-                            pull: boolean;
+                            maintain?: boolean | undefined;
                             push: boolean;
+                            triage?: boolean | undefined;
+                            pull: boolean;
                         } | undefined;
                         temp_clone_token?: string | undefined;
                         allow_merge_commit?: boolean | undefined;
@@ -2108,12 +2116,15 @@ export declare class GithubClient {
                             updated_at?: string | undefined;
                             permissions?: {
                                 admin?: boolean | undefined;
+                                maintain?: boolean | undefined;
                                 push?: boolean | undefined;
+                                triage?: boolean | undefined;
                                 pull?: boolean | undefined;
                             } | undefined;
                             allow_rebase_merge?: boolean | undefined;
                             temp_clone_token?: string | undefined;
                             allow_squash_merge?: boolean | undefined;
+                            allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
                             subscribers_count?: number | undefined;
@@ -2121,6 +2132,7 @@ export declare class GithubClient {
                         } | null | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -2387,12 +2399,15 @@ export declare class GithubClient {
                             updated_at?: string | undefined;
                             permissions?: {
                                 admin?: boolean | undefined;
+                                maintain?: boolean | undefined;
                                 push?: boolean | undefined;
+                                triage?: boolean | undefined;
                                 pull?: boolean | undefined;
                             } | undefined;
                             allow_rebase_merge?: boolean | undefined;
                             temp_clone_token?: string | undefined;
                             allow_squash_merge?: boolean | undefined;
+                            allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
                             subscribers_count?: number | undefined;
@@ -2400,6 +2415,7 @@ export declare class GithubClient {
                         } | null | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -3488,12 +3504,15 @@ export declare class GithubClient {
                             updated_at?: string | undefined;
                             permissions?: {
                                 admin?: boolean | undefined;
+                                maintain?: boolean | undefined;
                                 push?: boolean | undefined;
+                                triage?: boolean | undefined;
                                 pull?: boolean | undefined;
                             } | undefined;
                             allow_rebase_merge?: boolean | undefined;
                             temp_clone_token?: string | undefined;
                             allow_squash_merge?: boolean | undefined;
+                            allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
                             subscribers_count?: number | undefined;
@@ -3501,6 +3520,7 @@ export declare class GithubClient {
                         } | null | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -3767,12 +3787,15 @@ export declare class GithubClient {
                             updated_at?: string | undefined;
                             permissions?: {
                                 admin?: boolean | undefined;
+                                maintain?: boolean | undefined;
                                 push?: boolean | undefined;
+                                triage?: boolean | undefined;
                                 pull?: boolean | undefined;
                             } | undefined;
                             allow_rebase_merge?: boolean | undefined;
                             temp_clone_token?: string | undefined;
                             allow_squash_merge?: boolean | undefined;
+                            allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
                             subscribers_count?: number | undefined;
@@ -3780,6 +3803,7 @@ export declare class GithubClient {
                         } | null | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -4315,12 +4339,15 @@ export declare class GithubClient {
                             updated_at?: string | undefined;
                             permissions?: {
                                 admin?: boolean | undefined;
+                                maintain?: boolean | undefined;
                                 push?: boolean | undefined;
+                                triage?: boolean | undefined;
                                 pull?: boolean | undefined;
                             } | undefined;
                             allow_rebase_merge?: boolean | undefined;
                             temp_clone_token?: string | undefined;
                             allow_squash_merge?: boolean | undefined;
+                            allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
                             subscribers_count?: number | undefined;
@@ -4328,6 +4355,7 @@ export declare class GithubClient {
                         } | null | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -4594,12 +4622,15 @@ export declare class GithubClient {
                             updated_at?: string | undefined;
                             permissions?: {
                                 admin?: boolean | undefined;
+                                maintain?: boolean | undefined;
                                 push?: boolean | undefined;
+                                triage?: boolean | undefined;
                                 pull?: boolean | undefined;
                             } | undefined;
                             allow_rebase_merge?: boolean | undefined;
                             temp_clone_token?: string | undefined;
                             allow_squash_merge?: boolean | undefined;
+                            allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
                             subscribers_count?: number | undefined;
@@ -4607,6 +4638,7 @@ export declare class GithubClient {
                         } | null | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -5040,8 +5072,10 @@ export declare class GithubClient {
                         open_issues_count: number;
                         permissions?: {
                             admin: boolean;
-                            pull: boolean;
+                            maintain?: boolean | undefined;
                             push: boolean;
+                            triage?: boolean | undefined;
+                            pull: boolean;
                         } | undefined;
                         temp_clone_token?: string | undefined;
                         allow_merge_commit?: boolean | undefined;
@@ -5176,8 +5210,10 @@ export declare class GithubClient {
                         open_issues_count: number;
                         permissions?: {
                             admin: boolean;
-                            pull: boolean;
+                            maintain?: boolean | undefined;
                             push: boolean;
+                            triage?: boolean | undefined;
+                            pull: boolean;
                         } | undefined;
                         temp_clone_token?: string | undefined;
                         allow_merge_commit?: boolean | undefined;
@@ -5661,10 +5697,10 @@ export declare class GithubClient {
                     updated_at?: string | null | undefined;
                     permissions?: {
                         admin?: boolean | undefined;
-                        push?: boolean | undefined;
-                        pull?: boolean | undefined;
                         maintain?: boolean | undefined;
+                        push?: boolean | undefined;
                         triage?: boolean | undefined;
+                        pull?: boolean | undefined;
                     } | undefined;
                     template_repository?: {
                         id: number;
@@ -5895,12 +5931,15 @@ export declare class GithubClient {
                             updated_at?: string | undefined;
                             permissions?: {
                                 admin?: boolean | undefined;
+                                maintain?: boolean | undefined;
                                 push?: boolean | undefined;
+                                triage?: boolean | undefined;
                                 pull?: boolean | undefined;
                             } | undefined;
                             allow_rebase_merge?: boolean | undefined;
                             temp_clone_token?: string | undefined;
                             allow_squash_merge?: boolean | undefined;
+                            allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
                             subscribers_count?: number | undefined;
@@ -5908,6 +5947,7 @@ export declare class GithubClient {
                         } | null | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -6797,6 +6837,23 @@ export declare class GithubClient {
                 url: string;
             }>;
         };
+        createAutolink: {
+            (params?: (RequestParameters & Omit<{
+                owner: string;
+                repo: string;
+            } & {
+                key_prefix: string;
+                url_template: string;
+            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
+                id: number;
+                key_prefix: string;
+                url_template: string;
+            }, 201>>;
+            defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
+            endpoint: import("@octokit/types").EndpointInterface<{
+                url: string;
+            }>;
+        };
         createCommitComment: {
             (params?: (RequestParameters & Omit<{
                 owner: string;
@@ -7202,6 +7259,7 @@ export declare class GithubClient {
                 allow_squash_merge?: boolean | undefined;
                 allow_merge_commit?: boolean | undefined;
                 allow_rebase_merge?: boolean | undefined;
+                allow_auto_merge?: boolean | undefined;
                 delete_branch_on_merge?: boolean | undefined;
                 has_downloads?: boolean | undefined;
                 is_template?: boolean | undefined;
@@ -7434,12 +7492,15 @@ export declare class GithubClient {
                     updated_at?: string | undefined;
                     permissions?: {
                         admin?: boolean | undefined;
+                        maintain?: boolean | undefined;
                         push?: boolean | undefined;
+                        triage?: boolean | undefined;
                         pull?: boolean | undefined;
                     } | undefined;
                     allow_rebase_merge?: boolean | undefined;
                     temp_clone_token?: string | undefined;
                     allow_squash_merge?: boolean | undefined;
+                    allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -7447,6 +7508,7 @@ export declare class GithubClient {
                 } | null | undefined;
                 temp_clone_token?: string | undefined;
                 allow_squash_merge?: boolean | undefined;
+                allow_auto_merge?: boolean | undefined;
                 delete_branch_on_merge?: boolean | undefined;
                 allow_merge_commit?: boolean | undefined;
                 subscribers_count?: number | undefined;
@@ -7564,8 +7626,10 @@ export declare class GithubClient {
                 updated_at: string;
                 permissions?: {
                     admin: boolean;
-                    pull: boolean;
+                    maintain?: boolean | undefined;
                     push: boolean;
+                    triage?: boolean | undefined;
+                    pull: boolean;
                 } | undefined;
                 allow_rebase_merge?: boolean | undefined;
                 template_repository?: {
@@ -7797,12 +7861,15 @@ export declare class GithubClient {
                         updated_at?: string | undefined;
                         permissions?: {
                             admin?: boolean | undefined;
+                            maintain?: boolean | undefined;
                             push?: boolean | undefined;
+                            triage?: boolean | undefined;
                             pull?: boolean | undefined;
                         } | undefined;
                         allow_rebase_merge?: boolean | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -7810,6 +7877,7 @@ export declare class GithubClient {
                     } | null | undefined;
                     temp_clone_token?: string | undefined;
                     allow_squash_merge?: boolean | undefined;
+                    allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -7821,6 +7889,7 @@ export declare class GithubClient {
                 } | null | undefined;
                 temp_clone_token?: string | null | undefined;
                 allow_squash_merge?: boolean | undefined;
+                allow_auto_merge?: boolean | undefined;
                 delete_branch_on_merge?: boolean | undefined;
                 allow_merge_commit?: boolean | undefined;
                 subscribers_count: number;
@@ -8085,12 +8154,15 @@ export declare class GithubClient {
                         updated_at?: string | undefined;
                         permissions?: {
                             admin?: boolean | undefined;
+                            maintain?: boolean | undefined;
                             push?: boolean | undefined;
+                            triage?: boolean | undefined;
                             pull?: boolean | undefined;
                         } | undefined;
                         allow_rebase_merge?: boolean | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -8098,6 +8170,7 @@ export declare class GithubClient {
                     } | null | undefined;
                     temp_clone_token?: string | undefined;
                     allow_squash_merge?: boolean | undefined;
+                    allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -8336,12 +8409,15 @@ export declare class GithubClient {
                         updated_at?: string | undefined;
                         permissions?: {
                             admin?: boolean | undefined;
+                            maintain?: boolean | undefined;
                             push?: boolean | undefined;
+                            triage?: boolean | undefined;
                             pull?: boolean | undefined;
                         } | undefined;
                         allow_rebase_merge?: boolean | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -8349,6 +8425,7 @@ export declare class GithubClient {
                     } | null | undefined;
                     temp_clone_token?: string | undefined;
                     allow_squash_merge?: boolean | undefined;
+                    allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -8403,6 +8480,7 @@ export declare class GithubClient {
                 allow_squash_merge?: boolean | undefined;
                 allow_merge_commit?: boolean | undefined;
                 allow_rebase_merge?: boolean | undefined;
+                allow_auto_merge?: boolean | undefined;
                 delete_branch_on_merge?: boolean | undefined;
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 id: number;
@@ -8633,12 +8711,15 @@ export declare class GithubClient {
                     updated_at?: string | undefined;
                     permissions?: {
                         admin?: boolean | undefined;
+                        maintain?: boolean | undefined;
                         push?: boolean | undefined;
+                        triage?: boolean | undefined;
                         pull?: boolean | undefined;
                     } | undefined;
                     allow_rebase_merge?: boolean | undefined;
                     temp_clone_token?: string | undefined;
                     allow_squash_merge?: boolean | undefined;
+                    allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -8646,6 +8727,7 @@ export declare class GithubClient {
                 } | null | undefined;
                 temp_clone_token?: string | undefined;
                 allow_squash_merge?: boolean | undefined;
+                allow_auto_merge?: boolean | undefined;
                 delete_branch_on_merge?: boolean | undefined;
                 allow_merge_commit?: boolean | undefined;
                 subscribers_count?: number | undefined;
@@ -9018,6 +9100,7 @@ export declare class GithubClient {
                 }[];
                 body_html?: string | undefined;
                 body_text?: string | undefined;
+                mentions_count?: number | undefined;
                 discussion_url?: string | undefined;
                 reactions?: {
                     url: string;
@@ -9280,12 +9363,15 @@ export declare class GithubClient {
                     updated_at?: string | undefined;
                     permissions?: {
                         admin?: boolean | undefined;
+                        maintain?: boolean | undefined;
                         push?: boolean | undefined;
+                        triage?: boolean | undefined;
                         pull?: boolean | undefined;
                     } | undefined;
                     allow_rebase_merge?: boolean | undefined;
                     temp_clone_token?: string | undefined;
                     allow_squash_merge?: boolean | undefined;
+                    allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -9293,6 +9379,7 @@ export declare class GithubClient {
                 } | null | undefined;
                 temp_clone_token?: string | undefined;
                 allow_squash_merge?: boolean | undefined;
+                allow_auto_merge?: boolean | undefined;
                 delete_branch_on_merge?: boolean | undefined;
                 allow_merge_commit?: boolean | undefined;
                 subscribers_count?: number | undefined;
@@ -9404,6 +9491,17 @@ export declare class GithubClient {
                 owner: string;
                 repo: string;
                 environment_name: string;
+            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<never, 204>>;
+            defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
+            endpoint: import("@octokit/types").EndpointInterface<{
+                url: string;
+            }>;
+        };
+        deleteAutolink: {
+            (params?: (RequestParameters & Omit<{
+                owner: string;
+                repo: string;
+                autolink_id: number;
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<never, 204>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
@@ -9800,8 +9898,10 @@ export declare class GithubClient {
                 updated_at: string;
                 permissions?: {
                     admin: boolean;
-                    pull: boolean;
+                    maintain?: boolean | undefined;
                     push: boolean;
+                    triage?: boolean | undefined;
+                    pull: boolean;
                 } | undefined;
                 allow_rebase_merge?: boolean | undefined;
                 template_repository?: {
@@ -10033,12 +10133,15 @@ export declare class GithubClient {
                         updated_at?: string | undefined;
                         permissions?: {
                             admin?: boolean | undefined;
+                            maintain?: boolean | undefined;
                             push?: boolean | undefined;
+                            triage?: boolean | undefined;
                             pull?: boolean | undefined;
                         } | undefined;
                         allow_rebase_merge?: boolean | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -10046,6 +10149,7 @@ export declare class GithubClient {
                     } | null | undefined;
                     temp_clone_token?: string | undefined;
                     allow_squash_merge?: boolean | undefined;
+                    allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -10057,6 +10161,7 @@ export declare class GithubClient {
                 } | null | undefined;
                 temp_clone_token?: string | null | undefined;
                 allow_squash_merge?: boolean | undefined;
+                allow_auto_merge?: boolean | undefined;
                 delete_branch_on_merge?: boolean | undefined;
                 allow_merge_commit?: boolean | undefined;
                 subscribers_count: number;
@@ -10321,12 +10426,15 @@ export declare class GithubClient {
                         updated_at?: string | undefined;
                         permissions?: {
                             admin?: boolean | undefined;
+                            maintain?: boolean | undefined;
                             push?: boolean | undefined;
+                            triage?: boolean | undefined;
                             pull?: boolean | undefined;
                         } | undefined;
                         allow_rebase_merge?: boolean | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -10334,6 +10442,7 @@ export declare class GithubClient {
                     } | null | undefined;
                     temp_clone_token?: string | undefined;
                     allow_squash_merge?: boolean | undefined;
+                    allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -10572,12 +10681,15 @@ export declare class GithubClient {
                         updated_at?: string | undefined;
                         permissions?: {
                             admin?: boolean | undefined;
+                            maintain?: boolean | undefined;
                             push?: boolean | undefined;
+                            triage?: boolean | undefined;
                             pull?: boolean | undefined;
                         } | undefined;
                         allow_rebase_merge?: boolean | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -10585,6 +10697,7 @@ export declare class GithubClient {
                     } | null | undefined;
                     temp_clone_token?: string | undefined;
                     allow_squash_merge?: boolean | undefined;
+                    allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -10908,6 +11021,21 @@ export declare class GithubClient {
                 webhook_secret?: string | null | undefined;
                 pem?: string | undefined;
             } | null)[], 200>>;
+            defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
+            endpoint: import("@octokit/types").EndpointInterface<{
+                url: string;
+            }>;
+        };
+        getAutolink: {
+            (params?: (RequestParameters & Omit<{
+                owner: string;
+                repo: string;
+                autolink_id: number;
+            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
+                id: number;
+                key_prefix: string;
+                url_template: string;
+            }, 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
                 url: string;
@@ -11603,10 +11731,10 @@ export declare class GithubClient {
                     updated_at?: string | null | undefined;
                     permissions?: {
                         admin?: boolean | undefined;
-                        push?: boolean | undefined;
-                        pull?: boolean | undefined;
                         maintain?: boolean | undefined;
+                        push?: boolean | undefined;
                         triage?: boolean | undefined;
+                        pull?: boolean | undefined;
                     } | undefined;
                     template_repository?: {
                         id: number;
@@ -11837,12 +11965,15 @@ export declare class GithubClient {
                             updated_at?: string | undefined;
                             permissions?: {
                                 admin?: boolean | undefined;
+                                maintain?: boolean | undefined;
                                 push?: boolean | undefined;
+                                triage?: boolean | undefined;
                                 pull?: boolean | undefined;
                             } | undefined;
                             allow_rebase_merge?: boolean | undefined;
                             temp_clone_token?: string | undefined;
                             allow_squash_merge?: boolean | undefined;
+                            allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
                             subscribers_count?: number | undefined;
@@ -11850,6 +11981,7 @@ export declare class GithubClient {
                         } | null | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -12712,6 +12844,7 @@ export declare class GithubClient {
                 }[];
                 body_html?: string | undefined;
                 body_text?: string | undefined;
+                mentions_count?: number | undefined;
                 discussion_url?: string | undefined;
                 reactions?: {
                     url: string;
@@ -13124,6 +13257,7 @@ export declare class GithubClient {
                 }[];
                 body_html?: string | undefined;
                 body_text?: string | undefined;
+                mentions_count?: number | undefined;
                 discussion_url?: string | undefined;
                 reactions?: {
                     url: string;
@@ -13274,6 +13408,7 @@ export declare class GithubClient {
                 }[];
                 body_html?: string | undefined;
                 body_text?: string | undefined;
+                mentions_count?: number | undefined;
                 discussion_url?: string | undefined;
                 reactions?: {
                     url: string;
@@ -13524,6 +13659,22 @@ export declare class GithubClient {
                     payload: string | null;
                 };
             }, 200>>;
+            defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
+            endpoint: import("@octokit/types").EndpointInterface<{
+                url: string;
+            }>;
+        };
+        listAutolinks: {
+            (params?: (RequestParameters & Omit<{
+                owner: string;
+                repo: string;
+            } & {
+                page?: number | undefined;
+            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
+                id: number;
+                key_prefix: string;
+                url_template: string;
+            }[], 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
                 url: string;
@@ -13788,7 +13939,9 @@ export declare class GithubClient {
                 site_admin: boolean;
                 permissions?: {
                     pull: boolean;
+                    triage?: boolean | undefined;
                     push: boolean;
+                    maintain?: boolean | undefined;
                     admin: boolean;
                 } | undefined;
             }[], 200>>;
@@ -14591,12 +14744,15 @@ export declare class GithubClient {
                     updated_at?: string | undefined;
                     permissions?: {
                         admin?: boolean | undefined;
+                        maintain?: boolean | undefined;
                         push?: boolean | undefined;
+                        triage?: boolean | undefined;
                         pull?: boolean | undefined;
                     } | undefined;
                     allow_rebase_merge?: boolean | undefined;
                     temp_clone_token?: string | undefined;
                     allow_squash_merge?: boolean | undefined;
+                    allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -14604,6 +14760,7 @@ export declare class GithubClient {
                 } | null | undefined;
                 temp_clone_token?: string | undefined;
                 allow_squash_merge?: boolean | undefined;
+                allow_auto_merge?: boolean | undefined;
                 delete_branch_on_merge?: boolean | undefined;
                 allow_merge_commit?: boolean | undefined;
                 subscribers_count?: number | undefined;
@@ -14724,10 +14881,10 @@ export declare class GithubClient {
                 updated_at?: string | null | undefined;
                 permissions?: {
                     admin?: boolean | undefined;
-                    push?: boolean | undefined;
-                    pull?: boolean | undefined;
                     maintain?: boolean | undefined;
+                    push?: boolean | undefined;
                     triage?: boolean | undefined;
+                    pull?: boolean | undefined;
                 } | undefined;
                 template_repository?: {
                     id: number;
@@ -14958,12 +15115,15 @@ export declare class GithubClient {
                         updated_at?: string | undefined;
                         permissions?: {
                             admin?: boolean | undefined;
+                            maintain?: boolean | undefined;
                             push?: boolean | undefined;
+                            triage?: boolean | undefined;
                             pull?: boolean | undefined;
                         } | undefined;
                         allow_rebase_merge?: boolean | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -14971,6 +15131,7 @@ export declare class GithubClient {
                     } | null | undefined;
                     temp_clone_token?: string | undefined;
                     allow_squash_merge?: boolean | undefined;
+                    allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -15113,10 +15274,10 @@ export declare class GithubClient {
                 updated_at?: string | null | undefined;
                 permissions?: {
                     admin?: boolean | undefined;
-                    push?: boolean | undefined;
-                    pull?: boolean | undefined;
                     maintain?: boolean | undefined;
+                    push?: boolean | undefined;
                     triage?: boolean | undefined;
+                    pull?: boolean | undefined;
                 } | undefined;
                 template_repository?: {
                     id: number;
@@ -15347,12 +15508,15 @@ export declare class GithubClient {
                         updated_at?: string | undefined;
                         permissions?: {
                             admin?: boolean | undefined;
+                            maintain?: boolean | undefined;
                             push?: boolean | undefined;
+                            triage?: boolean | undefined;
                             pull?: boolean | undefined;
                         } | undefined;
                         allow_rebase_merge?: boolean | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -15360,6 +15524,7 @@ export declare class GithubClient {
                     } | null | undefined;
                     temp_clone_token?: string | undefined;
                     allow_squash_merge?: boolean | undefined;
+                    allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -15501,10 +15666,10 @@ export declare class GithubClient {
                 updated_at?: string | null | undefined;
                 permissions?: {
                     admin?: boolean | undefined;
-                    push?: boolean | undefined;
-                    pull?: boolean | undefined;
                     maintain?: boolean | undefined;
+                    push?: boolean | undefined;
                     triage?: boolean | undefined;
+                    pull?: boolean | undefined;
                 } | undefined;
                 template_repository?: {
                     id: number;
@@ -15735,12 +15900,15 @@ export declare class GithubClient {
                         updated_at?: string | undefined;
                         permissions?: {
                             admin?: boolean | undefined;
+                            maintain?: boolean | undefined;
                             push?: boolean | undefined;
+                            triage?: boolean | undefined;
                             pull?: boolean | undefined;
                         } | undefined;
                         allow_rebase_merge?: boolean | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -15748,6 +15916,7 @@ export declare class GithubClient {
                     } | null | undefined;
                     temp_clone_token?: string | undefined;
                     allow_squash_merge?: boolean | undefined;
+                    allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -15890,10 +16059,10 @@ export declare class GithubClient {
                     updated_at?: string | null | undefined;
                     permissions?: {
                         admin?: boolean | undefined;
-                        push?: boolean | undefined;
-                        pull?: boolean | undefined;
                         maintain?: boolean | undefined;
+                        push?: boolean | undefined;
                         triage?: boolean | undefined;
+                        pull?: boolean | undefined;
                     } | undefined;
                     template_repository?: {
                         id: number;
@@ -16124,12 +16293,15 @@ export declare class GithubClient {
                             updated_at?: string | undefined;
                             permissions?: {
                                 admin?: boolean | undefined;
+                                maintain?: boolean | undefined;
                                 push?: boolean | undefined;
+                                triage?: boolean | undefined;
                                 pull?: boolean | undefined;
                             } | undefined;
                             allow_rebase_merge?: boolean | undefined;
                             temp_clone_token?: string | undefined;
                             allow_squash_merge?: boolean | undefined;
+                            allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
                             subscribers_count?: number | undefined;
@@ -16137,6 +16309,7 @@ export declare class GithubClient {
                         } | null | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -16329,10 +16502,10 @@ export declare class GithubClient {
                     updated_at?: string | null | undefined;
                     permissions?: {
                         admin?: boolean | undefined;
-                        push?: boolean | undefined;
-                        pull?: boolean | undefined;
                         maintain?: boolean | undefined;
+                        push?: boolean | undefined;
                         triage?: boolean | undefined;
+                        pull?: boolean | undefined;
                     } | undefined;
                     template_repository?: {
                         id: number;
@@ -16563,12 +16736,15 @@ export declare class GithubClient {
                             updated_at?: string | undefined;
                             permissions?: {
                                 admin?: boolean | undefined;
+                                maintain?: boolean | undefined;
                                 push?: boolean | undefined;
+                                triage?: boolean | undefined;
                                 pull?: boolean | undefined;
                             } | undefined;
                             allow_rebase_merge?: boolean | undefined;
                             temp_clone_token?: string | undefined;
                             allow_squash_merge?: boolean | undefined;
+                            allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
                             subscribers_count?: number | undefined;
@@ -16576,6 +16752,7 @@ export declare class GithubClient {
                         } | null | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -16823,10 +17000,10 @@ export declare class GithubClient {
                 updated_at?: string | null | undefined;
                 permissions?: {
                     admin?: boolean | undefined;
-                    push?: boolean | undefined;
-                    pull?: boolean | undefined;
                     maintain?: boolean | undefined;
+                    push?: boolean | undefined;
                     triage?: boolean | undefined;
+                    pull?: boolean | undefined;
                 } | undefined;
                 template_repository?: {
                     id: number;
@@ -17057,12 +17234,15 @@ export declare class GithubClient {
                         updated_at?: string | undefined;
                         permissions?: {
                             admin?: boolean | undefined;
+                            maintain?: boolean | undefined;
                             push?: boolean | undefined;
+                            triage?: boolean | undefined;
                             pull?: boolean | undefined;
                         } | undefined;
                         allow_rebase_merge?: boolean | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -17070,6 +17250,7 @@ export declare class GithubClient {
                     } | null | undefined;
                     temp_clone_token?: string | undefined;
                     allow_squash_merge?: boolean | undefined;
+                    allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -17549,12 +17730,15 @@ export declare class GithubClient {
                             updated_at?: string | undefined;
                             permissions?: {
                                 admin?: boolean | undefined;
+                                maintain?: boolean | undefined;
                                 push?: boolean | undefined;
+                                triage?: boolean | undefined;
                                 pull?: boolean | undefined;
                             } | undefined;
                             allow_rebase_merge?: boolean | undefined;
                             temp_clone_token?: string | undefined;
                             allow_squash_merge?: boolean | undefined;
+                            allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
                             subscribers_count?: number | undefined;
@@ -17562,6 +17746,7 @@ export declare class GithubClient {
                         } | null | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -17828,12 +18013,15 @@ export declare class GithubClient {
                             updated_at?: string | undefined;
                             permissions?: {
                                 admin?: boolean | undefined;
+                                maintain?: boolean | undefined;
                                 push?: boolean | undefined;
+                                triage?: boolean | undefined;
                                 pull?: boolean | undefined;
                             } | undefined;
                             allow_rebase_merge?: boolean | undefined;
                             temp_clone_token?: string | undefined;
                             allow_squash_merge?: boolean | undefined;
+                            allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
                             subscribers_count?: number | undefined;
@@ -17841,6 +18029,7 @@ export declare class GithubClient {
                         } | null | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -18073,6 +18262,7 @@ export declare class GithubClient {
                 }[];
                 body_html?: string | undefined;
                 body_text?: string | undefined;
+                mentions_count?: number | undefined;
                 discussion_url?: string | undefined;
                 reactions?: {
                     url: string;
@@ -19167,10 +19357,10 @@ export declare class GithubClient {
                 updated_at?: string | null | undefined;
                 permissions?: {
                     admin?: boolean | undefined;
-                    push?: boolean | undefined;
-                    pull?: boolean | undefined;
                     maintain?: boolean | undefined;
+                    push?: boolean | undefined;
                     triage?: boolean | undefined;
+                    pull?: boolean | undefined;
                 } | undefined;
                 template_repository?: {
                     id: number;
@@ -19401,12 +19591,15 @@ export declare class GithubClient {
                         updated_at?: string | undefined;
                         permissions?: {
                             admin?: boolean | undefined;
+                            maintain?: boolean | undefined;
                             push?: boolean | undefined;
+                            triage?: boolean | undefined;
                             pull?: boolean | undefined;
                         } | undefined;
                         allow_rebase_merge?: boolean | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -19414,6 +19607,7 @@ export declare class GithubClient {
                     } | null | undefined;
                     temp_clone_token?: string | undefined;
                     allow_squash_merge?: boolean | undefined;
+                    allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -19476,6 +19670,7 @@ export declare class GithubClient {
                 allow_squash_merge?: boolean | undefined;
                 allow_merge_commit?: boolean | undefined;
                 allow_rebase_merge?: boolean | undefined;
+                allow_auto_merge?: boolean | undefined;
                 delete_branch_on_merge?: boolean | undefined;
                 archived?: boolean | undefined;
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
@@ -19575,8 +19770,10 @@ export declare class GithubClient {
                 updated_at: string;
                 permissions?: {
                     admin: boolean;
-                    pull: boolean;
+                    maintain?: boolean | undefined;
                     push: boolean;
+                    triage?: boolean | undefined;
+                    pull: boolean;
                 } | undefined;
                 allow_rebase_merge?: boolean | undefined;
                 template_repository?: {
@@ -19808,12 +20005,15 @@ export declare class GithubClient {
                         updated_at?: string | undefined;
                         permissions?: {
                             admin?: boolean | undefined;
+                            maintain?: boolean | undefined;
                             push?: boolean | undefined;
+                            triage?: boolean | undefined;
                             pull?: boolean | undefined;
                         } | undefined;
                         allow_rebase_merge?: boolean | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -19821,6 +20021,7 @@ export declare class GithubClient {
                     } | null | undefined;
                     temp_clone_token?: string | undefined;
                     allow_squash_merge?: boolean | undefined;
+                    allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -19832,6 +20033,7 @@ export declare class GithubClient {
                 } | null | undefined;
                 temp_clone_token?: string | null | undefined;
                 allow_squash_merge?: boolean | undefined;
+                allow_auto_merge?: boolean | undefined;
                 delete_branch_on_merge?: boolean | undefined;
                 allow_merge_commit?: boolean | undefined;
                 subscribers_count: number;
@@ -20096,12 +20298,15 @@ export declare class GithubClient {
                         updated_at?: string | undefined;
                         permissions?: {
                             admin?: boolean | undefined;
+                            maintain?: boolean | undefined;
                             push?: boolean | undefined;
+                            triage?: boolean | undefined;
                             pull?: boolean | undefined;
                         } | undefined;
                         allow_rebase_merge?: boolean | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -20109,6 +20314,7 @@ export declare class GithubClient {
                     } | null | undefined;
                     temp_clone_token?: string | undefined;
                     allow_squash_merge?: boolean | undefined;
+                    allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -20347,12 +20553,15 @@ export declare class GithubClient {
                         updated_at?: string | undefined;
                         permissions?: {
                             admin?: boolean | undefined;
+                            maintain?: boolean | undefined;
                             push?: boolean | undefined;
+                            triage?: boolean | undefined;
                             pull?: boolean | undefined;
                         } | undefined;
                         allow_rebase_merge?: boolean | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -20360,6 +20569,7 @@ export declare class GithubClient {
                     } | null | undefined;
                     temp_clone_token?: string | undefined;
                     allow_squash_merge?: boolean | undefined;
+                    allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -20793,10 +21003,10 @@ export declare class GithubClient {
                     updated_at?: string | null | undefined;
                     permissions?: {
                         admin?: boolean | undefined;
-                        push?: boolean | undefined;
-                        pull?: boolean | undefined;
                         maintain?: boolean | undefined;
+                        push?: boolean | undefined;
                         triage?: boolean | undefined;
+                        pull?: boolean | undefined;
                     } | undefined;
                     template_repository?: {
                         id: number;
@@ -21027,12 +21237,15 @@ export declare class GithubClient {
                             updated_at?: string | undefined;
                             permissions?: {
                                 admin?: boolean | undefined;
+                                maintain?: boolean | undefined;
                                 push?: boolean | undefined;
+                                triage?: boolean | undefined;
                                 pull?: boolean | undefined;
                             } | undefined;
                             allow_rebase_merge?: boolean | undefined;
                             temp_clone_token?: string | undefined;
                             allow_squash_merge?: boolean | undefined;
+                            allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
                             subscribers_count?: number | undefined;
@@ -21040,6 +21253,7 @@ export declare class GithubClient {
                         } | null | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -21307,6 +21521,7 @@ export declare class GithubClient {
                 }[];
                 body_html?: string | undefined;
                 body_text?: string | undefined;
+                mentions_count?: number | undefined;
                 discussion_url?: string | undefined;
                 reactions?: {
                     url: string;
@@ -21927,12 +22142,15 @@ export declare class GithubClient {
                         updated_at?: string | undefined;
                         permissions?: {
                             admin?: boolean | undefined;
+                            maintain?: boolean | undefined;
                             push?: boolean | undefined;
+                            triage?: boolean | undefined;
                             pull?: boolean | undefined;
                         } | undefined;
                         allow_rebase_merge?: boolean | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -21940,6 +22158,7 @@ export declare class GithubClient {
                     } | null | undefined;
                     temp_clone_token?: string | undefined;
                     allow_squash_merge?: boolean | undefined;
+                    allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -22455,12 +22674,15 @@ export declare class GithubClient {
                         updated_at?: string | undefined;
                         permissions?: {
                             admin?: boolean | undefined;
+                            maintain?: boolean | undefined;
                             push?: boolean | undefined;
+                            triage?: boolean | undefined;
                             pull?: boolean | undefined;
                         } | undefined;
                         allow_rebase_merge?: boolean | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -22468,6 +22690,7 @@ export declare class GithubClient {
                     } | null | undefined;
                     temp_clone_token?: string | undefined;
                     allow_squash_merge?: boolean | undefined;
+                    allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -23167,12 +23390,15 @@ export declare class GithubClient {
                         updated_at?: string | undefined;
                         permissions?: {
                             admin?: boolean | undefined;
+                            maintain?: boolean | undefined;
                             push?: boolean | undefined;
+                            triage?: boolean | undefined;
                             pull?: boolean | undefined;
                         } | undefined;
                         allow_rebase_merge?: boolean | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -23180,6 +23406,7 @@ export declare class GithubClient {
                     } | null | undefined;
                     temp_clone_token?: string | undefined;
                     allow_squash_merge?: boolean | undefined;
+                    allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -23777,12 +24004,15 @@ export declare class GithubClient {
                             updated_at?: string | undefined;
                             permissions?: {
                                 admin?: boolean | undefined;
+                                maintain?: boolean | undefined;
                                 push?: boolean | undefined;
+                                triage?: boolean | undefined;
                                 pull?: boolean | undefined;
                             } | undefined;
                             allow_rebase_merge?: boolean | undefined;
                             temp_clone_token?: string | undefined;
                             allow_squash_merge?: boolean | undefined;
+                            allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
                             subscribers_count?: number | undefined;
@@ -23790,6 +24020,7 @@ export declare class GithubClient {
                         } | null | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -24539,12 +24770,15 @@ export declare class GithubClient {
                         updated_at?: string | undefined;
                         permissions?: {
                             admin?: boolean | undefined;
+                            maintain?: boolean | undefined;
                             push?: boolean | undefined;
+                            triage?: boolean | undefined;
                             pull?: boolean | undefined;
                         } | undefined;
                         allow_rebase_merge?: boolean | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -24552,6 +24786,7 @@ export declare class GithubClient {
                     } | null | undefined;
                     temp_clone_token?: string | undefined;
                     allow_squash_merge?: boolean | undefined;
+                    allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -26825,12 +27060,15 @@ export declare class GithubClient {
                             updated_at?: string | undefined;
                             permissions?: {
                                 admin?: boolean | undefined;
+                                maintain?: boolean | undefined;
                                 push?: boolean | undefined;
+                                triage?: boolean | undefined;
                                 pull?: boolean | undefined;
                             } | undefined;
                             allow_rebase_merge?: boolean | undefined;
                             temp_clone_token?: string | undefined;
                             allow_squash_merge?: boolean | undefined;
+                            allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
                             subscribers_count?: number | undefined;
@@ -26838,6 +27076,7 @@ export declare class GithubClient {
                         } | null | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -28900,12 +29139,15 @@ export declare class GithubClient {
                                 updated_at?: string | undefined;
                                 permissions?: {
                                     admin?: boolean | undefined;
+                                    maintain?: boolean | undefined;
                                     push?: boolean | undefined;
+                                    triage?: boolean | undefined;
                                     pull?: boolean | undefined;
                                 } | undefined;
                                 allow_rebase_merge?: boolean | undefined;
                                 temp_clone_token?: string | undefined;
                                 allow_squash_merge?: boolean | undefined;
+                                allow_auto_merge?: boolean | undefined;
                                 delete_branch_on_merge?: boolean | undefined;
                                 allow_merge_commit?: boolean | undefined;
                                 subscribers_count?: number | undefined;
@@ -28913,6 +29155,7 @@ export declare class GithubClient {
                             } | null | undefined;
                             temp_clone_token?: string | undefined;
                             allow_squash_merge?: boolean | undefined;
+                            allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
                             subscribers_count?: number | undefined;
@@ -29799,12 +30042,15 @@ export declare class GithubClient {
                         updated_at?: string | undefined;
                         permissions?: {
                             admin?: boolean | undefined;
+                            maintain?: boolean | undefined;
                             push?: boolean | undefined;
+                            triage?: boolean | undefined;
                             pull?: boolean | undefined;
                         } | undefined;
                         allow_rebase_merge?: boolean | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -29812,6 +30058,7 @@ export declare class GithubClient {
                     } | null | undefined;
                     temp_clone_token?: string | undefined;
                     allow_squash_merge?: boolean | undefined;
+                    allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -30300,12 +30547,15 @@ export declare class GithubClient {
                         updated_at?: string | undefined;
                         permissions?: {
                             admin?: boolean | undefined;
+                            maintain?: boolean | undefined;
                             push?: boolean | undefined;
+                            triage?: boolean | undefined;
                             pull?: boolean | undefined;
                         } | undefined;
                         allow_rebase_merge?: boolean | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -30313,6 +30563,7 @@ export declare class GithubClient {
                     } | null | undefined;
                     temp_clone_token?: string | undefined;
                     allow_squash_merge?: boolean | undefined;
+                    allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -30783,12 +31034,15 @@ export declare class GithubClient {
                         updated_at?: string | undefined;
                         permissions?: {
                             admin?: boolean | undefined;
+                            maintain?: boolean | undefined;
                             push?: boolean | undefined;
+                            triage?: boolean | undefined;
                             pull?: boolean | undefined;
                         } | undefined;
                         allow_rebase_merge?: boolean | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -30796,6 +31050,7 @@ export declare class GithubClient {
                     } | null | undefined;
                     temp_clone_token?: string | undefined;
                     allow_squash_merge?: boolean | undefined;
+                    allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -31388,12 +31643,15 @@ export declare class GithubClient {
                         updated_at?: string | undefined;
                         permissions?: {
                             admin?: boolean | undefined;
+                            maintain?: boolean | undefined;
                             push?: boolean | undefined;
+                            triage?: boolean | undefined;
                             pull?: boolean | undefined;
                         } | undefined;
                         allow_rebase_merge?: boolean | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -31401,6 +31659,7 @@ export declare class GithubClient {
                     } | null | undefined;
                     temp_clone_token?: string | undefined;
                     allow_squash_merge?: boolean | undefined;
+                    allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -31938,12 +32197,15 @@ export declare class GithubClient {
                         updated_at?: string | undefined;
                         permissions?: {
                             admin?: boolean | undefined;
+                            maintain?: boolean | undefined;
                             push?: boolean | undefined;
+                            triage?: boolean | undefined;
                             pull?: boolean | undefined;
                         } | undefined;
                         allow_rebase_merge?: boolean | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -31951,6 +32213,7 @@ export declare class GithubClient {
                     } | null | undefined;
                     temp_clone_token?: string | undefined;
                     allow_squash_merge?: boolean | undefined;
+                    allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -33090,12 +33353,15 @@ export declare class GithubClient {
                         updated_at?: string | undefined;
                         permissions?: {
                             admin?: boolean | undefined;
+                            maintain?: boolean | undefined;
                             push?: boolean | undefined;
+                            triage?: boolean | undefined;
                             pull?: boolean | undefined;
                         } | undefined;
                         allow_rebase_merge?: boolean | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -33103,6 +33369,7 @@ export declare class GithubClient {
                     } | null | undefined;
                     temp_clone_token?: string | undefined;
                     allow_squash_merge?: boolean | undefined;
+                    allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -33114,6 +33381,7 @@ export declare class GithubClient {
                 } | null | undefined;
                 temp_clone_token?: string | undefined;
                 allow_squash_merge?: boolean | undefined;
+                allow_auto_merge?: boolean | undefined;
                 delete_branch_on_merge?: boolean | undefined;
                 allow_merge_commit?: boolean | undefined;
                 subscribers_count?: number | undefined;
@@ -34182,10 +34450,10 @@ export declare class GithubClient {
                 updated_at?: string | null | undefined;
                 permissions?: {
                     admin?: boolean | undefined;
-                    push?: boolean | undefined;
-                    pull?: boolean | undefined;
                     maintain?: boolean | undefined;
+                    push?: boolean | undefined;
                     triage?: boolean | undefined;
+                    pull?: boolean | undefined;
                 } | undefined;
                 template_repository?: {
                     id: number;
@@ -34416,12 +34684,15 @@ export declare class GithubClient {
                         updated_at?: string | undefined;
                         permissions?: {
                             admin?: boolean | undefined;
+                            maintain?: boolean | undefined;
                             push?: boolean | undefined;
+                            triage?: boolean | undefined;
                             pull?: boolean | undefined;
                         } | undefined;
                         allow_rebase_merge?: boolean | undefined;
                         temp_clone_token?: string | undefined;
                         allow_squash_merge?: boolean | undefined;
+                        allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -34429,6 +34700,7 @@ export declare class GithubClient {
                     } | null | undefined;
                     temp_clone_token?: string | undefined;
                     allow_squash_merge?: boolean | undefined;
+                    allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;

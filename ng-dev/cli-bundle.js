@@ -2970,22 +2970,22 @@ var require_build4 = __commonJS({
     function h(t2, s2, n2) {
       try {
         let i2 = 0;
-        const [r2, a2, h2] = typeof t2 == "object" ? [{ demanded: [], optional: [] }, t2, s2] : [o(`cmd ${t2}`), s2, n2], d2 = [].slice.call(a2);
-        for (; d2.length && d2[d2.length - 1] === void 0; )
-          d2.pop();
-        const u2 = h2 || d2.length;
-        if (u2 < r2.demanded.length)
-          throw new e(`Not enough arguments provided. Expected ${r2.demanded.length} but received ${d2.length}.`);
-        const p2 = r2.demanded.length + r2.optional.length;
-        if (u2 > p2)
-          throw new e(`Too many arguments provided. Expected max ${p2} but received ${u2}.`);
+        const [r2, a2, h2] = typeof t2 == "object" ? [{ demanded: [], optional: [] }, t2, s2] : [o(`cmd ${t2}`), s2, n2], f2 = [].slice.call(a2);
+        for (; f2.length && f2[f2.length - 1] === void 0; )
+          f2.pop();
+        const d2 = h2 || f2.length;
+        if (d2 < r2.demanded.length)
+          throw new e(`Not enough arguments provided. Expected ${r2.demanded.length} but received ${f2.length}.`);
+        const u2 = r2.demanded.length + r2.optional.length;
+        if (d2 > u2)
+          throw new e(`Too many arguments provided. Expected max ${u2} but received ${d2}.`);
         r2.demanded.forEach((t3) => {
-          const e2 = l(d2.shift());
+          const e2 = l(f2.shift());
           t3.cmd.filter((t4) => t4 === e2 || t4 === "*").length === 0 && c(e2, t3.cmd, i2), i2 += 1;
         }), r2.optional.forEach((t3) => {
-          if (d2.length === 0)
+          if (f2.length === 0)
             return;
-          const e2 = l(d2.shift());
+          const e2 = l(f2.shift());
           t3.cmd.filter((t4) => t4 === e2 || t4 === "*").length === 0 && c(e2, t3.cmd, i2), i2 += 1;
         });
       } catch (t3) {
@@ -2998,41 +2998,41 @@ var require_build4 = __commonJS({
     function c(t2, s2, n2) {
       throw new e(`Invalid ${a[n2] || "manyith"} argument. Expected ${s2.join(" or ")} but received ${t2}.`);
     }
-    function d(t2) {
+    function f(t2) {
       return !!t2 && !!t2.then && typeof t2.then == "function";
     }
-    function u(t2, e2, s2, n2) {
+    function d(t2, e2, s2, n2) {
       s2.assert.notStrictEqual(t2, e2, n2);
     }
-    function p(t2, e2) {
+    function u(t2, e2) {
       e2.assert.strictEqual(typeof t2, "string");
     }
-    function g(t2) {
+    function p(t2) {
       return Object.keys(t2);
     }
-    function m(t2 = {}, e2 = () => true) {
+    function g(t2 = {}, e2 = () => true) {
       const s2 = {};
-      return g(t2).forEach((n2) => {
+      return p(t2).forEach((n2) => {
         e2(n2, t2[n2]) && (s2[n2] = t2[n2]);
       }), s2;
     }
-    function f() {
+    function m() {
       return process.versions.electron && !process.defaultApp ? 0 : 1;
     }
     function y() {
-      return process.argv[f()];
+      return process.argv[m()];
     }
     var b = Object.freeze({ __proto__: null, hideBin: function(t2) {
-      return t2.slice(f() + 1);
+      return t2.slice(m() + 1);
     }, getProcessArgvBin: y });
-    function O(t2, e2, s2, n2) {
+    function v(t2, e2, s2, n2) {
       if (s2 === "a" && !n2)
         throw new TypeError("Private accessor was defined without a getter");
       if (typeof e2 == "function" ? t2 !== e2 || !n2 : !e2.has(t2))
         throw new TypeError("Cannot read private member from an object whose class did not declare it");
       return s2 === "m" ? n2 : s2 === "a" ? n2.call(t2) : n2 ? n2.value : e2.get(t2);
     }
-    function v(t2, e2, s2, n2, i2) {
+    function O(t2, e2, s2, n2, i2) {
       if (n2 === "m")
         throw new TypeError("Private method is not writable");
       if (n2 === "a" && !i2)
@@ -3045,18 +3045,18 @@ var require_build4 = __commonJS({
       constructor(t2) {
         this.globalMiddleware = [], this.frozens = [], this.yargs = t2;
       }
-      addMiddleware(t2, e2, s2 = true) {
-        if (h("<array|function> [boolean] [boolean]", [t2, e2, s2], arguments.length), Array.isArray(t2)) {
-          for (let n2 = 0; n2 < t2.length; n2++) {
-            if (typeof t2[n2] != "function")
+      addMiddleware(t2, e2, s2 = true, n2 = false) {
+        if (h("<array|function> [boolean] [boolean] [boolean]", [t2, e2, s2], arguments.length), Array.isArray(t2)) {
+          for (let n3 = 0; n3 < t2.length; n3++) {
+            if (typeof t2[n3] != "function")
               throw Error("middleware must be a function");
-            const i2 = t2[n2];
+            const i2 = t2[n3];
             i2.applyBeforeValidation = e2, i2.global = s2;
           }
           Array.prototype.push.apply(this.globalMiddleware, t2);
         } else if (typeof t2 == "function") {
-          const n2 = t2;
-          n2.applyBeforeValidation = e2, n2.global = s2, this.globalMiddleware.push(t2);
+          const i2 = t2;
+          i2.applyBeforeValidation = e2, i2.global = s2, i2.mutates = n2, this.globalMiddleware.push(t2);
         }
         return this.yargs;
       }
@@ -3065,7 +3065,7 @@ var require_build4 = __commonJS({
         return this.globalMiddleware = this.globalMiddleware.filter((t3) => {
           const n2 = [...s2[e2] || [], e2];
           return !t3.option || !n2.includes(t3.option);
-        }), t2.option = e2, this.addMiddleware(t2, true, true);
+        }), t2.option = e2, this.addMiddleware(t2, true, true, true);
       }
       getMiddleware() {
         return this.globalMiddleware;
@@ -3085,11 +3085,16 @@ var require_build4 = __commonJS({
       return s2.reduce((t3, s3) => {
         if (s3.applyBeforeValidation !== n2)
           return t3;
-        if (d(t3))
+        if (s3.mutates) {
+          if (s3.applied)
+            return t3;
+          s3.applied = true;
+        }
+        if (f(t3))
           return t3.then((t4) => Promise.all([t4, s3(t4, e2)])).then(([t4, e3]) => Object.assign(t4, e3));
         {
           const n3 = s3(t3, e2);
-          return d(n3) ? n3.then((e3) => Object.assign(t3, e3)) : Object.assign(t3, n3);
+          return f(n3) ? n3.then((e3) => Object.assign(t3, e3)) : Object.assign(t3, n3);
         }
       }, t2);
     }
@@ -3098,13 +3103,13 @@ var require_build4 = __commonJS({
     }) {
       try {
         const s3 = typeof t2 == "function" ? t2() : t2;
-        return d(s3) ? s3.then((t3) => e2(t3)) : e2(s3);
+        return f(s3) ? s3.then((t3) => e2(t3)) : e2(s3);
       } catch (t3) {
         return s2(t3);
       }
     }
-    var x = /(^\*)|(^\$0)/;
-    var _ = class {
+    var _ = /(^\*)|(^\$0)/;
+    var M = class {
       constructor(t2, e2, s2, n2) {
         this.requireCache = new Set(), this.handlers = {}, this.aliasMap = {}, this.frozens = [], this.shim = n2, this.usage = t2, this.globalMiddleware = s2, this.validation = e2;
       }
@@ -3142,15 +3147,15 @@ var require_build4 = __commonJS({
             let e3 = Array.isArray(t2.command) || typeof t2.command == "string" ? t2.command : this.moduleName(t2);
             return t2.aliases && (e3 = [].concat(e3).concat(t2.aliases)), void this.addHandler(e3, this.extractDesc(t2), t2.builder, t2.handler, t2.middlewares, t2.deprecated);
           }
-          if (M(s2))
+          if (k(s2))
             return void this.addHandler([t2].concat(a2), e2, s2.builder, s2.handler, s2.middlewares, s2.deprecated);
         }
         if (typeof t2 == "string") {
           const i3 = o(t2);
           a2 = a2.map((t3) => o(t3).cmd);
           let l2 = false;
-          const c2 = [i3.cmd].concat(a2).filter((t3) => !x.test(t3) || (l2 = true, false));
-          c2.length === 0 && l2 && c2.push("$0"), l2 && (i3.cmd = c2[0], a2 = c2.slice(1), t2 = t2.replace(x, i3.cmd)), a2.forEach((t3) => {
+          const c2 = [i3.cmd].concat(a2).filter((t3) => !_.test(t3) || (l2 = true, false));
+          c2.length === 0 && l2 && c2.push("$0"), l2 && (i3.cmd = c2[0], a2 = c2.slice(1), t2 = t2.replace(_, i3.cmd)), a2.forEach((t3) => {
             this.aliasMap[t3] = i3.cmd;
           }), e2 !== false && this.usage.command(t2, e2, l2, a2, r2), this.handlers[i3.cmd] = { original: t2, description: e2, handler: n2, builder: s2 || {}, middlewares: h2, deprecated: r2, demanded: i3.demanded, optional: i3.optional }, l2 && (this.defaultCommand = this.handlers[i3.cmd]);
         }
@@ -3168,14 +3173,14 @@ var require_build4 = __commonJS({
         const o2 = this.handlers[t2] || this.handlers[this.aliasMap[t2]] || this.defaultCommand, a2 = e2.getInternalMethods().getContext(), h2 = a2.commands.slice(), l2 = !t2;
         t2 && (a2.commands.push(t2), a2.fullCommands.push(o2.original));
         const c2 = this.applyBuilderUpdateUsageAndParse(l2, o2, e2, s2.aliases, h2, n2, i2, r2);
-        return d(c2) ? c2.then((t3) => this.applyMiddlewareAndGetResult(l2, o2, t3.innerArgv, a2, i2, t3.aliases, e2)) : this.applyMiddlewareAndGetResult(l2, o2, c2.innerArgv, a2, i2, c2.aliases, e2);
+        return f(c2) ? c2.then((t3) => this.applyMiddlewareAndGetResult(l2, o2, t3.innerArgv, a2, i2, t3.aliases, e2)) : this.applyMiddlewareAndGetResult(l2, o2, c2.innerArgv, a2, i2, c2.aliases, e2);
       }
       applyBuilderUpdateUsageAndParse(t2, e2, s2, n2, i2, r2, o2, a2) {
         const h2 = e2.builder;
         let l2 = s2;
-        if (k(h2)) {
+        if (E(h2)) {
           const c2 = h2(s2.getInternalMethods().reset(n2), a2);
-          if (d(c2))
+          if (f(c2))
             return c2.then((n3) => {
               var a3;
               return l2 = (a3 = n3) && typeof a3.getInternalMethods == "function" ? n3 : s2, this.parseAndUpdateUsage(t2, e2, l2, i2, r2, o2);
@@ -3191,13 +3196,13 @@ var require_build4 = __commonJS({
       parseAndUpdateUsage(t2, e2, s2, n2, i2, r2) {
         t2 && s2.getInternalMethods().getUsageInstance().unfreeze(), this.shouldUpdateUsage(s2) && s2.getInternalMethods().getUsageInstance().usage(this.usageFromParentCommandsCommandHandler(n2, e2), e2.description);
         const o2 = s2.getInternalMethods().runYargsParserAndExecuteCommands(null, void 0, true, i2, r2);
-        return d(o2) ? o2.then((t3) => ({ aliases: s2.parsed.aliases, innerArgv: t3 })) : { aliases: s2.parsed.aliases, innerArgv: o2 };
+        return f(o2) ? o2.then((t3) => ({ aliases: s2.parsed.aliases, innerArgv: t3 })) : { aliases: s2.parsed.aliases, innerArgv: o2 };
       }
       shouldUpdateUsage(t2) {
         return !t2.getInternalMethods().getUsageInstance().getUsageDisabled() && t2.getInternalMethods().getUsageInstance().getUsage().length === 0;
       }
       usageFromParentCommandsCommandHandler(t2, e2) {
-        const s2 = x.test(e2.original) ? e2.original.replace(x, "").trim() : e2.original, n2 = t2.filter((t3) => !x.test(t3));
+        const s2 = _.test(e2.original) ? e2.original.replace(_, "").trim() : e2.original, n2 = t2.filter((t3) => !_.test(t3));
         return n2.push(s2), `$0 ${n2.join(" ")}`;
       }
       applyMiddlewareAndGetResult(t2, e2, s2, n2, i2, r2, o2) {
@@ -3215,8 +3220,8 @@ var require_build4 = __commonJS({
           const n3 = !!o2.getOptions().configuration["populate--"];
           o2.getInternalMethods().postProcess(s2, n3, false, false), s2 = j(s2 = C(s2, o2, h2, false), (t3) => {
             const s3 = e2.handler(t3);
-            return d(s3) ? s3.then(() => t3) : t3;
-          }), t2 || o2.getInternalMethods().getUsageInstance().cacheHelpMessage(), d(s2) && !o2.getInternalMethods().hasParseCallback() && s2.catch((t3) => {
+            return f(s3) ? s3.then(() => t3) : t3;
+          }), t2 || o2.getInternalMethods().getUsageInstance().cacheHelpMessage(), f(s2) && !o2.getInternalMethods().hasParseCallback() && s2.catch((t3) => {
             try {
               o2.getInternalMethods().getUsageInstance().fail(null, t3);
             } catch (t4) {
@@ -3272,8 +3277,10 @@ var require_build4 = __commonJS({
           const s3 = Object.keys(e2);
           Object.keys(e2).forEach((t3) => {
             s3.push(...a2.aliases[t3]);
-          }), Object.keys(a2.argv).forEach((n3) => {
-            s3.indexOf(n3) !== -1 && (e2[n3] || (e2[n3] = a2.argv[n3]), t2[n3] = a2.argv[n3]);
+          });
+          const i3 = n2.getOptions().default;
+          Object.keys(a2.argv).forEach((n3) => {
+            s3.includes(n3) && (e2[n3] || (e2[n3] = a2.argv[n3]), !Object.prototype.hasOwnProperty.call(i3, n3) && Object.prototype.hasOwnProperty.call(t2, n3) && Object.prototype.hasOwnProperty.call(a2.argv, n3) && (Array.isArray(t2[n3]) || Array.isArray(a2.argv[n3])) ? t2[n3] = [].concat(t2[n3], a2.argv[n3]) : t2[n3] = a2.argv[n3]);
           });
         }
       }
@@ -3281,13 +3288,13 @@ var require_build4 = __commonJS({
         if (!this.defaultCommand)
           return;
         if (this.shouldUpdateUsage(t2)) {
-          const e3 = x.test(this.defaultCommand.original) ? this.defaultCommand.original : this.defaultCommand.original.replace(/^[^[\]<>]*/, "$0 ");
+          const e3 = _.test(this.defaultCommand.original) ? this.defaultCommand.original : this.defaultCommand.original.replace(/^[^[\]<>]*/, "$0 ");
           t2.getInternalMethods().getUsageInstance().usage(e3, this.defaultCommand.description);
         }
         const e2 = this.defaultCommand.builder;
-        if (k(e2))
+        if (E(e2))
           return e2(t2, true);
-        M(e2) || Object.keys(e2).forEach((s2) => {
+        k(e2) || Object.keys(e2).forEach((s2) => {
           t2.option(s2, e2[s2]);
         });
       }
@@ -3311,7 +3318,7 @@ var require_build4 = __commonJS({
         for (const n2 of [t2, e2, s2]) {
           if (typeof n2 == "string" || n2 === false)
             return n2;
-          u(n2, true, this.shim);
+          d(n2, true, this.shim);
         }
         return false;
       }
@@ -3320,19 +3327,19 @@ var require_build4 = __commonJS({
       }
       unfreeze() {
         const t2 = this.frozens.pop();
-        u(t2, void 0, this.shim), { handlers: this.handlers, aliasMap: this.aliasMap, defaultCommand: this.defaultCommand } = t2;
+        d(t2, void 0, this.shim), { handlers: this.handlers, aliasMap: this.aliasMap, defaultCommand: this.defaultCommand } = t2;
       }
       reset() {
         return this.handlers = {}, this.aliasMap = {}, this.defaultCommand = void 0, this.requireCache = new Set(), this;
       }
     };
-    function M(t2) {
+    function k(t2) {
       return typeof t2 == "object" && !!t2.builder && typeof t2.handler == "function";
     }
-    function k(t2) {
+    function E(t2) {
       return typeof t2 == "function";
     }
-    function E(t2) {
+    function x(t2) {
       typeof process != "undefined" && [process.stdout, process.stderr].forEach((e2) => {
         const s2 = e2;
         s2._handle && s2.isTTY && typeof s2._handle.setBlocking == "function" && s2._handle.setBlocking(t2);
@@ -3355,7 +3362,7 @@ var require_build4 = __commonJS({
       i2.fail = function(s3, n3) {
         const l3 = t2.getInternalMethods().getLoggerInstance();
         if (!r2.length) {
-          if (t2.getExitProcess() && E(true), h2 || (h2 = true, a2 && (t2.showHelp("error"), l3.error()), (s3 || n3) && l3.error(s3 || n3), o2 && ((s3 || n3) && l3.error(""), l3.error(o2))), n3 = n3 || new e(s3), t2.getExitProcess())
+          if (t2.getExitProcess() && x(true), h2 || (h2 = true, a2 && (t2.showHelp("error"), l3.error()), (s3 || n3) && l3.error(s3 || n3), o2 && ((s3 || n3) && l3.error(""), l3.error(o2))), n3 = n3 || new e(s3), t2.getExitProcess())
             return t2.exit(1);
           if (t2.getInternalMethods().hasParseCallback())
             return t2.exit(1, n3);
@@ -3374,41 +3381,41 @@ var require_build4 = __commonJS({
       };
       let l2 = [], c2 = false;
       i2.usage = (t3, e2) => t3 === null ? (c2 = true, l2 = [], i2) : (c2 = false, l2.push([t3, e2 || ""]), i2), i2.getUsage = () => l2, i2.getUsageDisabled = () => c2, i2.getPositionalGroupName = () => n2("Positionals:");
-      let d2 = [];
+      let f2 = [];
       i2.example = (t3, e2) => {
-        d2.push([t3, e2 || ""]);
+        f2.push([t3, e2 || ""]);
       };
-      let u2 = [];
+      let d2 = [];
       i2.command = function(t3, e2, s3, n3, i3 = false) {
-        s3 && (u2 = u2.map((t4) => (t4[2] = false, t4))), u2.push([t3, e2 || "", s3, n3, i3]);
-      }, i2.getCommands = () => u2;
-      let p2 = {};
+        s3 && (d2 = d2.map((t4) => (t4[2] = false, t4))), d2.push([t3, e2 || "", s3, n3, i3]);
+      }, i2.getCommands = () => d2;
+      let u2 = {};
       i2.describe = function(t3, e2) {
         Array.isArray(t3) ? t3.forEach((t4) => {
           i2.describe(t4, e2);
         }) : typeof t3 == "object" ? Object.keys(t3).forEach((e3) => {
           i2.describe(e3, t3[e3]);
-        }) : p2[t3] = e2;
-      }, i2.getDescriptions = () => p2;
-      let g2 = [];
+        }) : u2[t3] = e2;
+      }, i2.getDescriptions = () => u2;
+      let p2 = [];
       i2.epilog = (t3) => {
-        g2.push(t3);
+        p2.push(t3);
       };
-      let f2, y2 = false;
+      let m2, y2 = false;
       function b2() {
-        return y2 || (f2 = function() {
+        return y2 || (m2 = function() {
           const t3 = 80;
           return s2.process.stdColumns ? Math.min(t3, s2.process.stdColumns) : t3;
-        }(), y2 = true), f2;
+        }(), y2 = true), m2;
       }
       i2.wrap = (t3) => {
-        y2 = true, f2 = t3;
+        y2 = true, m2 = t3;
       };
-      const O2 = "__yargsString__:";
-      function v2(t3, e2, n3) {
+      const v2 = "__yargsString__:";
+      function O2(t3, e2, n3) {
         let i3 = 0;
         return Array.isArray(t3) || (t3 = Object.values(t3).map((t4) => [t4])), t3.forEach((t4) => {
-          i3 = Math.max(s2.stringWidth(n3 ? `${n3} ${I(t4[0])}` : I(t4[0])) + A(t4[0]), i3);
+          i3 = Math.max(s2.stringWidth(n3 ? `${n3} ${I(t4[0])}` : I(t4[0])) + P(t4[0]), i3);
         }), e2 && (i3 = Math.min(i3, parseInt((0.5 * e2).toString(), 10))), i3;
       }
       let w2;
@@ -3434,89 +3441,89 @@ var require_build4 = __commonJS({
           }
         return `${s3}]`;
       }
-      i2.deferY18nLookup = (t3) => O2 + t3, i2.help = function() {
+      i2.deferY18nLookup = (t3) => v2 + t3, i2.help = function() {
         if (w2)
           return w2;
         !function() {
           const e3 = t2.getDemandedOptions(), s3 = t2.getOptions();
           (Object.keys(s3.alias) || []).forEach((n3) => {
             s3.alias[n3].forEach((r4) => {
-              p2[r4] && i2.describe(n3, p2[r4]), r4 in e3 && t2.demandOption(n3, e3[r4]), ~s3.boolean.indexOf(r4) && t2.boolean(n3), ~s3.count.indexOf(r4) && t2.count(n3), ~s3.string.indexOf(r4) && t2.string(n3), ~s3.normalize.indexOf(r4) && t2.normalize(n3), ~s3.array.indexOf(r4) && t2.array(n3), ~s3.number.indexOf(r4) && t2.number(n3);
+              u2[r4] && i2.describe(n3, u2[r4]), r4 in e3 && t2.demandOption(n3, e3[r4]), s3.boolean.includes(r4) && t2.boolean(n3), s3.count.includes(r4) && t2.count(n3), s3.string.includes(r4) && t2.string(n3), s3.normalize.includes(r4) && t2.normalize(n3), s3.array.includes(r4) && t2.array(n3), s3.number.includes(r4) && t2.number(n3);
             });
           });
         }();
-        const e2 = t2.customScriptName ? t2.$0 : s2.path.basename(t2.$0), r3 = t2.getDemandedOptions(), o3 = t2.getDemandedCommands(), a3 = t2.getDeprecatedOptions(), h3 = t2.getGroups(), m2 = t2.getOptions();
-        let f3 = [];
-        f3 = f3.concat(Object.keys(p2)), f3 = f3.concat(Object.keys(r3)), f3 = f3.concat(Object.keys(o3)), f3 = f3.concat(Object.keys(m2.default)), f3 = f3.filter(C2), f3 = Object.keys(f3.reduce((t3, e3) => (e3 !== "_" && (t3[e3] = true), t3), {}));
-        const y3 = b2(), x3 = s2.cliui({ width: y3, wrap: !!y3 });
+        const e2 = t2.customScriptName ? t2.$0 : s2.path.basename(t2.$0), r3 = t2.getDemandedOptions(), o3 = t2.getDemandedCommands(), a3 = t2.getDeprecatedOptions(), h3 = t2.getGroups(), g2 = t2.getOptions();
+        let m3 = [];
+        m3 = m3.concat(Object.keys(u2)), m3 = m3.concat(Object.keys(r3)), m3 = m3.concat(Object.keys(o3)), m3 = m3.concat(Object.keys(g2.default)), m3 = m3.filter(C2), m3 = Object.keys(m3.reduce((t3, e3) => (e3 !== "_" && (t3[e3] = true), t3), {}));
+        const y3 = b2(), _3 = s2.cliui({ width: y3, wrap: !!y3 });
         if (!c2) {
           if (l2.length)
             l2.forEach((t3) => {
-              x3.div(`${t3[0].replace(/\$0/g, e2)}`), t3[1] && x3.div({ text: `${t3[1]}`, padding: [1, 0, 0, 0] });
-            }), x3.div();
-          else if (u2.length) {
+              _3.div({ text: `${t3[0].replace(/\$0/g, e2)}` }), t3[1] && _3.div({ text: `${t3[1]}`, padding: [1, 0, 0, 0] });
+            }), _3.div();
+          else if (d2.length) {
             let t3 = null;
             t3 = o3._ ? `${e2} <${n2("command")}>
 ` : `${e2} [${n2("command")}]
-`, x3.div(`${t3}`);
+`, _3.div(`${t3}`);
           }
         }
-        if (u2.length > 1 || u2.length === 1 && !u2[0][2]) {
-          x3.div(n2("Commands:"));
+        if (d2.length > 1 || d2.length === 1 && !d2[0][2]) {
+          _3.div(n2("Commands:"));
           const s3 = t2.getInternalMethods().getContext(), i3 = s3.commands.length ? `${s3.commands.join(" ")} ` : "";
-          t2.getInternalMethods().getParserConfiguration()["sort-commands"] === true && (u2 = u2.sort((t3, e3) => t3[0].localeCompare(e3[0]))), u2.forEach((t3) => {
+          t2.getInternalMethods().getParserConfiguration()["sort-commands"] === true && (d2 = d2.sort((t3, e3) => t3[0].localeCompare(e3[0]))), d2.forEach((t3) => {
             const s4 = `${e2} ${i3}${t3[0].replace(/^\$0 ?/, "")}`;
-            x3.span({ text: s4, padding: [0, 2, 0, 2], width: v2(u2, y3, `${e2}${i3}`) + 4 }, { text: t3[1] });
+            _3.span({ text: s4, padding: [0, 2, 0, 2], width: O2(d2, y3, `${e2}${i3}`) + 4 }, { text: t3[1] });
             const r4 = [];
-            t3[2] && r4.push(`[${n2("default")}]`), t3[3] && t3[3].length && r4.push(`[${n2("aliases:")} ${t3[3].join(", ")}]`), t3[4] && (typeof t3[4] == "string" ? r4.push(`[${n2("deprecated: %s", t3[4])}]`) : r4.push(`[${n2("deprecated")}]`)), r4.length ? x3.div({ text: r4.join(" "), padding: [0, 0, 0, 2], align: "right" }) : x3.div();
-          }), x3.div();
+            t3[2] && r4.push(`[${n2("default")}]`), t3[3] && t3[3].length && r4.push(`[${n2("aliases:")} ${t3[3].join(", ")}]`), t3[4] && (typeof t3[4] == "string" ? r4.push(`[${n2("deprecated: %s", t3[4])}]`) : r4.push(`[${n2("deprecated")}]`)), r4.length ? _3.div({ text: r4.join(" "), padding: [0, 0, 0, 2], align: "right" }) : _3.div();
+          }), _3.div();
         }
-        const _3 = (Object.keys(m2.alias) || []).concat(Object.keys(t2.parsed.newAliases) || []);
-        f3 = f3.filter((e3) => !t2.parsed.newAliases[e3] && _3.every((t3) => (m2.alias[t3] || []).indexOf(e3) === -1));
-        const M2 = n2("Options:");
-        h3[M2] || (h3[M2] = []), function(t3, e3, s3, n3) {
+        const M3 = (Object.keys(g2.alias) || []).concat(Object.keys(t2.parsed.newAliases) || []);
+        m3 = m3.filter((e3) => !t2.parsed.newAliases[e3] && M3.every((t3) => (g2.alias[t3] || []).indexOf(e3) === -1));
+        const k2 = n2("Options:");
+        h3[k2] || (h3[k2] = []), function(t3, e3, s3, n3) {
           let i3 = [], r4 = null;
           Object.keys(s3).forEach((t4) => {
             i3 = i3.concat(s3[t4]);
           }), t3.forEach((t4) => {
             r4 = [t4].concat(e3[t4]), r4.some((t5) => i3.indexOf(t5) !== -1) || s3[n3].push(t4);
           });
-        }(f3, m2.alias, h3, M2);
-        const k2 = (t3) => /^--/.test(I(t3)), E2 = Object.keys(h3).filter((t3) => h3[t3].length > 0).map((t3) => ({ groupName: t3, normalizedKeys: h3[t3].filter(C2).map((t4) => {
-          if (~_3.indexOf(t4))
+        }(m3, g2.alias, h3, k2);
+        const E2 = (t3) => /^--/.test(I(t3)), x2 = Object.keys(h3).filter((t3) => h3[t3].length > 0).map((t3) => ({ groupName: t3, normalizedKeys: h3[t3].filter(C2).map((t4) => {
+          if (M3.includes(t4))
             return t4;
-          for (let e3, s3 = 0; (e3 = _3[s3]) !== void 0; s3++)
-            if (~(m2.alias[e3] || []).indexOf(t4))
+          for (let e3, s3 = 0; (e3 = M3[s3]) !== void 0; s3++)
+            if ((g2.alias[e3] || []).includes(t4))
               return e3;
           return t4;
         }) })).filter(({ normalizedKeys: t3 }) => t3.length > 0).map(({ groupName: t3, normalizedKeys: e3 }) => {
-          const s3 = e3.reduce((e4, s4) => (e4[s4] = [s4].concat(m2.alias[s4] || []).map((e5) => t3 === i2.getPositionalGroupName() ? e5 : (/^[0-9]$/.test(e5) ? ~m2.boolean.indexOf(s4) ? "-" : "--" : e5.length > 1 ? "--" : "-") + e5).sort((t4, e5) => k2(t4) === k2(e5) ? 0 : k2(t4) ? 1 : -1).join(", "), e4), {});
+          const s3 = e3.reduce((e4, s4) => (e4[s4] = [s4].concat(g2.alias[s4] || []).map((e5) => t3 === i2.getPositionalGroupName() ? e5 : (/^[0-9]$/.test(e5) ? g2.boolean.includes(s4) ? "-" : "--" : e5.length > 1 ? "--" : "-") + e5).sort((t4, e5) => E2(t4) === E2(e5) ? 0 : E2(t4) ? 1 : -1).join(", "), e4), {});
           return { groupName: t3, normalizedKeys: e3, switches: s3 };
         });
-        if (E2.filter(({ groupName: t3 }) => t3 !== i2.getPositionalGroupName()).some(({ normalizedKeys: t3, switches: e3 }) => !t3.every((t4) => k2(e3[t4]))) && E2.filter(({ groupName: t3 }) => t3 !== i2.getPositionalGroupName()).forEach(({ normalizedKeys: t3, switches: e3 }) => {
+        if (x2.filter(({ groupName: t3 }) => t3 !== i2.getPositionalGroupName()).some(({ normalizedKeys: t3, switches: e3 }) => !t3.every((t4) => E2(e3[t4]))) && x2.filter(({ groupName: t3 }) => t3 !== i2.getPositionalGroupName()).forEach(({ normalizedKeys: t3, switches: e3 }) => {
           t3.forEach((t4) => {
             var s3, n3;
-            k2(e3[t4]) && (e3[t4] = (s3 = e3[t4], n3 = "-x, ".length, P(s3) ? { text: s3.text, indentation: s3.indentation + n3 } : { text: s3, indentation: n3 }));
+            E2(e3[t4]) && (e3[t4] = (s3 = e3[t4], n3 = "-x, ".length, A(s3) ? { text: s3.text, indentation: s3.indentation + n3 } : { text: s3, indentation: n3 }));
           });
-        }), E2.forEach(({ groupName: t3, normalizedKeys: e3, switches: s3 }) => {
-          x3.div(t3), e3.forEach((t4) => {
+        }), x2.forEach(({ groupName: t3, normalizedKeys: e3, switches: s3 }) => {
+          _3.div(t3), e3.forEach((t4) => {
             const e4 = s3[t4];
-            let o4 = p2[t4] || "", h4 = null;
-            ~o4.lastIndexOf(O2) && (o4 = n2(o4.substring(O2.length))), ~m2.boolean.indexOf(t4) && (h4 = `[${n2("boolean")}]`), ~m2.count.indexOf(t4) && (h4 = `[${n2("count")}]`), ~m2.string.indexOf(t4) && (h4 = `[${n2("string")}]`), ~m2.normalize.indexOf(t4) && (h4 = `[${n2("string")}]`), ~m2.array.indexOf(t4) && (h4 = `[${n2("array")}]`), ~m2.number.indexOf(t4) && (h4 = `[${n2("number")}]`);
-            const l3 = [t4 in a3 ? (c3 = a3[t4], typeof c3 == "string" ? `[${n2("deprecated: %s", c3)}]` : `[${n2("deprecated")}]`) : null, h4, t4 in r3 ? `[${n2("required")}]` : null, m2.choices && m2.choices[t4] ? `[${n2("choices:")} ${i2.stringifiedValues(m2.choices[t4])}]` : null, j2(m2.default[t4], m2.defaultDescription[t4])].filter(Boolean).join(" ");
+            let o4 = u2[t4] || "", h4 = null;
+            o4.includes(v2) && (o4 = n2(o4.substring(v2.length))), g2.boolean.includes(t4) && (h4 = `[${n2("boolean")}]`), g2.count.includes(t4) && (h4 = `[${n2("count")}]`), g2.string.includes(t4) && (h4 = `[${n2("string")}]`), g2.normalize.includes(t4) && (h4 = `[${n2("string")}]`), g2.array.includes(t4) && (h4 = `[${n2("array")}]`), g2.number.includes(t4) && (h4 = `[${n2("number")}]`);
+            const l3 = [t4 in a3 ? (c3 = a3[t4], typeof c3 == "string" ? `[${n2("deprecated: %s", c3)}]` : `[${n2("deprecated")}]`) : null, h4, t4 in r3 ? `[${n2("required")}]` : null, g2.choices && g2.choices[t4] ? `[${n2("choices:")} ${i2.stringifiedValues(g2.choices[t4])}]` : null, j2(g2.default[t4], g2.defaultDescription[t4])].filter(Boolean).join(" ");
             var c3;
-            x3.span({ text: I(e4), padding: [0, 2, 0, 2 + A(e4)], width: v2(s3, y3) + 4 }, o4), l3 ? x3.div({ text: l3, padding: [0, 0, 0, 2], align: "right" }) : x3.div();
-          }), x3.div();
-        }), d2.length && (x3.div(n2("Examples:")), d2.forEach((t3) => {
+            _3.span({ text: I(e4), padding: [0, 2, 0, 2 + P(e4)], width: O2(s3, y3) + 4 }, o4), l3 ? _3.div({ text: l3, padding: [0, 0, 0, 2], align: "right" }) : _3.div();
+          }), _3.div();
+        }), f2.length && (_3.div(n2("Examples:")), f2.forEach((t3) => {
           t3[0] = t3[0].replace(/\$0/g, e2);
-        }), d2.forEach((t3) => {
-          t3[1] === "" ? x3.div({ text: t3[0], padding: [0, 2, 0, 2] }) : x3.div({ text: t3[0], padding: [0, 2, 0, 2], width: v2(d2, y3) + 4 }, { text: t3[1] });
-        }), x3.div()), g2.length > 0) {
-          const t3 = g2.map((t4) => t4.replace(/\$0/g, e2)).join("\n");
-          x3.div(`${t3}
+        }), f2.forEach((t3) => {
+          t3[1] === "" ? _3.div({ text: t3[0], padding: [0, 2, 0, 2] }) : _3.div({ text: t3[0], padding: [0, 2, 0, 2], width: O2(f2, y3) + 4 }, { text: t3[1] });
+        }), _3.div()), p2.length > 0) {
+          const t3 = p2.map((t4) => t4.replace(/\$0/g, e2)).join("\n");
+          _3.div(`${t3}
 `);
         }
-        return x3.toString().replace(/\s*$/, "");
+        return _3.toString().replace(/\s*$/, "");
       }, i2.cacheHelpMessage = function() {
         w2 = this.help();
       }, i2.clearCachedHelpMessage = function() {
@@ -3534,32 +3541,32 @@ var require_build4 = __commonJS({
           s3.length && (s3 += n3), s3 += JSON.stringify(t4);
         }), s3) : s3;
       };
-      let x2 = null;
+      let _2 = null;
       i2.version = (t3) => {
-        x2 = t3;
+        _2 = t3;
       }, i2.showVersion = (e2) => {
         const s3 = t2.getInternalMethods().getLoggerInstance();
         e2 || (e2 = "error");
-        (typeof e2 == "function" ? e2 : s3[e2])(x2);
+        (typeof e2 == "function" ? e2 : s3[e2])(_2);
       }, i2.reset = function(t3) {
-        return o2 = null, h2 = false, l2 = [], c2 = false, g2 = [], d2 = [], u2 = [], p2 = m(p2, (e2) => !t3[e2]), i2;
+        return o2 = null, h2 = false, l2 = [], c2 = false, p2 = [], f2 = [], d2 = [], u2 = g(u2, (e2) => !t3[e2]), i2;
       };
-      const _2 = [];
+      const M2 = [];
       return i2.freeze = function() {
-        _2.push({ failMessage: o2, failureOutput: h2, usages: l2, usageDisabled: c2, epilogs: g2, examples: d2, commands: u2, descriptions: p2 });
+        M2.push({ failMessage: o2, failureOutput: h2, usages: l2, usageDisabled: c2, epilogs: p2, examples: f2, commands: d2, descriptions: u2 });
       }, i2.unfreeze = function() {
-        const t3 = _2.pop();
-        t3 && ({ failMessage: o2, failureOutput: h2, usages: l2, usageDisabled: c2, epilogs: g2, examples: d2, commands: u2, descriptions: p2 } = t3);
+        const t3 = M2.pop();
+        t3 && ({ failMessage: o2, failureOutput: h2, usages: l2, usageDisabled: c2, epilogs: p2, examples: f2, commands: d2, descriptions: u2 } = t3);
       }, i2;
     }
-    function P(t2) {
+    function A(t2) {
       return typeof t2 == "object";
     }
-    function A(t2) {
-      return P(t2) ? t2.indentation : 0;
+    function P(t2) {
+      return A(t2) ? t2.indentation : 0;
     }
     function I(t2) {
-      return P(t2) ? t2.text : t2;
+      return A(t2) ? t2.text : t2;
     }
     var N = class {
       constructor(t2, e2, s2, n2) {
@@ -3571,7 +3578,7 @@ var require_build4 = __commonJS({
         for (let e3 = 0, s3 = t2.length; e3 < s3; ++e3)
           if (i2[t2[e3]] && i2[t2[e3]].builder) {
             const s4 = i2[t2[e3]].builder;
-            if (k(s4)) {
+            if (E(s4)) {
               const t3 = this.yargs.getInternalMethods().reset();
               return s4(t3, true), t3.argv;
             }
@@ -3621,9 +3628,9 @@ var require_build4 = __commonJS({
           e2.push(i2 + t2);
       }
       customCompletion(t2, e2, s2, n2) {
-        if (u(this.customCompletionFunction, null, this.shim), this.customCompletionFunction.length < 3) {
+        if (d(this.customCompletionFunction, null, this.shim), this.customCompletionFunction.length < 3) {
           const t3 = this.customCompletionFunction(s2, e2);
-          return d(t3) ? t3.then((t4) => {
+          return f(t3) ? t3.then((t4) => {
             this.shim.process.nextTick(() => {
               n2(null, t4);
             });
@@ -3643,7 +3650,7 @@ var require_build4 = __commonJS({
       }
       getCompletion(t2, e2) {
         const s2 = t2.length ? t2[t2.length - 1] : "", n2 = this.yargs.parse(t2, true), i2 = this.customCompletionFunction ? (n3) => this.customCompletion(t2, n3, s2, e2) : (n3) => this.defaultCompletion(t2, n3, s2, e2);
-        return d(n2) ? n2.then(i2) : i2(n2);
+        return f(n2) ? n2.then(i2) : i2(n2);
       }
       generateCompletionScript(t2, e2) {
         let s2 = this.zshShell ? `#compdef {{app_name}}
@@ -3689,7 +3696,7 @@ compdef _{{app_name}}_yargs_completions {{app_name}}
         s2[0][i2] = i2;
       for (n2 = 1; n2 <= e2.length; n2++)
         for (i2 = 1; i2 <= t2.length; i2++)
-          e2.charAt(n2 - 1) === t2.charAt(i2 - 1) ? s2[n2][i2] = s2[n2 - 1][i2 - 1] : s2[n2][i2] = Math.min(s2[n2 - 1][i2 - 1] + 1, Math.min(s2[n2][i2 - 1] + 1, s2[n2 - 1][i2] + 1));
+          e2.charAt(n2 - 1) === t2.charAt(i2 - 1) ? s2[n2][i2] = s2[n2 - 1][i2 - 1] : n2 > 1 && i2 > 1 && e2.charAt(n2 - 2) === t2.charAt(i2 - 1) && e2.charAt(n2 - 1) === t2.charAt(i2 - 2) ? s2[n2][i2] = s2[n2 - 2][i2 - 2] + 1 : s2[n2][i2] = Math.min(s2[n2 - 1][i2 - 1] + 1, Math.min(s2[n2][i2 - 1] + 1, s2[n2 - 1][i2] + 1));
       return s2[e2.length][t2.length];
     }
     var z = ["$0", "--", "_"];
@@ -3721,28 +3728,28 @@ compdef _{{app_name}}_yargs_completions {{app_name}}
     var ht;
     var lt;
     var ct;
+    var ft;
     var dt;
     var ut;
     var pt;
-    var gt;
+    var gt = Symbol("copyDoubleDash");
     var mt = Symbol("copyDoubleDash");
-    var ft = Symbol("copyDoubleDash");
     var yt = Symbol("deleteFromParserHintObject");
     var bt = Symbol("freeze");
-    var Ot = Symbol("getDollarZero");
-    var vt = Symbol("getParserConfiguration");
+    var vt = Symbol("getDollarZero");
+    var Ot = Symbol("getParserConfiguration");
     var wt = Symbol("guessLocale");
     var Ct = Symbol("guessVersion");
     var jt = Symbol("parsePositionalNumbers");
-    var xt = Symbol("pkgUp");
-    var _t = Symbol("populateParserHintArray");
-    var Mt = Symbol("populateParserHintSingleValueDictionary");
-    var kt = Symbol("populateParserHintArrayDictionary");
-    var Et = Symbol("populateParserHintDictionary");
+    var _t = Symbol("pkgUp");
+    var Mt = Symbol("populateParserHintArray");
+    var kt = Symbol("populateParserHintSingleValueDictionary");
+    var Et = Symbol("populateParserHintArrayDictionary");
+    var xt = Symbol("populateParserHintDictionary");
     var St = Symbol("sanitizeKey");
     var $t = Symbol("setKey");
-    var Pt = Symbol("unfreeze");
-    var At = Symbol("validateAsync");
+    var At = Symbol("unfreeze");
+    var Pt = Symbol("validateAsync");
     var It = Symbol("getCommandInstance");
     var Nt = Symbol("getContext");
     var Dt = Symbol("getHasOutput");
@@ -3759,10 +3766,10 @@ compdef _{{app_name}}_yargs_completions {{app_name}}
     var Gt = Symbol("setHasOutput");
     var Bt = class {
       constructor(t2 = [], e2, s2, n2) {
-        this.customScriptName = false, this.parsed = false, q.set(this, void 0), H.set(this, void 0), F.set(this, { commands: [], fullCommands: [] }), U.set(this, null), W.set(this, null), L.set(this, "show-hidden"), V.set(this, null), R.set(this, true), T.set(this, true), G.set(this, []), B.set(this, void 0), K.set(this, {}), Y.set(this, false), J.set(this, null), Z.set(this, void 0), X.set(this, ""), Q.set(this, void 0), tt.set(this, void 0), et.set(this, {}), st.set(this, null), nt.set(this, null), it.set(this, {}), rt.set(this, {}), ot.set(this, void 0), at.set(this, false), ht.set(this, void 0), lt.set(this, false), ct.set(this, false), dt.set(this, false), ut.set(this, void 0), pt.set(this, null), gt.set(this, void 0), v(this, ht, n2), v(this, ot, t2), v(this, H, e2), v(this, tt, s2), v(this, B, new w(this)), this.$0 = this[Ot](), this[Vt](), v(this, q, O(this, q)), v(this, ut, O(this, ut)), v(this, gt, O(this, gt)), v(this, Q, O(this, Q)), O(this, Q).showHiddenOpt = O(this, L), v(this, Z, this[ft]());
+        this.customScriptName = false, this.parsed = false, q.set(this, void 0), H.set(this, void 0), F.set(this, { commands: [], fullCommands: [] }), U.set(this, null), W.set(this, null), L.set(this, "show-hidden"), V.set(this, null), R.set(this, true), T.set(this, true), G.set(this, []), B.set(this, void 0), K.set(this, {}), Y.set(this, false), J.set(this, null), Z.set(this, void 0), X.set(this, ""), Q.set(this, void 0), tt.set(this, void 0), et.set(this, {}), st.set(this, null), nt.set(this, null), it.set(this, {}), rt.set(this, {}), ot.set(this, void 0), at.set(this, false), ht.set(this, void 0), lt.set(this, false), ct.set(this, false), ft.set(this, false), dt.set(this, void 0), ut.set(this, null), pt.set(this, void 0), O(this, ht, n2, "f"), O(this, ot, t2, "f"), O(this, H, e2, "f"), O(this, tt, s2, "f"), O(this, B, new w(this), "f"), this.$0 = this[vt](), this[Vt](), O(this, q, v(this, q, "f"), "f"), O(this, dt, v(this, dt, "f"), "f"), O(this, pt, v(this, pt, "f"), "f"), O(this, Q, v(this, Q, "f"), "f"), v(this, Q, "f").showHiddenOpt = v(this, L, "f"), O(this, Z, this[mt](), "f");
       }
       addHelpOpt(t2, e2) {
-        return h("[string|boolean] [string]", [t2, e2], arguments.length), O(this, J) && (this[yt](O(this, J)), v(this, J, null)), t2 === false && e2 === void 0 || (v(this, J, typeof t2 == "string" ? t2 : "help"), this.boolean(O(this, J)), this.describe(O(this, J), e2 || O(this, ut).deferY18nLookup("Show help"))), this;
+        return h("[string|boolean] [string]", [t2, e2], arguments.length), v(this, J, "f") && (this[yt](v(this, J, "f")), O(this, J, null, "f")), t2 === false && e2 === void 0 || (O(this, J, typeof t2 == "string" ? t2 : "help", "f"), this.boolean(v(this, J, "f")), this.describe(v(this, J, "f"), e2 || v(this, dt, "f").deferY18nLookup("Show help"))), this;
       }
       help(t2, e2) {
         return this.addHelpOpt(t2, e2);
@@ -3770,26 +3777,26 @@ compdef _{{app_name}}_yargs_completions {{app_name}}
       addShowHiddenOpt(t2, e2) {
         if (h("[string|boolean] [string]", [t2, e2], arguments.length), t2 === false && e2 === void 0)
           return this;
-        const s2 = typeof t2 == "string" ? t2 : O(this, L);
-        return this.boolean(s2), this.describe(s2, e2 || O(this, ut).deferY18nLookup("Show hidden options")), O(this, Q).showHiddenOpt = s2, this;
+        const s2 = typeof t2 == "string" ? t2 : v(this, L, "f");
+        return this.boolean(s2), this.describe(s2, e2 || v(this, dt, "f").deferY18nLookup("Show hidden options")), v(this, Q, "f").showHiddenOpt = s2, this;
       }
       showHidden(t2, e2) {
         return this.addShowHiddenOpt(t2, e2);
       }
       alias(t2, e2) {
-        return h("<object|string|array> [string|array]", [t2, e2], arguments.length), this[kt](this.alias.bind(this), "alias", t2, e2), this;
+        return h("<object|string|array> [string|array]", [t2, e2], arguments.length), this[Et](this.alias.bind(this), "alias", t2, e2), this;
       }
       array(t2) {
-        return h("<array|string>", [t2], arguments.length), this[_t]("array", t2), this;
+        return h("<array|string>", [t2], arguments.length), this[Mt]("array", t2), this;
       }
       boolean(t2) {
-        return h("<array|string>", [t2], arguments.length), this[_t]("boolean", t2), this;
+        return h("<array|string>", [t2], arguments.length), this[Mt]("boolean", t2), this;
       }
       check(t2, e2) {
-        return h("<function> [boolean]", [t2, e2], arguments.length), this.middleware((e3, s2) => j(() => t2(e3), (s3) => (s3 ? (typeof s3 == "string" || s3 instanceof Error) && O(this, ut).fail(s3.toString(), s3) : O(this, ut).fail(O(this, ht).y18n.__("Argument check failed: %s", t2.toString())), e3), (t3) => (O(this, ut).fail(t3.message ? t3.message : t3.toString(), t3), e3)), false, e2), this;
+        return h("<function> [boolean]", [t2, e2], arguments.length), this.middleware((e3, s2) => j(() => t2(e3), (s3) => (s3 ? (typeof s3 == "string" || s3 instanceof Error) && v(this, dt, "f").fail(s3.toString(), s3) : v(this, dt, "f").fail(v(this, ht, "f").y18n.__("Argument check failed: %s", t2.toString())), e3), (t3) => (v(this, dt, "f").fail(t3.message ? t3.message : t3.toString(), t3), e3)), false, e2), this;
       }
       choices(t2, e2) {
-        return h("<object|string|array> [string|array]", [t2, e2], arguments.length), this[kt](this.choices.bind(this), "choices", t2, e2), this;
+        return h("<object|string|array> [string|array]", [t2, e2], arguments.length), this[Et](this.choices.bind(this), "choices", t2, e2), this;
       }
       coerce(t2, s2) {
         if (h("<object|string|array> [function]", [t2, s2], arguments.length), Array.isArray(t2)) {
@@ -3806,7 +3813,7 @@ compdef _{{app_name}}_yargs_completions {{app_name}}
         }
         if (!s2)
           throw new e("coerce callback must be provided");
-        return O(this, Q).key[t2] = true, O(this, B).addCoerceMiddleware((n2, i2) => {
+        return v(this, Q, "f").key[t2] = true, v(this, B, "f").addCoerceMiddleware((n2, i2) => {
           let r2;
           return j(() => (r2 = i2.getAliases(), s2(n2[t2])), (e2) => {
             if (n2[t2] = e2, r2[t2])
@@ -3819,166 +3826,166 @@ compdef _{{app_name}}_yargs_completions {{app_name}}
         }, t2), this;
       }
       conflicts(t2, e2) {
-        return h("<string|object> [string|array]", [t2, e2], arguments.length), O(this, gt).conflicts(t2, e2), this;
+        return h("<string|object> [string|array]", [t2, e2], arguments.length), v(this, pt, "f").conflicts(t2, e2), this;
       }
       config(t2 = "config", e2, s2) {
-        return h("[object|string] [string|function] [function]", [t2, e2, s2], arguments.length), typeof t2 != "object" || Array.isArray(t2) ? (typeof e2 == "function" && (s2 = e2, e2 = void 0), this.describe(t2, e2 || O(this, ut).deferY18nLookup("Path to JSON config file")), (Array.isArray(t2) ? t2 : [t2]).forEach((t3) => {
-          O(this, Q).config[t3] = s2 || true;
-        }), this) : (t2 = i(t2, O(this, H), this[vt]()["deep-merge-config"] || false, O(this, ht)), O(this, Q).configObjects = (O(this, Q).configObjects || []).concat(t2), this);
+        return h("[object|string] [string|function] [function]", [t2, e2, s2], arguments.length), typeof t2 != "object" || Array.isArray(t2) ? (typeof e2 == "function" && (s2 = e2, e2 = void 0), this.describe(t2, e2 || v(this, dt, "f").deferY18nLookup("Path to JSON config file")), (Array.isArray(t2) ? t2 : [t2]).forEach((t3) => {
+          v(this, Q, "f").config[t3] = s2 || true;
+        }), this) : (t2 = i(t2, v(this, H, "f"), this[Ot]()["deep-merge-config"] || false, v(this, ht, "f")), v(this, Q, "f").configObjects = (v(this, Q, "f").configObjects || []).concat(t2), this);
       }
       completion(t2, e2, s2) {
-        return h("[string] [string|boolean|function] [function]", [t2, e2, s2], arguments.length), typeof e2 == "function" && (s2 = e2, e2 = void 0), v(this, W, t2 || O(this, W) || "completion"), e2 || e2 === false || (e2 = "generate completion script"), this.command(O(this, W), e2), s2 && O(this, U).registerFunction(s2), this;
+        return h("[string] [string|boolean|function] [function]", [t2, e2, s2], arguments.length), typeof e2 == "function" && (s2 = e2, e2 = void 0), O(this, W, t2 || v(this, W, "f") || "completion", "f"), e2 || e2 === false || (e2 = "generate completion script"), this.command(v(this, W, "f"), e2), s2 && v(this, U, "f").registerFunction(s2), this;
       }
       command(t2, e2, s2, n2, i2, r2) {
-        return h("<string|array|object> [string|boolean] [function|object] [function] [array] [boolean|string]", [t2, e2, s2, n2, i2, r2], arguments.length), O(this, q).addHandler(t2, e2, s2, n2, i2, r2), this;
+        return h("<string|array|object> [string|boolean] [function|object] [function] [array] [boolean|string]", [t2, e2, s2, n2, i2, r2], arguments.length), v(this, q, "f").addHandler(t2, e2, s2, n2, i2, r2), this;
       }
       commands(t2, e2, s2, n2, i2, r2) {
         return this.command(t2, e2, s2, n2, i2, r2);
       }
       commandDir(t2, e2) {
         h("<string> [object]", [t2, e2], arguments.length);
-        const s2 = O(this, tt) || O(this, ht).require;
-        return O(this, q).addDirectory(t2, s2, O(this, ht).getCallerFile(), e2), this;
+        const s2 = v(this, tt, "f") || v(this, ht, "f").require;
+        return v(this, q, "f").addDirectory(t2, s2, v(this, ht, "f").getCallerFile(), e2), this;
       }
       count(t2) {
-        return h("<array|string>", [t2], arguments.length), this[_t]("count", t2), this;
+        return h("<array|string>", [t2], arguments.length), this[Mt]("count", t2), this;
       }
       default(t2, e2, s2) {
-        return h("<object|string|array> [*] [string]", [t2, e2, s2], arguments.length), s2 && (p(t2, O(this, ht)), O(this, Q).defaultDescription[t2] = s2), typeof e2 == "function" && (p(t2, O(this, ht)), O(this, Q).defaultDescription[t2] || (O(this, Q).defaultDescription[t2] = O(this, ut).functionDescription(e2)), e2 = e2.call()), this[Mt](this.default.bind(this), "default", t2, e2), this;
+        return h("<object|string|array> [*] [string]", [t2, e2, s2], arguments.length), s2 && (u(t2, v(this, ht, "f")), v(this, Q, "f").defaultDescription[t2] = s2), typeof e2 == "function" && (u(t2, v(this, ht, "f")), v(this, Q, "f").defaultDescription[t2] || (v(this, Q, "f").defaultDescription[t2] = v(this, dt, "f").functionDescription(e2)), e2 = e2.call()), this[kt](this.default.bind(this), "default", t2, e2), this;
       }
       defaults(t2, e2, s2) {
         return this.default(t2, e2, s2);
       }
       demandCommand(t2 = 1, e2, s2, n2) {
-        return h("[number] [number|string] [string|null|undefined] [string|null|undefined]", [t2, e2, s2, n2], arguments.length), typeof e2 != "number" && (s2 = e2, e2 = 1 / 0), this.global("_", false), O(this, Q).demandedCommands._ = { min: t2, max: e2, minMsg: s2, maxMsg: n2 }, this;
+        return h("[number] [number|string] [string|null|undefined] [string|null|undefined]", [t2, e2, s2, n2], arguments.length), typeof e2 != "number" && (s2 = e2, e2 = 1 / 0), this.global("_", false), v(this, Q, "f").demandedCommands._ = { min: t2, max: e2, minMsg: s2, maxMsg: n2 }, this;
       }
       demand(t2, e2, s2) {
         return Array.isArray(e2) ? (e2.forEach((t3) => {
-          u(s2, true, O(this, ht)), this.demandOption(t3, s2);
-        }), e2 = 1 / 0) : typeof e2 != "number" && (s2 = e2, e2 = 1 / 0), typeof t2 == "number" ? (u(s2, true, O(this, ht)), this.demandCommand(t2, e2, s2, s2)) : Array.isArray(t2) ? t2.forEach((t3) => {
-          u(s2, true, O(this, ht)), this.demandOption(t3, s2);
+          d(s2, true, v(this, ht, "f")), this.demandOption(t3, s2);
+        }), e2 = 1 / 0) : typeof e2 != "number" && (s2 = e2, e2 = 1 / 0), typeof t2 == "number" ? (d(s2, true, v(this, ht, "f")), this.demandCommand(t2, e2, s2, s2)) : Array.isArray(t2) ? t2.forEach((t3) => {
+          d(s2, true, v(this, ht, "f")), this.demandOption(t3, s2);
         }) : typeof s2 == "string" ? this.demandOption(t2, s2) : s2 !== true && s2 !== void 0 || this.demandOption(t2), this;
       }
       demandOption(t2, e2) {
-        return h("<object|string|array> [string]", [t2, e2], arguments.length), this[Mt](this.demandOption.bind(this), "demandedOptions", t2, e2), this;
+        return h("<object|string|array> [string]", [t2, e2], arguments.length), this[kt](this.demandOption.bind(this), "demandedOptions", t2, e2), this;
       }
       deprecateOption(t2, e2) {
-        return h("<string> [string|boolean]", [t2, e2], arguments.length), O(this, Q).deprecatedOptions[t2] = e2, this;
+        return h("<string> [string|boolean]", [t2, e2], arguments.length), v(this, Q, "f").deprecatedOptions[t2] = e2, this;
       }
       describe(t2, e2) {
-        return h("<object|string|array> [string]", [t2, e2], arguments.length), this[$t](t2, true), O(this, ut).describe(t2, e2), this;
+        return h("<object|string|array> [string]", [t2, e2], arguments.length), this[$t](t2, true), v(this, dt, "f").describe(t2, e2), this;
       }
       detectLocale(t2) {
-        return h("<boolean>", [t2], arguments.length), v(this, R, t2), this;
+        return h("<boolean>", [t2], arguments.length), O(this, R, t2, "f"), this;
       }
       env(t2) {
-        return h("[string|boolean]", [t2], arguments.length), t2 === false ? delete O(this, Q).envPrefix : O(this, Q).envPrefix = t2 || "", this;
+        return h("[string|boolean]", [t2], arguments.length), t2 === false ? delete v(this, Q, "f").envPrefix : v(this, Q, "f").envPrefix = t2 || "", this;
       }
       epilogue(t2) {
-        return h("<string>", [t2], arguments.length), O(this, ut).epilog(t2), this;
+        return h("<string>", [t2], arguments.length), v(this, dt, "f").epilog(t2), this;
       }
       epilog(t2) {
         return this.epilogue(t2);
       }
       example(t2, e2) {
-        return h("<string|array> [string]", [t2, e2], arguments.length), Array.isArray(t2) ? t2.forEach((t3) => this.example(...t3)) : O(this, ut).example(t2, e2), this;
+        return h("<string|array> [string]", [t2, e2], arguments.length), Array.isArray(t2) ? t2.forEach((t3) => this.example(...t3)) : v(this, dt, "f").example(t2, e2), this;
       }
       exit(t2, e2) {
-        v(this, Y, true), v(this, V, e2), O(this, T) && O(this, ht).process.exit(t2);
+        O(this, Y, true, "f"), O(this, V, e2, "f"), v(this, T, "f") && v(this, ht, "f").process.exit(t2);
       }
       exitProcess(t2 = true) {
-        return h("[boolean]", [t2], arguments.length), v(this, T, t2), this;
+        return h("[boolean]", [t2], arguments.length), O(this, T, t2, "f"), this;
       }
       fail(t2) {
         if (h("<function|boolean>", [t2], arguments.length), typeof t2 == "boolean" && t2 !== false)
           throw new e("Invalid first argument. Expected function or boolean 'false'");
-        return O(this, ut).failFn(t2), this;
+        return v(this, dt, "f").failFn(t2), this;
       }
       getAliases() {
         return this.parsed ? this.parsed.aliases : {};
       }
       async getCompletion(t2, e2) {
-        return h("<array> [function]", [t2, e2], arguments.length), e2 ? O(this, U).getCompletion(t2, e2) : new Promise((e3, s2) => {
-          O(this, U).getCompletion(t2, (t3, n2) => {
+        return h("<array> [function]", [t2, e2], arguments.length), e2 ? v(this, U, "f").getCompletion(t2, e2) : new Promise((e3, s2) => {
+          v(this, U, "f").getCompletion(t2, (t3, n2) => {
             t3 ? s2(t3) : e3(n2);
           });
         });
       }
       getDemandedOptions() {
-        return h([], 0), O(this, Q).demandedOptions;
+        return h([], 0), v(this, Q, "f").demandedOptions;
       }
       getDemandedCommands() {
-        return h([], 0), O(this, Q).demandedCommands;
+        return h([], 0), v(this, Q, "f").demandedCommands;
       }
       getDeprecatedOptions() {
-        return h([], 0), O(this, Q).deprecatedOptions;
+        return h([], 0), v(this, Q, "f").deprecatedOptions;
       }
       getDetectLocale() {
-        return O(this, R);
+        return v(this, R, "f");
       }
       getExitProcess() {
-        return O(this, T);
+        return v(this, T, "f");
       }
       getGroups() {
-        return Object.assign({}, O(this, K), O(this, rt));
+        return Object.assign({}, v(this, K, "f"), v(this, rt, "f"));
       }
       getHelp() {
-        if (v(this, Y, true), !O(this, ut).hasCachedHelpMessage()) {
+        if (O(this, Y, true, "f"), !v(this, dt, "f").hasCachedHelpMessage()) {
           if (!this.parsed) {
-            const t3 = this[Rt](O(this, ot), void 0, void 0, 0, true);
-            if (d(t3))
-              return t3.then(() => O(this, ut).help());
+            const t3 = this[Rt](v(this, ot, "f"), void 0, void 0, 0, true);
+            if (f(t3))
+              return t3.then(() => v(this, dt, "f").help());
           }
-          const t2 = O(this, q).runDefaultBuilderOn(this);
-          if (d(t2))
-            return t2.then(() => O(this, ut).help());
+          const t2 = v(this, q, "f").runDefaultBuilderOn(this);
+          if (f(t2))
+            return t2.then(() => v(this, dt, "f").help());
         }
-        return Promise.resolve(O(this, ut).help());
+        return Promise.resolve(v(this, dt, "f").help());
       }
       getOptions() {
-        return O(this, Q);
+        return v(this, Q, "f");
       }
       getStrict() {
-        return O(this, lt);
+        return v(this, lt, "f");
       }
       getStrictCommands() {
-        return O(this, ct);
+        return v(this, ct, "f");
       }
       getStrictOptions() {
-        return O(this, dt);
+        return v(this, ft, "f");
       }
       global(t2, e2) {
-        return h("<string|array> [boolean]", [t2, e2], arguments.length), t2 = [].concat(t2), e2 !== false ? O(this, Q).local = O(this, Q).local.filter((e3) => t2.indexOf(e3) === -1) : t2.forEach((t3) => {
-          O(this, Q).local.indexOf(t3) === -1 && O(this, Q).local.push(t3);
+        return h("<string|array> [boolean]", [t2, e2], arguments.length), t2 = [].concat(t2), e2 !== false ? v(this, Q, "f").local = v(this, Q, "f").local.filter((e3) => t2.indexOf(e3) === -1) : t2.forEach((t3) => {
+          v(this, Q, "f").local.includes(t3) || v(this, Q, "f").local.push(t3);
         }), this;
       }
       group(t2, e2) {
         h("<string|array> <string>", [t2, e2], arguments.length);
-        const s2 = O(this, rt)[e2] || O(this, K)[e2];
-        O(this, rt)[e2] && delete O(this, rt)[e2];
+        const s2 = v(this, rt, "f")[e2] || v(this, K, "f")[e2];
+        v(this, rt, "f")[e2] && delete v(this, rt, "f")[e2];
         const n2 = {};
-        return O(this, K)[e2] = (s2 || []).concat(t2).filter((t3) => !n2[t3] && (n2[t3] = true)), this;
+        return v(this, K, "f")[e2] = (s2 || []).concat(t2).filter((t3) => !n2[t3] && (n2[t3] = true)), this;
       }
       hide(t2) {
-        return h("<string>", [t2], arguments.length), O(this, Q).hiddenOptions.push(t2), this;
+        return h("<string>", [t2], arguments.length), v(this, Q, "f").hiddenOptions.push(t2), this;
       }
       implies(t2, e2) {
-        return h("<string|object> [number|string|array]", [t2, e2], arguments.length), O(this, gt).implies(t2, e2), this;
+        return h("<string|object> [number|string|array]", [t2, e2], arguments.length), v(this, pt, "f").implies(t2, e2), this;
       }
       locale(t2) {
-        return h("[string]", [t2], arguments.length), t2 ? (v(this, R, false), O(this, ht).y18n.setLocale(t2), this) : (this[wt](), O(this, ht).y18n.getLocale());
+        return h("[string]", [t2], arguments.length), t2 ? (O(this, R, false, "f"), v(this, ht, "f").y18n.setLocale(t2), this) : (this[wt](), v(this, ht, "f").y18n.getLocale());
       }
       middleware(t2, e2, s2) {
-        return O(this, B).addMiddleware(t2, !!e2, s2);
+        return v(this, B, "f").addMiddleware(t2, !!e2, s2);
       }
       nargs(t2, e2) {
-        return h("<string|object|array> [number]", [t2, e2], arguments.length), this[Mt](this.nargs.bind(this), "narg", t2, e2), this;
+        return h("<string|object|array> [number]", [t2, e2], arguments.length), this[kt](this.nargs.bind(this), "narg", t2, e2), this;
       }
       normalize(t2) {
-        return h("<array|string>", [t2], arguments.length), this[_t]("normalize", t2), this;
+        return h("<array|string>", [t2], arguments.length), this[Mt]("normalize", t2), this;
       }
       number(t2) {
-        return h("<array|string>", [t2], arguments.length), this[_t]("number", t2), this;
+        return h("<array|string>", [t2], arguments.length), this[Mt]("number", t2), this;
       }
       option(t2, e2) {
         if (h("<string|object> [object]", [t2, e2], arguments.length), typeof t2 == "object")
@@ -3986,11 +3993,11 @@ compdef _{{app_name}}_yargs_completions {{app_name}}
             this.options(e3, t2[e3]);
           });
         else {
-          typeof e2 != "object" && (e2 = {}), O(this, Q).key[t2] = true, e2.alias && this.alias(t2, e2.alias);
+          typeof e2 != "object" && (e2 = {}), v(this, Q, "f").key[t2] = true, e2.alias && this.alias(t2, e2.alias);
           const s2 = e2.deprecate || e2.deprecated;
           s2 && this.deprecateOption(t2, s2);
           const n2 = e2.demand || e2.required || e2.require;
-          n2 && this.demand(t2, n2), e2.demandOption && this.demandOption(t2, typeof e2.demandOption == "string" ? e2.demandOption : void 0), e2.conflicts && this.conflicts(t2, e2.conflicts), "default" in e2 && this.default(t2, e2.default), e2.implies !== void 0 && this.implies(t2, e2.implies), e2.nargs !== void 0 && this.nargs(t2, e2.nargs), e2.config && this.config(t2, e2.configParser), e2.normalize && this.normalize(t2), e2.choices && this.choices(t2, e2.choices), e2.coerce && this.coerce(t2, e2.coerce), e2.group && this.group(t2, e2.group), (e2.boolean || e2.type === "boolean") && (this.boolean(t2), e2.alias && this.boolean(e2.alias)), (e2.array || e2.type === "array") && (this.array(t2), e2.alias && this.array(e2.alias)), (e2.number || e2.type === "number") && (this.number(t2), e2.alias && this.number(e2.alias)), (e2.string || e2.type === "string") && (this.string(t2), e2.alias && this.string(e2.alias)), (e2.count || e2.type === "count") && this.count(t2), typeof e2.global == "boolean" && this.global(t2, e2.global), e2.defaultDescription && (O(this, Q).defaultDescription[t2] = e2.defaultDescription), e2.skipValidation && this.skipValidation(t2);
+          n2 && this.demand(t2, n2), e2.demandOption && this.demandOption(t2, typeof e2.demandOption == "string" ? e2.demandOption : void 0), e2.conflicts && this.conflicts(t2, e2.conflicts), "default" in e2 && this.default(t2, e2.default), e2.implies !== void 0 && this.implies(t2, e2.implies), e2.nargs !== void 0 && this.nargs(t2, e2.nargs), e2.config && this.config(t2, e2.configParser), e2.normalize && this.normalize(t2), e2.choices && this.choices(t2, e2.choices), e2.coerce && this.coerce(t2, e2.coerce), e2.group && this.group(t2, e2.group), (e2.boolean || e2.type === "boolean") && (this.boolean(t2), e2.alias && this.boolean(e2.alias)), (e2.array || e2.type === "array") && (this.array(t2), e2.alias && this.array(e2.alias)), (e2.number || e2.type === "number") && (this.number(t2), e2.alias && this.number(e2.alias)), (e2.string || e2.type === "string") && (this.string(t2), e2.alias && this.string(e2.alias)), (e2.count || e2.type === "count") && this.count(t2), typeof e2.global == "boolean" && this.global(t2, e2.global), e2.defaultDescription && (v(this, Q, "f").defaultDescription[t2] = e2.defaultDescription), e2.skipValidation && this.skipValidation(t2);
           const i2 = e2.describe || e2.description || e2.desc;
           this.describe(t2, i2), e2.hidden && this.hide(t2), e2.requiresArg && this.requiresArg(t2);
         }
@@ -4000,48 +4007,45 @@ compdef _{{app_name}}_yargs_completions {{app_name}}
         return this.option(t2, e2);
       }
       parse(t2, e2, s2) {
-        h("[string|array] [function|boolean|object] [function]", [t2, e2, s2], arguments.length), this[bt](), t2 === void 0 && (t2 = O(this, ot)), typeof e2 == "object" && (v(this, nt, e2), e2 = s2), typeof e2 == "function" && (v(this, st, e2), e2 = false), e2 || v(this, ot, t2), O(this, st) && v(this, T, false);
+        h("[string|array] [function|boolean|object] [function]", [t2, e2, s2], arguments.length), this[bt](), t2 === void 0 && (t2 = v(this, ot, "f")), typeof e2 == "object" && (O(this, nt, e2, "f"), e2 = s2), typeof e2 == "function" && (O(this, st, e2, "f"), e2 = false), e2 || O(this, ot, t2, "f"), v(this, st, "f") && O(this, T, false, "f");
         const n2 = this[Rt](t2, !!e2), i2 = this.parsed;
-        return O(this, U).setParsed(this.parsed), d(n2) ? n2.then((t3) => (O(this, st) && O(this, st).call(this, O(this, V), t3, O(this, X)), t3)).catch((t3) => {
-          throw O(this, st) && O(this, st)(t3, this.parsed.argv, O(this, X)), t3;
+        return v(this, U, "f").setParsed(this.parsed), f(n2) ? n2.then((t3) => (v(this, st, "f") && v(this, st, "f").call(this, v(this, V, "f"), t3, v(this, X, "f")), t3)).catch((t3) => {
+          throw v(this, st, "f") && v(this, st, "f")(t3, this.parsed.argv, v(this, X, "f")), t3;
         }).finally(() => {
-          this[Pt](), this.parsed = i2;
-        }) : (O(this, st) && O(this, st).call(this, O(this, V), n2, O(this, X)), this[Pt](), this.parsed = i2, n2);
+          this[At](), this.parsed = i2;
+        }) : (v(this, st, "f") && v(this, st, "f").call(this, v(this, V, "f"), n2, v(this, X, "f")), this[At](), this.parsed = i2, n2);
       }
       parseAsync(t2, e2, s2) {
         const n2 = this.parse(t2, e2, s2);
-        return d(n2) ? n2 : Promise.resolve(n2);
+        return f(n2) ? n2 : Promise.resolve(n2);
       }
       parseSync(t2, s2, n2) {
         const i2 = this.parse(t2, s2, n2);
-        if (d(i2))
+        if (f(i2))
           throw new e(".parseSync() must not be used with asynchronous builders, handlers, or middleware");
         return i2;
       }
       parserConfiguration(t2) {
-        return h("<object>", [t2], arguments.length), v(this, et, t2), this;
+        return h("<object>", [t2], arguments.length), O(this, et, t2, "f"), this;
       }
       pkgConf(t2, e2) {
         h("<string> [string]", [t2, e2], arguments.length);
         let s2 = null;
-        const n2 = this[xt](e2 || O(this, H));
-        return n2[t2] && typeof n2[t2] == "object" && (s2 = i(n2[t2], e2 || O(this, H), this[vt]()["deep-merge-config"] || false, O(this, ht)), O(this, Q).configObjects = (O(this, Q).configObjects || []).concat(s2)), this;
+        const n2 = this[_t](e2 || v(this, H, "f"));
+        return n2[t2] && typeof n2[t2] == "object" && (s2 = i(n2[t2], e2 || v(this, H, "f"), this[Ot]()["deep-merge-config"] || false, v(this, ht, "f")), v(this, Q, "f").configObjects = (v(this, Q, "f").configObjects || []).concat(s2)), this;
       }
       positional(t2, e2) {
         h("<string> <object>", [t2, e2], arguments.length);
         const s2 = ["default", "defaultDescription", "implies", "normalize", "choices", "conflicts", "coerce", "type", "describe", "desc", "description", "alias"];
-        e2 = m(e2, (t3, e3) => {
-          let n3 = s2.indexOf(t3) !== -1;
-          return t3 === "type" && ["string", "number", "boolean"].indexOf(e3) === -1 && (n3 = false), n3;
-        });
-        const n2 = O(this, F).fullCommands[O(this, F).fullCommands.length - 1], i2 = n2 ? O(this, q).cmdToParseOptions(n2) : { array: [], alias: {}, default: {}, demand: {} };
-        return g(i2).forEach((s3) => {
+        e2 = g(e2, (t3, e3) => !(t3 === "type" && !["string", "number", "boolean"].includes(e3)) && s2.includes(t3));
+        const n2 = v(this, F, "f").fullCommands[v(this, F, "f").fullCommands.length - 1], i2 = n2 ? v(this, q, "f").cmdToParseOptions(n2) : { array: [], alias: {}, default: {}, demand: {} };
+        return p(i2).forEach((s3) => {
           const n3 = i2[s3];
           Array.isArray(n3) ? n3.indexOf(t2) !== -1 && (e2[s3] = true) : n3[t2] && !(s3 in e2) && (e2[s3] = n3[t2]);
-        }), this.group(t2, O(this, ut).getPositionalGroupName()), this.option(t2, e2);
+        }), this.group(t2, v(this, dt, "f").getPositionalGroupName()), this.option(t2, e2);
       }
       recommendCommands(t2 = true) {
-        return h("[boolean]", [t2], arguments.length), v(this, at, t2), this;
+        return h("[boolean]", [t2], arguments.length), O(this, at, t2, "f"), this;
       }
       required(t2, e2, s2) {
         return this.demand(t2, e2, s2);
@@ -4050,72 +4054,72 @@ compdef _{{app_name}}_yargs_completions {{app_name}}
         return this.demand(t2, e2, s2);
       }
       requiresArg(t2) {
-        return h("<array|string|object> [number]", [t2], arguments.length), typeof t2 == "string" && O(this, Q).narg[t2] || this[Mt](this.requiresArg.bind(this), "narg", t2, NaN), this;
+        return h("<array|string|object> [number]", [t2], arguments.length), typeof t2 == "string" && v(this, Q, "f").narg[t2] || this[kt](this.requiresArg.bind(this), "narg", t2, NaN), this;
       }
       showCompletionScript(t2, e2) {
-        return h("[string] [string]", [t2, e2], arguments.length), t2 = t2 || this.$0, O(this, Z).log(O(this, U).generateCompletionScript(t2, e2 || O(this, W) || "completion")), this;
+        return h("[string] [string]", [t2, e2], arguments.length), t2 = t2 || this.$0, v(this, Z, "f").log(v(this, U, "f").generateCompletionScript(t2, e2 || v(this, W, "f") || "completion")), this;
       }
       showHelp(t2) {
-        if (h("[string|function]", [t2], arguments.length), v(this, Y, true), !O(this, ut).hasCachedHelpMessage()) {
+        if (h("[string|function]", [t2], arguments.length), O(this, Y, true, "f"), !v(this, dt, "f").hasCachedHelpMessage()) {
           if (!this.parsed) {
-            const e3 = this[Rt](O(this, ot), void 0, void 0, 0, true);
-            if (d(e3))
+            const e3 = this[Rt](v(this, ot, "f"), void 0, void 0, 0, true);
+            if (f(e3))
               return e3.then(() => {
-                O(this, ut).showHelp(t2);
+                v(this, dt, "f").showHelp(t2);
               }), this;
           }
-          const e2 = O(this, q).runDefaultBuilderOn(this);
-          if (d(e2))
+          const e2 = v(this, q, "f").runDefaultBuilderOn(this);
+          if (f(e2))
             return e2.then(() => {
-              O(this, ut).showHelp(t2);
+              v(this, dt, "f").showHelp(t2);
             }), this;
         }
-        return O(this, ut).showHelp(t2), this;
+        return v(this, dt, "f").showHelp(t2), this;
       }
       scriptName(t2) {
         return this.customScriptName = true, this.$0 = t2, this;
       }
       showHelpOnFail(t2, e2) {
-        return h("[boolean|string] [string]", [t2, e2], arguments.length), O(this, ut).showHelpOnFail(t2, e2), this;
+        return h("[boolean|string] [string]", [t2, e2], arguments.length), v(this, dt, "f").showHelpOnFail(t2, e2), this;
       }
       showVersion(t2) {
-        return h("[string|function]", [t2], arguments.length), O(this, ut).showVersion(t2), this;
+        return h("[string|function]", [t2], arguments.length), v(this, dt, "f").showVersion(t2), this;
       }
       skipValidation(t2) {
-        return h("<array|string>", [t2], arguments.length), this[_t]("skipValidation", t2), this;
+        return h("<array|string>", [t2], arguments.length), this[Mt]("skipValidation", t2), this;
       }
       strict(t2) {
-        return h("[boolean]", [t2], arguments.length), v(this, lt, t2 !== false), this;
+        return h("[boolean]", [t2], arguments.length), O(this, lt, t2 !== false, "f"), this;
       }
       strictCommands(t2) {
-        return h("[boolean]", [t2], arguments.length), v(this, ct, t2 !== false), this;
+        return h("[boolean]", [t2], arguments.length), O(this, ct, t2 !== false, "f"), this;
       }
       strictOptions(t2) {
-        return h("[boolean]", [t2], arguments.length), v(this, dt, t2 !== false), this;
+        return h("[boolean]", [t2], arguments.length), O(this, ft, t2 !== false, "f"), this;
       }
       string(t2) {
-        return h("<array|string>", [t2], arguments.length), this[_t]("string", t2), this;
+        return h("<array|string>", [t2], arguments.length), this[Mt]("string", t2), this;
       }
       terminalWidth() {
-        return h([], 0), O(this, ht).process.stdColumns;
+        return h([], 0), v(this, ht, "f").process.stdColumns;
       }
       updateLocale(t2) {
         return this.updateStrings(t2);
       }
       updateStrings(t2) {
-        return h("<object>", [t2], arguments.length), v(this, R, false), O(this, ht).y18n.updateLocale(t2), this;
+        return h("<object>", [t2], arguments.length), O(this, R, false, "f"), v(this, ht, "f").y18n.updateLocale(t2), this;
       }
       usage(t2, s2, n2, i2) {
         if (h("<string|null|undefined> [string|boolean] [function|object] [function]", [t2, s2, n2, i2], arguments.length), s2 !== void 0) {
-          if (u(t2, null, O(this, ht)), (t2 || "").match(/^\$0( |$)/))
+          if (d(t2, null, v(this, ht, "f")), (t2 || "").match(/^\$0( |$)/))
             return this.command(t2, s2, n2, i2);
           throw new e(".usage() description must start with $0 if being used as alias for .command()");
         }
-        return O(this, ut).usage(t2), this;
+        return v(this, dt, "f").usage(t2), this;
       }
       version(t2, e2, s2) {
         const n2 = "version";
-        if (h("[boolean|string] [string] [string]", [t2, e2, s2], arguments.length), O(this, pt) && (this[yt](O(this, pt)), O(this, ut).version(void 0), v(this, pt, null)), arguments.length === 0)
+        if (h("[boolean|string] [string] [string]", [t2, e2, s2], arguments.length), v(this, ut, "f") && (this[yt](v(this, ut, "f")), v(this, dt, "f").version(void 0), O(this, ut, null, "f")), arguments.length === 0)
           s2 = this[Ct](), t2 = n2;
         else if (arguments.length === 1) {
           if (t2 === false)
@@ -4123,12 +4127,12 @@ compdef _{{app_name}}_yargs_completions {{app_name}}
           s2 = t2, t2 = n2;
         } else
           arguments.length === 2 && (s2 = e2, e2 = void 0);
-        return v(this, pt, typeof t2 == "string" ? t2 : n2), e2 = e2 || O(this, ut).deferY18nLookup("Show version number"), O(this, ut).version(s2 || void 0), this.boolean(O(this, pt)), this.describe(O(this, pt), e2), this;
+        return O(this, ut, typeof t2 == "string" ? t2 : n2, "f"), e2 = e2 || v(this, dt, "f").deferY18nLookup("Show version number"), v(this, dt, "f").version(s2 || void 0), this.boolean(v(this, ut, "f")), this.describe(v(this, ut, "f"), e2), this;
       }
       wrap(t2) {
-        return h("<number|null|undefined>", [t2], arguments.length), O(this, ut).wrap(t2), this;
+        return h("<number|null|undefined>", [t2], arguments.length), v(this, dt, "f").wrap(t2), this;
       }
-      [(q = new WeakMap(), H = new WeakMap(), F = new WeakMap(), U = new WeakMap(), W = new WeakMap(), L = new WeakMap(), V = new WeakMap(), R = new WeakMap(), T = new WeakMap(), G = new WeakMap(), B = new WeakMap(), K = new WeakMap(), Y = new WeakMap(), J = new WeakMap(), Z = new WeakMap(), X = new WeakMap(), Q = new WeakMap(), tt = new WeakMap(), et = new WeakMap(), st = new WeakMap(), nt = new WeakMap(), it = new WeakMap(), rt = new WeakMap(), ot = new WeakMap(), at = new WeakMap(), ht = new WeakMap(), lt = new WeakMap(), ct = new WeakMap(), dt = new WeakMap(), ut = new WeakMap(), pt = new WeakMap(), gt = new WeakMap(), mt)](t2) {
+      [(q = new WeakMap(), H = new WeakMap(), F = new WeakMap(), U = new WeakMap(), W = new WeakMap(), L = new WeakMap(), V = new WeakMap(), R = new WeakMap(), T = new WeakMap(), G = new WeakMap(), B = new WeakMap(), K = new WeakMap(), Y = new WeakMap(), J = new WeakMap(), Z = new WeakMap(), X = new WeakMap(), Q = new WeakMap(), tt = new WeakMap(), et = new WeakMap(), st = new WeakMap(), nt = new WeakMap(), it = new WeakMap(), rt = new WeakMap(), ot = new WeakMap(), at = new WeakMap(), ht = new WeakMap(), lt = new WeakMap(), ct = new WeakMap(), ft = new WeakMap(), dt = new WeakMap(), ut = new WeakMap(), pt = new WeakMap(), gt)](t2) {
         if (!t2._ || !t2["--"])
           return t2;
         t2._.push.apply(t2._, t2["--"]);
@@ -4138,85 +4142,85 @@ compdef _{{app_name}}_yargs_completions {{app_name}}
         }
         return t2;
       }
-      [ft]() {
+      [mt]() {
         return { log: (...t2) => {
-          this[Ut]() || console.log(...t2), v(this, Y, true), O(this, X).length && v(this, X, O(this, X) + "\n"), v(this, X, O(this, X) + t2.join(" "));
+          this[Ut]() || console.log(...t2), O(this, Y, true, "f"), v(this, X, "f").length && O(this, X, v(this, X, "f") + "\n", "f"), O(this, X, v(this, X, "f") + t2.join(" "), "f");
         }, error: (...t2) => {
-          this[Ut]() || console.error(...t2), v(this, Y, true), O(this, X).length && v(this, X, O(this, X) + "\n"), v(this, X, O(this, X) + t2.join(" "));
+          this[Ut]() || console.error(...t2), O(this, Y, true, "f"), v(this, X, "f").length && O(this, X, v(this, X, "f") + "\n", "f"), O(this, X, v(this, X, "f") + t2.join(" "), "f");
         } };
       }
       [yt](t2) {
-        g(O(this, Q)).forEach((e2) => {
+        p(v(this, Q, "f")).forEach((e2) => {
           if (e2 === "configObjects")
             return;
-          const s2 = O(this, Q)[e2];
-          Array.isArray(s2) ? ~s2.indexOf(t2) && s2.splice(s2.indexOf(t2), 1) : typeof s2 == "object" && delete s2[t2];
-        }), delete O(this, ut).getDescriptions()[t2];
+          const s2 = v(this, Q, "f")[e2];
+          Array.isArray(s2) ? s2.includes(t2) && s2.splice(s2.indexOf(t2), 1) : typeof s2 == "object" && delete s2[t2];
+        }), delete v(this, dt, "f").getDescriptions()[t2];
       }
       [bt]() {
-        O(this, G).push({ options: O(this, Q), configObjects: O(this, Q).configObjects.slice(0), exitProcess: O(this, T), groups: O(this, K), strict: O(this, lt), strictCommands: O(this, ct), strictOptions: O(this, dt), completionCommand: O(this, W), output: O(this, X), exitError: O(this, V), hasOutput: O(this, Y), parsed: this.parsed, parseFn: O(this, st), parseContext: O(this, nt) }), O(this, ut).freeze(), O(this, gt).freeze(), O(this, q).freeze(), O(this, B).freeze();
-      }
-      [Ot]() {
-        let t2, e2 = "";
-        return t2 = /\b(node|iojs|electron)(\.exe)?$/.test(O(this, ht).process.argv()[0]) ? O(this, ht).process.argv().slice(1, 2) : O(this, ht).process.argv().slice(0, 1), e2 = t2.map((t3) => {
-          const e3 = this[Lt](O(this, H), t3);
-          return t3.match(/^(\/|([a-zA-Z]:)?\\)/) && e3.length < t3.length ? e3 : t3;
-        }).join(" ").trim(), O(this, ht).getEnv("_") && O(this, ht).getProcessArgvBin() === O(this, ht).getEnv("_") && (e2 = O(this, ht).getEnv("_").replace(`${O(this, ht).path.dirname(O(this, ht).process.execPath())}/`, "")), e2;
+        v(this, G, "f").push({ options: v(this, Q, "f"), configObjects: v(this, Q, "f").configObjects.slice(0), exitProcess: v(this, T, "f"), groups: v(this, K, "f"), strict: v(this, lt, "f"), strictCommands: v(this, ct, "f"), strictOptions: v(this, ft, "f"), completionCommand: v(this, W, "f"), output: v(this, X, "f"), exitError: v(this, V, "f"), hasOutput: v(this, Y, "f"), parsed: this.parsed, parseFn: v(this, st, "f"), parseContext: v(this, nt, "f") }), v(this, dt, "f").freeze(), v(this, pt, "f").freeze(), v(this, q, "f").freeze(), v(this, B, "f").freeze();
       }
       [vt]() {
-        return O(this, et);
+        let t2, e2 = "";
+        return t2 = /\b(node|iojs|electron)(\.exe)?$/.test(v(this, ht, "f").process.argv()[0]) ? v(this, ht, "f").process.argv().slice(1, 2) : v(this, ht, "f").process.argv().slice(0, 1), e2 = t2.map((t3) => {
+          const e3 = this[Lt](v(this, H, "f"), t3);
+          return t3.match(/^(\/|([a-zA-Z]:)?\\)/) && e3.length < t3.length ? e3 : t3;
+        }).join(" ").trim(), v(this, ht, "f").getEnv("_") && v(this, ht, "f").getProcessArgvBin() === v(this, ht, "f").getEnv("_") && (e2 = v(this, ht, "f").getEnv("_").replace(`${v(this, ht, "f").path.dirname(v(this, ht, "f").process.execPath())}/`, "")), e2;
+      }
+      [Ot]() {
+        return v(this, et, "f");
       }
       [wt]() {
-        if (!O(this, R))
+        if (!v(this, R, "f"))
           return;
-        const t2 = O(this, ht).getEnv("LC_ALL") || O(this, ht).getEnv("LC_MESSAGES") || O(this, ht).getEnv("LANG") || O(this, ht).getEnv("LANGUAGE") || "en_US";
+        const t2 = v(this, ht, "f").getEnv("LC_ALL") || v(this, ht, "f").getEnv("LC_MESSAGES") || v(this, ht, "f").getEnv("LANG") || v(this, ht, "f").getEnv("LANGUAGE") || "en_US";
         this.locale(t2.replace(/[.:].*/, ""));
       }
       [Ct]() {
-        return this[xt]().version || "unknown";
+        return this[_t]().version || "unknown";
       }
       [jt](t2) {
         const e2 = t2["--"] ? t2["--"] : t2._;
         for (let t3, s2 = 0; (t3 = e2[s2]) !== void 0; s2++)
-          O(this, ht).Parser.looksLikeNumber(t3) && Number.isSafeInteger(Math.floor(parseFloat(`${t3}`))) && (e2[s2] = Number(t3));
+          v(this, ht, "f").Parser.looksLikeNumber(t3) && Number.isSafeInteger(Math.floor(parseFloat(`${t3}`))) && (e2[s2] = Number(t3));
         return t2;
       }
-      [xt](t2) {
+      [_t](t2) {
         const e2 = t2 || "*";
-        if (O(this, it)[e2])
-          return O(this, it)[e2];
+        if (v(this, it, "f")[e2])
+          return v(this, it, "f")[e2];
         let s2 = {};
         try {
-          let e3 = t2 || O(this, ht).mainFilename;
-          !t2 && O(this, ht).path.extname(e3) && (e3 = O(this, ht).path.dirname(e3));
-          const n2 = O(this, ht).findUp(e3, (t3, e4) => e4.includes("package.json") ? "package.json" : void 0);
-          u(n2, void 0, O(this, ht)), s2 = JSON.parse(O(this, ht).readFileSync(n2, "utf8"));
+          let e3 = t2 || v(this, ht, "f").mainFilename;
+          !t2 && v(this, ht, "f").path.extname(e3) && (e3 = v(this, ht, "f").path.dirname(e3));
+          const n2 = v(this, ht, "f").findUp(e3, (t3, e4) => e4.includes("package.json") ? "package.json" : void 0);
+          d(n2, void 0, v(this, ht, "f")), s2 = JSON.parse(v(this, ht, "f").readFileSync(n2, "utf8"));
         } catch (t3) {
         }
-        return O(this, it)[e2] = s2 || {}, O(this, it)[e2];
+        return v(this, it, "f")[e2] = s2 || {}, v(this, it, "f")[e2];
       }
-      [_t](t2, e2) {
+      [Mt](t2, e2) {
         (e2 = [].concat(e2)).forEach((e3) => {
-          e3 = this[St](e3), O(this, Q)[t2].push(e3);
-        });
-      }
-      [Mt](t2, e2, s2, n2) {
-        this[Et](t2, e2, s2, n2, (t3, e3, s3) => {
-          O(this, Q)[t3][e3] = s3;
+          e3 = this[St](e3), v(this, Q, "f")[t2].push(e3);
         });
       }
       [kt](t2, e2, s2, n2) {
-        this[Et](t2, e2, s2, n2, (t3, e3, s3) => {
-          O(this, Q)[t3][e3] = (O(this, Q)[t3][e3] || []).concat(s3);
+        this[xt](t2, e2, s2, n2, (t3, e3, s3) => {
+          v(this, Q, "f")[t3][e3] = s3;
         });
       }
-      [Et](t2, e2, s2, n2, i2) {
+      [Et](t2, e2, s2, n2) {
+        this[xt](t2, e2, s2, n2, (t3, e3, s3) => {
+          v(this, Q, "f")[t3][e3] = (v(this, Q, "f")[t3][e3] || []).concat(s3);
+        });
+      }
+      [xt](t2, e2, s2, n2, i2) {
         if (Array.isArray(s2))
           s2.forEach((e3) => {
             t2(e3, n2);
           });
         else if (((t3) => typeof t3 == "object")(s2))
-          for (const e3 of g(s2))
+          for (const e3 of p(s2))
             t2(e3, s2[e3]);
         else
           i2(e2, this[St](s2), n2);
@@ -4225,94 +4229,94 @@ compdef _{{app_name}}_yargs_completions {{app_name}}
         return t2 === "__proto__" ? "___proto___" : t2;
       }
       [$t](t2, e2) {
-        return this[Mt](this[$t].bind(this), "key", t2, e2), this;
+        return this[kt](this[$t].bind(this), "key", t2, e2), this;
       }
-      [Pt]() {
-        var t2, e2, s2, n2, i2, r2, o2, a2, h2, l2, c2, d2;
-        const p2 = O(this, G).pop();
-        let g2;
-        u(p2, void 0, O(this, ht)), t2 = this, e2 = this, s2 = this, n2 = this, i2 = this, r2 = this, o2 = this, a2 = this, h2 = this, l2 = this, c2 = this, d2 = this, { options: { set value(e3) {
-          v(t2, Q, e3);
-        } }.value, configObjects: g2, exitProcess: { set value(t3) {
-          v(e2, T, t3);
+      [At]() {
+        var t2, e2, s2, n2, i2, r2, o2, a2, h2, l2, c2, f2;
+        const u2 = v(this, G, "f").pop();
+        let p2;
+        d(u2, void 0, v(this, ht, "f")), t2 = this, e2 = this, s2 = this, n2 = this, i2 = this, r2 = this, o2 = this, a2 = this, h2 = this, l2 = this, c2 = this, f2 = this, { options: { set value(e3) {
+          O(t2, Q, e3, "f");
+        } }.value, configObjects: p2, exitProcess: { set value(t3) {
+          O(e2, T, t3, "f");
         } }.value, groups: { set value(t3) {
-          v(s2, K, t3);
+          O(s2, K, t3, "f");
         } }.value, output: { set value(t3) {
-          v(n2, X, t3);
+          O(n2, X, t3, "f");
         } }.value, exitError: { set value(t3) {
-          v(i2, V, t3);
+          O(i2, V, t3, "f");
         } }.value, hasOutput: { set value(t3) {
-          v(r2, Y, t3);
+          O(r2, Y, t3, "f");
         } }.value, parsed: this.parsed, strict: { set value(t3) {
-          v(o2, lt, t3);
+          O(o2, lt, t3, "f");
         } }.value, strictCommands: { set value(t3) {
-          v(a2, ct, t3);
+          O(a2, ct, t3, "f");
         } }.value, strictOptions: { set value(t3) {
-          v(h2, dt, t3);
+          O(h2, ft, t3, "f");
         } }.value, completionCommand: { set value(t3) {
-          v(l2, W, t3);
+          O(l2, W, t3, "f");
         } }.value, parseFn: { set value(t3) {
-          v(c2, st, t3);
+          O(c2, st, t3, "f");
         } }.value, parseContext: { set value(t3) {
-          v(d2, nt, t3);
-        } }.value } = p2, O(this, Q).configObjects = g2, O(this, ut).unfreeze(), O(this, gt).unfreeze(), O(this, q).unfreeze(), O(this, B).unfreeze();
+          O(f2, nt, t3, "f");
+        } }.value } = u2, v(this, Q, "f").configObjects = p2, v(this, dt, "f").unfreeze(), v(this, pt, "f").unfreeze(), v(this, q, "f").unfreeze(), v(this, B, "f").unfreeze();
       }
-      [At](t2, e2) {
+      [Pt](t2, e2) {
         return j(e2, (e3) => (t2(e3), e3));
       }
       getInternalMethods() {
-        return { getCommandInstance: this[It].bind(this), getContext: this[Nt].bind(this), getHasOutput: this[Dt].bind(this), getLoggerInstance: this[zt].bind(this), getParseContext: this[qt].bind(this), getParserConfiguration: this[vt].bind(this), getUsageInstance: this[Ht].bind(this), getValidationInstance: this[Ft].bind(this), hasParseCallback: this[Ut].bind(this), postProcess: this[Wt].bind(this), reset: this[Vt].bind(this), runValidation: this[Tt].bind(this), runYargsParserAndExecuteCommands: this[Rt].bind(this), setHasOutput: this[Gt].bind(this) };
+        return { getCommandInstance: this[It].bind(this), getContext: this[Nt].bind(this), getHasOutput: this[Dt].bind(this), getLoggerInstance: this[zt].bind(this), getParseContext: this[qt].bind(this), getParserConfiguration: this[Ot].bind(this), getUsageInstance: this[Ht].bind(this), getValidationInstance: this[Ft].bind(this), hasParseCallback: this[Ut].bind(this), postProcess: this[Wt].bind(this), reset: this[Vt].bind(this), runValidation: this[Tt].bind(this), runYargsParserAndExecuteCommands: this[Rt].bind(this), setHasOutput: this[Gt].bind(this) };
       }
       [It]() {
-        return O(this, q);
+        return v(this, q, "f");
       }
       [Nt]() {
-        return O(this, F);
+        return v(this, F, "f");
       }
       [Dt]() {
-        return O(this, Y);
+        return v(this, Y, "f");
       }
       [zt]() {
-        return O(this, Z);
+        return v(this, Z, "f");
       }
       [qt]() {
-        return O(this, nt) || {};
+        return v(this, nt, "f") || {};
       }
       [Ht]() {
-        return O(this, ut);
+        return v(this, dt, "f");
       }
       [Ft]() {
-        return O(this, gt);
+        return v(this, pt, "f");
       }
       [Ut]() {
-        return !!O(this, st);
+        return !!v(this, st, "f");
       }
       [Wt](t2, e2, s2, n2) {
         if (s2)
           return t2;
-        if (d(t2))
+        if (f(t2))
           return t2;
-        e2 || (t2 = this[mt](t2));
-        return (this[vt]()["parse-positional-numbers"] || this[vt]()["parse-positional-numbers"] === void 0) && (t2 = this[jt](t2)), n2 && (t2 = C(t2, this, O(this, B).getMiddleware(), false)), t2;
+        e2 || (t2 = this[gt](t2));
+        return (this[Ot]()["parse-positional-numbers"] || this[Ot]()["parse-positional-numbers"] === void 0) && (t2 = this[jt](t2)), n2 && (t2 = C(t2, this, v(this, B, "f").getMiddleware(), false)), t2;
       }
       [Vt](t2 = {}) {
-        v(this, Q, O(this, Q) || {});
+        O(this, Q, v(this, Q, "f") || {}, "f");
         const e2 = {};
-        e2.local = O(this, Q).local ? O(this, Q).local : [], e2.configObjects = O(this, Q).configObjects ? O(this, Q).configObjects : [];
+        e2.local = v(this, Q, "f").local || [], e2.configObjects = v(this, Q, "f").configObjects || [];
         const s2 = {};
         e2.local.forEach((e3) => {
           s2[e3] = true, (t2[e3] || []).forEach((t3) => {
             s2[t3] = true;
           });
-        }), Object.assign(O(this, rt), Object.keys(O(this, K)).reduce((t3, e3) => {
-          const n2 = O(this, K)[e3].filter((t4) => !(t4 in s2));
+        }), Object.assign(v(this, rt, "f"), Object.keys(v(this, K, "f")).reduce((t3, e3) => {
+          const n2 = v(this, K, "f")[e3].filter((t4) => !(t4 in s2));
           return n2.length > 0 && (t3[e3] = n2), t3;
-        }, {})), v(this, K, {});
+        }, {})), O(this, K, {}, "f");
         return ["array", "boolean", "string", "skipValidation", "count", "normalize", "number", "hiddenOptions"].forEach((t3) => {
-          e2[t3] = (O(this, Q)[t3] || []).filter((t4) => !s2[t4]);
+          e2[t3] = (v(this, Q, "f")[t3] || []).filter((t4) => !s2[t4]);
         }), ["narg", "key", "alias", "default", "defaultDescription", "config", "choices", "demandedOptions", "demandedCommands", "deprecatedOptions"].forEach((t3) => {
-          e2[t3] = m(O(this, Q)[t3], (t4) => !s2[t4]);
-        }), e2.envPrefix = O(this, Q).envPrefix, v(this, Q, e2), v(this, ut, O(this, ut) ? O(this, ut).reset(s2) : $(this, O(this, ht))), v(this, gt, O(this, gt) ? O(this, gt).reset(s2) : function(t3, e3, s3) {
+          e2[t3] = g(v(this, Q, "f")[t3], (t4) => !s2[t4]);
+        }), e2.envPrefix = v(this, Q, "f").envPrefix, O(this, Q, e2, "f"), O(this, dt, v(this, dt, "f") ? v(this, dt, "f").reset(s2) : $(this, v(this, ht, "f")), "f"), O(this, pt, v(this, pt, "f") ? v(this, pt, "f").reset(s2) : function(t3, e3, s3) {
           const n2 = s3.y18n.__, i2 = s3.y18n.__n, r2 = { nonOptionCount: function(s4) {
             const n3 = t3.getDemandedCommands(), r3 = s4._.length + (s4["--"] ? s4["--"].length : 0) - t3.getInternalMethods().getContext().commands.length;
             n3._ && (r3 < n3._.min || r3 > n3._.max) && (r3 < n3._.min ? n3._.minMsg !== void 0 ? e3.fail(n3._.minMsg ? n3._.minMsg.replace(/\$0/g, r3.toString()).replace(/\$1/, n3._.min.toString()) : null) : e3.fail(i2("Not enough non-option arguments: got %s, need at least %s", "Not enough non-option arguments: got %s, need at least %s", r3, r3.toString(), n3._.min.toString())) : r3 > n3._.max && (n3._.maxMsg !== void 0 ? e3.fail(n3._.maxMsg ? n3._.maxMsg.replace(/\$0/g, r3.toString()).replace(/\$1/, n3._.max.toString()) : null) : e3.fail(i2("Too many non-option arguments: got %s, maximum of %s", "Too many non-option arguments: got %s, maximum of %s", r3, r3.toString(), n3._.max.toString()))));
@@ -4333,16 +4337,23 @@ ${t5.join("\n")}` : "";
               e3.fail(i2("Missing required argument: %s", "Missing required arguments: %s", Object.keys(n3).length, Object.keys(n3).join(", ") + s5));
             }
           }, unknownArguments: function(s4, n3, o3, a3, h2 = true) {
-            const l3 = t3.getInternalMethods().getCommandInstance().getCommands(), c3 = [], d2 = t3.getInternalMethods().getContext();
-            Object.keys(s4).forEach((e4) => {
-              z.indexOf(e4) !== -1 || Object.prototype.hasOwnProperty.call(o3, e4) || Object.prototype.hasOwnProperty.call(t3.getInternalMethods().getParseContext(), e4) || r2.isValidAndSomeAliasIsNotNew(e4, n3) || c3.push(e4);
-            }), h2 && (d2.commands.length > 0 || l3.length > 0 || a3) && s4._.slice(d2.commands.length).forEach((t4) => {
-              l3.indexOf("" + t4) === -1 && c3.push("" + t4);
-            }), c3.length > 0 && e3.fail(i2("Unknown argument: %s", "Unknown arguments: %s", c3.length, c3.join(", ")));
+            var l3;
+            const c3 = t3.getInternalMethods().getCommandInstance().getCommands(), f2 = [], d2 = t3.getInternalMethods().getContext();
+            if (Object.keys(s4).forEach((e4) => {
+              z.includes(e4) || Object.prototype.hasOwnProperty.call(o3, e4) || Object.prototype.hasOwnProperty.call(t3.getInternalMethods().getParseContext(), e4) || r2.isValidAndSomeAliasIsNotNew(e4, n3) || f2.push(e4);
+            }), h2 && (d2.commands.length > 0 || c3.length > 0 || a3) && s4._.slice(d2.commands.length).forEach((t4) => {
+              c3.includes("" + t4) || f2.push("" + t4);
+            }), h2) {
+              const e4 = ((l3 = t3.getDemandedCommands()._) === null || l3 === void 0 ? void 0 : l3.max) || 0, n4 = d2.commands.length + e4;
+              n4 < s4._.length && s4._.slice(n4).forEach((t4) => {
+                t4 = String(t4), d2.commands.includes(t4) || f2.includes(t4) || f2.push(t4);
+              });
+            }
+            f2.length && e3.fail(i2("Unknown argument: %s", "Unknown arguments: %s", f2.length, f2.join(", ")));
           }, unknownCommands: function(s4) {
             const n3 = t3.getInternalMethods().getCommandInstance().getCommands(), r3 = [], o3 = t3.getInternalMethods().getContext();
             return (o3.commands.length > 0 || n3.length > 0) && s4._.slice(o3.commands.length).forEach((t4) => {
-              n3.indexOf("" + t4) === -1 && r3.push("" + t4);
+              n3.includes("" + t4) || r3.push("" + t4);
             }), r3.length > 0 && (e3.fail(i2("Unknown command: %s", "Unknown commands: %s", r3.length, r3.join(", "))), true);
           }, isValidAndSomeAliasIsNotNew: function(e4, s4) {
             if (!Object.prototype.hasOwnProperty.call(s4, e4))
@@ -4370,12 +4381,12 @@ ${t5.join("\n")}` : "";
           let o2 = {};
           function a2(t4, e4) {
             const s4 = Number(e4);
-            return typeof (e4 = isNaN(s4) ? e4 : s4) == "number" ? t4._.length >= e4 : e4.match(/^--no-.+/) ? !t4[e4 = e4.match(/^--no-(.+)/)[1]] : t4[e4];
+            return typeof (e4 = isNaN(s4) ? e4 : s4) == "number" ? e4 = t4._.length >= e4 : e4.match(/^--no-.+/) ? (e4 = e4.match(/^--no-(.+)/)[1], e4 = !Object.prototype.hasOwnProperty.call(t4, e4)) : e4 = Object.prototype.hasOwnProperty.call(t4, e4), e4;
           }
           r2.implies = function(e4, n3) {
             h("<string|object> [array|number|string]", [e4, n3], arguments.length), typeof e4 == "object" ? Object.keys(e4).forEach((t4) => {
               r2.implies(t4, e4[t4]);
-            }) : (t3.global(e4), o2[e4] || (o2[e4] = []), Array.isArray(n3) ? n3.forEach((t4) => r2.implies(e4, t4)) : (u(n3, void 0, s3), o2[e4].push(n3)));
+            }) : (t3.global(e4), o2[e4] || (o2[e4] = []), Array.isArray(n3) ? n3.forEach((t4) => r2.implies(e4, t4)) : (d(n3, void 0, s3), o2[e4].push(n3)));
           }, r2.getImplied = function() {
             return o2;
           }, r2.implications = function(t4) {
@@ -4415,101 +4426,100 @@ ${t5.join("\n")}` : "";
             }
             i3 && e3.fail(n2("Did you mean %s?", i3));
           }, r2.reset = function(t4) {
-            return o2 = m(o2, (e4) => !t4[e4]), l2 = m(l2, (e4) => !t4[e4]), r2;
+            return o2 = g(o2, (e4) => !t4[e4]), l2 = g(l2, (e4) => !t4[e4]), r2;
           };
           const c2 = [];
           return r2.freeze = function() {
             c2.push({ implied: o2, conflicting: l2 });
           }, r2.unfreeze = function() {
             const t4 = c2.pop();
-            u(t4, void 0, s3), { implied: o2, conflicting: l2 } = t4;
+            d(t4, void 0, s3), { implied: o2, conflicting: l2 } = t4;
           }, r2;
-        }(this, O(this, ut), O(this, ht))), v(this, q, O(this, q) ? O(this, q).reset() : function(t3, e3, s3, n2) {
-          return new _(t3, e3, s3, n2);
-        }(O(this, ut), O(this, gt), O(this, B), O(this, ht))), O(this, U) || v(this, U, function(t3, e3, s3, n2) {
+        }(this, v(this, dt, "f"), v(this, ht, "f")), "f"), O(this, q, v(this, q, "f") ? v(this, q, "f").reset() : function(t3, e3, s3, n2) {
+          return new M(t3, e3, s3, n2);
+        }(v(this, dt, "f"), v(this, pt, "f"), v(this, B, "f"), v(this, ht, "f")), "f"), v(this, U, "f") || O(this, U, function(t3, e3, s3, n2) {
           return new N(t3, e3, s3, n2);
-        }(this, O(this, ut), O(this, q), O(this, ht))), O(this, B).reset(), v(this, W, null), v(this, X, ""), v(this, V, null), v(this, Y, false), this.parsed = false, this;
+        }(this, v(this, dt, "f"), v(this, q, "f"), v(this, ht, "f")), "f"), v(this, B, "f").reset(), O(this, W, null, "f"), O(this, X, "", "f"), O(this, V, null, "f"), O(this, Y, false, "f"), this.parsed = false, this;
       }
       [Lt](t2, e2) {
-        return O(this, ht).path.relative(t2, e2);
+        return v(this, ht, "f").path.relative(t2, e2);
       }
       [Rt](t2, s2, n2, i2 = 0, r2 = false) {
         let o2 = !!n2 || r2;
-        t2 = t2 || O(this, ot), O(this, Q).__ = O(this, ht).y18n.__, O(this, Q).configuration = this[vt]();
-        const a2 = !!O(this, Q).configuration["populate--"], h2 = Object.assign({}, O(this, Q).configuration, { "populate--": true }), l2 = O(this, ht).Parser.detailed(t2, Object.assign({}, O(this, Q), { configuration: __spreadValues({ "parse-positional-numbers": false }, h2) })), c2 = Object.assign(l2.argv, O(this, nt));
-        let u2;
-        const p2 = l2.aliases;
-        let g2 = false, m2 = false;
+        t2 = t2 || v(this, ot, "f"), v(this, Q, "f").__ = v(this, ht, "f").y18n.__, v(this, Q, "f").configuration = this[Ot]();
+        const a2 = !!v(this, Q, "f").configuration["populate--"], h2 = Object.assign({}, v(this, Q, "f").configuration, { "populate--": true }), l2 = v(this, ht, "f").Parser.detailed(t2, Object.assign({}, v(this, Q, "f"), { configuration: __spreadValues({ "parse-positional-numbers": false }, h2) })), c2 = Object.assign(l2.argv, v(this, nt, "f"));
+        let d2;
+        const u2 = l2.aliases;
+        let p2 = false, g2 = false;
         Object.keys(c2).forEach((t3) => {
-          t3 === O(this, J) && c2[t3] ? g2 = true : t3 === O(this, pt) && c2[t3] && (m2 = true);
-        }), c2.$0 = this.$0, this.parsed = l2, i2 === 0 && O(this, ut).clearCachedHelpMessage();
+          t3 === v(this, J, "f") && c2[t3] ? p2 = true : t3 === v(this, ut, "f") && c2[t3] && (g2 = true);
+        }), c2.$0 = this.$0, this.parsed = l2, i2 === 0 && v(this, dt, "f").clearCachedHelpMessage();
         try {
           if (this[wt](), s2)
             return this[Wt](c2, a2, !!n2, false);
-          if (O(this, J)) {
-            ~[O(this, J)].concat(p2[O(this, J)] || []).filter((t3) => t3.length > 1).indexOf("" + c2._[c2._.length - 1]) && (c2._.pop(), g2 = true);
+          if (v(this, J, "f")) {
+            [v(this, J, "f")].concat(u2[v(this, J, "f")] || []).filter((t3) => t3.length > 1).includes("" + c2._[c2._.length - 1]) && (c2._.pop(), p2 = true);
           }
-          const h3 = O(this, q).getCommands(), f2 = O(this, U).completionKey in c2, y2 = g2 || f2 || r2;
+          const h3 = v(this, q, "f").getCommands(), m2 = v(this, U, "f").completionKey in c2, y2 = p2 || m2 || r2;
           if (c2._.length) {
             if (h3.length) {
               let t3;
               for (let e2, s3 = i2 || 0; c2._[s3] !== void 0; s3++) {
-                if (e2 = String(c2._[s3]), ~h3.indexOf(e2) && e2 !== O(this, W)) {
-                  const t4 = O(this, q).runCommand(e2, this, l2, s3 + 1, r2, g2 || m2 || r2);
+                if (e2 = String(c2._[s3]), h3.includes(e2) && e2 !== v(this, W, "f")) {
+                  const t4 = v(this, q, "f").runCommand(e2, this, l2, s3 + 1, r2, p2 || g2 || r2);
                   return this[Wt](t4, a2, !!n2, false);
                 }
-                if (!t3 && e2 !== O(this, W)) {
+                if (!t3 && e2 !== v(this, W, "f")) {
                   t3 = e2;
                   break;
                 }
               }
-              !O(this, q).hasDefaultCommand() && O(this, at) && t3 && !y2 && O(this, gt).recommendCommands(t3, h3);
+              !v(this, q, "f").hasDefaultCommand() && v(this, at, "f") && t3 && !y2 && v(this, pt, "f").recommendCommands(t3, h3);
             }
-            O(this, W) && ~c2._.indexOf(O(this, W)) && !f2 && (O(this, T) && E(true), this.showCompletionScript(), this.exit(0));
+            v(this, W, "f") && c2._.includes(v(this, W, "f")) && !m2 && (v(this, T, "f") && x(true), this.showCompletionScript(), this.exit(0));
           }
-          if (O(this, q).hasDefaultCommand() && !y2) {
-            const t3 = O(this, q).runCommand(null, this, l2, 0, r2, g2 || m2 || r2);
+          if (v(this, q, "f").hasDefaultCommand() && !y2) {
+            const t3 = v(this, q, "f").runCommand(null, this, l2, 0, r2, p2 || g2 || r2);
             return this[Wt](t3, a2, !!n2, false);
           }
-          if (f2) {
-            O(this, T) && E(true);
-            const s3 = (t2 = [].concat(t2)).slice(t2.indexOf(`--${O(this, U).completionKey}`) + 1);
-            return O(this, U).getCompletion(s3, (t3, s4) => {
+          if (m2) {
+            v(this, T, "f") && x(true);
+            const s3 = (t2 = [].concat(t2)).slice(t2.indexOf(`--${v(this, U, "f").completionKey}`) + 1);
+            return v(this, U, "f").getCompletion(s3, (t3, s4) => {
               if (t3)
                 throw new e(t3.message);
               (s4 || []).forEach((t4) => {
-                O(this, Z).log(t4);
+                v(this, Z, "f").log(t4);
               }), this.exit(0);
             }), this[Wt](c2, !a2, !!n2, false);
           }
-          if (O(this, Y) || (g2 ? (O(this, T) && E(true), o2 = true, this.showHelp("log"), this.exit(0)) : m2 && (O(this, T) && E(true), o2 = true, O(this, ut).showVersion("log"), this.exit(0))), !o2 && O(this, Q).skipValidation.length > 0 && (o2 = Object.keys(c2).some((t3) => O(this, Q).skipValidation.indexOf(t3) >= 0 && c2[t3] === true)), !o2) {
+          if (v(this, Y, "f") || (p2 ? (v(this, T, "f") && x(true), o2 = true, this.showHelp("log"), this.exit(0)) : g2 && (v(this, T, "f") && x(true), o2 = true, v(this, dt, "f").showVersion("log"), this.exit(0))), !o2 && v(this, Q, "f").skipValidation.length > 0 && (o2 = Object.keys(c2).some((t3) => v(this, Q, "f").skipValidation.indexOf(t3) >= 0 && c2[t3] === true)), !o2) {
             if (l2.error)
               throw new e(l2.error.message);
-            if (!f2) {
-              const t3 = this[Tt](p2, {}, l2.error);
-              n2 || (u2 = C(c2, this, O(this, B).getMiddleware(), true)), u2 = this[At](t3, u2 != null ? u2 : c2), d(u2) && !n2 && (u2 = u2.then(() => C(c2, this, O(this, B).getMiddleware(), false)));
+            if (!m2) {
+              const t3 = this[Tt](u2, {}, l2.error);
+              n2 || (d2 = C(c2, this, v(this, B, "f").getMiddleware(), true)), d2 = this[Pt](t3, d2 != null ? d2 : c2), f(d2) && !n2 && (d2 = d2.then(() => C(c2, this, v(this, B, "f").getMiddleware(), false)));
             }
           }
         } catch (t3) {
           if (!(t3 instanceof e))
             throw t3;
-          O(this, ut).fail(t3.message, t3);
+          v(this, dt, "f").fail(t3.message, t3);
         }
-        return this[Wt](u2 != null ? u2 : c2, a2, !!n2, true);
+        return this[Wt](d2 != null ? d2 : c2, a2, !!n2, true);
       }
       [Tt](t2, s2, n2, i2) {
-        t2 = __spreadValues({}, t2), s2 = __spreadValues({}, s2);
         const r2 = __spreadValues({}, this.getDemandedOptions());
         return (o2) => {
           if (n2)
             throw new e(n2.message);
-          O(this, gt).nonOptionCount(o2), O(this, gt).requiredArguments(o2, r2);
+          v(this, pt, "f").nonOptionCount(o2), v(this, pt, "f").requiredArguments(o2, r2);
           let a2 = false;
-          O(this, ct) && (a2 = O(this, gt).unknownCommands(o2)), O(this, lt) && !a2 ? O(this, gt).unknownArguments(o2, t2, s2, !!i2) : O(this, dt) && O(this, gt).unknownArguments(o2, t2, {}, false, false), O(this, gt).limitedChoices(o2), O(this, gt).implications(o2), O(this, gt).conflicting(o2);
+          v(this, ct, "f") && (a2 = v(this, pt, "f").unknownCommands(o2)), v(this, lt, "f") && !a2 ? v(this, pt, "f").unknownArguments(o2, t2, s2, !!i2) : v(this, ft, "f") && v(this, pt, "f").unknownArguments(o2, t2, {}, false, false), v(this, pt, "f").limitedChoices(o2), v(this, pt, "f").implications(o2), v(this, pt, "f").conflicting(o2);
         };
       }
       [Gt]() {
-        v(this, Y, true);
+        O(this, Y, true, "f");
       }
     };
     var Kt;
@@ -4533,7 +4543,7 @@ ${t5.join("\n")}` : "";
     var oe = { applyExtends: i, cjsPlatformShim: se, Yargs: (re = se, (t2 = [], e2 = re.process.cwd(), s2) => {
       const n2 = new Bt(t2, e2, s2, re);
       return Object.defineProperty(n2, "argv", { get: () => n2.parse(), enumerable: true }), n2.help(), n2.version(), n2;
-    }), argsert: h, isPromise: d, objFilter: m, parseCommand: o, Parser: ie, processArgv: b, YError: e };
+    }), argsert: h, isPromise: f, objFilter: g, parseCommand: o, Parser: ie, processArgv: b, YError: e };
     module2.exports = oe;
   }
 });
@@ -8868,7 +8878,7 @@ var require_Observable = __commonJS({
         for (var _i = 0; _i < arguments.length; _i++) {
           operations[_i] = arguments[_i];
         }
-        return operations.length ? pipe_1.pipeFromArray(operations)(this) : this;
+        return pipe_1.pipeFromArray(operations)(this);
       };
       Observable2.prototype.toPromise = function(promiseCtor) {
         var _this = this;
@@ -9678,10 +9688,10 @@ var require_AsyncSubject = __commonJS({
         return _this;
       }
       AsyncSubject2.prototype._checkFinalizedStatuses = function(subscriber) {
-        var _a = this, hasError = _a.hasError, _hasValue = _a._hasValue, _value = _a._value, thrownError = _a.thrownError, isStopped = _a.isStopped;
+        var _a = this, hasError = _a.hasError, _hasValue = _a._hasValue, _value = _a._value, thrownError = _a.thrownError, isStopped = _a.isStopped, _isComplete = _a._isComplete;
         if (hasError) {
           subscriber.error(thrownError);
-        } else if (isStopped) {
+        } else if (isStopped || _isComplete) {
           _hasValue && subscriber.next(_value);
           subscriber.complete();
         }
@@ -15578,6 +15588,8 @@ var require_retry = __commonJS({
     var lift_1 = require_lift();
     var OperatorSubscriber_1 = require_OperatorSubscriber();
     var identity_1 = require_identity2();
+    var timer_1 = require_timer();
+    var from_1 = require_from();
     function retry(configOrCount) {
       if (configOrCount === void 0) {
         configOrCount = Infinity;
@@ -15590,7 +15602,7 @@ var require_retry = __commonJS({
           count: configOrCount
         };
       }
-      var count = config.count, _a = config.resetOnSuccess, resetOnSuccess = _a === void 0 ? false : _a;
+      var _a = config.count, count = _a === void 0 ? Infinity : _a, delay = config.delay, _b = config.resetOnSuccess, resetOnSuccess = _b === void 0 ? false : _b;
       return count <= 0 ? identity_1.identity : lift_1.operate(function(source, subscriber) {
         var soFar = 0;
         var innerSub;
@@ -15603,12 +15615,26 @@ var require_retry = __commonJS({
             subscriber.next(value);
           }, void 0, function(err) {
             if (soFar++ < count) {
-              if (innerSub) {
-                innerSub.unsubscribe();
-                innerSub = null;
-                subscribeForRetry();
+              var resub_1 = function() {
+                if (innerSub) {
+                  innerSub.unsubscribe();
+                  innerSub = null;
+                  subscribeForRetry();
+                } else {
+                  syncUnsub = true;
+                }
+              };
+              if (delay != null) {
+                var notifier = typeof delay === "number" ? timer_1.timer(delay) : from_1.innerFrom(delay(err, soFar));
+                var notifierSubscriber_1 = new OperatorSubscriber_1.OperatorSubscriber(subscriber, function() {
+                  notifierSubscriber_1.unsubscribe();
+                  resub_1();
+                }, function() {
+                  subscriber.complete();
+                });
+                notifier.subscribe(notifierSubscriber_1);
               } else {
-                syncUnsub = true;
+                resub_1();
               }
             } else {
               subscriber.error(err);
@@ -16252,18 +16278,29 @@ var require_tap = __commonJS({
     function tap(observerOrNext, error, complete) {
       var tapObserver = isFunction_1.isFunction(observerOrNext) || error || complete ? { next: observerOrNext, error, complete } : observerOrNext;
       return tapObserver ? lift_1.operate(function(source, subscriber) {
+        var _a;
+        (_a = tapObserver.subscribe) === null || _a === void 0 ? void 0 : _a.call(tapObserver);
+        var isUnsub = true;
         source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
-          var _a;
-          (_a = tapObserver.next) === null || _a === void 0 ? void 0 : _a.call(tapObserver, value);
+          var _a2;
+          (_a2 = tapObserver.next) === null || _a2 === void 0 ? void 0 : _a2.call(tapObserver, value);
           subscriber.next(value);
         }, function() {
-          var _a;
-          (_a = tapObserver.complete) === null || _a === void 0 ? void 0 : _a.call(tapObserver);
+          var _a2;
+          isUnsub = false;
+          (_a2 = tapObserver.complete) === null || _a2 === void 0 ? void 0 : _a2.call(tapObserver);
           subscriber.complete();
         }, function(err) {
-          var _a;
-          (_a = tapObserver.error) === null || _a === void 0 ? void 0 : _a.call(tapObserver, err);
+          var _a2;
+          isUnsub = false;
+          (_a2 = tapObserver.error) === null || _a2 === void 0 ? void 0 : _a2.call(tapObserver, err);
           subscriber.error(err);
+        }, function() {
+          var _a2, _b;
+          if (isUnsub) {
+            (_a2 = tapObserver.unsubscribe) === null || _a2 === void 0 ? void 0 : _a2.call(tapObserver);
+          }
+          (_b = tapObserver.finalize) === null || _b === void 0 ? void 0 : _b.call(tapObserver);
         }));
       }) : identity_1.identity;
     }
@@ -37489,7 +37526,7 @@ var require_dist_node5 = __commonJS({
     var isPlainObject = require_is_plain_object();
     var nodeFetch = _interopDefault(require_lib2());
     var requestError = require_dist_node4();
-    var VERSION = "5.6.0";
+    var VERSION = "5.6.1";
     function getBufferResponse(response) {
       return response.arrayBuffer();
     }
@@ -38068,7 +38105,7 @@ var require_dist_node10 = __commonJS({
   "node_modules/@octokit/plugin-paginate-rest/dist-node/index.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    var VERSION = "2.14.0";
+    var VERSION = "2.15.1";
     function ownKeys(object, enumerableOnly) {
       var keys = Object.keys(object);
       if (Object.getOwnPropertySymbols) {
@@ -38205,7 +38242,7 @@ var require_dist_node10 = __commonJS({
     var composePaginateRest = Object.assign(paginate, {
       iterator
     });
-    var paginatingEndpoints = ["GET /app/hook/deliveries", "GET /app/installations", "GET /applications/grants", "GET /authorizations", "GET /enterprises/{enterprise}/actions/permissions/organizations", "GET /enterprises/{enterprise}/actions/runner-groups", "GET /enterprises/{enterprise}/actions/runner-groups/{runner_group_id}/organizations", "GET /enterprises/{enterprise}/actions/runner-groups/{runner_group_id}/runners", "GET /enterprises/{enterprise}/actions/runners", "GET /enterprises/{enterprise}/actions/runners/downloads", "GET /events", "GET /gists", "GET /gists/public", "GET /gists/starred", "GET /gists/{gist_id}/comments", "GET /gists/{gist_id}/commits", "GET /gists/{gist_id}/forks", "GET /installation/repositories", "GET /issues", "GET /marketplace_listing/plans", "GET /marketplace_listing/plans/{plan_id}/accounts", "GET /marketplace_listing/stubbed/plans", "GET /marketplace_listing/stubbed/plans/{plan_id}/accounts", "GET /networks/{owner}/{repo}/events", "GET /notifications", "GET /organizations", "GET /orgs/{org}/actions/permissions/repositories", "GET /orgs/{org}/actions/runner-groups", "GET /orgs/{org}/actions/runner-groups/{runner_group_id}/repositories", "GET /orgs/{org}/actions/runner-groups/{runner_group_id}/runners", "GET /orgs/{org}/actions/runners", "GET /orgs/{org}/actions/runners/downloads", "GET /orgs/{org}/actions/secrets", "GET /orgs/{org}/actions/secrets/{secret_name}/repositories", "GET /orgs/{org}/blocks", "GET /orgs/{org}/credential-authorizations", "GET /orgs/{org}/events", "GET /orgs/{org}/failed_invitations", "GET /orgs/{org}/hooks", "GET /orgs/{org}/hooks/{hook_id}/deliveries", "GET /orgs/{org}/installations", "GET /orgs/{org}/invitations", "GET /orgs/{org}/invitations/{invitation_id}/teams", "GET /orgs/{org}/issues", "GET /orgs/{org}/members", "GET /orgs/{org}/migrations", "GET /orgs/{org}/migrations/{migration_id}/repositories", "GET /orgs/{org}/outside_collaborators", "GET /orgs/{org}/projects", "GET /orgs/{org}/public_members", "GET /orgs/{org}/repos", "GET /orgs/{org}/team-sync/groups", "GET /orgs/{org}/teams", "GET /orgs/{org}/teams/{team_slug}/discussions", "GET /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/comments", "GET /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/comments/{comment_number}/reactions", "GET /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/reactions", "GET /orgs/{org}/teams/{team_slug}/invitations", "GET /orgs/{org}/teams/{team_slug}/members", "GET /orgs/{org}/teams/{team_slug}/projects", "GET /orgs/{org}/teams/{team_slug}/repos", "GET /orgs/{org}/teams/{team_slug}/team-sync/group-mappings", "GET /orgs/{org}/teams/{team_slug}/teams", "GET /projects/columns/{column_id}/cards", "GET /projects/{project_id}/collaborators", "GET /projects/{project_id}/columns", "GET /repos/{owner}/{repo}/actions/artifacts", "GET /repos/{owner}/{repo}/actions/runners", "GET /repos/{owner}/{repo}/actions/runners/downloads", "GET /repos/{owner}/{repo}/actions/runs", "GET /repos/{owner}/{repo}/actions/runs/{run_id}/artifacts", "GET /repos/{owner}/{repo}/actions/runs/{run_id}/jobs", "GET /repos/{owner}/{repo}/actions/secrets", "GET /repos/{owner}/{repo}/actions/workflows", "GET /repos/{owner}/{repo}/actions/workflows/{workflow_id}/runs", "GET /repos/{owner}/{repo}/assignees", "GET /repos/{owner}/{repo}/branches", "GET /repos/{owner}/{repo}/check-runs/{check_run_id}/annotations", "GET /repos/{owner}/{repo}/check-suites/{check_suite_id}/check-runs", "GET /repos/{owner}/{repo}/code-scanning/alerts", "GET /repos/{owner}/{repo}/code-scanning/alerts/{alert_number}/instances", "GET /repos/{owner}/{repo}/code-scanning/analyses", "GET /repos/{owner}/{repo}/collaborators", "GET /repos/{owner}/{repo}/comments", "GET /repos/{owner}/{repo}/comments/{comment_id}/reactions", "GET /repos/{owner}/{repo}/commits", "GET /repos/{owner}/{repo}/commits/{commit_sha}/branches-where-head", "GET /repos/{owner}/{repo}/commits/{commit_sha}/comments", "GET /repos/{owner}/{repo}/commits/{commit_sha}/pulls", "GET /repos/{owner}/{repo}/commits/{ref}/check-runs", "GET /repos/{owner}/{repo}/commits/{ref}/check-suites", "GET /repos/{owner}/{repo}/commits/{ref}/statuses", "GET /repos/{owner}/{repo}/contributors", "GET /repos/{owner}/{repo}/deployments", "GET /repos/{owner}/{repo}/deployments/{deployment_id}/statuses", "GET /repos/{owner}/{repo}/events", "GET /repos/{owner}/{repo}/forks", "GET /repos/{owner}/{repo}/git/matching-refs/{ref}", "GET /repos/{owner}/{repo}/hooks", "GET /repos/{owner}/{repo}/hooks/{hook_id}/deliveries", "GET /repos/{owner}/{repo}/invitations", "GET /repos/{owner}/{repo}/issues", "GET /repos/{owner}/{repo}/issues/comments", "GET /repos/{owner}/{repo}/issues/comments/{comment_id}/reactions", "GET /repos/{owner}/{repo}/issues/events", "GET /repos/{owner}/{repo}/issues/{issue_number}/comments", "GET /repos/{owner}/{repo}/issues/{issue_number}/events", "GET /repos/{owner}/{repo}/issues/{issue_number}/labels", "GET /repos/{owner}/{repo}/issues/{issue_number}/reactions", "GET /repos/{owner}/{repo}/issues/{issue_number}/timeline", "GET /repos/{owner}/{repo}/keys", "GET /repos/{owner}/{repo}/labels", "GET /repos/{owner}/{repo}/milestones", "GET /repos/{owner}/{repo}/milestones/{milestone_number}/labels", "GET /repos/{owner}/{repo}/notifications", "GET /repos/{owner}/{repo}/pages/builds", "GET /repos/{owner}/{repo}/projects", "GET /repos/{owner}/{repo}/pulls", "GET /repos/{owner}/{repo}/pulls/comments", "GET /repos/{owner}/{repo}/pulls/comments/{comment_id}/reactions", "GET /repos/{owner}/{repo}/pulls/{pull_number}/comments", "GET /repos/{owner}/{repo}/pulls/{pull_number}/commits", "GET /repos/{owner}/{repo}/pulls/{pull_number}/files", "GET /repos/{owner}/{repo}/pulls/{pull_number}/requested_reviewers", "GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews", "GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews/{review_id}/comments", "GET /repos/{owner}/{repo}/releases", "GET /repos/{owner}/{repo}/releases/{release_id}/assets", "GET /repos/{owner}/{repo}/secret-scanning/alerts", "GET /repos/{owner}/{repo}/stargazers", "GET /repos/{owner}/{repo}/subscribers", "GET /repos/{owner}/{repo}/tags", "GET /repos/{owner}/{repo}/teams", "GET /repositories", "GET /repositories/{repository_id}/environments/{environment_name}/secrets", "GET /scim/v2/enterprises/{enterprise}/Groups", "GET /scim/v2/enterprises/{enterprise}/Users", "GET /scim/v2/organizations/{org}/Users", "GET /search/code", "GET /search/commits", "GET /search/issues", "GET /search/labels", "GET /search/repositories", "GET /search/topics", "GET /search/users", "GET /teams/{team_id}/discussions", "GET /teams/{team_id}/discussions/{discussion_number}/comments", "GET /teams/{team_id}/discussions/{discussion_number}/comments/{comment_number}/reactions", "GET /teams/{team_id}/discussions/{discussion_number}/reactions", "GET /teams/{team_id}/invitations", "GET /teams/{team_id}/members", "GET /teams/{team_id}/projects", "GET /teams/{team_id}/repos", "GET /teams/{team_id}/team-sync/group-mappings", "GET /teams/{team_id}/teams", "GET /user/blocks", "GET /user/emails", "GET /user/followers", "GET /user/following", "GET /user/gpg_keys", "GET /user/installations", "GET /user/installations/{installation_id}/repositories", "GET /user/issues", "GET /user/keys", "GET /user/marketplace_purchases", "GET /user/marketplace_purchases/stubbed", "GET /user/memberships/orgs", "GET /user/migrations", "GET /user/migrations/{migration_id}/repositories", "GET /user/orgs", "GET /user/public_emails", "GET /user/repos", "GET /user/repository_invitations", "GET /user/starred", "GET /user/subscriptions", "GET /user/teams", "GET /users", "GET /users/{username}/events", "GET /users/{username}/events/orgs/{org}", "GET /users/{username}/events/public", "GET /users/{username}/followers", "GET /users/{username}/following", "GET /users/{username}/gists", "GET /users/{username}/gpg_keys", "GET /users/{username}/keys", "GET /users/{username}/orgs", "GET /users/{username}/projects", "GET /users/{username}/received_events", "GET /users/{username}/received_events/public", "GET /users/{username}/repos", "GET /users/{username}/starred", "GET /users/{username}/subscriptions"];
+    var paginatingEndpoints = ["GET /app/hook/deliveries", "GET /app/installations", "GET /applications/grants", "GET /authorizations", "GET /enterprises/{enterprise}/actions/permissions/organizations", "GET /enterprises/{enterprise}/actions/runner-groups", "GET /enterprises/{enterprise}/actions/runner-groups/{runner_group_id}/organizations", "GET /enterprises/{enterprise}/actions/runner-groups/{runner_group_id}/runners", "GET /enterprises/{enterprise}/actions/runners", "GET /enterprises/{enterprise}/actions/runners/downloads", "GET /events", "GET /gists", "GET /gists/public", "GET /gists/starred", "GET /gists/{gist_id}/comments", "GET /gists/{gist_id}/commits", "GET /gists/{gist_id}/forks", "GET /installation/repositories", "GET /issues", "GET /marketplace_listing/plans", "GET /marketplace_listing/plans/{plan_id}/accounts", "GET /marketplace_listing/stubbed/plans", "GET /marketplace_listing/stubbed/plans/{plan_id}/accounts", "GET /networks/{owner}/{repo}/events", "GET /notifications", "GET /organizations", "GET /orgs/{org}/actions/permissions/repositories", "GET /orgs/{org}/actions/runner-groups", "GET /orgs/{org}/actions/runner-groups/{runner_group_id}/repositories", "GET /orgs/{org}/actions/runner-groups/{runner_group_id}/runners", "GET /orgs/{org}/actions/runners", "GET /orgs/{org}/actions/runners/downloads", "GET /orgs/{org}/actions/secrets", "GET /orgs/{org}/actions/secrets/{secret_name}/repositories", "GET /orgs/{org}/blocks", "GET /orgs/{org}/credential-authorizations", "GET /orgs/{org}/events", "GET /orgs/{org}/failed_invitations", "GET /orgs/{org}/hooks", "GET /orgs/{org}/hooks/{hook_id}/deliveries", "GET /orgs/{org}/installations", "GET /orgs/{org}/invitations", "GET /orgs/{org}/invitations/{invitation_id}/teams", "GET /orgs/{org}/issues", "GET /orgs/{org}/members", "GET /orgs/{org}/migrations", "GET /orgs/{org}/migrations/{migration_id}/repositories", "GET /orgs/{org}/outside_collaborators", "GET /orgs/{org}/projects", "GET /orgs/{org}/public_members", "GET /orgs/{org}/repos", "GET /orgs/{org}/team-sync/groups", "GET /orgs/{org}/teams", "GET /orgs/{org}/teams/{team_slug}/discussions", "GET /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/comments", "GET /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/comments/{comment_number}/reactions", "GET /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/reactions", "GET /orgs/{org}/teams/{team_slug}/invitations", "GET /orgs/{org}/teams/{team_slug}/members", "GET /orgs/{org}/teams/{team_slug}/projects", "GET /orgs/{org}/teams/{team_slug}/repos", "GET /orgs/{org}/teams/{team_slug}/team-sync/group-mappings", "GET /orgs/{org}/teams/{team_slug}/teams", "GET /projects/columns/{column_id}/cards", "GET /projects/{project_id}/collaborators", "GET /projects/{project_id}/columns", "GET /repos/{owner}/{repo}/actions/artifacts", "GET /repos/{owner}/{repo}/actions/runners", "GET /repos/{owner}/{repo}/actions/runners/downloads", "GET /repos/{owner}/{repo}/actions/runs", "GET /repos/{owner}/{repo}/actions/runs/{run_id}/artifacts", "GET /repos/{owner}/{repo}/actions/runs/{run_id}/jobs", "GET /repos/{owner}/{repo}/actions/secrets", "GET /repos/{owner}/{repo}/actions/workflows", "GET /repos/{owner}/{repo}/actions/workflows/{workflow_id}/runs", "GET /repos/{owner}/{repo}/assignees", "GET /repos/{owner}/{repo}/autolinks", "GET /repos/{owner}/{repo}/branches", "GET /repos/{owner}/{repo}/check-runs/{check_run_id}/annotations", "GET /repos/{owner}/{repo}/check-suites/{check_suite_id}/check-runs", "GET /repos/{owner}/{repo}/code-scanning/alerts", "GET /repos/{owner}/{repo}/code-scanning/alerts/{alert_number}/instances", "GET /repos/{owner}/{repo}/code-scanning/analyses", "GET /repos/{owner}/{repo}/collaborators", "GET /repos/{owner}/{repo}/comments", "GET /repos/{owner}/{repo}/comments/{comment_id}/reactions", "GET /repos/{owner}/{repo}/commits", "GET /repos/{owner}/{repo}/commits/{commit_sha}/branches-where-head", "GET /repos/{owner}/{repo}/commits/{commit_sha}/comments", "GET /repos/{owner}/{repo}/commits/{commit_sha}/pulls", "GET /repos/{owner}/{repo}/commits/{ref}/check-runs", "GET /repos/{owner}/{repo}/commits/{ref}/check-suites", "GET /repos/{owner}/{repo}/commits/{ref}/statuses", "GET /repos/{owner}/{repo}/contributors", "GET /repos/{owner}/{repo}/deployments", "GET /repos/{owner}/{repo}/deployments/{deployment_id}/statuses", "GET /repos/{owner}/{repo}/events", "GET /repos/{owner}/{repo}/forks", "GET /repos/{owner}/{repo}/git/matching-refs/{ref}", "GET /repos/{owner}/{repo}/hooks", "GET /repos/{owner}/{repo}/hooks/{hook_id}/deliveries", "GET /repos/{owner}/{repo}/invitations", "GET /repos/{owner}/{repo}/issues", "GET /repos/{owner}/{repo}/issues/comments", "GET /repos/{owner}/{repo}/issues/comments/{comment_id}/reactions", "GET /repos/{owner}/{repo}/issues/events", "GET /repos/{owner}/{repo}/issues/{issue_number}/comments", "GET /repos/{owner}/{repo}/issues/{issue_number}/events", "GET /repos/{owner}/{repo}/issues/{issue_number}/labels", "GET /repos/{owner}/{repo}/issues/{issue_number}/reactions", "GET /repos/{owner}/{repo}/issues/{issue_number}/timeline", "GET /repos/{owner}/{repo}/keys", "GET /repos/{owner}/{repo}/labels", "GET /repos/{owner}/{repo}/milestones", "GET /repos/{owner}/{repo}/milestones/{milestone_number}/labels", "GET /repos/{owner}/{repo}/notifications", "GET /repos/{owner}/{repo}/pages/builds", "GET /repos/{owner}/{repo}/projects", "GET /repos/{owner}/{repo}/pulls", "GET /repos/{owner}/{repo}/pulls/comments", "GET /repos/{owner}/{repo}/pulls/comments/{comment_id}/reactions", "GET /repos/{owner}/{repo}/pulls/{pull_number}/comments", "GET /repos/{owner}/{repo}/pulls/{pull_number}/commits", "GET /repos/{owner}/{repo}/pulls/{pull_number}/files", "GET /repos/{owner}/{repo}/pulls/{pull_number}/requested_reviewers", "GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews", "GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews/{review_id}/comments", "GET /repos/{owner}/{repo}/releases", "GET /repos/{owner}/{repo}/releases/{release_id}/assets", "GET /repos/{owner}/{repo}/secret-scanning/alerts", "GET /repos/{owner}/{repo}/stargazers", "GET /repos/{owner}/{repo}/subscribers", "GET /repos/{owner}/{repo}/tags", "GET /repos/{owner}/{repo}/teams", "GET /repositories", "GET /repositories/{repository_id}/environments/{environment_name}/secrets", "GET /scim/v2/enterprises/{enterprise}/Groups", "GET /scim/v2/enterprises/{enterprise}/Users", "GET /scim/v2/organizations/{org}/Users", "GET /search/code", "GET /search/commits", "GET /search/issues", "GET /search/labels", "GET /search/repositories", "GET /search/topics", "GET /search/users", "GET /teams/{team_id}/discussions", "GET /teams/{team_id}/discussions/{discussion_number}/comments", "GET /teams/{team_id}/discussions/{discussion_number}/comments/{comment_number}/reactions", "GET /teams/{team_id}/discussions/{discussion_number}/reactions", "GET /teams/{team_id}/invitations", "GET /teams/{team_id}/members", "GET /teams/{team_id}/projects", "GET /teams/{team_id}/repos", "GET /teams/{team_id}/team-sync/group-mappings", "GET /teams/{team_id}/teams", "GET /user/blocks", "GET /user/emails", "GET /user/followers", "GET /user/following", "GET /user/gpg_keys", "GET /user/installations", "GET /user/installations/{installation_id}/repositories", "GET /user/issues", "GET /user/keys", "GET /user/marketplace_purchases", "GET /user/marketplace_purchases/stubbed", "GET /user/memberships/orgs", "GET /user/migrations", "GET /user/migrations/{migration_id}/repositories", "GET /user/orgs", "GET /user/public_emails", "GET /user/repos", "GET /user/repository_invitations", "GET /user/starred", "GET /user/subscriptions", "GET /user/teams", "GET /users", "GET /users/{username}/events", "GET /users/{username}/events/orgs/{org}", "GET /users/{username}/events/public", "GET /users/{username}/followers", "GET /users/{username}/following", "GET /users/{username}/gists", "GET /users/{username}/gpg_keys", "GET /users/{username}/keys", "GET /users/{username}/orgs", "GET /users/{username}/projects", "GET /users/{username}/received_events", "GET /users/{username}/received_events/public", "GET /users/{username}/repos", "GET /users/{username}/starred", "GET /users/{username}/subscriptions"];
     function isPaginatingEndpoint(arg) {
       if (typeof arg === "string") {
         return paginatingEndpoints.includes(arg);
@@ -39050,6 +39087,7 @@ var require_dist_node11 = __commonJS({
         }],
         compareCommits: ["GET /repos/{owner}/{repo}/compare/{base}...{head}"],
         compareCommitsWithBasehead: ["GET /repos/{owner}/{repo}/compare/{basehead}"],
+        createAutolink: ["POST /repos/{owner}/{repo}/autolinks"],
         createCommitComment: ["POST /repos/{owner}/{repo}/commits/{commit_sha}/comments"],
         createCommitSignatureProtection: ["POST /repos/{owner}/{repo}/branches/{branch}/protection/required_signatures", {
           mediaType: {
@@ -39083,6 +39121,7 @@ var require_dist_node11 = __commonJS({
         deleteAccessRestrictions: ["DELETE /repos/{owner}/{repo}/branches/{branch}/protection/restrictions"],
         deleteAdminBranchProtection: ["DELETE /repos/{owner}/{repo}/branches/{branch}/protection/enforce_admins"],
         deleteAnEnvironment: ["DELETE /repos/{owner}/{repo}/environments/{environment_name}"],
+        deleteAutolink: ["DELETE /repos/{owner}/{repo}/autolinks/{autolink_id}"],
         deleteBranchProtection: ["DELETE /repos/{owner}/{repo}/branches/{branch}/protection"],
         deleteCommitComment: ["DELETE /repos/{owner}/{repo}/comments/{comment_id}"],
         deleteCommitSignatureProtection: ["DELETE /repos/{owner}/{repo}/branches/{branch}/protection/required_signatures", {
@@ -39139,6 +39178,7 @@ var require_dist_node11 = __commonJS({
           }
         }],
         getAppsWithAccessToProtectedBranch: ["GET /repos/{owner}/{repo}/branches/{branch}/protection/restrictions/apps"],
+        getAutolink: ["GET /repos/{owner}/{repo}/autolinks/{autolink_id}"],
         getBranch: ["GET /repos/{owner}/{repo}/branches/{branch}"],
         getBranchProtection: ["GET /repos/{owner}/{repo}/branches/{branch}/protection"],
         getClones: ["GET /repos/{owner}/{repo}/traffic/clones"],
@@ -39182,6 +39222,7 @@ var require_dist_node11 = __commonJS({
         getWebhook: ["GET /repos/{owner}/{repo}/hooks/{hook_id}"],
         getWebhookConfigForRepo: ["GET /repos/{owner}/{repo}/hooks/{hook_id}/config"],
         getWebhookDelivery: ["GET /repos/{owner}/{repo}/hooks/{hook_id}/deliveries/{delivery_id}"],
+        listAutolinks: ["GET /repos/{owner}/{repo}/autolinks"],
         listBranches: ["GET /repos/{owner}/{repo}/branches"],
         listBranchesForHeadCommit: ["GET /repos/{owner}/{repo}/commits/{commit_sha}/branches-where-head", {
           mediaType: {
@@ -39375,7 +39416,7 @@ var require_dist_node11 = __commonJS({
         updateAuthenticated: ["PATCH /user"]
       }
     };
-    var VERSION = "5.5.1";
+    var VERSION = "5.8.0";
     function endpointsToMethods(octokit, endpointsMap) {
       const newMethods = {};
       for (const [scope, endpoints] of Object.entries(endpointsMap)) {
@@ -39462,7 +39503,7 @@ var require_dist_node12 = __commonJS({
     var pluginRequestLog = require_dist_node9();
     var pluginPaginateRest = require_dist_node10();
     var pluginRestEndpointMethods = require_dist_node11();
-    var VERSION = "18.7.1";
+    var VERSION = "18.9.1";
     var Octokit = core.Octokit.plugin(pluginRequestLog.requestLog, pluginRestEndpointMethods.legacyRestEndpointMethods, pluginPaginateRest.paginateRest).defaults({
       userAgent: `octokit-rest.js/${VERSION}`
     });
