@@ -6,7 +6,6 @@
   },
   "private": true,
   "scripts": {
-    "prepare": "husky install",
     "ng-dev": "ts-node --transpile-only ./ng-dev/cli.ts"
   },
   "dependencies": {
