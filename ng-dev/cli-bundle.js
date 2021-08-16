@@ -59264,7 +59264,7 @@ var require_pull_request = __commonJS({
     var failures_1 = require_failures();
     var string_pattern_1 = require_string_pattern();
     var target_label_1 = require_target_label();
-    var BreakingChangeLabel = "breaking changes";
+    var BreakingChangeLabel = "flag: breaking change";
     async function loadAndValidatePullRequest({ git, config }, prNumber, ignoreNonFatalFailures = false) {
       const prData = await fetchPullRequestFromGithub(git, prNumber);
       if (prData === null) {
