@@ -33,6 +33,8 @@ export declare class RenderContext {
     readonly version: string;
     /** The date stamp string for use in the release notes entry. */
     readonly dateStamp: string;
+    /** URL fragment that is used to create an anchor for the release. */
+    readonly urlFragmentForRelease: string;
     constructor(data: RenderContextData);
     /**
      * Organizes and sorts the commits into groups of commits.

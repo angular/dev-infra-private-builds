@@ -39846,7 +39846,7 @@ var require_github_urls = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/utils/git/github-urls.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.getListCommitsInBranchUrl = exports2.getRepositoryGitUrl = exports2.addTokenToGitHttpsUrl = exports2.GITHUB_TOKEN_GENERATE_URL = exports2.GITHUB_TOKEN_SETTINGS_URL = void 0;
+    exports2.getFileContentsUrl = exports2.getListCommitsInBranchUrl = exports2.getRepositoryGitUrl = exports2.addTokenToGitHttpsUrl = exports2.GITHUB_TOKEN_GENERATE_URL = exports2.GITHUB_TOKEN_SETTINGS_URL = void 0;
     var url_1 = require("url");
     exports2.GITHUB_TOKEN_SETTINGS_URL = "https://github.com/settings/tokens";
     exports2.GITHUB_TOKEN_GENERATE_URL = "https://github.com/settings/tokens/new";
@@ -39867,10 +39867,16 @@ var require_github_urls = __commonJS({
       return baseHttpUrl;
     }
     exports2.getRepositoryGitUrl = getRepositoryGitUrl;
-    function getListCommitsInBranchUrl({ remoteParams }, branchName) {
-      return `https://github.com/${remoteParams.owner}/${remoteParams.repo}/commits/${branchName}`;
+    function getListCommitsInBranchUrl(client, branchName) {
+      const { owner, repo } = client.remoteParams;
+      return `https://github.com/${owner}/${repo}/commits/${branchName}`;
     }
     exports2.getListCommitsInBranchUrl = getListCommitsInBranchUrl;
+    function getFileContentsUrl(client, ref, relativeFilePath) {
+      const { owner, repo } = client.remoteParams;
+      return `https://github.com/${owner}/${repo}/blob/${ref}/${relativeFilePath}`;
+    }
+    exports2.getFileContentsUrl = getFileContentsUrl;
   }
 });
 
@@ -61286,6 +61292,7 @@ var require_context = __commonJS({
         this.commits = this.data.commits;
         this.version = this.data.version;
         this.dateStamp = buildDateStamp(this.data.date);
+        this.urlFragmentForRelease = this.data.version;
       }
       asCommitGroups(commits) {
         const groups = new Map();
@@ -61387,7 +61394,7 @@ var require_changelog = __commonJS({
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.default = `
-<a name="<%- version %>"></a>
+<a name="<%- urlFragmentForRelease %>"></a>
 # <%- version %><% if (title) { %> "<%- title %>"<% } %> (<%- dateStamp %>)
 
 <%_
@@ -61463,7 +61470,7 @@ var require_github_release = __commonJS({
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.default = `
-<a name="<%- version %>"></a>
+<a name="<%- urlFragmentForRelease %>"></a>
 # <%- version %><% if (title) { %> "<%- title %>"<% } %> (<%- dateStamp %>)
 
 <%_
@@ -61625,6 +61632,9 @@ var require_release_notes = __commonJS({
       }
       async getChangelogEntry() {
         return ejs_1.render(changelog_1.default, await this.generateRenderContext(), { rmWhitespace: true });
+      }
+      async getUrlFragmentForRelease() {
+        return (await this.generateRenderContext()).urlFragmentForRelease;
       }
       async promptForReleaseTitle() {
         if (this.title === void 0) {
@@ -61846,10 +61856,11 @@ var require_constants3 = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/constants.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.waitForPullRequestInterval = exports2.changelogPath = exports2.packageJsonPath = void 0;
+    exports2.githubReleaseBodyLimit = exports2.waitForPullRequestInterval = exports2.changelogPath = exports2.packageJsonPath = void 0;
     exports2.packageJsonPath = "package.json";
     exports2.changelogPath = "CHANGELOG.md";
     exports2.waitForPullRequestInterval = 1e4;
+    exports2.githubReleaseBodyLimit = 25e3;
   }
 });
 
@@ -62229,13 +62240,23 @@ ${localChangelog}`);
           sha: versionBumpCommitSha
         }));
         console_12.info(console_12.green(`  \u2713   Tagged v${releaseNotes.version} release upstream.`));
+        let releaseBody = await releaseNotes.getGithubReleaseEntry();
+        if (releaseBody.length > constants_1.githubReleaseBodyLimit) {
+          const releaseNotesUrl = await this._getGithubChangelogUrlForRef(releaseNotes, tagName);
+          releaseBody = `Release notes are too large to be captured here. [View all changes here](${releaseNotesUrl}).`;
+        }
         await this.git.github.repos.createRelease(__spreadProps(__spreadValues({}, this.git.remoteParams), {
           name: `v${releaseNotes.version}`,
           tag_name: tagName,
           prerelease: isPrerelease,
-          body: await releaseNotes.getGithubReleaseEntry()
+          body: releaseBody
         }));
         console_12.info(console_12.green(`  \u2713   Created v${releaseNotes.version} release in Github.`));
+      }
+      async _getGithubChangelogUrlForRef(releaseNotes, ref) {
+        const baseUrl = github_urls_1.getFileContentsUrl(this.git, ref, constants_1.changelogPath);
+        const urlFragment = await releaseNotes.getUrlFragmentForRelease();
+        return `${baseUrl}#${urlFragment}`;
       }
       async buildAndPublish(releaseNotes, publishBranch, npmDistTag) {
         const versionBumpCommitSha = await this._getCommitOfBranch(publishBranch);

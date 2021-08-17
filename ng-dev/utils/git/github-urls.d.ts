@@ -16,4 +16,6 @@ export declare function addTokenToGitHttpsUrl(githubHttpsUrl: string, token: str
 /** Gets the repository Git URL for the given github config. */
 export declare function getRepositoryGitUrl(config: Pick<GithubConfig, 'name' | 'owner' | 'useSsh'>, githubToken?: string): string;
 /** Gets a Github URL that refers to a list of recent commits within a specified branch. */
-export declare function getListCommitsInBranchUrl({ remoteParams }: GitClient, branchName: string): string;
+export declare function getListCommitsInBranchUrl(client: GitClient, branchName: string): string;
+/** Gets a Github URL for viewing the file contents of a specified file for the given ref. */
+export declare function getFileContentsUrl(client: GitClient, ref: string, relativeFilePath: string): string;

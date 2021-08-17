@@ -159,10 +159,20 @@ export declare abstract class ReleaseAction {
      */
     protected cherryPickChangelogIntoNextBranch(releaseNotes: ReleaseNotes, stagingBranch: string): Promise<boolean>;
     /**
-     * Creates a Github release for the specified version in the configured project.
-     * The release is created by tagging the specified commit SHA.
+     * Creates a Github release for the specified version. The release is created
+     * by tagging the version bump commit, and by creating the release entry.
+     *
+     * Expects the version bump commit and changelog to be available in the
+     * upstream remote.
+     *
+     * @param releaseNotes The release notes for the version being published.
+     * @param versionBumpCommitSha Commit that bumped the version. The release tag
+     *   will point to this commit.
+     * @param isPrerelease Whether the new version is published as a pre-release.
      */
     private _createGithubReleaseForVersion;
+    /** Gets a Github URL that resolves to the release notes in the given ref. */
+    private _getGithubChangelogUrlForRef;
     /**
      * Builds and publishes the given version in the specified branch.
      * @param releaseNotes The release notes for the version being published.

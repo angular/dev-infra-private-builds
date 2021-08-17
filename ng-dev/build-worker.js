@@ -36384,7 +36384,7 @@ var require_github_urls = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/utils/git/github-urls.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.getListCommitsInBranchUrl = exports2.getRepositoryGitUrl = exports2.addTokenToGitHttpsUrl = exports2.GITHUB_TOKEN_GENERATE_URL = exports2.GITHUB_TOKEN_SETTINGS_URL = void 0;
+    exports2.getFileContentsUrl = exports2.getListCommitsInBranchUrl = exports2.getRepositoryGitUrl = exports2.addTokenToGitHttpsUrl = exports2.GITHUB_TOKEN_GENERATE_URL = exports2.GITHUB_TOKEN_SETTINGS_URL = void 0;
     var url_1 = require("url");
     exports2.GITHUB_TOKEN_SETTINGS_URL = "https://github.com/settings/tokens";
     exports2.GITHUB_TOKEN_GENERATE_URL = "https://github.com/settings/tokens/new";
@@ -36405,10 +36405,16 @@ var require_github_urls = __commonJS({
       return baseHttpUrl;
     }
     exports2.getRepositoryGitUrl = getRepositoryGitUrl;
-    function getListCommitsInBranchUrl({ remoteParams }, branchName) {
-      return `https://github.com/${remoteParams.owner}/${remoteParams.repo}/commits/${branchName}`;
+    function getListCommitsInBranchUrl(client, branchName) {
+      const { owner, repo } = client.remoteParams;
+      return `https://github.com/${owner}/${repo}/commits/${branchName}`;
     }
     exports2.getListCommitsInBranchUrl = getListCommitsInBranchUrl;
+    function getFileContentsUrl(client, ref, relativeFilePath) {
+      const { owner, repo } = client.remoteParams;
+      return `https://github.com/${owner}/${repo}/blob/${ref}/${relativeFilePath}`;
+    }
+    exports2.getFileContentsUrl = getFileContentsUrl;
   }
 });
 

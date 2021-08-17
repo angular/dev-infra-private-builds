@@ -20,6 +20,11 @@ export declare class ReleaseNotes {
     /** Retrieve the release note generated for a CHANGELOG entry. */
     getChangelogEntry(): Promise<string>;
     /**
+     * Gets the URL fragment for the release notes. The URL fragment identifier
+     * can be used to point to a specific changelog entry through an URL.
+     */
+    getUrlFragmentForRelease(): Promise<string>;
+    /**
      * Prompt the user for a title for the release, if the project's configuration is defined to use a
      * title.
      */
