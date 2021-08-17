@@ -62222,7 +62222,7 @@ ${localChangelog}`);
         await this.waitForPullRequestToBeMerged(pullRequest);
         return true;
       }
-      async _createGithubReleaseForVersion(releaseNotes, versionBumpCommitSha, prerelease) {
+      async _createGithubReleaseForVersion(releaseNotes, versionBumpCommitSha, isPrerelease) {
         const tagName = version_tags_1.getReleaseTagForVersion(releaseNotes.version);
         await this.git.github.git.createRef(__spreadProps(__spreadValues({}, this.git.remoteParams), {
           ref: `refs/tags/${tagName}`,
@@ -62232,7 +62232,7 @@ ${localChangelog}`);
         await this.git.github.repos.createRelease(__spreadProps(__spreadValues({}, this.git.remoteParams), {
           name: `v${releaseNotes.version}`,
           tag_name: tagName,
-          prerelease,
+          prerelease: isPrerelease,
           body: await releaseNotes.getGithubReleaseEntry()
         }));
         console_12.info(console_12.green(`  \u2713   Created v${releaseNotes.version} release in Github.`));
@@ -62676,14 +62676,26 @@ var require_tag_recent_major_as_latest = __commonJS({
     var npm_registry_1 = require_npm_registry();
     var actions_1 = require_actions();
     var external_commands_1 = require_external_commands();
+    var version_tags_1 = require_version_tags();
     var TagRecentMajorAsLatest = class extends actions_1.ReleaseAction {
       async getDescription() {
         return `Tag recently published major v${this.active.latest.version} as "next" in NPM.`;
       }
       async perform() {
+        await this.updateGithubReleaseEntryToStable(this.active.latest.version);
         await this.checkoutUpstreamBranch(this.active.latest.branchName);
         await external_commands_1.invokeYarnInstallCommand(this.projectDir);
         await external_commands_1.invokeSetNpmDistCommand("latest", this.active.latest.version);
+      }
+      async updateGithubReleaseEntryToStable(version) {
+        const releaseTagName = version_tags_1.getReleaseTagForVersion(version);
+        const { data: releaseInfo } = await this.git.github.repos.getReleaseByTag(__spreadProps(__spreadValues({}, this.git.remoteParams), {
+          tag: releaseTagName
+        }));
+        await this.git.github.repos.updateRelease(__spreadProps(__spreadValues({}, this.git.remoteParams), {
+          release_id: releaseInfo.id,
+          prerelease: false
+        }));
       }
       static async isActive({ latest }, config) {
         if (latest.version.minor !== 0 || latest.version.patch !== 0) {

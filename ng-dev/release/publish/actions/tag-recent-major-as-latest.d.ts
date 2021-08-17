@@ -8,6 +8,7 @@
 import { ReleaseConfig } from '../../config';
 import { ActiveReleaseTrains } from '../../versioning/active-release-trains';
 import { ReleaseAction } from '../actions';
+import { SemVer } from 'semver';
 /**
  * Release action that tags the recently published major as latest within the NPM
  * registry. Major versions are published to the `next` NPM dist tag initially and
@@ -21,5 +22,10 @@ import { ReleaseAction } from '../actions';
 export declare class TagRecentMajorAsLatest extends ReleaseAction {
     getDescription(): Promise<string>;
     perform(): Promise<void>;
+    /**
+     * Updates the Github release entry for the specified version to show
+     * it as stable release, compared to it being shown as a pre-release.
+     */
+    updateGithubReleaseEntryToStable(version: SemVer): Promise<void>;
     static isActive({ latest }: ActiveReleaseTrains, config: ReleaseConfig): Promise<boolean>;
 }
