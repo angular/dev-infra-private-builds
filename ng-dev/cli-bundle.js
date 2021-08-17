@@ -59194,12 +59194,23 @@ var require_cli12 = __commonJS({
   }
 });
 
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/constants.js
+var require_constants2 = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/constants.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.breakingChangeLabel = void 0;
+    exports2.breakingChangeLabel = "flag: breaking change";
+  }
+});
+
 // bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/failures.js
 var require_failures = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/failures.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.PullRequestFailure = void 0;
+    var constants_1 = require_constants2();
     var PullRequestFailure = class {
       constructor(message, nonFatal = false) {
         this.message = message;
@@ -59260,11 +59271,11 @@ var require_failures = __commonJS({
         return new this(message);
       }
       static missingBreakingChangeLabel() {
-        const message = "Pull Request has at least one commit containing a breaking change note, but does not have a breaking change label.";
+        const message = `Pull Request has at least one commit containing a breaking change note, but does not have a breaking change label. Make sure to apply the following label: ${constants_1.breakingChangeLabel}`;
         return new this(message);
       }
       static missingBreakingChangeCommit() {
-        const message = "Pull Request has a breaking change label, but does not contain any commits with breaking change notes.";
+        const message = "Pull Request has a breaking change label, but does not contain any commits with breaking change notes (i.e. commits do not have a `BREAKING CHANGE: <..>` section).";
         return new this(message);
       }
     };
@@ -59309,7 +59320,7 @@ var require_pull_request = __commonJS({
     var failures_1 = require_failures();
     var string_pattern_1 = require_string_pattern();
     var target_label_1 = require_target_label();
-    var BreakingChangeLabel = "flag: breaking change";
+    var constants_1 = require_constants2();
     async function loadAndValidatePullRequest({ git, config }, prNumber, ignoreNonFatalFailures = false) {
       const prData = await fetchPullRequestFromGithub(git, prNumber);
       if (prData === null) {
@@ -59335,7 +59346,7 @@ var require_pull_request = __commonJS({
       try {
         assertPendingState(prData);
         assertChangesAllowForTargetLabel(commitsInPr, targetLabel, config);
-        assertCorrectBreakingChangeLabeling(commitsInPr, labels, config);
+        assertCorrectBreakingChangeLabeling(commitsInPr, labels);
       } catch (error) {
         return error;
       }
@@ -59448,8 +59459,8 @@ var require_pull_request = __commonJS({
           break;
       }
     }
-    function assertCorrectBreakingChangeLabeling(commits, labels, config) {
-      const hasLabel = labels.includes(config.breakingChangeLabel || BreakingChangeLabel);
+    function assertCorrectBreakingChangeLabeling(commits, labels) {
+      const hasLabel = labels.includes(constants_1.breakingChangeLabel);
       const hasCommit = commits.some((commit) => commit.breakingChanges.length !== 0);
       if (!hasLabel && hasCommit) {
         throw failures_1.PullRequestFailure.missingBreakingChangeLabel();
@@ -61831,7 +61842,7 @@ var require_commit_message = __commonJS({
 });
 
 // bazel-out/k8-fastbuild/bin/ng-dev/release/publish/constants.js
-var require_constants2 = __commonJS({
+var require_constants3 = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/constants.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
@@ -62001,7 +62012,7 @@ var require_actions = __commonJS({
     var npm_publish_1 = require_npm_publish();
     var actions_error_1 = require_actions_error();
     var commit_message_1 = require_commit_message();
-    var constants_1 = require_constants2();
+    var constants_1 = require_constants3();
     var external_commands_1 = require_external_commands();
     var graphql_queries_1 = require_graphql_queries();
     var pull_request_state_1 = require_pull_request_state();
@@ -62561,7 +62572,7 @@ var require_branch_off_next_branch = __commonJS({
     var next_prerelease_version_1 = require_next_prerelease_version();
     var actions_1 = require_actions();
     var commit_message_1 = require_commit_message();
-    var constants_1 = require_constants2();
+    var constants_1 = require_constants3();
     var BranchOffNextBranchBaseAction = class extends actions_1.ReleaseAction {
       async getDescription() {
         const { branchName } = this.active.next;
