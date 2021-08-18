@@ -40185,7 +40185,16 @@ Alternatively, a new token can be created at: ${github_urls_1.GITHUB_TOKEN_GENER
         if (AuthenticatedGitClient._authenticatedInstance) {
           throw Error("Unable to configure `AuthenticatedGitClient` as it has been configured already.");
         }
+        if (process.env["GITHUB_ACTIONS"]) {
+          throw Error("Cannot use `configure` static method to create AuthenticatedGitClient in a Github Action.");
+        }
         AuthenticatedGitClient._authenticatedInstance = new AuthenticatedGitClient(token);
+      }
+      static configureForGithubActions(token, config) {
+        if (AuthenticatedGitClient._authenticatedInstance) {
+          throw Error("Unable to configure `AuthenticatedGitClient` as it has been configured already.");
+        }
+        AuthenticatedGitClient._authenticatedInstance = new AuthenticatedGitClient(token, void 0, config);
       }
     };
     exports2.AuthenticatedGitClient = AuthenticatedGitClient;
@@ -59958,7 +59967,6 @@ var require_rebase = __commonJS({
     exports2.rebasePr = void 0;
     var typed_graphqlify_1 = require_dist();
     var utils_1 = require_utils2();
-    var config_1 = require_config2();
     var console_12 = require_console();
     var authenticated_git_client_1 = require_authenticated_git_client();
     var github_urls_1 = require_github_urls();
@@ -59983,11 +59991,11 @@ var require_rebase = __commonJS({
         }
       }
     };
-    async function rebasePr(prNumber, githubToken, config = config_1.getConfig()) {
+    async function rebasePr(prNumber, githubToken) {
       const git = authenticated_git_client_1.AuthenticatedGitClient.get();
       if (git.hasUncommittedChanges()) {
         console_12.error("Cannot perform rebase of PR with local changes.");
-        process.exit(1);
+        return 1;
       }
       const previousBranchOrRevision = git.getCurrentBranchOrRevision();
       const pr = await github_1.getPr(PR_SCHEMA, prNumber, git);
@@ -60000,7 +60008,7 @@ var require_rebase = __commonJS({
       const forceWithLeaseFlag = `--force-with-lease=${headRefName}:${pr.headRefOid}`;
       if (!pr.maintainerCanModify && !pr.viewerDidAuthor) {
         console_12.error(`Cannot rebase as you did not author the PR and the PR does not allow maintainersto modify the PR`);
-        process.exit(1);
+        return 1;
       }
       try {
         console_12.info(`Checking out PR #${prNumber} from ${fullHeadRef}`);
@@ -60010,7 +60018,7 @@ var require_rebase = __commonJS({
         git.run(["fetch", "-q", baseRefUrl, baseRefName]);
         const commonAncestorSha = git.run(["merge-base", "HEAD", "FETCH_HEAD"]).stdout.trim();
         const commits = await utils_1.getCommitsInRange(commonAncestorSha, "HEAD");
-        let squashFixups = commits.filter((commit) => commit.isFixup).length === 0 ? false : await console_12.promptConfirm(`PR #${prNumber} contains fixup commits, would you like to squash them during rebase?`, true);
+        let squashFixups = process.env["CI"] !== void 0 || commits.filter((commit) => commit.isFixup).length === 0 ? false : await console_12.promptConfirm(`PR #${prNumber} contains fixup commits, would you like to squash them during rebase?`, true);
         console_12.info(`Attempting to rebase PR #${prNumber} on ${fullBaseRef}`);
         const [flags, env] = squashFixups ? [["--interactive", "--autosquash"], __spreadProps(__spreadValues({}, process.env), { GIT_SEQUENCE_EDITOR: "true" })] : [[], void 0];
         const rebaseResult = git.runGraceful(["rebase", ...flags, "FETCH_HEAD"], { env });
@@ -60020,12 +60028,12 @@ var require_rebase = __commonJS({
           git.run(["push", headRefUrl, `HEAD:${headRefName}`, forceWithLeaseFlag]);
           console_12.info(`Rebased and updated PR #${prNumber}`);
           git.checkout(previousBranchOrRevision, true);
-          process.exit(0);
+          return 0;
         }
       } catch (err) {
         console_12.error(err.message);
         git.checkout(previousBranchOrRevision, true);
-        process.exit(1);
+        return 1;
       }
       console_12.info(`Rebase was unable to complete automatically without conflicts.`);
       const continueRebase = process.env["CI"] === void 0 && await console_12.promptConfirm("Manually complete rebase?");
@@ -60036,12 +60044,12 @@ var require_rebase = __commonJS({
         console_12.info(`To abort the rebase and return to the state of the repository before this command`);
         console_12.info(`run the following command:`);
         console_12.info(` $ git rebase --abort && git reset --hard && git checkout ${previousBranchOrRevision}`);
-        process.exit(1);
+        return 1;
       } else {
         console_12.info(`Cleaning up git state, and restoring previous state.`);
       }
       git.checkout(previousBranchOrRevision, true);
-      process.exit(1);
+      return 1;
     }
     exports2.rebasePr = rebasePr;
   }
@@ -60060,7 +60068,7 @@ var require_cli14 = __commonJS({
     }
     exports2.buildRebaseCommand = buildRebaseCommand;
     async function handleRebaseCommand({ prNumber, githubToken }) {
-      await index_12.rebasePr(prNumber, githubToken);
+      process.exitCode = await index_12.rebasePr(prNumber, githubToken);
     }
     exports2.handleRebaseCommand = handleRebaseCommand;
   }
