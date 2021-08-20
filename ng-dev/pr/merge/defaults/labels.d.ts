@@ -21,4 +21,7 @@ import { TargetLabel } from '../config';
  * @param releaseConfig Configuration for the release packages. Used to fetch
  *   NPM version data when LTS version branches are validated.
  */
-export declare function getDefaultTargetLabelConfiguration(api: GithubClient, githubConfig: GithubConfig, releaseConfig: ReleaseConfig): Promise<TargetLabel[]>;
+export declare function getTargetLabels(api?: GithubClient, config?: Partial<{
+    github: GithubConfig;
+    release: ReleaseConfig;
+}>): Promise<TargetLabel[]>;

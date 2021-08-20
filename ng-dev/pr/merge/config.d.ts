@@ -6,7 +6,6 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { GithubConfig } from '../../utils/config';
-import { GithubClient } from '../../utils/git/github';
 import { GithubApiMergeStrategyConfig } from './strategies/api-merge';
 /** Describes possible values that can be returned for `branches` of a target label. */
 export declare type TargetLabelBranchResult = string[] | Promise<string[]>;
@@ -48,7 +47,7 @@ export interface MergeConfig {
      */
     remote?: GithubConfig;
     /** List of target labels. */
-    labels: TargetLabel[];
+    noTargetLabeling?: boolean;
     /** Required base commits for given branches. */
     requiredBaseCommits?: {
         [branchName: string]: string;
@@ -74,18 +73,9 @@ export interface MergeConfig {
      */
     targetLabelExemptScopes?: string[];
 }
-/**
- * Configuration of the merge script in the dev-infra configuration. Note that the
- * merge configuration is retrieved lazily as usually these configurations rely
- * on branch name computations. We don't want to run these immediately whenever
- * the dev-infra configuration is loaded as that could slow-down other commands.
- */
-export declare type DevInfraMergeConfig = {
-    github: GithubConfig;
-    merge: (api: GithubClient) => MergeConfig | Promise<MergeConfig>;
-};
 /** Loads and validates the merge configuration. */
-export declare function loadAndValidateConfig(config: Partial<DevInfraMergeConfig>, api: GithubClient): Promise<{
-    config?: MergeConfig;
-    errors?: string[];
-}>;
+export declare function assertValidMergeConfig<T>(config: T & Partial<{
+    merge: MergeConfig;
+}>): asserts config is T & {
+    merge: MergeConfig;
+};

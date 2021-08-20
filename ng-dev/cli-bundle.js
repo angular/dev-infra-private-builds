@@ -58752,40 +58752,175 @@ var require_config6 = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/config.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.loadAndValidateConfig = void 0;
-    async function loadAndValidateConfig(config, api) {
-      if (config.merge === void 0) {
-        return { errors: ["No merge configuration found. Set the `merge` configuration."] };
-      }
-      if (typeof config.merge !== "function") {
-        return { errors: ["Expected merge configuration to be defined lazily through a function."] };
-      }
-      const mergeConfig = await config.merge(api);
-      const errors = validateMergeConfig(mergeConfig);
-      if (errors.length) {
-        return { errors };
-      }
-      return { config: mergeConfig };
-    }
-    exports2.loadAndValidateConfig = loadAndValidateConfig;
-    function validateMergeConfig(config) {
+    exports2.assertValidMergeConfig = void 0;
+    var config_1 = require_config2();
+    function assertValidMergeConfig(config) {
       const errors = [];
-      if (!config.labels) {
-        errors.push("No label configuration.");
-      } else if (!Array.isArray(config.labels)) {
-        errors.push("Label configuration needs to be an array.");
+      if (config.merge === void 0) {
+        throw new config_1.ConfigValidationError("No merge configuration found. Set the `merge` configuration.");
       }
-      if (!config.claSignedLabel) {
+      if (!config.merge.claSignedLabel) {
         errors.push("No CLA signed label configured.");
       }
-      if (!config.mergeReadyLabel) {
+      if (!config.merge.mergeReadyLabel) {
         errors.push("No merge ready label configured.");
       }
-      if (config.githubApiMerge === void 0) {
+      if (config.merge.githubApiMerge === void 0) {
         errors.push("No explicit choice of merge strategy. Please set `githubApiMerge`.");
       }
-      return errors;
+      if (errors.length) {
+        throw new config_1.ConfigValidationError("Invalid `merge` configuration", errors);
+      }
     }
+    exports2.assertValidMergeConfig = assertValidMergeConfig;
+  }
+});
+
+// bazel-out/k8-fastbuild/bin/ng-dev/release/config/index.js
+var require_config7 = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/release/config/index.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.assertValidReleaseConfig = void 0;
+    var config_1 = require_config2();
+    function assertValidReleaseConfig(config) {
+      const errors = [];
+      if (config.release === void 0) {
+        throw new config_1.ConfigValidationError("No configuration provided for `release`");
+      }
+      if (config.release.npmPackages === void 0) {
+        errors.push(`No "npmPackages" configured for releasing.`);
+      }
+      if (config.release.buildPackages === void 0) {
+        errors.push(`No "buildPackages" function configured for releasing.`);
+      }
+      if (errors.length) {
+        throw new config_1.ConfigValidationError("Invalid `release` configuration", errors);
+      }
+    }
+    exports2.assertValidReleaseConfig = assertValidReleaseConfig;
+  }
+});
+
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/defaults/lts-branch.js
+var require_lts_branch = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/defaults/lts-branch.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.assertActiveLtsBranch = void 0;
+    var semver = require_semver2();
+    var versioning_1 = require_versioning();
+    var console_12 = require_console();
+    var target_label_1 = require_target_label();
+    async function assertActiveLtsBranch(repo, releaseConfig, branchName) {
+      const version = await versioning_1.getVersionOfBranch(repo, branchName);
+      const { "dist-tags": distTags, time } = await versioning_1.fetchProjectNpmPackageInfo(releaseConfig);
+      const ltsNpmTag = versioning_1.getLtsNpmDistTagOfMajor(version.major);
+      const ltsVersion = semver.parse(distTags[ltsNpmTag]);
+      if (ltsVersion === null) {
+        throw new target_label_1.InvalidTargetBranchError(`No LTS version tagged for v${version.major} in NPM.`);
+      }
+      if (branchName !== `${ltsVersion.major}.${ltsVersion.minor}.x`) {
+        throw new target_label_1.InvalidTargetBranchError(`Not using last-minor branch for v${version.major} LTS version. PR should be updated to target: ${ltsVersion.major}.${ltsVersion.minor}.x`);
+      }
+      const today = new Date();
+      const majorReleaseDate = new Date(time[`${version.major}.0.0`]);
+      const ltsEndDate = versioning_1.computeLtsEndDateOfMajor(majorReleaseDate);
+      if (today > ltsEndDate) {
+        const ltsEndDateText = ltsEndDate.toLocaleDateString("en-US");
+        console_12.warn(console_12.red(`Long-term support ended for v${version.major} on ${ltsEndDateText}.`));
+        console_12.warn(console_12.yellow(`Merging of pull requests for this major is generally not desired, but can be forcibly ignored.`));
+        if (await console_12.promptConfirm("Do you want to forcibly proceed with merging?")) {
+          return;
+        }
+        throw new target_label_1.InvalidTargetBranchError(`Long-term supported ended for v${version.major} on ${ltsEndDateText}. Pull request cannot be merged into the ${branchName} branch.`);
+      }
+    }
+    exports2.assertActiveLtsBranch = assertActiveLtsBranch;
+  }
+});
+
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/defaults/labels.js
+var require_labels = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/defaults/labels.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.getTargetLabels = void 0;
+    var index_12 = require_config7();
+    var versioning_1 = require_versioning();
+    var config_1 = require_config2();
+    var git_client_1 = require_git_client();
+    var target_label_1 = require_target_label();
+    var lts_branch_1 = require_lts_branch();
+    async function getTargetLabels(api = git_client_1.GitClient.get().github, config = config_1.getConfig()) {
+      index_12.assertValidReleaseConfig(config);
+      config_1.assertValidGithubConfig(config);
+      const nextBranchName = versioning_1.getNextBranchName(config.github);
+      const repo = {
+        owner: config.github.owner,
+        name: config.github.name,
+        nextBranchName,
+        api
+      };
+      const { latest, releaseCandidate, next } = await versioning_1.fetchActiveReleaseTrains(repo);
+      return [
+        {
+          pattern: "target: major",
+          branches: () => {
+            if (!next.isMajor) {
+              throw new target_label_1.InvalidTargetLabelError(`Unable to merge pull request. The "${nextBranchName}" branch will be released as a minor version.`);
+            }
+            return [nextBranchName];
+          }
+        },
+        {
+          pattern: "target: minor",
+          branches: [nextBranchName]
+        },
+        {
+          pattern: "target: patch",
+          branches: (githubTargetBranch) => {
+            if (githubTargetBranch === latest.branchName) {
+              return [latest.branchName];
+            }
+            const branches = [nextBranchName, latest.branchName];
+            if (releaseCandidate !== null) {
+              branches.push(releaseCandidate.branchName);
+            }
+            return branches;
+          }
+        },
+        {
+          pattern: "target: rc",
+          branches: (githubTargetBranch) => {
+            if (releaseCandidate === null) {
+              throw new target_label_1.InvalidTargetLabelError(`No active feature-freeze/release-candidate branch. Unable to merge pull request using "target: rc" label.`);
+            }
+            if (githubTargetBranch === releaseCandidate.branchName) {
+              return [releaseCandidate.branchName];
+            }
+            return [nextBranchName, releaseCandidate.branchName];
+          }
+        },
+        {
+          pattern: "target: lts",
+          branches: async (githubTargetBranch) => {
+            if (!versioning_1.isVersionBranch(githubTargetBranch)) {
+              throw new target_label_1.InvalidTargetBranchError(`PR cannot be merged as it does not target a long-term support branch: "${githubTargetBranch}"`);
+            }
+            if (githubTargetBranch === latest.branchName) {
+              throw new target_label_1.InvalidTargetBranchError(`PR cannot be merged with "target: lts" into patch branch. Consider changing the label to "target: patch" if this is intentional.`);
+            }
+            if (releaseCandidate !== null && githubTargetBranch === releaseCandidate.branchName) {
+              throw new target_label_1.InvalidTargetBranchError(`PR cannot be merged with "target: lts" into feature-freeze/release-candidate branch. Consider changing the label to "target: rc" if this is intentional.`);
+            }
+            await lts_branch_1.assertActiveLtsBranch(repo, config.release, githubTargetBranch);
+            return [githubTargetBranch];
+          }
+        }
+      ];
+    }
+    exports2.getTargetLabels = getTargetLabels;
   }
 });
 
@@ -58808,6 +58943,7 @@ var require_target_label = __commonJS({
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.getBranchesFromTargetLabel = exports2.getTargetLabelFromPullRequest = exports2.InvalidTargetLabelError = exports2.InvalidTargetBranchError = void 0;
+    var labels_1 = require_labels();
     var string_pattern_1 = require_string_pattern();
     var InvalidTargetBranchError = class {
       constructor(failureMessage) {
@@ -58821,10 +58957,14 @@ var require_target_label = __commonJS({
       }
     };
     exports2.InvalidTargetLabelError = InvalidTargetLabelError;
-    function getTargetLabelFromPullRequest(config, labels) {
+    async function getTargetLabelFromPullRequest(config, labels) {
+      if (config.noTargetLabeling) {
+        throw Error("This repository does not use target labels");
+      }
+      const targetLabels = await labels_1.getTargetLabels();
       const matches = [];
       for (const label of labels) {
-        const match = config.labels.find(({ pattern }) => string_pattern_1.matchesPattern(label, pattern));
+        const match = targetLabels.find(({ pattern }) => string_pattern_1.matchesPattern(label, pattern));
         if (match !== void 0) {
           matches.push(match);
         }
@@ -58850,43 +58990,39 @@ var require_check_target_branches = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/pr/check-target-branches/check-target-branches.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.printTargetBranchesForPr = exports2.getTargetBranchesForPr = void 0;
+    exports2.printTargetBranchesForPr = void 0;
     var config_1 = require_config2();
     var console_12 = require_console();
     var git_client_1 = require_git_client();
     var config_2 = require_config6();
     var target_label_1 = require_target_label();
-    async function getTargetBranchesForPr(prNumber) {
-      const config = config_1.getConfig();
-      config_1.assertValidGithubConfig(config);
+    async function getTargetBranchesForPr(prNumber, config) {
       const { owner, name: repo } = config.github;
       const git = git_client_1.GitClient.get();
-      const { config: mergeConfig, errors } = await config_2.loadAndValidateConfig(config, git.github);
-      if (errors !== void 0) {
-        throw Error(`Invalid configuration found: ${errors}`);
-      }
       const prData = (await git.github.pulls.get({ owner, repo, pull_number: prNumber })).data;
       const labels = prData.labels.map((l) => l.name);
       const githubTargetBranch = prData.base.ref;
       let targetLabel;
       try {
-        targetLabel = target_label_1.getTargetLabelFromPullRequest(mergeConfig, labels);
+        targetLabel = await target_label_1.getTargetLabelFromPullRequest(config.merge, labels);
       } catch (e) {
         if (e instanceof target_label_1.InvalidTargetLabelError) {
           console_12.error(console_12.red(e.failureMessage));
-          process.exitCode = 1;
-          return;
+          process.exit(1);
         }
         throw e;
       }
       return await target_label_1.getBranchesFromTargetLabel(targetLabel, githubTargetBranch);
     }
-    exports2.getTargetBranchesForPr = getTargetBranchesForPr;
     async function printTargetBranchesForPr(prNumber) {
-      const targets = await getTargetBranchesForPr(prNumber);
-      if (targets === void 0) {
+      const config = config_1.getConfig();
+      config_1.assertValidGithubConfig(config);
+      config_2.assertValidMergeConfig(config);
+      if (config.merge.noTargetLabeling) {
+        console_12.info(`PR #${prNumber} will merge into: ${config.github.mainBranchName}`);
         return;
       }
+      const targets = await getTargetBranchesForPr(prNumber, config);
       console_12.info.group(`PR #${prNumber} will merge into:`);
       targets.forEach((target) => console_12.info(`- ${target}`));
       console_12.info.groupEnd();
@@ -59371,19 +59507,11 @@ var require_pull_request = __commonJS({
       if (!labels.some((name) => string_pattern_1.matchesPattern(name, config.claSignedLabel))) {
         return failures_1.PullRequestFailure.claUnsigned();
       }
-      let targetLabel;
-      try {
-        targetLabel = target_label_1.getTargetLabelFromPullRequest(config, labels);
-      } catch (error) {
-        if (error instanceof target_label_1.InvalidTargetLabelError) {
-          return new failures_1.PullRequestFailure(error.failureMessage);
-        }
-        throw error;
-      }
       const commitsInPr = prData.commits.nodes.map((n) => parse_1.parseCommitMessage(n.commit.message));
+      const githubTargetBranch = prData.baseRefName;
+      const targetBranches = await getTargetBranches({ github: git.config.github, merge: config }, labels, githubTargetBranch, commitsInPr);
       try {
         assertPendingState(prData);
-        assertChangesAllowForTargetLabel(commitsInPr, targetLabel, config);
         assertCorrectBreakingChangeLabeling(commitsInPr, labels);
       } catch (error) {
         return error;
@@ -59395,19 +59523,9 @@ var require_pull_request = __commonJS({
       if (state === "PENDING" && !ignoreNonFatalFailures) {
         return failures_1.PullRequestFailure.pendingCiJobs();
       }
-      const githubTargetBranch = prData.baseRefName;
       const requiredBaseSha = config.requiredBaseCommits && config.requiredBaseCommits[githubTargetBranch];
       const needsCommitMessageFixup = !!config.commitMessageFixupLabel && labels.some((name) => string_pattern_1.matchesPattern(name, config.commitMessageFixupLabel));
       const hasCaretakerNote = !!config.caretakerNoteLabel && labels.some((name) => string_pattern_1.matchesPattern(name, config.caretakerNoteLabel));
-      let targetBranches;
-      try {
-        targetBranches = await target_label_1.getBranchesFromTargetLabel(targetLabel, githubTargetBranch);
-      } catch (error) {
-        if (error instanceof target_label_1.InvalidTargetBranchError || error instanceof target_label_1.InvalidTargetLabelError) {
-          return new failures_1.PullRequestFailure(error.failureMessage);
-        }
-        throw error;
-      }
       return {
         url: prData.url,
         prNumber,
@@ -59516,6 +59634,23 @@ var require_pull_request = __commonJS({
           throw failures_1.PullRequestFailure.isClosed();
         case "MERGED":
           throw failures_1.PullRequestFailure.isMerged();
+      }
+    }
+    async function getTargetBranches(config, labels, githubTargetBranch, commits) {
+      if (config.merge.noTargetLabeling) {
+        return [config.github.mainBranchName];
+      } else {
+        try {
+          let targetLabel = await target_label_1.getTargetLabelFromPullRequest(config.merge, labels);
+          let targetBranches = await target_label_1.getBranchesFromTargetLabel(targetLabel, githubTargetBranch);
+          assertChangesAllowForTargetLabel(commits, targetLabel, config.merge);
+          return targetBranches;
+        } catch (error) {
+          if (error instanceof target_label_1.InvalidTargetBranchError || error instanceof target_label_1.InvalidTargetLabelError) {
+            throw new failures_1.PullRequestFailure(error.failureMessage);
+          }
+          throw error;
+        }
       }
     }
   }
@@ -59937,17 +60072,27 @@ var require_merge3 = __commonJS({
     }
     exports2.mergePullRequest = mergePullRequest;
     async function createPullRequestMergeTask(flags) {
-      const devInfraConfig = config_1.getConfig();
-      config_1.assertValidGithubConfig(devInfraConfig);
-      const git = authenticated_git_client_1.AuthenticatedGitClient.get();
-      const { config, errors } = await config_2.loadAndValidateConfig(devInfraConfig, git.github);
-      if (errors) {
-        console_12.error(console_12.red("Invalid merge configuration:"));
-        errors.forEach((desc) => console_12.error(console_12.yellow(`  -  ${desc}`)));
-        process.exit(1);
+      try {
+        const config = config_1.getConfig();
+        config_1.assertValidGithubConfig(config);
+        config_2.assertValidMergeConfig(config);
+        const git = authenticated_git_client_1.AuthenticatedGitClient.get();
+        const mergeConfig = __spreadValues({
+          remote: config.github
+        }, config.merge);
+        return new task_1.PullRequestMergeTask(mergeConfig, git, flags);
+      } catch (e) {
+        if (e instanceof config_1.ConfigValidationError) {
+          if (e.errors.length) {
+            console_12.error(console_12.red("Invalid merge configuration:"));
+            e.errors.forEach((desc) => console_12.error(console_12.yellow(`  -  ${desc}`)));
+          } else {
+            console_12.error(console_12.red(e.message));
+          }
+          process.exit(1);
+        }
+        throw e;
       }
-      config.remote = devInfraConfig.github;
-      return new task_1.PullRequestMergeTask(config, git, flags);
     }
   }
 });
@@ -60469,32 +60614,6 @@ var require_cli16 = __commonJS({
       return localYargs.help().strict().demandCommand().command("verify", "Verify the pullapprove config", {}, () => verify_1.verify());
     }
     exports2.buildPullapproveParser = buildPullapproveParser;
-  }
-});
-
-// bazel-out/k8-fastbuild/bin/ng-dev/release/config/index.js
-var require_config7 = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/release/config/index.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.assertValidReleaseConfig = void 0;
-    var config_1 = require_config2();
-    function assertValidReleaseConfig(config) {
-      const errors = [];
-      if (config.release === void 0) {
-        throw new config_1.ConfigValidationError("No configuration provided for `release`");
-      }
-      if (config.release.npmPackages === void 0) {
-        errors.push(`No "npmPackages" configured for releasing.`);
-      }
-      if (config.release.buildPackages === void 0) {
-        errors.push(`No "buildPackages" function configured for releasing.`);
-      }
-      if (errors.length) {
-        throw new config_1.ConfigValidationError("Invalid `release` configuration", errors);
-      }
-    }
-    exports2.assertValidReleaseConfig = assertValidReleaseConfig;
   }
 });
 
