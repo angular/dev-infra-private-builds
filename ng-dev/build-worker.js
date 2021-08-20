@@ -5015,11 +5015,11 @@ var require_reportUnhandledError = __commonJS({
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.reportUnhandledError = void 0;
-    var config_1 = require_config();
+    var config_12 = require_config();
     var timeoutProvider_1 = require_timeoutProvider();
     function reportUnhandledError(err) {
       timeoutProvider_1.timeoutProvider.setTimeout(function() {
-        var onUnhandledError = config_1.config.onUnhandledError;
+        var onUnhandledError = config_12.config.onUnhandledError;
         if (onUnhandledError) {
           onUnhandledError(err);
         } else {
@@ -5077,10 +5077,10 @@ var require_errorContext = __commonJS({
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.captureError = exports2.errorContext = void 0;
-    var config_1 = require_config();
+    var config_12 = require_config();
     var context = null;
     function errorContext(cb) {
-      if (config_1.config.useDeprecatedSynchronousErrorHandling) {
+      if (config_12.config.useDeprecatedSynchronousErrorHandling) {
         var isRoot = !context;
         if (isRoot) {
           context = { errorThrown: false, error: null };
@@ -5099,7 +5099,7 @@ var require_errorContext = __commonJS({
     }
     exports2.errorContext = errorContext;
     function captureError(err) {
-      if (config_1.config.useDeprecatedSynchronousErrorHandling && context) {
+      if (config_12.config.useDeprecatedSynchronousErrorHandling && context) {
         context.errorThrown = true;
         context.error = err;
       }
@@ -5163,7 +5163,7 @@ var require_Subscriber = __commonJS({
     exports2.EMPTY_OBSERVER = exports2.SafeSubscriber = exports2.Subscriber = void 0;
     var isFunction_1 = require_isFunction2();
     var Subscription_1 = require_Subscription();
-    var config_1 = require_config();
+    var config_12 = require_config();
     var reportUnhandledError_1 = require_reportUnhandledError();
     var noop_1 = require_noop();
     var NotificationFactories_1 = require_NotificationFactories();
@@ -5247,7 +5247,7 @@ var require_Subscriber = __commonJS({
         } else if (observerOrNext) {
           next = observerOrNext.next, error = observerOrNext.error, complete = observerOrNext.complete;
           var context_1;
-          if (_this && config_1.config.useDeprecatedNextContext) {
+          if (_this && config_12.config.useDeprecatedNextContext) {
             context_1 = Object.create(observerOrNext);
             context_1.unsubscribe = function() {
               return _this.unsubscribe();
@@ -5278,7 +5278,7 @@ var require_Subscriber = __commonJS({
         try {
           handler.apply(void 0, __spreadArray([], __read(args)));
         } catch (err) {
-          if (config_1.config.useDeprecatedSynchronousErrorHandling) {
+          if (config_12.config.useDeprecatedSynchronousErrorHandling) {
             errorContext_1.captureError(err);
           } else {
             reportUnhandledError_1.reportUnhandledError(err);
@@ -5290,7 +5290,7 @@ var require_Subscriber = __commonJS({
       throw err;
     }
     function handleStoppedNotification(notification, subscriber) {
-      var onStoppedNotification = config_1.config.onStoppedNotification;
+      var onStoppedNotification = config_12.config.onStoppedNotification;
       onStoppedNotification && timeoutProvider_1.timeoutProvider.setTimeout(function() {
         return onStoppedNotification(notification, subscriber);
       });
@@ -5371,7 +5371,7 @@ var require_Observable = __commonJS({
     var Subscription_1 = require_Subscription();
     var observable_1 = require_observable();
     var pipe_1 = require_pipe();
-    var config_1 = require_config();
+    var config_12 = require_config();
     var isFunction_1 = require_isFunction2();
     var errorContext_1 = require_errorContext();
     var Observable = function() {
@@ -5453,7 +5453,7 @@ var require_Observable = __commonJS({
     exports2.Observable = Observable;
     function getPromiseCtor(promiseCtor) {
       var _a;
-      return (_a = promiseCtor !== null && promiseCtor !== void 0 ? promiseCtor : config_1.config.Promise) !== null && _a !== void 0 ? _a : Promise;
+      return (_a = promiseCtor !== null && promiseCtor !== void 0 ? promiseCtor : config_12.config.Promise) !== null && _a !== void 0 ? _a : Promise;
     }
     function isObserver(value) {
       return value && isFunction_1.isFunction(value.next) && isFunction_1.isFunction(value.error) && isFunction_1.isFunction(value.complete);
@@ -13849,9 +13849,9 @@ var require_cjs = __commonJS({
       return never_2.NEVER;
     } });
     __exportStar(require_types(), exports2);
-    var config_1 = require_config();
+    var config_12 = require_config();
     Object.defineProperty(exports2, "config", { enumerable: true, get: function() {
-      return config_1.config;
+      return config_12.config;
     } });
     var audit_1 = require_audit();
     Object.defineProperty(exports2, "audit", { enumerable: true, get: function() {
@@ -36425,7 +36425,7 @@ var require_git_client = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.GitClient = exports2.GitCommandError = void 0;
     var child_process_1 = require("child_process");
-    var config_1 = require_config2();
+    var config_12 = require_config2();
     var console_1 = require_console();
     var dry_run_1 = require_dry_run();
     var github_1 = require_github();
@@ -36439,14 +36439,15 @@ var require_git_client = __commonJS({
     };
     exports2.GitCommandError = GitCommandError;
     var GitClient = class {
-      constructor(baseDir = determineRepoBaseDirFromCwd(), config = config_1.getConfig(baseDir)) {
+      constructor(baseDir = determineRepoBaseDirFromCwd(), config = config_12.getConfig(baseDir)) {
         this.baseDir = baseDir;
-        this.config = config;
-        this.remoteConfig = this.config.github;
-        this.remoteParams = { owner: this.remoteConfig.owner, repo: this.remoteConfig.name };
-        this.mainBranchName = this.config.github.mainBranchName;
         this.github = new github_1.GithubClient();
         this.gitBinPath = "git";
+        config_12.assertValidGithubConfig(config);
+        this.config = config;
+        this.remoteConfig = config.github;
+        this.remoteParams = { owner: config.github.owner, repo: config.github.name };
+        this.mainBranchName = config.github.mainBranchName;
       }
       run(args, options) {
         const result = this.runGraceful(args, options);
@@ -36684,7 +36685,7 @@ var require_config2 = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/utils/config.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.getUserConfig = exports2.assertNoErrors = exports2.getConfig = void 0;
+    exports2.assertNoErrors = exports2.assertValidGithubConfig = exports2.ConfigValidationError = exports2.getUserConfig = exports2.getConfig = void 0;
     var fs_1 = require("fs");
     var path_1 = require("path");
     var console_1 = require_console();
@@ -36698,12 +36699,29 @@ var require_config2 = __commonJS({
       if (cachedConfig === null) {
         baseDir = baseDir || git_client_1.GitClient.get().baseDir;
         const configPath = path_1.join(baseDir, CONFIG_FILE_PATH);
-        cachedConfig = validateCommonConfig(readConfigFile(configPath));
+        cachedConfig = readConfigFile(configPath);
       }
       return __spreadValues({}, cachedConfig);
     }
     exports2.getConfig = getConfig;
-    function validateCommonConfig(config) {
+    function getUserConfig() {
+      if (userConfig === null) {
+        const git = git_client_1.GitClient.get();
+        const configPath = path_1.join(git.baseDir, USER_CONFIG_FILE_PATH);
+        userConfig = readConfigFile(configPath, true);
+      }
+      return __spreadValues({}, userConfig);
+    }
+    exports2.getUserConfig = getUserConfig;
+    var ConfigValidationError = class extends Error {
+      constructor(message, errors = []) {
+        super(message);
+        this.errors = errors;
+        Object.setPrototypeOf(this, ConfigValidationError.prototype);
+      }
+    };
+    exports2.ConfigValidationError = ConfigValidationError;
+    function assertValidGithubConfig(config) {
       const errors = [];
       if (config.github === void 0) {
         errors.push(`Github repository not configured. Set the "github" option.`);
@@ -36715,9 +36733,11 @@ var require_config2 = __commonJS({
           errors.push(`"github.owner" is not defined`);
         }
       }
-      assertNoErrors(errors);
-      return config;
+      if (errors.length) {
+        throw new ConfigValidationError("Invalid `github` configuration", errors);
+      }
     }
+    exports2.assertValidGithubConfig = assertValidGithubConfig;
     function readConfigFile(configPath, returnEmptyObjectOnError = false) {
       if (require.extensions[".ts"] === void 0 && fs_1.existsSync(`${configPath}.ts`) && ts_node_1.isTsNodeAvailable()) {
         require("ts-node").register({
@@ -36750,15 +36770,6 @@ var require_config2 = __commonJS({
       process.exit(1);
     }
     exports2.assertNoErrors = assertNoErrors;
-    function getUserConfig() {
-      if (userConfig === null) {
-        const git = git_client_1.GitClient.get();
-        const configPath = path_1.join(git.baseDir, USER_CONFIG_FILE_PATH);
-        userConfig = readConfigFile(configPath, true);
-      }
-      return __spreadValues({}, userConfig);
-    }
-    exports2.getUserConfig = getUserConfig;
   }
 });
 
@@ -36767,41 +36778,43 @@ var require_config3 = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/release/config/index.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.getReleaseConfig = void 0;
-    var config_1 = require_config2();
-    function getReleaseConfig(config = config_1.getConfig()) {
-      var _a, _b, _c;
+    exports2.assertValidReleaseConfig = void 0;
+    var config_12 = require_config2();
+    function assertValidReleaseConfig(config) {
       const errors = [];
       if (config.release === void 0) {
-        errors.push(`No configuration defined for "release"`);
+        throw new config_12.ConfigValidationError("No configuration provided for `release`");
       }
-      if (((_a = config.release) == null ? void 0 : _a.npmPackages) === void 0) {
+      if (config.release.npmPackages === void 0) {
         errors.push(`No "npmPackages" configured for releasing.`);
       }
-      if (((_b = config.release) == null ? void 0 : _b.buildPackages) === void 0) {
+      if (config.release.buildPackages === void 0) {
         errors.push(`No "buildPackages" function configured for releasing.`);
       }
-      if (((_c = config.release) == null ? void 0 : _c.releaseNotes) === void 0) {
+      if (config.release.releaseNotes === void 0) {
         errors.push(`No "releaseNotes" configured for releasing.`);
       }
-      config_1.assertNoErrors(errors);
-      return config.release;
+      if (errors.length) {
+        throw new config_12.ConfigValidationError("Invalid `release` configuration", errors);
+      }
     }
-    exports2.getReleaseConfig = getReleaseConfig;
+    exports2.assertValidReleaseConfig = assertValidReleaseConfig;
   }
 });
 
 // bazel-out/k8-fastbuild/bin/ng-dev/release/build/build-worker.mjs
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var config_1 = require_config2();
 var index_1 = require_config3();
 main(process.argv[2] === "true");
 async function main(stampForRelease) {
   if (process.send === void 0) {
     throw Error("This script needs to be invoked as a NodeJS worker.");
   }
-  const config = index_1.getReleaseConfig();
-  const builtPackages = await config.buildPackages(stampForRelease);
+  const config = config_1.getConfig();
+  index_1.assertValidReleaseConfig(config);
+  const builtPackages = await config.release.buildPackages(stampForRelease);
   process.send(builtPackages);
 }
 /*!

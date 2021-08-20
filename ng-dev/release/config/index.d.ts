@@ -5,7 +5,6 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { NgDevConfig } from '../../utils/config';
 /** Interface describing a built package. */
 export interface BuiltPackage {
     /** Name of the package. */
@@ -41,8 +40,8 @@ export interface ReleaseNotesConfig {
     groupOrder?: string[];
 }
 /** Configuration for releases in the dev-infra configuration. */
-export declare type DevInfraReleaseConfig = NgDevConfig<{
+export declare type DevInfraReleaseConfig = {
     release: ReleaseConfig;
-}>;
+};
 /** Retrieve and validate the config as `ReleaseConfig`. */
-export declare function getReleaseConfig(config?: Partial<DevInfraReleaseConfig>): ReleaseConfig;
+export declare function assertValidReleaseConfig<T>(config: T & Partial<DevInfraReleaseConfig>): asserts config is T & DevInfraReleaseConfig;

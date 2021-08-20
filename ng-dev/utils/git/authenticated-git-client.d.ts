@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { NgDevConfig } from '../config';
+import { GitClientConfig } from '../config';
 import { GitClient } from './git-client';
 import { AuthenticatedGithubClient } from './github';
 /** Describes a function that can be used to test for given Github OAuth scopes. */
@@ -25,7 +25,9 @@ export declare class AuthenticatedGitClient extends GitClient {
     private _cachedOauthScopes;
     /** Instance of an authenticated github client. */
     readonly github: AuthenticatedGithubClient;
-    protected constructor(githubToken: string, baseDir?: string, config?: NgDevConfig);
+    protected constructor(githubToken: string, baseDir?: string, config?: {
+        github: GitClientConfig;
+    });
     /** Sanitizes a given message by omitting the provided Github token if present. */
     sanitizeConsoleOutput(value: string): string;
     /** Git URL that resolves to the configured repository. */
@@ -49,5 +51,7 @@ export declare class AuthenticatedGitClient extends GitClient {
     /** Configures an authenticated git client. */
     static configure(token: string): void;
     /** Configures an authenticated git client in the context of a Github action. */
-    static configureForGithubActions(token: string, config: NgDevConfig): void;
+    static configureForGithubActions(token: string, config: {
+        github: GitClientConfig;
+    }): void;
 }

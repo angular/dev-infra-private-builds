@@ -7,7 +7,7 @@
  */
 /// <reference types="node" />
 import { SpawnSyncOptions, SpawnSyncReturns } from 'child_process';
-import { GithubConfig } from '../config';
+import { GitClientConfig } from '../config';
 import { GithubClient } from './github';
 /** Error for failed Git commands. */
 export declare class GitCommandError extends Error {
@@ -22,12 +22,8 @@ declare type GitCommandRunOptions = SpawnSyncOptions & {
 export declare class GitClient {
     /** The full path to the root of the repository base. */
     readonly baseDir: string;
-    /** The configuration, containing the github specific configuration. */
-    readonly config: {
-        github: GithubConfig;
-    };
     /** Short-hand for accessing the default remote configuration. */
-    readonly remoteConfig: GithubConfig;
+    readonly remoteConfig: GitClientConfig;
     /** Octokit request parameters object for targeting the configured remote. */
     readonly remoteParams: {
         owner: string;
@@ -37,6 +33,10 @@ export declare class GitClient {
     readonly mainBranchName: string;
     /** Instance of the Github client. */
     readonly github: GithubClient;
+    /** The configuration, containing the github specific configuration. */
+    readonly config: {
+        github: GitClientConfig;
+    };
     /**
      * Path to the Git executable. By default, `git` is assumed to exist
      * in the shell environment (using `$PATH`).
@@ -46,9 +46,7 @@ export declare class GitClient {
     /** The full path to the root of the repository base. */
     baseDir?: string, 
     /** The configuration, containing the github specific configuration. */
-    config?: {
-        github: GithubConfig;
-    });
+    config?: {});
     /** Executes the given git command. Throws if the command fails. */
     run(args: string[], options?: GitCommandRunOptions): Omit<SpawnSyncReturns<string>, 'status'>;
     /**

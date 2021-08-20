@@ -5,7 +5,6 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { NgDevConfig } from '../utils/config';
 export interface CaretakerConfig {
     /** Github queries showing a snapshot of pulls/issues caretakers need to monitor. */
     githubQueries?: {
@@ -19,6 +18,8 @@ export interface CaretakerConfig {
     caretakerGroup?: string;
 }
 /** Retrieve and validate the config as `CaretakerConfig`. */
-export declare function getCaretakerConfig(): Required<Partial<NgDevConfig<{
+export declare function assertValidCaretakerConfig<T>(config: T & Partial<{
     caretaker: CaretakerConfig;
-}>>>;
+}>): asserts config is T & {
+    caretaker: CaretakerConfig;
+};

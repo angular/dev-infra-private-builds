@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { ReleaseConfig } from '../../../release/config/index';
-import { GithubConfig } from '../../../utils/config';
+import { GitClientConfig } from '../../../utils/config';
 import { GithubClient } from '../../../utils/git/github';
 import { TargetLabel } from '../config';
 /**
@@ -21,4 +21,4 @@ import { TargetLabel } from '../config';
  * @param releaseConfig Configuration for the release packages. Used to fetch
  *   NPM version data when LTS version branches are validated.
  */
-export declare function getDefaultTargetLabelConfiguration(api: GithubClient, githubConfig: GithubConfig, releaseConfig: ReleaseConfig): Promise<TargetLabel[]>;
+export declare function getDefaultTargetLabelConfiguration(api: GithubClient, githubConfig: GitClientConfig, releaseConfig: ReleaseConfig): Promise<TargetLabel[]>;

@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { CommitFromGitLog } from '../../commit-message/parse';
-import { GithubConfig } from '../../utils/config';
+import { GitClientConfig } from '../../utils/config';
 import { ReleaseNotesConfig } from '../config/index';
 /** Data used for context during rendering. */
 export interface RenderContextData {
@@ -16,7 +16,7 @@ export interface RenderContextData {
     date?: Date;
     commits: CommitFromGitLog[];
     version: string;
-    github: GithubConfig;
+    github: GitClientConfig;
 }
 /** Context class used for rendering release notes. */
 export declare class RenderContext {

@@ -1,6 +1,5 @@
 import * as semver from 'semver';
 import { CommitFromGitLog } from '../../commit-message/parse';
-import { DevInfraReleaseConfig } from '../config/index';
 /** Release note generation. */
 export declare class ReleaseNotes {
     version: semver.SemVer;
@@ -31,5 +30,5 @@ export declare class ReleaseNotes {
     promptForReleaseTitle(): Promise<string | false>;
     /** Build the render context data object for constructing the RenderContext instance. */
     private generateRenderContext;
-    protected getReleaseConfig(config?: Partial<DevInfraReleaseConfig>): import("../config/index").ReleaseConfig;
+    protected getReleaseConfig(): import("../config/index").ReleaseConfig;
 }

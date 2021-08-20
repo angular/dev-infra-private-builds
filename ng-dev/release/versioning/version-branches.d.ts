@@ -7,7 +7,7 @@
  */
 import * as semver from 'semver';
 import { GithubClient, GithubRepo } from '../../utils/git/github';
-import { GithubConfig } from '../../utils/config';
+import { GitClientConfig } from '../../utils/config';
 /** Object describing a repository that can be released, together with an API client. */
 export interface ReleaseRepoWithApi extends GithubRepo {
     /** API client that can access the repository. */
@@ -32,7 +32,7 @@ export interface VersionBranch {
  * Note that there is a clear separation between the main branch of the
  * upstream remote repository and the `next` release-train branch.
  */
-export declare function getNextBranchName(github: GithubConfig): string;
+export declare function getNextBranchName(github: GitClientConfig): string;
 /** Gets the version of a given branch by reading the `package.json` upstream. */
 export declare function getVersionOfBranch(repo: ReleaseRepoWithApi, branchName: string): Promise<semver.SemVer>;
 /** Whether the given branch corresponds to a version branch. */
