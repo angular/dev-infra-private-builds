@@ -60492,9 +60492,6 @@ var require_config7 = __commonJS({
       if (config.release.buildPackages === void 0) {
         errors.push(`No "buildPackages" function configured for releasing.`);
       }
-      if (config.release.releaseNotes === void 0) {
-        errors.push(`No "releaseNotes" configured for releasing.`);
-      }
       if (errors.length) {
         throw new config_1.ConfigValidationError("Invalid `release` configuration", errors);
       }

@@ -7,7 +7,7 @@
  */
 /// <reference types="node" />
 import { SpawnSyncOptions, SpawnSyncReturns } from 'child_process';
-import { GitClientConfig } from '../config';
+import { GithubConfig } from '../config';
 import { GithubClient } from './github';
 /** Error for failed Git commands. */
 export declare class GitCommandError extends Error {
@@ -23,7 +23,7 @@ export declare class GitClient {
     /** The full path to the root of the repository base. */
     readonly baseDir: string;
     /** Short-hand for accessing the default remote configuration. */
-    readonly remoteConfig: GitClientConfig;
+    readonly remoteConfig: GithubConfig;
     /** Octokit request parameters object for targeting the configured remote. */
     readonly remoteParams: {
         owner: string;
@@ -35,7 +35,7 @@ export declare class GitClient {
     readonly github: GithubClient;
     /** The configuration, containing the github specific configuration. */
     readonly config: {
-        github: GitClientConfig;
+        github: GithubConfig;
     };
     /**
      * Path to the Git executable. By default, `git` is assumed to exist

@@ -5,8 +5,11 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-/** Configuration for Git client interactions. */
-export interface GitClientConfig {
+/**
+ * Describes the Github configuration for dev-infra. This configuration is
+ * used for API requests, determining the upstream remote, etc.
+ */
+export interface GithubConfig {
     /** Owner name of the repository. */
     owner: string;
     /** Name of the repository. */
@@ -39,11 +42,11 @@ export declare class ConfigValidationError extends Error {
     readonly errors: string[];
     constructor(message?: string, errors?: string[]);
 }
-/** Validate the common configuration has been met for the ng-dev command. */
+/** Validate th configuration has been met for the ng-dev command. */
 export declare function assertValidGithubConfig<T>(config: T & Partial<{
-    github: GitClientConfig;
+    github: GithubConfig;
 }>): asserts config is T & {
-    github: GitClientConfig;
+    github: GithubConfig;
 };
 /**
  * Asserts the provided array of error messages is empty. If any errors are in the array,

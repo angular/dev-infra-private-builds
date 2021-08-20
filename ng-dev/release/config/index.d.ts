@@ -43,5 +43,5 @@ export interface ReleaseNotesConfig {
 export declare type DevInfraReleaseConfig = {
     release: ReleaseConfig;
 };
-/** Retrieve and validate the config as `ReleaseConfig`. */
+/** Asserts that the given configuration is a valid `DevInfraReleaseConfig`. */
 export declare function assertValidReleaseConfig<T>(config: T & Partial<DevInfraReleaseConfig>): asserts config is T & DevInfraReleaseConfig;

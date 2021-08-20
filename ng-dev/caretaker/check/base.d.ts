@@ -5,14 +5,14 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { GitClientConfig } from '../../utils/config';
+import { GithubConfig } from '../../utils/config';
 import { AuthenticatedGitClient } from '../../utils/git/authenticated-git-client';
 import { CaretakerConfig } from '../config';
 /** The BaseModule to extend modules for caretaker checks from. */
 export declare abstract class BaseModule<Data> {
     protected config: {
         caretaker: CaretakerConfig;
-        github: GitClientConfig;
+        github: GithubConfig;
     };
     /** The singleton instance of the authenticated git client. */
     protected git: AuthenticatedGitClient;
@@ -20,7 +20,7 @@ export declare abstract class BaseModule<Data> {
     readonly data: Promise<Data>;
     constructor(config: {
         caretaker: CaretakerConfig;
-        github: GitClientConfig;
+        github: GithubConfig;
     });
     /** Asyncronously retrieve data for the module. */
     protected abstract retrieveData(): Promise<Data>;
