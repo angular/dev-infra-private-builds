@@ -55900,8 +55900,8 @@ var require_parse2 = __commonJS({
     var FIXUP_PREFIX_RE = /^fixup! /i;
     var SQUASH_PREFIX_RE = /^squash! /i;
     var REVERT_PREFIX_RE = /^revert:? /i;
-    var headerPattern = /^(\w+)(?:\((?:([^/]+)\/)?([^)]+)\))?: (.*)$/;
-    var headerCorrespondence = ["type", "npmScope", "scope", "subject"];
+    var headerPattern = /^(\w+)(?:\(([^)]+)\))?: (.*)$/;
+    var headerCorrespondence = ["type", "scope", "subject"];
     var parseOptions = {
       commentChar: "#",
       headerPattern,
@@ -55935,7 +55935,6 @@ var require_parse2 = __commonJS({
         scope: commit.scope || "",
         subject: commit.subject || "",
         type: commit.type || "",
-        npmScope: commit.npmScope || "",
         isFixup: FIXUP_PREFIX_RE.test(fullText),
         isSquash: SQUASH_PREFIX_RE.test(fullText),
         isRevert: REVERT_PREFIX_RE.test(fullText),
@@ -56008,9 +56007,8 @@ var require_validate = __commonJS({
           errors.push(`Scopes are required for commits with type '${commit.type}', but no scope was provided.`);
           return false;
         }
-        const fullScope = commit.npmScope ? `${commit.npmScope}/${commit.scope}` : commit.scope;
-        if (fullScope && !config.scopes.includes(fullScope)) {
-          errors.push(`'${fullScope}' is not an allowed scope.
+        if (commit.scope && !config.scopes.includes(commit.scope)) {
+          errors.push(`'${commit.scope}' is not an allowed scope.
  => SCOPES: ${config.scopes.join(", ")}`);
           return false;
         }
@@ -61326,15 +61324,25 @@ var require_context = __commonJS({
         this.groupOrder = this.data.groupOrder || [];
         this.hiddenScopes = this.data.hiddenScopes || [];
         this.title = this.data.title;
-        this.commits = this.data.commits;
         this.version = this.data.version;
         this.dateStamp = buildDateStamp(this.data.date);
         this.urlFragmentForRelease = this.data.version;
+        this.commits = this._categorizeCommits(this.data.commits);
+      }
+      _categorizeCommits(commits) {
+        return commits.map((commit) => {
+          var _a, _b, _c;
+          const { description, groupName } = (_c = (_b = (_a = this.data).categorizeCommit) == null ? void 0 : _b.call(_a, commit)) != null ? _c : {};
+          return __spreadValues({
+            groupName: groupName != null ? groupName : commit.scope,
+            description: description != null ? description : commit.subject
+          }, commit);
+        });
       }
       asCommitGroups(commits) {
         const groups = new Map();
         commits.forEach((commit) => {
-          const key = commit.npmScope ? `${commit.npmScope}/${commit.scope}` : commit.scope;
+          const key = commit.groupName;
           const groupCommits = groups.get(key) || [];
           groups.set(key, groupCommits);
           groupCommits.push(commit);
@@ -61387,8 +61395,8 @@ var require_context = __commonJS({
         const url = `https://github.com/${this.data.github.owner}/${this.data.github.name}/pull/${prNumber}`;
         return `[#${prNumber}](${url})`;
       }
-      replaceCommitHeaderPullRequestNumber(header) {
-        return header.replace(/\(#(\d+)\)$/, (_, g) => `(${this.pullRequestToLink(+g)})`);
+      convertPullRequestReferencesToLinks(content) {
+        return content.replace(/#(\d+)/g, (_, g) => this.pullRequestToLink(Number(g)));
       }
       bulletizeText(text) {
         return "- " + text.replace(/\\n/g, "\\n  ");
@@ -61471,12 +61479,14 @@ for (const group of asCommitGroups(commitsInChangelog)) {
 _%>
 
 ### <%- group.title %>
-| Commit | Description |
-| -- | -- |
+| Commit | Type | Description |
+| -- | -- | -- |
 <%_
   for (const commit of group.commits) {
+    const descriptionWithMarkdownLinks = convertPullRequestReferencesToLinks(
+      commit.description);
 _%>
-| <%- commitToLink(commit) %> | <%- commit.type %>: <%- replaceCommitHeaderPullRequestNumber(commit.subject) %> |
+| <%- commitToLink(commit) %> | <%- commit.type %> | <%- descriptionWithMarkdownLinks %> |
 <%_
   }
 }
@@ -61552,7 +61562,7 @@ _%>
 <%_
   for (const commit of group.commits) {
 _%>
-| <%- commitToBadge(commit) %> | <%- commit.subject %> |
+| <%- commitToBadge(commit) %> | <%- commit.description %> |
 <%_
   }
 }
@@ -61692,6 +61702,7 @@ var require_release_notes = __commonJS({
             version: this.version.format(),
             groupOrder: this.config.groupOrder,
             hiddenScopes: this.config.hiddenScopes,
+            categorizeCommit: this.config.categorizeCommit,
             title: await this.promptForReleaseTitle()
           });
         }

@@ -9,7 +9,6 @@
 export interface CommitMessageParts {
     prefix: string;
     type: string;
-    npmScope: string;
     scope: string;
     summary: string;
     body: string;

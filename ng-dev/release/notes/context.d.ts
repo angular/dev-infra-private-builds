@@ -11,12 +11,18 @@ import { ReleaseNotesConfig } from '../config/index';
 /** Data used for context during rendering. */
 export interface RenderContextData {
     title: string | false;
-    groupOrder?: ReleaseNotesConfig['groupOrder'];
-    hiddenScopes?: ReleaseNotesConfig['hiddenScopes'];
-    date?: Date;
+    groupOrder: ReleaseNotesConfig['groupOrder'];
+    hiddenScopes: ReleaseNotesConfig['hiddenScopes'];
+    categorizeCommit: ReleaseNotesConfig['categorizeCommit'];
     commits: CommitFromGitLog[];
     version: string;
     github: GithubConfig;
+    date?: Date;
+}
+/** Interface describing an categorized commit. */
+export interface CategorizedCommit extends CommitFromGitLog {
+    groupName: string;
+    description: string;
 }
 /** Context class used for rendering release notes. */
 export declare class RenderContext {
@@ -27,15 +33,17 @@ export declare class RenderContext {
     private readonly hiddenScopes;
     /** The title of the release, or `false` if no title should be used. */
     readonly title: string | false;
-    /** An array of commits in the release period. */
-    readonly commits: CommitFromGitLog[];
     /** The version of the release. */
     readonly version: string;
     /** The date stamp string for use in the release notes entry. */
     readonly dateStamp: string;
     /** URL fragment that is used to create an anchor for the release. */
     readonly urlFragmentForRelease: string;
+    /** List of categorized commits in the release period. */
+    readonly commits: CategorizedCommit[];
     constructor(data: RenderContextData);
+    /** Gets a list of categorized commits from all commits in the release period. */
+    _categorizeCommits(commits: CommitFromGitLog[]): CategorizedCommit[];
     /**
      * Organizes and sorts the commits into groups of commits.
      *
@@ -43,37 +51,41 @@ export declare class RenderContext {
      * the configuration. Commits are order in the same order within each groups commit list as they
      * appear in the provided list of commits.
      * */
-    asCommitGroups(commits: CommitFromGitLog[]): {
+    asCommitGroups(commits: CategorizedCommit[]): {
         title: string;
-        commits: CommitFromGitLog[];
+        commits: CategorizedCommit[];
     }[];
     /** Whether the specified commit contains breaking changes. */
-    hasBreakingChanges(commit: CommitFromGitLog): boolean;
+    hasBreakingChanges(commit: CategorizedCommit): boolean;
     /** Whether the specified commit contains deprecations. */
-    hasDeprecations(commit: CommitFromGitLog): boolean;
+    hasDeprecations(commit: CategorizedCommit): boolean;
     /**
      * A filter function for filtering a list of commits to only include commits which
      * should appear in release notes.
      */
-    includeInReleaseNotes(): (commit: CommitFromGitLog) => boolean;
+    includeInReleaseNotes(): (commit: CategorizedCommit) => boolean;
     /**
      * A filter function for filtering a list of commits to only include commits which contain a
      * unique value for the provided field across all commits in the list.
      */
-    unique(field: keyof CommitFromGitLog): (commit: CommitFromGitLog) => boolean;
+    unique(field: keyof CategorizedCommit): (commit: CategorizedCommit) => boolean;
     /**
      * Convert a commit object to a Markdown link.
      */
-    commitToLink(commit: CommitFromGitLog): string;
+    commitToLink(commit: CategorizedCommit): string;
     /**
      * Convert a pull request number to a Markdown link.
      */
     pullRequestToLink(prNumber: number): string;
     /**
-     * Transform a commit message header by replacing the parenthesized pull request reference at the
-     * end of the line (which is added by merge tooling) to a Markdown link.
+     * Transform a given string by replacing any pull request references with their
+     * equivalent markdown links.
+     *
+     * This is useful for the changelog output. Github transforms pull request references
+     * automatically in release note entries, issues and pull requests, but not for plain
+     * markdown files (like the changelog file).
      */
-    replaceCommitHeaderPullRequestNumber(header: string): string;
+    convertPullRequestReferencesToLinks(content: string): string;
     /**
      * Bulletize a paragraph.
      */
@@ -81,11 +93,11 @@ export declare class RenderContext {
     /**
      * Returns unique, sorted and filtered commit authors.
      */
-    commitAuthors(commits: CommitFromGitLog[]): string[];
+    commitAuthors(commits: CategorizedCommit[]): string[];
     /**
      * Convert a commit object to a Markdown linked badged.
      */
-    commitToBadge(commit: CommitFromGitLog): string;
+    commitToBadge(commit: CategorizedCommit): string;
 }
 /**
  * Builds a date stamp for stamping in release notes.

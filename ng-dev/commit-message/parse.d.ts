@@ -23,8 +23,6 @@ export interface Commit {
     type: string;
     /** The scope of the commit message. */
     scope: string;
-    /** The npm scope of the commit message. */
-    npmScope: string;
     /** The subject of the commit message. */
     subject: string;
     /** A list of breaking change notes in the commit message. */
