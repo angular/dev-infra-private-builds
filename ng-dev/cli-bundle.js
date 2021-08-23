@@ -62030,7 +62030,7 @@ var require_constants3 = __commonJS({
     exports2.packageJsonPath = "package.json";
     exports2.changelogPath = "CHANGELOG.md";
     exports2.waitForPullRequestInterval = 1e4;
-    exports2.githubReleaseBodyLimit = 25e3;
+    exports2.githubReleaseBodyLimit = 125e3;
   }
 });
 
