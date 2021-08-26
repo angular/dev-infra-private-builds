@@ -45,6 +45,12 @@ export declare class RenderContext {
     /** Gets a list of categorized commits from all commits in the release period. */
     _categorizeCommits(commits: CommitFromGitLog[]): CategorizedCommit[];
     /**
+     * Comparator used for sorting commits within a release notes group. Commits
+     * are sorted alphabetically based on their type. Commits having the same type
+     * will be sorted alphabetically based on their determined description
+     */
+    private _commitsWithinGroupComparator;
+    /**
      * Organizes and sorts the commits into groups of commits.
      *
      * Groups are sorted either by default `Array.sort` order, or using the provided group order from

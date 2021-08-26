@@ -58802,6 +58802,20 @@ var require_config7 = __commonJS({
   }
 });
 
+// bazel-out/k8-fastbuild/bin/ng-dev/utils/locale.js
+var require_locale = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/utils/locale.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.compareString = exports2.defaultLocale = void 0;
+    exports2.defaultLocale = "en-US";
+    function compareString(a, b) {
+      return a.localeCompare(b, exports2.defaultLocale);
+    }
+    exports2.compareString = compareString;
+  }
+});
+
 // bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/defaults/lts-branch.js
 var require_lts_branch = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/defaults/lts-branch.js"(exports2) {
@@ -58812,6 +58826,7 @@ var require_lts_branch = __commonJS({
     var versioning_1 = require_versioning();
     var console_12 = require_console();
     var target_label_1 = require_target_label();
+    var locale_1 = require_locale();
     async function assertActiveLtsBranch(repo, releaseConfig, branchName) {
       const version = await versioning_1.getVersionOfBranch(repo, branchName);
       const { "dist-tags": distTags, time } = await versioning_1.fetchProjectNpmPackageInfo(releaseConfig);
@@ -58827,7 +58842,7 @@ var require_lts_branch = __commonJS({
       const majorReleaseDate = new Date(time[`${version.major}.0.0`]);
       const ltsEndDate = versioning_1.computeLtsEndDateOfMajor(majorReleaseDate);
       if (today > ltsEndDate) {
-        const ltsEndDateText = ltsEndDate.toLocaleDateString("en-US");
+        const ltsEndDateText = ltsEndDate.toLocaleDateString(locale_1.defaultLocale);
         console_12.warn(console_12.red(`Long-term support ended for v${version.major} on ${ltsEndDateText}.`));
         console_12.warn(console_12.yellow(`Merging of pull requests for this major is generally not desired, but can be forcibly ignored.`));
         if (await console_12.promptConfirm("Do you want to forcibly proceed with merging?")) {
@@ -61435,6 +61450,7 @@ var require_context = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.buildDateStamp = exports2.RenderContext = void 0;
     var config_1 = require_config4();
+    var locale_1 = require_locale();
     var typesToIncludeInReleaseNotes = Object.values(config_1.COMMIT_TYPES).filter((type) => type.releaseNotesLevel === config_1.ReleaseNotesLevel.Visible).map((type) => type.name);
     var botsAuthorNames = ["dependabot[bot]", "Renovate Bot"];
     var RenderContext = class {
@@ -61447,6 +61463,13 @@ var require_context = __commonJS({
         this.dateStamp = buildDateStamp(this.data.date);
         this.urlFragmentForRelease = this.data.version;
         this.commits = this._categorizeCommits(this.data.commits);
+        this._commitsWithinGroupComparator = (a, b) => {
+          const typeCompareOrder = locale_1.compareString(a.type, b.type);
+          if (typeCompareOrder === 0) {
+            return locale_1.compareString(a.description, b.description);
+          }
+          return typeCompareOrder;
+        };
       }
       _categorizeCommits(commits) {
         return commits.map((commit) => {
@@ -61468,8 +61491,8 @@ var require_context = __commonJS({
         });
         const commitGroups = Array.from(groups.entries()).map(([title, commits2]) => ({
           title,
-          commits: commits2.sort((a, b) => a.type > b.type ? 1 : a.type < b.type ? -1 : 0)
-        })).sort((a, b) => a.title > b.title ? 1 : a.title < b.title ? -1 : 0);
+          commits: commits2.sort(this._commitsWithinGroupComparator)
+        })).sort((a, b) => locale_1.compareString(a.title, b.title));
         if (this.groupOrder.length) {
           for (const groupTitle of this.groupOrder.reverse()) {
             const currentIdx = commitGroups.findIndex((k) => k.title === groupTitle);
