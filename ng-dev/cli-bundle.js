@@ -62019,6 +62019,46 @@ var require_semver3 = __commonJS({
   }
 });
 
+// bazel-out/k8-fastbuild/bin/ng-dev/utils/spinner.js
+var require_spinner = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/utils/spinner.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.Spinner = void 0;
+    var readline_1 = require("readline");
+    var hideCursor = "[?25l";
+    var showCursor = "[?25h";
+    var Spinner = class {
+      constructor(text) {
+        this.text = text;
+        this.intervalId = setInterval(() => this.printFrame(), 125);
+        this.spinnerCharacters = ["\u280B", "\u2819", "\u2839", "\u2838", "\u283C", "\u2834", "\u2826", "\u2827", "\u2807", "\u280F"];
+        this.currentSpinnerCharacterIndex = 0;
+        process.stdout.write(hideCursor);
+      }
+      getNextSpinnerCharacter() {
+        this.currentSpinnerCharacterIndex = this.currentSpinnerCharacterIndex % this.spinnerCharacters.length + 1;
+        return this.spinnerCharacters[this.currentSpinnerCharacterIndex - 1];
+      }
+      printFrame(prefix = this.getNextSpinnerCharacter(), text = this.text) {
+        readline_1.cursorTo(process.stdout, 0);
+        process.stdout.write(` ${prefix} ${text}`);
+        readline_1.clearLine(process.stdout, 1);
+        readline_1.cursorTo(process.stdout, 0);
+      }
+      update(text) {
+        this.text = text;
+      }
+      complete() {
+        clearInterval(this.intervalId);
+        process.stdout.write("\n");
+        process.stdout.write(showCursor);
+      }
+    };
+    exports2.Spinner = Spinner;
+  }
+});
+
 // bazel-out/k8-fastbuild/bin/ng-dev/release/publish/commit-message.js
 var require_commit_message = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/commit-message.js"(exports2) {
@@ -62063,9 +62103,9 @@ var require_external_commands = __commonJS({
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.invokeYarnInstallCommand = exports2.invokeReleaseBuildCommand = exports2.invokeSetNpmDistCommand = void 0;
-    var ora = require_ora();
     var child_process_1 = require_child_process();
     var console_12 = require_console();
+    var spinner_1 = require_spinner();
     var actions_error_1 = require_actions_error();
     async function invokeSetNpmDistCommand(npmDistTag, version) {
       try {
@@ -62086,16 +62126,16 @@ var require_external_commands = __commonJS({
     }
     exports2.invokeSetNpmDistCommand = invokeSetNpmDistCommand;
     async function invokeReleaseBuildCommand() {
-      const spinner = ora.call(void 0).start("Building release output.");
+      const spinner = new spinner_1.Spinner("Building release output.");
       try {
         const { stdout } = await child_process_1.spawn("yarn", ["--silent", "ng-dev", "release", "build", "--json"], {
           mode: "silent"
         });
-        spinner.stop();
+        spinner.complete();
         console_12.info(console_12.green("  \u2713   Built release output for all packages."));
         return JSON.parse(stdout.trim());
       } catch (e) {
-        spinner.stop();
+        spinner.complete();
         console_12.error(e);
         console_12.error(console_12.red("  \u2718   An error occurred while building the release packages."));
         throw new actions_error_1.FatalReleaseActionError();
@@ -62206,10 +62246,10 @@ var require_actions = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ReleaseAction = void 0;
     var fs_1 = require("fs");
-    var ora = require_ora();
     var path_1 = require("path");
     var semver = require_semver2();
     var console_12 = require_console();
+    var spinner_1 = require_spinner();
     var github_urls_1 = require_github_urls();
     var semver_1 = require_semver3();
     var release_notes_1 = require_release_notes();
@@ -62362,16 +62402,16 @@ var require_actions = __commonJS({
       async waitForPullRequestToBeMerged({ id }, interval = constants_1.waitForPullRequestInterval) {
         return new Promise((resolve, reject) => {
           console_12.debug(`Waiting for pull request #${id} to be merged.`);
-          const spinner = ora.call(void 0).start(`Waiting for pull request #${id} to be merged.`);
+          const spinner = new spinner_1.Spinner(`Waiting for pull request #${id} to be merged.`);
           const intervalId = setInterval(async () => {
             const prState = await pull_request_state_1.getPullRequestState(this.git, id);
             if (prState === "merged") {
-              spinner.stop();
+              spinner.complete();
               console_12.info(console_12.green(`  \u2713   Pull request #${id} has been merged.`));
               clearInterval(intervalId);
               resolve();
             } else if (prState === "closed") {
-              spinner.stop();
+              spinner.complete();
               console_12.warn(console_12.yellow(`  \u2718   Pull request #${id} has been closed.`));
               clearInterval(intervalId);
               reject(new actions_error_1.UserAbortedReleaseActionError());
@@ -62470,13 +62510,13 @@ ${localChangelog}`);
       }
       async _publishBuiltPackageToNpm(pkg, npmDistTag) {
         console_12.debug(`Starting publish of "${pkg.name}".`);
-        const spinner = ora.call(void 0).start(`Publishing "${pkg.name}"`);
+        const spinner = new spinner_1.Spinner(`Publishing "${pkg.name}"`);
         try {
           await npm_publish_1.runNpmPublish(pkg.outputPath, npmDistTag, this.config.publishRegistry);
-          spinner.stop();
+          spinner.complete();
           console_12.info(console_12.green(`  \u2713   Successfully published "${pkg.name}.`));
         } catch (e) {
-          spinner.stop();
+          spinner.complete();
           console_12.error(e);
           console_12.error(console_12.red(`  \u2718   An error occurred while publishing "${pkg.name}".`));
           throw new actions_error_1.FatalReleaseActionError();
@@ -63138,10 +63178,10 @@ var require_cli21 = __commonJS({
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ReleaseSetDistTagCommand = void 0;
-    var ora = require_ora();
     var semver = require_semver2();
     var config_1 = require_config2();
     var console_12 = require_console();
+    var spinner_1 = require_spinner();
     var index_12 = require_config7();
     var npm_publish_1 = require_npm_publish();
     function builder(args) {
@@ -63165,22 +63205,21 @@ var require_cli21 = __commonJS({
         console_12.error(console_12.red(`Invalid version specified (${rawVersion}). Unable to set NPM dist tag.`));
         process.exit(1);
       }
-      const spinner = ora.call(void 0).start();
       console_12.debug(`Setting "${tagName}" NPM dist tag for release packages to v${version}.`);
+      const spinner = new spinner_1.Spinner("");
       for (const pkgName of npmPackages) {
-        spinner.text = `Setting NPM dist tag for "${pkgName}"`;
-        spinner.render();
+        spinner.update(`Setting NPM dist tag for "${pkgName}"`);
         try {
           await npm_publish_1.setNpmTagForPackage(pkgName, tagName, version, publishRegistry);
           console_12.debug(`Successfully set "${tagName}" NPM dist tag for "${pkgName}".`);
         } catch (e) {
-          spinner.stop();
+          spinner.complete();
           console_12.error(e);
           console_12.error(console_12.red(`  \u2718   An error occurred while setting the NPM dist tag for "${pkgName}".`));
           process.exit(1);
         }
       }
-      spinner.stop();
+      spinner.complete();
       console_12.info(console_12.green(`  \u2713   Set NPM dist tag for all release packages.`));
       console_12.info(console_12.green(`      ${console_12.bold(tagName)} will now point to ${console_12.bold(`v${version}`)}.`));
     }
