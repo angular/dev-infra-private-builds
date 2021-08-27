@@ -36685,7 +36685,7 @@ var require_config2 = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/utils/config.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.assertNoErrors = exports2.assertValidGithubConfig = exports2.ConfigValidationError = exports2.getUserConfig = exports2.getConfig = void 0;
+    exports2.assertNoErrors = exports2.assertValidGithubConfig = exports2.ConfigValidationError = exports2.getUserConfig = exports2.getConfig = exports2.setConfig = void 0;
     var fs_1 = require("fs");
     var path_1 = require("path");
     var console_1 = require_console();
@@ -36695,6 +36695,10 @@ var require_config2 = __commonJS({
     var cachedConfig = null;
     var USER_CONFIG_FILE_PATH = ".ng-dev.user";
     var userConfig = null;
+    function setConfig(config) {
+      cachedConfig = config;
+    }
+    exports2.setConfig = setConfig;
     function getConfig(baseDir) {
       if (cachedConfig === null) {
         baseDir = baseDir || git_client_1.GitClient.get().baseDir;

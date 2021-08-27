@@ -18,6 +18,8 @@ export declare class ReleaseNotes {
     getGithubReleaseEntry(): Promise<string>;
     /** Retrieve the release note generated for a CHANGELOG entry. */
     getChangelogEntry(): Promise<string>;
+    /** Retrieve the number of commits included in the release notes after filtering and deduping. */
+    getCommitCountInReleaseNotes(): Promise<number>;
     /**
      * Gets the URL fragment for the release notes. The URL fragment identifier
      * can be used to point to a specific changelog entry through an URL.

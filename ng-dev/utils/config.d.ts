@@ -22,6 +22,11 @@ export interface GithubConfig {
     private?: boolean;
 }
 /**
+ * Set the cached configuration object to be loaded later. Only to be used on CI situations in
+ * which loading from the `.ng-dev/` directory is not possible.
+ */
+export declare function setConfig(config: {}): void;
+/**
  * Get the configuration from the file system, returning the already loaded
  * copy if it is defined.
  */

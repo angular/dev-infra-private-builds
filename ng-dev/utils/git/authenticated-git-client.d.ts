@@ -50,8 +50,4 @@ export declare class AuthenticatedGitClient extends GitClient {
     static get(): AuthenticatedGitClient;
     /** Configures an authenticated git client. */
     static configure(token: string): void;
-    /** Configures an authenticated git client in the context of a Github action. */
-    static configureForGithubActions(token: string, config: {
-        github: GithubConfig;
-    }): void;
 }

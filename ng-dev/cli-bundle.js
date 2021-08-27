@@ -40046,7 +40046,7 @@ var require_config2 = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/utils/config.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.assertNoErrors = exports2.assertValidGithubConfig = exports2.ConfigValidationError = exports2.getUserConfig = exports2.getConfig = void 0;
+    exports2.assertNoErrors = exports2.assertValidGithubConfig = exports2.ConfigValidationError = exports2.getUserConfig = exports2.getConfig = exports2.setConfig = void 0;
     var fs_1 = require("fs");
     var path_1 = require("path");
     var console_12 = require_console();
@@ -40056,6 +40056,10 @@ var require_config2 = __commonJS({
     var cachedConfig = null;
     var USER_CONFIG_FILE_PATH = ".ng-dev.user";
     var userConfig = null;
+    function setConfig(config) {
+      cachedConfig = config;
+    }
+    exports2.setConfig = setConfig;
     function getConfig(baseDir) {
       if (cachedConfig === null) {
         baseDir = baseDir || git_client_1.GitClient.get().baseDir;
@@ -40196,16 +40200,7 @@ Alternatively, a new token can be created at: ${github_urls_1.GITHUB_TOKEN_GENER
         if (AuthenticatedGitClient._authenticatedInstance) {
           throw Error("Unable to configure `AuthenticatedGitClient` as it has been configured already.");
         }
-        if (process.env["GITHUB_ACTIONS"]) {
-          throw Error("Cannot use `configure` static method to create AuthenticatedGitClient in a Github Action.");
-        }
         AuthenticatedGitClient._authenticatedInstance = new AuthenticatedGitClient(token);
-      }
-      static configureForGithubActions(token, config) {
-        if (AuthenticatedGitClient._authenticatedInstance) {
-          throw Error("Unable to configure `AuthenticatedGitClient` as it has been configured already.");
-        }
-        AuthenticatedGitClient._authenticatedInstance = new AuthenticatedGitClient(token, void 0, config);
       }
     };
     exports2.AuthenticatedGitClient = AuthenticatedGitClient;
@@ -61822,6 +61817,10 @@ var require_release_notes = __commonJS({
       }
       async getChangelogEntry() {
         return ejs_1.render(changelog_1.default, await this.generateRenderContext(), { rmWhitespace: true });
+      }
+      async getCommitCountInReleaseNotes() {
+        const context = await this.generateRenderContext();
+        return context.commits.filter(context.includeInReleaseNotes()).length;
       }
       async getUrlFragmentForRelease() {
         return (await this.generateRenderContext()).urlFragmentForRelease;
