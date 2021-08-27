@@ -36342,14 +36342,11 @@ var require_github = __commonJS({
     exports2.AuthenticatedGithubClient = exports2.GithubClient = exports2.GithubApiRequestError = void 0;
     var graphql_1 = require_dist_node6();
     var rest_1 = require_dist_node12();
+    var request_error_1 = require_dist_node4();
+    Object.defineProperty(exports2, "GithubApiRequestError", { enumerable: true, get: function() {
+      return request_error_1.RequestError;
+    } });
     var typed_graphqlify_1 = require_dist();
-    var GithubApiRequestError = class extends Error {
-      constructor(status, message) {
-        super(message);
-        this.status = status;
-      }
-    };
-    exports2.GithubApiRequestError = GithubApiRequestError;
     var GithubClient = class {
       constructor(_octokitOptions) {
         this._octokitOptions = _octokitOptions;
@@ -36372,7 +36369,7 @@ var require_github = __commonJS({
         this._graphql = graphql_1.graphql.defaults({ headers: { authorization: `token ${this._token}` } });
       }
       async graphql(queryObject, params = {}) {
-        return await this._graphql(typed_graphqlify_1.query(queryObject).toString(), params);
+        return await this._graphql((0, typed_graphqlify_1.query)(queryObject).toString(), params);
       }
     };
     exports2.AuthenticatedGithubClient = AuthenticatedGithubClient;
@@ -36439,11 +36436,11 @@ var require_git_client = __commonJS({
     };
     exports2.GitCommandError = GitCommandError;
     var GitClient = class {
-      constructor(baseDir = determineRepoBaseDirFromCwd(), config = config_12.getConfig(baseDir)) {
+      constructor(baseDir = determineRepoBaseDirFromCwd(), config = (0, config_12.getConfig)(baseDir)) {
         this.baseDir = baseDir;
         this.github = new github_1.GithubClient();
         this.gitBinPath = "git";
-        config_12.assertValidGithubConfig(config);
+        (0, config_12.assertValidGithubConfig)(config);
         this.config = config;
         this.remoteConfig = config.github;
         this.remoteParams = { owner: config.github.owner, repo: config.github.name };
@@ -36458,13 +36455,13 @@ var require_git_client = __commonJS({
       }
       runGraceful(args, options = {}) {
         const gitCommand = args[0];
-        if (dry_run_1.isDryRun() && gitCommand === "push") {
-          console_1.debug(`"git push" is not able to be run in dryRun mode.`);
+        if ((0, dry_run_1.isDryRun)() && gitCommand === "push") {
+          (0, console_1.debug)(`"git push" is not able to be run in dryRun mode.`);
           throw new dry_run_1.DryRunError();
         }
         const printFn = GitClient.verboseLogging || options.verboseLogging ? console_1.info : console_1.debug;
         printFn("Executing: git", this.sanitizeConsoleOutput(args.join(" ")));
-        const result = child_process_1.spawnSync(this.gitBinPath, args, __spreadProps(__spreadValues({
+        const result = (0, child_process_1.spawnSync)(this.gitBinPath, args, __spreadProps(__spreadValues({
           cwd: this.baseDir,
           stdio: "pipe"
         }, options), {
@@ -36479,7 +36476,7 @@ var require_git_client = __commonJS({
         return result;
       }
       getRepoGitUrl() {
-        return github_urls_1.getRepositoryGitUrl(this.remoteConfig);
+        return (0, github_urls_1.getRepositoryGitUrl)(this.remoteConfig);
       }
       hasCommit(branchName, sha) {
         return this.run(["branch", branchName, "--contains", sha]).stdout !== "";
@@ -36534,7 +36531,7 @@ var require_git_client = __commonJS({
       return gitCommandResult.stdout.split("\n").map((x) => x.trim()).filter((x) => !!x);
     }
     function determineRepoBaseDirFromCwd() {
-      const { stdout, stderr, status } = child_process_1.spawnSync("git", ["rev-parse --show-toplevel"], {
+      const { stdout, stderr, status } = (0, child_process_1.spawnSync)("git", ["rev-parse --show-toplevel"], {
         shell: true,
         stdio: "pipe",
         encoding: "utf8"
@@ -36567,7 +36564,7 @@ var require_console = __commonJS({
     exports2.bold = chalk.bold;
     exports2.blue = chalk.blue;
     async function promptConfirm(message, defaultValue = false) {
-      return (await inquirer_1.prompt({
+      return (await (0, inquirer_1.prompt)({
         type: "confirm",
         name: "result",
         message,
@@ -36576,7 +36573,7 @@ var require_console = __commonJS({
     }
     exports2.promptConfirm = promptConfirm;
     async function promptInput(message) {
-      return (await inquirer_1.prompt({ type: "input", name: "result", message })).result;
+      return (await (0, inquirer_1.prompt)({ type: "input", name: "result", message })).result;
     }
     exports2.promptInput = promptInput;
     var LOG_LEVELS;
@@ -36598,9 +36595,9 @@ var require_console = __commonJS({
       const loggingFunction = (...text) => {
         runConsoleCommand(loadCommand, level, ...text);
       };
-      loggingFunction.group = (text, collapsed = false) => {
+      loggingFunction.group = (label, collapsed = false) => {
         const command = collapsed ? console.groupCollapsed : console.group;
-        runConsoleCommand(() => command, level, text);
+        runConsoleCommand(() => command, level, label);
       };
       loggingFunction.groupEnd = () => {
         runConsoleCommand(() => console.groupEnd, level);
@@ -36642,13 +36639,13 @@ Ran at: ${now}
 `;
         LOGGED_TEXT += `Exit Code: ${code}
 `;
-        const logFilePath = path_1.join(git.baseDir, ".ng-dev.log");
+        const logFilePath = (0, path_1.join)(git.baseDir, ".ng-dev.log");
         LOGGED_TEXT = LOGGED_TEXT.replace(/\x1B\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]/g, "");
-        fs_1.writeFileSync(logFilePath, LOGGED_TEXT);
+        (0, fs_1.writeFileSync)(logFilePath, LOGGED_TEXT);
         if (code > 1) {
           const logFileName = `.ng-dev.err-${now.getTime()}.log`;
           console.error(`Exit code: ${code}. Writing full log to ${logFileName}`);
-          fs_1.writeFileSync(path_1.join(git.baseDir, logFileName), LOGGED_TEXT);
+          (0, fs_1.writeFileSync)((0, path_1.join)(git.baseDir, logFileName), LOGGED_TEXT);
         }
       });
       FILE_LOGGING_ENABLED = true;
@@ -36702,7 +36699,7 @@ var require_config2 = __commonJS({
     function getConfig(baseDir) {
       if (cachedConfig === null) {
         baseDir = baseDir || git_client_1.GitClient.get().baseDir;
-        const configPath = path_1.join(baseDir, CONFIG_FILE_PATH);
+        const configPath = (0, path_1.join)(baseDir, CONFIG_FILE_PATH);
         cachedConfig = readConfigFile(configPath);
       }
       return __spreadValues({}, cachedConfig);
@@ -36711,7 +36708,7 @@ var require_config2 = __commonJS({
     function getUserConfig() {
       if (userConfig === null) {
         const git = git_client_1.GitClient.get();
-        const configPath = path_1.join(git.baseDir, USER_CONFIG_FILE_PATH);
+        const configPath = (0, path_1.join)(git.baseDir, USER_CONFIG_FILE_PATH);
         userConfig = readConfigFile(configPath, true);
       }
       return __spreadValues({}, userConfig);
@@ -36743,9 +36740,9 @@ var require_config2 = __commonJS({
     }
     exports2.assertValidGithubConfig = assertValidGithubConfig;
     function readConfigFile(configPath, returnEmptyObjectOnError = false) {
-      if (require.extensions[".ts"] === void 0 && fs_1.existsSync(`${configPath}.ts`) && ts_node_1.isTsNodeAvailable()) {
+      if (require.extensions[".ts"] === void 0 && (0, fs_1.existsSync)(`${configPath}.ts`) && (0, ts_node_1.isTsNodeAvailable)()) {
         require("ts-node").register({
-          dir: path_1.dirname(configPath),
+          dir: (0, path_1.dirname)(configPath),
           transpileOnly: true,
           compilerOptions: { module: "commonjs" }
         });
@@ -36754,12 +36751,12 @@ var require_config2 = __commonJS({
         return require(configPath);
       } catch (e) {
         if (returnEmptyObjectOnError) {
-          console_1.debug(`Could not read configuration file at ${configPath}, returning empty object instead.`);
-          console_1.debug(e);
+          (0, console_1.debug)(`Could not read configuration file at ${configPath}, returning empty object instead.`);
+          (0, console_1.debug)(e);
           return {};
         }
-        console_1.error(`Could not read configuration file at ${configPath}.`);
-        console_1.error(e);
+        (0, console_1.error)(`Could not read configuration file at ${configPath}.`);
+        (0, console_1.error)(e);
         process.exit(1);
       }
     }
@@ -36767,9 +36764,9 @@ var require_config2 = __commonJS({
       if (errors.length == 0) {
         return;
       }
-      console_1.error(`Errors discovered while loading configuration file:`);
+      (0, console_1.error)(`Errors discovered while loading configuration file:`);
       for (const err of errors) {
-        console_1.error(`  - ${err}`);
+        (0, console_1.error)(`  - ${err}`);
       }
       process.exit(1);
     }
@@ -36813,8 +36810,8 @@ async function main(stampForRelease) {
   if (process.send === void 0) {
     throw Error("This script needs to be invoked as a NodeJS worker.");
   }
-  const config = config_1.getConfig();
-  index_1.assertValidReleaseConfig(config);
+  const config = (0, config_1.getConfig)();
+  (0, index_1.assertValidReleaseConfig)(config);
   const builtPackages = await config.release.buildPackages(stampForRelease);
   process.send(builtPackages);
 }

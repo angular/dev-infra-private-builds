@@ -34,41 +34,41 @@ export declare enum LOG_LEVELS {
 export declare const DEFAULT_LOG_LEVEL = LOG_LEVELS.INFO;
 /** Write to the console for at INFO logging level */
 export declare const info: {
-    (...text: string[]): void;
+    (...text: unknown[]): void;
     /** Start a group at the LOG_LEVEL, optionally starting it as collapsed. */
-    group(text: string, collapsed?: boolean): void;
+    group(label: unknown, collapsed?: boolean): void;
     /** End the group at the LOG_LEVEL. */
     groupEnd(): void;
 };
 /** Write to the console for at ERROR logging level */
 export declare const error: {
-    (...text: string[]): void;
+    (...text: unknown[]): void;
     /** Start a group at the LOG_LEVEL, optionally starting it as collapsed. */
-    group(text: string, collapsed?: boolean): void;
+    group(label: unknown, collapsed?: boolean): void;
     /** End the group at the LOG_LEVEL. */
     groupEnd(): void;
 };
 /** Write to the console for at DEBUG logging level */
 export declare const debug: {
-    (...text: string[]): void;
+    (...text: unknown[]): void;
     /** Start a group at the LOG_LEVEL, optionally starting it as collapsed. */
-    group(text: string, collapsed?: boolean): void;
+    group(label: unknown, collapsed?: boolean): void;
     /** End the group at the LOG_LEVEL. */
     groupEnd(): void;
 };
 /** Write to the console for at LOG logging level */
 export declare const log: {
-    (...text: string[]): void;
+    (...text: unknown[]): void;
     /** Start a group at the LOG_LEVEL, optionally starting it as collapsed. */
-    group(text: string, collapsed?: boolean): void;
+    group(label: unknown, collapsed?: boolean): void;
     /** End the group at the LOG_LEVEL. */
     groupEnd(): void;
 };
 /** Write to the console for at WARN logging level */
 export declare const warn: {
-    (...text: string[]): void;
+    (...text: unknown[]): void;
     /** Start a group at the LOG_LEVEL, optionally starting it as collapsed. */
-    group(text: string, collapsed?: boolean): void;
+    group(label: unknown, collapsed?: boolean): void;
     /** End the group at the LOG_LEVEL. */
     groupEnd(): void;
 };

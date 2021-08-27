@@ -39703,14 +39703,11 @@ var require_github = __commonJS({
     exports2.AuthenticatedGithubClient = exports2.GithubClient = exports2.GithubApiRequestError = void 0;
     var graphql_1 = require_dist_node6();
     var rest_1 = require_dist_node12();
+    var request_error_1 = require_dist_node4();
+    Object.defineProperty(exports2, "GithubApiRequestError", { enumerable: true, get: function() {
+      return request_error_1.RequestError;
+    } });
     var typed_graphqlify_1 = require_dist();
-    var GithubApiRequestError = class extends Error {
-      constructor(status, message) {
-        super(message);
-        this.status = status;
-      }
-    };
-    exports2.GithubApiRequestError = GithubApiRequestError;
     var GithubClient = class {
       constructor(_octokitOptions) {
         this._octokitOptions = _octokitOptions;
@@ -39733,7 +39730,7 @@ var require_github = __commonJS({
         this._graphql = graphql_1.graphql.defaults({ headers: { authorization: `token ${this._token}` } });
       }
       async graphql(queryObject, params = {}) {
-        return await this._graphql(typed_graphqlify_1.query(queryObject).toString(), params);
+        return await this._graphql((0, typed_graphqlify_1.query)(queryObject).toString(), params);
       }
     };
     exports2.AuthenticatedGithubClient = AuthenticatedGithubClient;
@@ -39800,11 +39797,11 @@ var require_git_client = __commonJS({
     };
     exports2.GitCommandError = GitCommandError;
     var GitClient = class {
-      constructor(baseDir = determineRepoBaseDirFromCwd(), config = config_1.getConfig(baseDir)) {
+      constructor(baseDir = determineRepoBaseDirFromCwd(), config = (0, config_1.getConfig)(baseDir)) {
         this.baseDir = baseDir;
         this.github = new github_1.GithubClient();
         this.gitBinPath = "git";
-        config_1.assertValidGithubConfig(config);
+        (0, config_1.assertValidGithubConfig)(config);
         this.config = config;
         this.remoteConfig = config.github;
         this.remoteParams = { owner: config.github.owner, repo: config.github.name };
@@ -39819,13 +39816,13 @@ var require_git_client = __commonJS({
       }
       runGraceful(args, options = {}) {
         const gitCommand = args[0];
-        if (dry_run_1.isDryRun() && gitCommand === "push") {
-          console_12.debug(`"git push" is not able to be run in dryRun mode.`);
+        if ((0, dry_run_1.isDryRun)() && gitCommand === "push") {
+          (0, console_12.debug)(`"git push" is not able to be run in dryRun mode.`);
           throw new dry_run_1.DryRunError();
         }
         const printFn = GitClient.verboseLogging || options.verboseLogging ? console_12.info : console_12.debug;
         printFn("Executing: git", this.sanitizeConsoleOutput(args.join(" ")));
-        const result = child_process_1.spawnSync(this.gitBinPath, args, __spreadProps(__spreadValues({
+        const result = (0, child_process_1.spawnSync)(this.gitBinPath, args, __spreadProps(__spreadValues({
           cwd: this.baseDir,
           stdio: "pipe"
         }, options), {
@@ -39840,7 +39837,7 @@ var require_git_client = __commonJS({
         return result;
       }
       getRepoGitUrl() {
-        return github_urls_1.getRepositoryGitUrl(this.remoteConfig);
+        return (0, github_urls_1.getRepositoryGitUrl)(this.remoteConfig);
       }
       hasCommit(branchName, sha) {
         return this.run(["branch", branchName, "--contains", sha]).stdout !== "";
@@ -39895,7 +39892,7 @@ var require_git_client = __commonJS({
       return gitCommandResult.stdout.split("\n").map((x) => x.trim()).filter((x) => !!x);
     }
     function determineRepoBaseDirFromCwd() {
-      const { stdout, stderr, status } = child_process_1.spawnSync("git", ["rev-parse --show-toplevel"], {
+      const { stdout, stderr, status } = (0, child_process_1.spawnSync)("git", ["rev-parse --show-toplevel"], {
         shell: true,
         stdio: "pipe",
         encoding: "utf8"
@@ -39928,7 +39925,7 @@ var require_console = __commonJS({
     exports2.bold = chalk.bold;
     exports2.blue = chalk.blue;
     async function promptConfirm(message, defaultValue = false) {
-      return (await inquirer_1.prompt({
+      return (await (0, inquirer_1.prompt)({
         type: "confirm",
         name: "result",
         message,
@@ -39937,7 +39934,7 @@ var require_console = __commonJS({
     }
     exports2.promptConfirm = promptConfirm;
     async function promptInput(message) {
-      return (await inquirer_1.prompt({ type: "input", name: "result", message })).result;
+      return (await (0, inquirer_1.prompt)({ type: "input", name: "result", message })).result;
     }
     exports2.promptInput = promptInput;
     var LOG_LEVELS;
@@ -39959,9 +39956,9 @@ var require_console = __commonJS({
       const loggingFunction = (...text) => {
         runConsoleCommand(loadCommand, level, ...text);
       };
-      loggingFunction.group = (text, collapsed = false) => {
+      loggingFunction.group = (label, collapsed = false) => {
         const command = collapsed ? console.groupCollapsed : console.group;
-        runConsoleCommand(() => command, level, text);
+        runConsoleCommand(() => command, level, label);
       };
       loggingFunction.groupEnd = () => {
         runConsoleCommand(() => console.groupEnd, level);
@@ -40003,13 +40000,13 @@ Ran at: ${now}
 `;
         LOGGED_TEXT += `Exit Code: ${code}
 `;
-        const logFilePath = path_1.join(git.baseDir, ".ng-dev.log");
+        const logFilePath = (0, path_1.join)(git.baseDir, ".ng-dev.log");
         LOGGED_TEXT = LOGGED_TEXT.replace(/\x1B\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]/g, "");
-        fs_1.writeFileSync(logFilePath, LOGGED_TEXT);
+        (0, fs_1.writeFileSync)(logFilePath, LOGGED_TEXT);
         if (code > 1) {
           const logFileName = `.ng-dev.err-${now.getTime()}.log`;
           console.error(`Exit code: ${code}. Writing full log to ${logFileName}`);
-          fs_1.writeFileSync(path_1.join(git.baseDir, logFileName), LOGGED_TEXT);
+          (0, fs_1.writeFileSync)((0, path_1.join)(git.baseDir, logFileName), LOGGED_TEXT);
         }
       });
       FILE_LOGGING_ENABLED = true;
@@ -40063,7 +40060,7 @@ var require_config2 = __commonJS({
     function getConfig(baseDir) {
       if (cachedConfig === null) {
         baseDir = baseDir || git_client_1.GitClient.get().baseDir;
-        const configPath = path_1.join(baseDir, CONFIG_FILE_PATH);
+        const configPath = (0, path_1.join)(baseDir, CONFIG_FILE_PATH);
         cachedConfig = readConfigFile(configPath);
       }
       return __spreadValues({}, cachedConfig);
@@ -40072,7 +40069,7 @@ var require_config2 = __commonJS({
     function getUserConfig() {
       if (userConfig === null) {
         const git = git_client_1.GitClient.get();
-        const configPath = path_1.join(git.baseDir, USER_CONFIG_FILE_PATH);
+        const configPath = (0, path_1.join)(git.baseDir, USER_CONFIG_FILE_PATH);
         userConfig = readConfigFile(configPath, true);
       }
       return __spreadValues({}, userConfig);
@@ -40104,9 +40101,9 @@ var require_config2 = __commonJS({
     }
     exports2.assertValidGithubConfig = assertValidGithubConfig;
     function readConfigFile(configPath, returnEmptyObjectOnError = false) {
-      if (require.extensions[".ts"] === void 0 && fs_1.existsSync(`${configPath}.ts`) && ts_node_1.isTsNodeAvailable()) {
+      if (require.extensions[".ts"] === void 0 && (0, fs_1.existsSync)(`${configPath}.ts`) && (0, ts_node_1.isTsNodeAvailable)()) {
         require("ts-node").register({
-          dir: path_1.dirname(configPath),
+          dir: (0, path_1.dirname)(configPath),
           transpileOnly: true,
           compilerOptions: { module: "commonjs" }
         });
@@ -40115,12 +40112,12 @@ var require_config2 = __commonJS({
         return require(configPath);
       } catch (e) {
         if (returnEmptyObjectOnError) {
-          console_12.debug(`Could not read configuration file at ${configPath}, returning empty object instead.`);
-          console_12.debug(e);
+          (0, console_12.debug)(`Could not read configuration file at ${configPath}, returning empty object instead.`);
+          (0, console_12.debug)(e);
           return {};
         }
-        console_12.error(`Could not read configuration file at ${configPath}.`);
-        console_12.error(e);
+        (0, console_12.error)(`Could not read configuration file at ${configPath}.`);
+        (0, console_12.error)(e);
         process.exit(1);
       }
     }
@@ -40128,9 +40125,9 @@ var require_config2 = __commonJS({
       if (errors.length == 0) {
         return;
       }
-      console_12.error(`Errors discovered while loading configuration file:`);
+      (0, console_12.error)(`Errors discovered while loading configuration file:`);
       for (const err of errors) {
-        console_12.error(`  - ${err}`);
+        (0, console_12.error)(`  - ${err}`);
       }
       process.exit(1);
     }
@@ -40160,7 +40157,7 @@ var require_authenticated_git_client = __commonJS({
         return value.replace(this._githubTokenRegex, "<TOKEN>");
       }
       getRepoGitUrl() {
-        return github_urls_1.getRepositoryGitUrl(this.remoteConfig, this.githubToken);
+        return (0, github_urls_1.getRepositoryGitUrl)(this.remoteConfig, this.githubToken);
       }
       async hasOauthScopes(testFn) {
         const scopes = await this._fetchAuthScopesForToken();
@@ -40169,7 +40166,7 @@ var require_authenticated_git_client = __commonJS({
         if (missingScopes.length === 0) {
           return true;
         }
-        const error = `The provided <TOKEN> does not have required permissions due to missing scope(s): ${console_12.yellow(missingScopes.join(", "))}
+        const error = `The provided <TOKEN> does not have required permissions due to missing scope(s): ${(0, console_12.yellow)(missingScopes.join(", "))}
 
 Update the token in use at:
   ${github_urls_1.GITHUB_TOKEN_SETTINGS_URL}
@@ -40223,9 +40220,9 @@ var require_github_yargs = __commonJS({
         coerce: (token) => {
           const githubToken = token || process.env.GITHUB_TOKEN || process.env.TOKEN;
           if (!githubToken) {
-            console_12.error(console_12.red("No Github token set. Please set the `GITHUB_TOKEN` environment variable."));
-            console_12.error(console_12.red("Alternatively, pass the `--github-token` command line flag."));
-            console_12.error(console_12.yellow(`You can generate a token here: ${github_urls_1.GITHUB_TOKEN_GENERATE_URL}`));
+            (0, console_12.error)((0, console_12.red)("No Github token set. Please set the `GITHUB_TOKEN` environment variable."));
+            (0, console_12.error)((0, console_12.red)("Alternatively, pass the `--github-token` command line flag."));
+            (0, console_12.error)((0, console_12.yellow)(`You can generate a token here: ${github_urls_1.GITHUB_TOKEN_GENERATE_URL}`));
             process.exit(1);
           }
           try {
@@ -42616,7 +42613,7 @@ var require_active_release_trains = __commonJS({
     var version_branches_1 = require_version_branches();
     async function fetchActiveReleaseTrains(repo) {
       const nextBranchName = repo.nextBranchName;
-      const nextVersion = await version_branches_1.getVersionOfBranch(repo, nextBranchName);
+      const nextVersion = await (0, version_branches_1.getVersionOfBranch)(repo, nextBranchName);
       const next = new release_trains_1.ReleaseTrain(nextBranchName, nextVersion);
       const majorVersionsToConsider = [];
       let expectedReleaseCandidateMajor;
@@ -42630,7 +42627,7 @@ var require_active_release_trains = __commonJS({
         expectedReleaseCandidateMajor = nextVersion.major;
         majorVersionsToConsider.push(nextVersion.major);
       }
-      const branches = await version_branches_1.getBranchesForMajorVersions(repo, majorVersionsToConsider);
+      const branches = await (0, version_branches_1.getBranchesForMajorVersions)(repo, majorVersionsToConsider);
       const { latest, releaseCandidate } = await findActiveReleaseTrainsFromVersionBranches(repo, nextVersion, branches, expectedReleaseCandidateMajor);
       if (latest === null) {
         throw Error(`Unable to determine the latest release-train. The following branches have been considered: [${branches.map((b) => b.name).join(", ")}]`);
@@ -42649,7 +42646,7 @@ var require_active_release_trains = __commonJS({
         } else if (semver.eq(parsed, nextReleaseTrainVersion)) {
           throw Error(`Discovered unexpected version-branch "${name}" for a release-train that is already active in the "${nextBranchName}" branch. Please either delete the branch if created by accident, or update the version in the next branch (${nextBranchName}).`);
         }
-        const version = await version_branches_1.getVersionOfBranch(repo, name);
+        const version = await (0, version_branches_1.getVersionOfBranch)(repo, name);
         const releaseTrain = new release_trains_1.ReleaseTrain(name, version);
         const isPrerelease = version.prerelease[0] === "rc" || version.prerelease[0] === "next";
         if (isPrerelease) {
@@ -42693,7 +42690,7 @@ var require_npm_registry = __commonJS({
     }
     async function fetchPackageInfoFromNpmRegistry(pkgName) {
       if (exports2._npmPackageInfoCache[pkgName] === void 0) {
-        exports2._npmPackageInfoCache[pkgName] = node_fetch_1.default(`https://registry.npmjs.org/${pkgName}`).then((r) => r.json());
+        exports2._npmPackageInfoCache[pkgName] = (0, node_fetch_1.default)(`https://registry.npmjs.org/${pkgName}`).then((r) => r.json());
       }
       return await exports2._npmPackageInfoCache[pkgName];
     }
@@ -42712,7 +42709,7 @@ var require_long_term_support = __commonJS({
     var majorLongTermSupportDuration = 12;
     var ltsNpmDistTagRegex = /^v(\d+)-lts$/;
     async function fetchLongTermSupportBranchesFromNpm(config) {
-      const { "dist-tags": distTags, time } = await npm_registry_1.fetchProjectNpmPackageInfo(config);
+      const { "dist-tags": distTags, time } = await (0, npm_registry_1.fetchProjectNpmPackageInfo)(config);
       const today = new Date();
       const active = [];
       const inactive = [];
@@ -42809,13 +42806,13 @@ var require_ci = __commonJS({
     var base_1 = require_base2();
     var CiModule = class extends base_1.BaseModule {
       async retrieveData() {
-        const nextBranchName = index_12.getNextBranchName(this.config.github);
+        const nextBranchName = (0, index_12.getNextBranchName)(this.config.github);
         const repo = __spreadProps(__spreadValues({
           api: this.git.github
         }, this.git.remoteConfig), {
           nextBranchName
         });
-        const releaseTrains = await index_12.fetchActiveReleaseTrains(repo);
+        const releaseTrains = await (0, index_12.fetchActiveReleaseTrains)(repo);
         const ciResultPromises = Object.entries(releaseTrains).map(async ([trainName, train]) => {
           if (train === null) {
             return {
@@ -42837,28 +42834,28 @@ var require_ci = __commonJS({
       async printToTerminal() {
         const data = await this.data;
         const minLabelLength = Math.max(...data.map((result) => result.label.length));
-        console_12.info.group(console_12.bold(`CI`));
+        console_12.info.group((0, console_12.bold)(`CI`));
         data.forEach((result) => {
           if (result.active === false) {
-            console_12.debug(`No active release train for ${result.name}`);
+            (0, console_12.debug)(`No active release train for ${result.name}`);
             return;
           }
           const label = result.label.padEnd(minLabelLength);
           if (result.status === "not found") {
-            console_12.info(`${result.name} was not found on CircleCI`);
+            (0, console_12.info)(`${result.name} was not found on CircleCI`);
           } else if (result.status === "success") {
-            console_12.info(`${label} \u2705`);
+            (0, console_12.info)(`${label} \u2705`);
           } else {
-            console_12.info(`${label} \u274C`);
+            (0, console_12.info)(`${label} \u274C`);
           }
         });
         console_12.info.groupEnd();
-        console_12.info();
+        (0, console_12.info)();
       }
       async getBranchStatusFromCi(branch) {
         const { owner, name } = this.git.remoteConfig;
         const url = `https://circleci.com/gh/${owner}/${name}/tree/${branch}.svg?style=shield`;
-        const result = await node_fetch_1.default(url).then((result2) => result2.text());
+        const result = await (0, node_fetch_1.default)(url).then((result2) => result2.text());
         if (result && !result.includes("no builds")) {
           return result.includes("passing") ? "success" : "failed";
         }
@@ -49395,19 +49392,19 @@ var require_g3 = __commonJS({
         if (!stats) {
           return;
         }
-        console_12.info.group(console_12.bold("g3 branch check"));
+        console_12.info.group((0, console_12.bold)("g3 branch check"));
         if (stats.files === 0) {
-          console_12.info(`${stats.commits} commits between g3 and ${this.git.mainBranchName}`);
-          console_12.info("\u2705  No sync is needed at this time");
+          (0, console_12.info)(`${stats.commits} commits between g3 and ${this.git.mainBranchName}`);
+          (0, console_12.info)("\u2705  No sync is needed at this time");
         } else {
-          console_12.info(`${stats.files} files changed, ${stats.insertions} insertions(+), ${stats.deletions} deletions(-) from ${stats.commits} commits will be included in the next sync`);
+          (0, console_12.info)(`${stats.files} files changed, ${stats.insertions} insertions(+), ${stats.deletions} deletions(-) from ${stats.commits} commits will be included in the next sync`);
         }
         console_12.info.groupEnd();
-        console_12.info();
+        (0, console_12.info)();
       }
       getShaForBranchLatest(branch) {
         if (this.git.runGraceful(["ls-remote", "--exit-code", this.git.getRepoGitUrl(), branch]).status === 2) {
-          console_12.debug(`No '${branch}' branch exists on upstream, skipping.`);
+          (0, console_12.debug)(`No '${branch}' branch exists on upstream, skipping.`);
           return null;
         }
         this.git.runGraceful(["fetch", "-q", this.git.getRepoGitUrl(), branch]);
@@ -49435,16 +49432,16 @@ var require_g3 = __commonJS({
       }
       getG3FileIncludeAndExcludeLists() {
         var _a, _b, _c, _d;
-        const angularRobotFilePath = path_1.join(this.git.baseDir, ".github/angular-robot.yml");
-        if (!fs_1.existsSync(angularRobotFilePath)) {
-          console_12.debug("No angular robot configuration file exists, skipping.");
+        const angularRobotFilePath = (0, path_1.join)(this.git.baseDir, ".github/angular-robot.yml");
+        if (!(0, fs_1.existsSync)(angularRobotFilePath)) {
+          (0, console_12.debug)("No angular robot configuration file exists, skipping.");
           return null;
         }
-        const robotConfig = yaml_1.parse(fs_1.readFileSync(angularRobotFilePath).toString());
+        const robotConfig = (0, yaml_1.parse)((0, fs_1.readFileSync)(angularRobotFilePath).toString());
         const include = ((_b = (_a = robotConfig == null ? void 0 : robotConfig.merge) == null ? void 0 : _a.g3Status) == null ? void 0 : _b.include) || [];
         const exclude = ((_d = (_c = robotConfig == null ? void 0 : robotConfig.merge) == null ? void 0 : _c.g3Status) == null ? void 0 : _d.exclude) || [];
         if (include.length === 0 && exclude.length === 0) {
-          console_12.debug("No g3Status include or exclude lists are defined in the angular robot configuration");
+          (0, console_12.debug)("No g3Status include or exclude lists are defined in the angular robot configuration");
           return null;
         }
         return { include, exclude };
@@ -49453,7 +49450,7 @@ var require_g3 = __commonJS({
         const g3 = this.getShaForBranchLatest("g3");
         const main = this.getShaForBranchLatest(this.git.mainBranchName);
         if (g3 === null || main === null) {
-          console_12.debug(`Either the g3 or ${this.git.mainBranchName} was unable to be retrieved`);
+          (0, console_12.debug)(`Either the g3 or ${this.git.mainBranchName} was unable to be retrieved`);
           return null;
         }
         return { g3, main };
@@ -49475,7 +49472,7 @@ var require_github2 = __commonJS({
     var GithubQueryResultFragment = {
       issueCount: typed_graphqlify_1.types.number,
       nodes: [
-        __spreadValues({}, typed_graphqlify_1.onUnion({
+        __spreadValues({}, (0, typed_graphqlify_1.onUnion)({
           PullRequest: {
             url: typed_graphqlify_1.types.string
           },
@@ -49491,7 +49488,7 @@ var require_github2 = __commonJS({
         var _a;
         let queries = (_a = this.config.caretaker) == null ? void 0 : _a.githubQueries;
         if (queries === void 0 || queries.length === 0) {
-          console_12.debug("No github queries defined in the configuration, skipping");
+          (0, console_12.debug)("No github queries defined in the configuration, skipping");
           return;
         }
         const queryResult = await this.git.github.graphql(this.buildGraphqlQuery(queries));
@@ -49511,8 +49508,8 @@ var require_github2 = __commonJS({
         const { owner, name: repo } = this.git.remoteConfig;
         const repoFilter = `repo:${owner}/${repo}`;
         queries.forEach(({ name, query }) => {
-          const queryKey = typed_graphqlify_1.alias(name.replace(/ /g, ""), "search");
-          graphqlQuery[queryKey] = typed_graphqlify_1.params({
+          const queryKey = (0, typed_graphqlify_1.alias)(name.replace(/ /g, ""), "search");
+          graphqlQuery[queryKey] = (0, typed_graphqlify_1.params)({
             type: "ISSUE",
             first: MAX_RETURNED_ISSUES,
             query: `"${repoFilter} ${query.replace(/"/g, '\\"')}"`
@@ -49525,21 +49522,21 @@ var require_github2 = __commonJS({
         if (!queryResults) {
           return;
         }
-        console_12.info.group(console_12.bold("Github Tasks"));
+        console_12.info.group((0, console_12.bold)("Github Tasks"));
         const minQueryNameLength = Math.max(...queryResults.map((result) => result.queryName.length));
         for (const queryResult of queryResults) {
-          console_12.info(`${queryResult.queryName.padEnd(minQueryNameLength)}  ${queryResult.count}`);
+          (0, console_12.info)(`${queryResult.queryName.padEnd(minQueryNameLength)}  ${queryResult.count}`);
           if (queryResult.count > 0) {
             console_12.info.group(queryResult.queryUrl);
-            queryResult.matchedUrls.forEach((url) => console_12.info(`- ${url}`));
+            queryResult.matchedUrls.forEach((url) => (0, console_12.info)(`- ${url}`));
             if (queryResult.count > MAX_RETURNED_ISSUES) {
-              console_12.info(`... ${queryResult.count - MAX_RETURNED_ISSUES} additional matches`);
+              (0, console_12.info)(`... ${queryResult.count - MAX_RETURNED_ISSUES} additional matches`);
             }
             console_12.info.groupEnd();
           }
         }
         console_12.info.groupEnd();
-        console_12.info();
+        (0, console_12.info)();
       }
     };
     exports2.GithubQueriesModule = GithubQueriesModule;
@@ -49580,22 +49577,22 @@ var require_services = __commonJS({
       async printToTerminal() {
         const statuses = await this.data;
         const serviceNameMinLength = Math.max(...statuses.map((service) => service.name.length));
-        console_12.info.group(console_12.bold("Service Statuses"));
+        console_12.info.group((0, console_12.bold)("Service Statuses"));
         for (const status of statuses) {
           const name = status.name.padEnd(serviceNameMinLength);
           if (status.status === "passing") {
-            console_12.info(`${name} \u2705`);
+            (0, console_12.info)(`${name} \u2705`);
           } else {
             console_12.info.group(`${name} \u274C (Updated: ${status.lastUpdated.toLocaleString()})`);
-            console_12.info(`  Details: ${status.description}`);
+            (0, console_12.info)(`  Details: ${status.description}`);
             console_12.info.groupEnd();
           }
         }
         console_12.info.groupEnd();
-        console_12.info();
+        (0, console_12.info)();
       }
       async getStatusFromStandardApi(service) {
-        const result = await node_fetch_1.default(service.url).then((result2) => result2.json());
+        const result = await (0, node_fetch_1.default)(service.url).then((result2) => result2.json());
         const status = result.status.indicator === "none" ? "passing" : "failing";
         return {
           name: service.name,
@@ -49623,9 +49620,9 @@ var require_check = __commonJS({
     var services_1 = require_services();
     var moduleList = [github_1.GithubQueriesModule, services_1.ServicesModule, ci_1.CiModule, g3_1.G3Module];
     async function checkServiceStatuses() {
-      const config = config_1.getConfig();
-      config_2.assertValidCaretakerConfig(config);
-      config_1.assertValidGithubConfig(config);
+      const config = (0, config_1.getConfig)();
+      (0, config_2.assertValidCaretakerConfig)(config);
+      (0, config_1.assertValidGithubConfig)(config);
       const caretakerCheckModules = moduleList.map((module3) => new module3(config));
       await Promise.all(caretakerCheckModules.map((module3) => module3.data));
       for (const module3 of caretakerCheckModules) {
@@ -49645,10 +49642,10 @@ var require_cli = __commonJS({
     var github_yargs_1 = require_github_yargs();
     var check_1 = require_check();
     function builder(yargs2) {
-      return github_yargs_1.addGithubTokenOption(yargs2);
+      return (0, github_yargs_1.addGithubTokenOption)(yargs2);
     }
     async function handler() {
-      await check_1.checkServiceStatuses();
+      await (0, check_1.checkServiceStatuses)();
     }
     exports2.CheckModule = {
       handler,
@@ -49671,8 +49668,8 @@ var require_update_github_team = __commonJS({
     var authenticated_git_client_1 = require_authenticated_git_client();
     var config_2 = require_config3();
     async function updateCaretakerTeamViaPrompt() {
-      const config = config_1.getConfig();
-      config_2.assertValidCaretakerConfig(config);
+      const config = (0, config_1.getConfig)();
+      (0, config_2.assertValidCaretakerConfig)(config);
       const { caretakerGroup } = config.caretaker;
       if (caretakerGroup === void 0) {
         throw Error("`caretakerGroup` is not defined in the `caretaker` config");
@@ -49682,7 +49679,7 @@ var require_update_github_team = __commonJS({
       const {
         selected,
         confirm
-      } = await inquirer_1.prompt([
+      } = await (0, inquirer_1.prompt)([
         {
           type: "checkbox",
           choices: roster,
@@ -49706,20 +49703,20 @@ var require_update_github_team = __commonJS({
         }
       ]);
       if (confirm === false) {
-        console_12.info(console_12.yellow("  \u26A0  Skipping caretaker group update."));
+        (0, console_12.info)((0, console_12.yellow)("  \u26A0  Skipping caretaker group update."));
         return;
       }
       if (JSON.stringify(selected) === JSON.stringify(current)) {
-        console_12.info(console_12.green("  \u221A  Caretaker group already up to date."));
+        (0, console_12.info)((0, console_12.green)("  \u221A  Caretaker group already up to date."));
         return;
       }
       try {
         await setCaretakerGroup(caretakerGroup, selected);
       } catch {
-        console_12.info(console_12.red("  \u2718  Failed to update caretaker group."));
+        (0, console_12.info)((0, console_12.red)("  \u2718  Failed to update caretaker group."));
         return;
       }
-      console_12.info(console_12.green("  \u221A  Successfully updated caretaker group"));
+      (0, console_12.info)((0, console_12.green)("  \u221A  Successfully updated caretaker group"));
     }
     exports2.updateCaretakerTeamViaPrompt = updateCaretakerTeamViaPrompt;
     async function getGroupMembers(group) {
@@ -49735,7 +49732,7 @@ var require_update_github_team = __commonJS({
       const current = await getGroupMembers(group);
       const removed = current.filter((login) => !members.includes(login));
       const add = async (username) => {
-        console_12.debug(`Adding ${username} to ${fullSlug}.`);
+        (0, console_12.debug)(`Adding ${username} to ${fullSlug}.`);
         await git.github.teams.addOrUpdateMembershipForUserInOrg({
           org: git.remoteConfig.owner,
           team_slug: group,
@@ -49744,7 +49741,7 @@ var require_update_github_team = __commonJS({
         });
       };
       const remove = async (username) => {
-        console_12.debug(`Removing ${username} from ${fullSlug}.`);
+        (0, console_12.debug)(`Removing ${username} from ${fullSlug}.`);
         await git.github.teams.removeMembershipForUserInOrg({
           org: git.remoteConfig.owner,
           team_slug: group,
@@ -49752,13 +49749,13 @@ var require_update_github_team = __commonJS({
         });
       };
       console_12.debug.group(`Caretaker Group: ${fullSlug}`);
-      console_12.debug(`Current Membership: ${current.join(", ")}`);
-      console_12.debug(`New Membership:     ${members.join(", ")}`);
-      console_12.debug(`Removed:            ${removed.join(", ")}`);
+      (0, console_12.debug)(`Current Membership: ${current.join(", ")}`);
+      (0, console_12.debug)(`New Membership:     ${members.join(", ")}`);
+      (0, console_12.debug)(`Removed:            ${removed.join(", ")}`);
       console_12.debug.groupEnd();
       await Promise.all(members.map(add));
       await Promise.all(removed.map(remove));
-      console_12.debug(`Successfuly updated ${fullSlug}`);
+      (0, console_12.debug)(`Successfuly updated ${fullSlug}`);
     }
   }
 });
@@ -49772,10 +49769,10 @@ var require_cli2 = __commonJS({
     var github_yargs_1 = require_github_yargs();
     var update_github_team_1 = require_update_github_team();
     function builder(yargs2) {
-      return github_yargs_1.addGithubTokenOption(yargs2);
+      return (0, github_yargs_1.addGithubTokenOption)(yargs2);
     }
     async function handler() {
-      await update_github_team_1.updateCaretakerTeamViaPrompt();
+      await (0, update_github_team_1.updateCaretakerTeamViaPrompt)();
     }
     exports2.HandoffModule = {
       handler,
@@ -49802,12 +49799,12 @@ var require_cli3 = __commonJS({
     }
     exports2.buildCaretakerParser = buildCaretakerParser;
     function caretakerCommandCanRun(argv) {
-      const config = config_1.getConfig();
+      const config = (0, config_1.getConfig)();
       try {
-        config_2.assertValidCaretakerConfig(config);
+        (0, config_2.assertValidCaretakerConfig)(config);
       } catch {
-        console_12.info("The `caretaker` command is not enabled in this repository.");
-        console_12.info(`   To enable it, provide a caretaker config in the repository's .ng-dev/ directory`);
+        (0, console_12.info)("The `caretaker` command is not enabled in this repository.");
+        (0, console_12.info)(`   To enable it, provide a caretaker config in the repository's .ng-dev/ directory`);
         process.exit(1);
       }
     }
@@ -49823,21 +49820,21 @@ var require_commit_message_draft = __commonJS({
     var fs_1 = require("fs");
     function loadCommitMessageDraft(basePath) {
       const commitMessageDraftPath = `${basePath}.ngDevSave`;
-      if (fs_1.existsSync(commitMessageDraftPath)) {
-        return fs_1.readFileSync(commitMessageDraftPath).toString();
+      if ((0, fs_1.existsSync)(commitMessageDraftPath)) {
+        return (0, fs_1.readFileSync)(commitMessageDraftPath).toString();
       }
       return "";
     }
     exports2.loadCommitMessageDraft = loadCommitMessageDraft;
     function deleteCommitMessageDraft(basePath) {
       const commitMessageDraftPath = `${basePath}.ngDevSave`;
-      if (fs_1.existsSync(commitMessageDraftPath)) {
-        fs_1.unlinkSync(commitMessageDraftPath);
+      if ((0, fs_1.existsSync)(commitMessageDraftPath)) {
+        (0, fs_1.unlinkSync)(commitMessageDraftPath);
       }
     }
     exports2.deleteCommitMessageDraft = deleteCommitMessageDraft;
     function saveCommitMessageDraft(basePath, commitMessage) {
-      fs_1.writeFileSync(`${basePath}.ngDevSave`, commitMessage);
+      (0, fs_1.writeFileSync)(`${basePath}.ngDevSave`, commitMessage);
     }
     exports2.saveCommitMessageDraft = saveCommitMessageDraft;
   }
@@ -49855,23 +49852,23 @@ var require_restore_commit_message = __commonJS({
     function restoreCommitMessage(filePath, source) {
       if (!!source) {
         if (source === "message") {
-          console_12.debug("A commit message was already provided via the command with a -m or -F flag");
+          (0, console_12.debug)("A commit message was already provided via the command with a -m or -F flag");
         }
         if (source === "template") {
-          console_12.debug("A commit message was already provided via the -t flag or config.template setting");
+          (0, console_12.debug)("A commit message was already provided via the -t flag or config.template setting");
         }
         if (source === "squash") {
-          console_12.debug("A commit message was already provided as a merge action or via .git/MERGE_MSG");
+          (0, console_12.debug)("A commit message was already provided as a merge action or via .git/MERGE_MSG");
         }
         if (source === "commit") {
-          console_12.debug("A commit message was already provided through a revision specified via --fixup, -c,");
-          console_12.debug("-C or --amend flag");
+          (0, console_12.debug)("A commit message was already provided through a revision specified via --fixup, -c,");
+          (0, console_12.debug)("-C or --amend flag");
         }
         process.exit(0);
       }
-      const commitMessage = commit_message_draft_1.loadCommitMessageDraft(filePath);
+      const commitMessage = (0, commit_message_draft_1.loadCommitMessageDraft)(filePath);
       if (commitMessage) {
-        fs_1.writeFileSync(filePath, commitMessage);
+        (0, fs_1.writeFileSync)(filePath, commitMessage);
       }
       process.exit(0);
     }
@@ -49894,7 +49891,7 @@ var require_cli4 = __commonJS({
     }
     async function handler({ fileEnvVariable, file, source }) {
       if (file !== void 0) {
-        restore_commit_message_1.restoreCommitMessage(file, source);
+        (0, restore_commit_message_1.restoreCommitMessage)(file, source);
         return;
       }
       if (fileEnvVariable !== void 0) {
@@ -49902,7 +49899,7 @@ var require_cli4 = __commonJS({
         if (!fileFromEnv) {
           throw new Error(`Provided environment variable "${fileEnvVariable}" was not found.`);
         }
-        restore_commit_message_1.restoreCommitMessage(fileFromEnv, sourceFromEnv);
+        (0, restore_commit_message_1.restoreCommitMessage)(fileFromEnv, sourceFromEnv);
         return;
       }
       throw new Error("No file path and commit message source provide. Provide values via positional command arguments, or via the --file-env-variable flag");
@@ -55886,7 +55883,7 @@ var require_parse2 = __commonJS({
       return Object.entries(fields).map(([key, value]) => `%n-${key}-%n${value}`).join("");
     };
     exports2.commitFieldsAsFormat = commitFieldsAsFormat;
-    exports2.gitLogFormatForParsing = `%B${exports2.commitFieldsAsFormat(commitFields)}`;
+    exports2.gitLogFormatForParsing = `%B${(0, exports2.commitFieldsAsFormat)(commitFields)}`;
     var NoteSections;
     (function(NoteSections2) {
       NoteSections2["BREAKING_CHANGE"] = "BREAKING CHANGE";
@@ -55909,7 +55906,7 @@ var require_parse2 = __commonJS({
     function parseInternal(fullText) {
       fullText = fullText.toString();
       const strippedCommitMsg = fullText.replace(FIXUP_PREFIX_RE, "").replace(SQUASH_PREFIX_RE, "").replace(REVERT_PREFIX_RE, "");
-      const commit = conventional_commits_parser_1.sync(strippedCommitMsg, parseOptions);
+      const commit = (0, conventional_commits_parser_1.sync)(strippedCommitMsg, parseOptions);
       const breakingChanges = [];
       const deprecations = [];
       commit.notes.forEach((note) => {
@@ -55955,10 +55952,10 @@ var require_validate = __commonJS({
     var INCORRECT_BREAKING_CHANGE_BODY_RE = /^(BREAKING CHANGE[^:]|BREAKING-CHANGE|BREAKING[ -]CHANGES)/m;
     var INCORRECT_DEPRECATION_BODY_RE = /^(DEPRECATED[^:]|DEPRECATIONS|DEPRECATE:|DEPRECATES)/m;
     function validateCommitMessage(commitMsg, options = {}) {
-      const _config = config_1.getConfig();
-      config_2.assertValidCommitMessageConfig(_config);
+      const _config = (0, config_1.getConfig)();
+      (0, config_2.assertValidCommitMessageConfig)(_config);
       const config = _config.commitMessage;
-      const commit = typeof commitMsg === "string" ? parse_1.parseCommitMessage(commitMsg) : commitMsg;
+      const commit = typeof commitMsg === "string" ? (0, parse_1.parseCommitMessage)(commitMsg) : commitMsg;
       const errors = [];
       function validateCommitAndCollectErrors() {
         var _a;
@@ -56071,25 +56068,25 @@ var require_validate_file = __commonJS({
     var validate_1 = require_validate();
     function validateFile(filePath, isErrorMode) {
       const git = git_client_1.GitClient.get();
-      const commitMessage = fs_1.readFileSync(path_1.resolve(git.baseDir, filePath), "utf8");
-      const { valid, errors } = validate_1.validateCommitMessage(commitMessage);
+      const commitMessage = (0, fs_1.readFileSync)((0, path_1.resolve)(git.baseDir, filePath), "utf8");
+      const { valid, errors } = (0, validate_1.validateCommitMessage)(commitMessage);
       if (valid) {
-        console_12.info(`${console_12.green("\u221A")}  Valid commit message`);
-        commit_message_draft_1.deleteCommitMessageDraft(filePath);
+        (0, console_12.info)(`${(0, console_12.green)("\u221A")}  Valid commit message`);
+        (0, commit_message_draft_1.deleteCommitMessageDraft)(filePath);
         process.exitCode = 0;
         return;
       }
       let printFn = isErrorMode ? console_12.error : console_12.log;
-      printFn(`${isErrorMode ? console_12.red("\u2718") : console_12.yellow("!")}  Invalid commit message`);
-      validate_1.printValidationErrors(errors, printFn);
+      printFn(`${isErrorMode ? (0, console_12.red)("\u2718") : (0, console_12.yellow)("!")}  Invalid commit message`);
+      (0, validate_1.printValidationErrors)(errors, printFn);
       if (isErrorMode) {
-        printFn(console_12.red("Aborting commit attempt due to invalid commit message."));
-        printFn(console_12.red("Commit message aborted as failure rather than warning due to local configuration."));
+        printFn((0, console_12.red)("Aborting commit attempt due to invalid commit message."));
+        printFn((0, console_12.red)("Commit message aborted as failure rather than warning due to local configuration."));
       } else {
-        printFn(console_12.yellow("Before this commit can be merged into the upstream repository, it must be"));
-        printFn(console_12.yellow("amended to follow commit message guidelines."));
+        printFn((0, console_12.yellow)("Before this commit can be merged into the upstream repository, it must be"));
+        printFn((0, console_12.yellow)("amended to follow commit message guidelines."));
       }
-      commit_message_draft_1.saveCommitMessageDraft(filePath, commitMessage);
+      (0, commit_message_draft_1.saveCommitMessageDraft)(filePath, commitMessage);
       process.exitCode = isErrorMode ? 1 : 0;
     }
     exports2.validateFile = validateFile;
@@ -56127,12 +56124,12 @@ var require_cli5 = __commonJS({
       }).option("error", {
         type: "boolean",
         description: "Whether invalid commit messages should be treated as failures rather than a warning",
-        default: !!((_a = config_1.getUserConfig().commitMessage) == null ? void 0 : _a.errorOnInvalidMessage) || !!process.env["CI"]
+        default: !!((_a = (0, config_1.getUserConfig)().commitMessage) == null ? void 0 : _a.errorOnInvalidMessage) || !!process.env["CI"]
       });
     }
     async function handler({ error, file, fileEnvVariable }) {
       const filePath = file || fileEnvVariable || ".git/COMMIT_EDITMSG";
-      validate_file_1.validateFile(filePath, error);
+      (0, validate_file_1.validateFile)(filePath, error);
     }
     exports2.ValidateFileModule = {
       handler,
@@ -56672,7 +56669,7 @@ var require_utils2 = __commonJS({
       return new Promise((resolve, reject) => {
         const commits = [];
         const commitStream = gitCommits({ from, to, format: parse_1.gitLogFormatForParsing });
-        commitStream.on("data", (commit) => commits.push(parse_1.parseCommitFromGitLog(commit)));
+        commitStream.on("data", (commit) => commits.push((0, parse_1.parseCommitFromGitLog)(commit)));
         commitStream.on("error", (err) => reject(err));
         commitStream.on("end", () => resolve(commits));
       });
@@ -56694,26 +56691,26 @@ var require_validate_range = __commonJS({
     var extractCommitHeader = (commit) => commit.header;
     async function validateCommitRange(from, to) {
       const errors = [];
-      const commits = await utils_1.getCommitsInRange(from, to);
-      console_12.info(`Examining ${commits.length} commit(s) in the provided range: ${from}..${to}`);
+      const commits = await (0, utils_1.getCommitsInRange)(from, to);
+      (0, console_12.info)(`Examining ${commits.length} commit(s) in the provided range: ${from}..${to}`);
       const allCommitsInRangeValid = commits.every((commit, i) => {
         const options = {
           disallowSquash: true,
           nonFixupCommitHeaders: isNonFixup(commit) ? void 0 : commits.slice(i + 1).filter(isNonFixup).map(extractCommitHeader)
         };
-        const { valid, errors: localErrors } = validate_1.validateCommitMessage(commit, options);
+        const { valid, errors: localErrors } = (0, validate_1.validateCommitMessage)(commit, options);
         if (localErrors.length) {
           errors.push([commit.header, localErrors]);
         }
         return valid;
       });
       if (allCommitsInRangeValid) {
-        console_12.info(console_12.green("\u221A  All commit messages in range valid."));
+        (0, console_12.info)((0, console_12.green)("\u221A  All commit messages in range valid."));
       } else {
-        console_12.error(console_12.red("\u2718  Invalid commit message"));
+        (0, console_12.error)((0, console_12.red)("\u2718  Invalid commit message"));
         errors.forEach(([header, validationErrors]) => {
           console_12.error.group(header);
-          validate_1.printValidationErrors(validationErrors);
+          (0, validate_1.printValidationErrors)(validationErrors);
           console_12.error.groupEnd();
         });
         process.exit(1);
@@ -56744,13 +56741,13 @@ var require_cli6 = __commonJS({
     }
     async function handler({ startingRef, endingRef }) {
       if (process.env["CI"] && process.env["CI_PULL_REQUEST"] === "false") {
-        console_12.info(`Since valid commit messages are enforced by PR linting on CI, we do not`);
-        console_12.info(`need to validate commit messages on CI runs on upstream branches.`);
-        console_12.info();
-        console_12.info(`Skipping check of provided commit range`);
+        (0, console_12.info)(`Since valid commit messages are enforced by PR linting on CI, we do not`);
+        (0, console_12.info)(`need to validate commit messages on CI runs on upstream branches.`);
+        (0, console_12.info)();
+        (0, console_12.info)(`Skipping check of provided commit range`);
         return;
       }
-      await validate_range_1.validateCommitRange(startingRef, endingRef);
+      await (0, validate_range_1.validateCommitRange)(startingRef, endingRef);
     }
     exports2.ValidateRangeModule = {
       handler,
@@ -58227,8 +58224,8 @@ var require_child_process = __commonJS({
     function spawnInteractive(command, args, options = {}) {
       return new Promise((resolve, reject) => {
         const commandText = `${command} ${args.join(" ")}`;
-        console_12.debug(`Executing command: ${commandText}`);
-        const childProcess = child_process_1.spawn(command, args, __spreadProps(__spreadValues({}, options), { shell: true, stdio: "inherit" }));
+        (0, console_12.debug)(`Executing command: ${commandText}`);
+        const childProcess = (0, child_process_1.spawn)(command, args, __spreadProps(__spreadValues({}, options), { shell: true, stdio: "inherit" }));
         childProcess.on("close", (status) => status === 0 ? resolve() : reject(status));
       });
     }
@@ -58237,8 +58234,8 @@ var require_child_process = __commonJS({
       return new Promise((resolve, reject) => {
         const commandText = `${command} ${args.join(" ")}`;
         const outputMode = options.mode;
-        console_12.debug(`Executing command: ${commandText}`);
-        const childProcess = child_process_1.spawn(command, args, __spreadProps(__spreadValues({}, options), { shell: true, stdio: "pipe" }));
+        (0, console_12.debug)(`Executing command: ${commandText}`);
+        const childProcess = (0, child_process_1.spawn)(command, args, __spreadProps(__spreadValues({}, options), { shell: true, stdio: "pipe" }));
         let logOutput = "";
         let stdout = "";
         let stderr = "";
@@ -58274,8 +58271,8 @@ ${logOutput}`);
     exports2.spawn = spawn;
     function spawnSync(command, args, options = {}) {
       const commandText = `${command} ${args.join(" ")}`;
-      console_12.debug(`Executing command: ${commandText}`);
-      const { status: exitCode, signal, stdout, stderr } = child_process_1.spawnSync(command, args, __spreadProps(__spreadValues({}, options), { encoding: "utf8", shell: true, stdio: "pipe" }));
+      (0, console_12.debug)(`Executing command: ${commandText}`);
+      const { status: exitCode, signal, stdout, stderr } = (0, child_process_1.spawnSync)(command, args, __spreadProps(__spreadValues({}, options), { encoding: "utf8", shell: true, stdio: "pipe" }));
       const status = statusFromExitCodeAndSignal(exitCode, signal);
       if (status === 0 || options.suppressErrorOnFailingExitCode) {
         return { status, stdout, stderr };
@@ -58389,7 +58386,7 @@ var require_buildifier = __commonJS({
       constructor() {
         super(...arguments);
         this.name = "buildifier";
-        this.binaryFilePath = path_1.join(this.git.baseDir, "node_modules/.bin/buildifier");
+        this.binaryFilePath = (0, path_1.join)(this.git.baseDir, "node_modules/.bin/buildifier");
         this.defaultFileMatcher = ["**/*.bzl", "**/BUILD.bazel", "**/WORKSPACE", "**/BUILD"];
         this.actions = {
           check: {
@@ -58403,9 +58400,9 @@ var require_buildifier = __commonJS({
             commandFlags: `${BAZEL_WARNING_FLAG} --lint=fix --mode=fix`,
             callback: (file, code, _, stderr) => {
               if (code !== 0) {
-                console_12.error(`Error running buildifier on: ${file}`);
-                console_12.error(stderr);
-                console_12.error();
+                (0, console_12.error)(`Error running buildifier on: ${file}`);
+                (0, console_12.error)(stderr);
+                (0, console_12.error)();
                 return true;
               }
               return false;
@@ -58432,7 +58429,7 @@ var require_clang_format = __commonJS({
       constructor() {
         super(...arguments);
         this.name = "clang-format";
-        this.binaryFilePath = path_1.join(this.git.baseDir, "node_modules/.bin/clang-format");
+        this.binaryFilePath = (0, path_1.join)(this.git.baseDir, "node_modules/.bin/clang-format");
         this.defaultFileMatcher = ["**/*.{t,j}s"];
         this.actions = {
           check: {
@@ -58445,9 +58442,9 @@ var require_clang_format = __commonJS({
             commandFlags: `-i -style=file`,
             callback: (file, code, _, stderr) => {
               if (code !== 0) {
-                console_12.error(`Error running clang-format on: ${file}`);
-                console_12.error(stderr);
-                console_12.error();
+                (0, console_12.error)(`Error running clang-format on: ${file}`);
+                (0, console_12.error)(stderr);
+                (0, console_12.error)();
                 return true;
               }
               return false;
@@ -58474,9 +58471,9 @@ var require_prettier = __commonJS({
       constructor() {
         super(...arguments);
         this.name = "prettier";
-        this.binaryFilePath = path_1.join(this.git.baseDir, "node_modules/.bin/prettier");
+        this.binaryFilePath = (0, path_1.join)(this.git.baseDir, "node_modules/.bin/prettier");
         this.defaultFileMatcher = ["**/*.{t,j}s"];
-        this.configPath = this.config["prettier"] ? child_process_1.spawnSync(this.binaryFilePath, ["--find-config-path", "."]).stdout.trim() : "";
+        this.configPath = this.config["prettier"] ? (0, child_process_1.spawnSync)(this.binaryFilePath, ["--find-config-path", "."]).stdout.trim() : "";
         this.actions = {
           check: {
             commandFlags: `--config ${this.configPath} --check`,
@@ -58488,9 +58485,9 @@ var require_prettier = __commonJS({
             commandFlags: `--config ${this.configPath} --write`,
             callback: (file, code, _, stderr) => {
               if (code !== 0) {
-                console_12.error(`Error running prettier on: ${file}`);
-                console_12.error(stderr);
-                console_12.error();
+                (0, console_12.error)(`Error running prettier on: ${file}`);
+                (0, console_12.error)(stderr);
+                (0, console_12.error)();
                 return true;
               }
               return false;
@@ -58515,8 +58512,8 @@ var require_formatters = __commonJS({
     var clang_format_1 = require_clang_format();
     var prettier_1 = require_prettier();
     function getActiveFormatters() {
-      const config = config_1.getConfig();
-      config_2.assertValidFormatConfig(config);
+      const config = (0, config_1.getConfig)();
+      (0, config_2.assertValidFormatConfig)(config);
       return [
         new prettier_1.Prettier(config.format),
         new buildifier_1.Buildifier(config.format),
@@ -58543,10 +58540,10 @@ var require_run_commands_parallel = __commonJS({
     var child_process_1 = require_child_process();
     var console_12 = require_console();
     var index_12 = require_formatters();
-    var AVAILABLE_THREADS = Math.max(os_1.cpus().length - 1, 1);
+    var AVAILABLE_THREADS = Math.max((0, os_1.cpus)().length - 1, 1);
     function runFormatterInParallel(allFiles, action) {
       return new Promise((resolve) => {
-        const formatters = index_12.getActiveFormatters();
+        const formatters = (0, index_12.getActiveFormatters)();
         const failures = [];
         const pendingCommands = [];
         for (const formatter of formatters) {
@@ -58557,10 +58554,10 @@ var require_run_commands_parallel = __commonJS({
         }
         switch (action) {
           case "format":
-            console_12.info(`Formatting ${pendingCommands.length} file(s)`);
+            (0, console_12.info)(`Formatting ${pendingCommands.length} file(s)`);
             break;
           case "check":
-            console_12.info(`Checking format of ${pendingCommands.length} file(s)`);
+            (0, console_12.info)(`Checking format of ${pendingCommands.length} file(s)`);
             break;
           default:
             throw Error(`Invalid format action "${action}": allowed actions are "format" and "check"`);
@@ -58578,7 +58575,7 @@ var require_run_commands_parallel = __commonJS({
           }
           const { file, formatter } = nextCommand;
           const [spawnCmd, ...spawnArgs] = [...formatter.commandFor(action).split(" "), file];
-          child_process_1.spawn(spawnCmd, spawnArgs, { suppressErrorOnFailingExitCode: true, mode: "silent" }).then(({ stdout, stderr, status }) => {
+          (0, child_process_1.spawn)(spawnCmd, spawnArgs, { suppressErrorOnFailingExitCode: true, mode: "silent" }).then(({ stdout, stderr, status }) => {
             const failed = formatter.callbackFor(action)(file, status, stdout, stderr);
             if (failed) {
               failures.push({ filePath: file, message: stderr });
@@ -58612,51 +58609,51 @@ var require_format = __commonJS({
     var console_12 = require_console();
     var run_commands_parallel_1 = require_run_commands_parallel();
     async function formatFiles(files) {
-      let failures = await run_commands_parallel_1.runFormatterInParallel(files, "format");
+      let failures = await (0, run_commands_parallel_1.runFormatterInParallel)(files, "format");
       if (failures === false) {
-        console_12.info("No files matched for formatting.");
+        (0, console_12.info)("No files matched for formatting.");
         process.exit(0);
       }
       if (failures.length !== 0) {
-        console_12.error(console_12.red(`The following files could not be formatted:`));
+        (0, console_12.error)((0, console_12.red)(`The following files could not be formatted:`));
         failures.forEach(({ filePath, message }) => {
-          console_12.info(`  \u2022 ${filePath}: ${message}`);
+          (0, console_12.info)(`  \u2022 ${filePath}: ${message}`);
         });
-        console_12.error(console_12.red(`Formatting failed, see errors above for more information.`));
+        (0, console_12.error)((0, console_12.red)(`Formatting failed, see errors above for more information.`));
         process.exit(1);
       }
-      console_12.info(`\u221A  Formatting complete.`);
+      (0, console_12.info)(`\u221A  Formatting complete.`);
       process.exit(0);
     }
     exports2.formatFiles = formatFiles;
     async function checkFiles(files) {
-      const failures = await run_commands_parallel_1.runFormatterInParallel(files, "check");
+      const failures = await (0, run_commands_parallel_1.runFormatterInParallel)(files, "check");
       if (failures === false) {
-        console_12.info("No files matched for formatting check.");
+        (0, console_12.info)("No files matched for formatting check.");
         process.exit(0);
       }
       if (failures.length) {
         console_12.info.group("\nThe following files are out of format:");
         for (const { filePath } of failures) {
-          console_12.info(`  \u2022 ${filePath}`);
+          (0, console_12.info)(`  \u2022 ${filePath}`);
         }
         console_12.info.groupEnd();
-        console_12.info();
+        (0, console_12.info)();
         let runFormatter = false;
         if (!process.env["CI"]) {
-          runFormatter = await console_12.promptConfirm("Format the files now?", true);
+          runFormatter = await (0, console_12.promptConfirm)("Format the files now?", true);
         }
         if (runFormatter) {
           await formatFiles(failures.map((f) => f.filePath));
           process.exit(0);
         } else {
-          console_12.info();
-          console_12.info(`To format the failing file run the following command:`);
-          console_12.info(`  yarn ng-dev format files ${failures.map((f) => f.filePath).join(" ")}`);
+          (0, console_12.info)();
+          (0, console_12.info)(`To format the failing file run the following command:`);
+          (0, console_12.info)(`  yarn ng-dev format files ${failures.map((f) => f.filePath).join(" ")}`);
           process.exit(1);
         }
       } else {
-        console_12.info("\u221A  All files correctly formatted.");
+        (0, console_12.info)("\u221A  All files correctly formatted.");
         process.exit(0);
       }
     }
@@ -58713,14 +58710,14 @@ var require_verify = __commonJS({
     var git_client_1 = require_git_client();
     function verify() {
       const git = git_client_1.GitClient.get();
-      const NGBOT_CONFIG_YAML_PATH = path_1.resolve(git.baseDir, ".github/angular-robot.yml");
-      const ngBotYaml = fs_1.readFileSync(NGBOT_CONFIG_YAML_PATH, "utf8");
+      const NGBOT_CONFIG_YAML_PATH = (0, path_1.resolve)(git.baseDir, ".github/angular-robot.yml");
+      const ngBotYaml = (0, fs_1.readFileSync)(NGBOT_CONFIG_YAML_PATH, "utf8");
       try {
-        yaml_1.parse(ngBotYaml);
-        console_12.info(`${console_12.green("\u221A")}  Valid NgBot YAML config`);
+        (0, yaml_1.parse)(ngBotYaml);
+        (0, console_12.info)(`${(0, console_12.green)("\u221A")}  Valid NgBot YAML config`);
       } catch (e) {
-        console_12.error(`${console_12.red("!")} Invalid NgBot YAML config`);
-        console_12.error(e);
+        (0, console_12.error)(`${(0, console_12.red)("!")} Invalid NgBot YAML config`);
+        (0, console_12.error)(e);
         process.exitCode = 1;
       }
     }
@@ -58736,7 +58733,7 @@ var require_cli9 = __commonJS({
     exports2.buildNgbotParser = void 0;
     var verify_1 = require_verify();
     function buildNgbotParser(localYargs) {
-      return localYargs.help().strict().demandCommand().command("verify", "Verify the NgBot config", {}, () => verify_1.verify());
+      return localYargs.help().strict().demandCommand().command("verify", "Verify the NgBot config", {}, () => (0, verify_1.verify)());
     }
     exports2.buildNgbotParser = buildNgbotParser;
   }
@@ -58823,9 +58820,9 @@ var require_lts_branch = __commonJS({
     var target_label_1 = require_target_label();
     var locale_1 = require_locale();
     async function assertActiveLtsBranch(repo, releaseConfig, branchName) {
-      const version = await versioning_1.getVersionOfBranch(repo, branchName);
-      const { "dist-tags": distTags, time } = await versioning_1.fetchProjectNpmPackageInfo(releaseConfig);
-      const ltsNpmTag = versioning_1.getLtsNpmDistTagOfMajor(version.major);
+      const version = await (0, versioning_1.getVersionOfBranch)(repo, branchName);
+      const { "dist-tags": distTags, time } = await (0, versioning_1.fetchProjectNpmPackageInfo)(releaseConfig);
+      const ltsNpmTag = (0, versioning_1.getLtsNpmDistTagOfMajor)(version.major);
       const ltsVersion = semver.parse(distTags[ltsNpmTag]);
       if (ltsVersion === null) {
         throw new target_label_1.InvalidTargetBranchError(`No LTS version tagged for v${version.major} in NPM.`);
@@ -58835,12 +58832,12 @@ var require_lts_branch = __commonJS({
       }
       const today = new Date();
       const majorReleaseDate = new Date(time[`${version.major}.0.0`]);
-      const ltsEndDate = versioning_1.computeLtsEndDateOfMajor(majorReleaseDate);
+      const ltsEndDate = (0, versioning_1.computeLtsEndDateOfMajor)(majorReleaseDate);
       if (today > ltsEndDate) {
         const ltsEndDateText = ltsEndDate.toLocaleDateString(locale_1.defaultLocale);
-        console_12.warn(console_12.red(`Long-term support ended for v${version.major} on ${ltsEndDateText}.`));
-        console_12.warn(console_12.yellow(`Merging of pull requests for this major is generally not desired, but can be forcibly ignored.`));
-        if (await console_12.promptConfirm("Do you want to forcibly proceed with merging?")) {
+        (0, console_12.warn)((0, console_12.red)(`Long-term support ended for v${version.major} on ${ltsEndDateText}.`));
+        (0, console_12.warn)((0, console_12.yellow)(`Merging of pull requests for this major is generally not desired, but can be forcibly ignored.`));
+        if (await (0, console_12.promptConfirm)("Do you want to forcibly proceed with merging?")) {
           return;
         }
         throw new target_label_1.InvalidTargetBranchError(`Long-term supported ended for v${version.major} on ${ltsEndDateText}. Pull request cannot be merged into the ${branchName} branch.`);
@@ -58862,17 +58859,17 @@ var require_labels = __commonJS({
     var git_client_1 = require_git_client();
     var target_label_1 = require_target_label();
     var lts_branch_1 = require_lts_branch();
-    async function getTargetLabels(api = git_client_1.GitClient.get().github, config = config_1.getConfig()) {
-      index_12.assertValidReleaseConfig(config);
-      config_1.assertValidGithubConfig(config);
-      const nextBranchName = versioning_1.getNextBranchName(config.github);
+    async function getTargetLabels(api = git_client_1.GitClient.get().github, config = (0, config_1.getConfig)()) {
+      (0, index_12.assertValidReleaseConfig)(config);
+      (0, config_1.assertValidGithubConfig)(config);
+      const nextBranchName = (0, versioning_1.getNextBranchName)(config.github);
       const repo = {
         owner: config.github.owner,
         name: config.github.name,
         nextBranchName,
         api
       };
-      const { latest, releaseCandidate, next } = await versioning_1.fetchActiveReleaseTrains(repo);
+      const { latest, releaseCandidate, next } = await (0, versioning_1.fetchActiveReleaseTrains)(repo);
       return [
         {
           pattern: "target: major",
@@ -58915,7 +58912,7 @@ var require_labels = __commonJS({
         {
           pattern: "target: lts",
           branches: async (githubTargetBranch) => {
-            if (!versioning_1.isVersionBranch(githubTargetBranch)) {
+            if (!(0, versioning_1.isVersionBranch)(githubTargetBranch)) {
               throw new target_label_1.InvalidTargetBranchError(`PR cannot be merged as it does not target a long-term support branch: "${githubTargetBranch}"`);
             }
             if (githubTargetBranch === latest.branchName) {
@@ -58924,7 +58921,7 @@ var require_labels = __commonJS({
             if (releaseCandidate !== null && githubTargetBranch === releaseCandidate.branchName) {
               throw new target_label_1.InvalidTargetBranchError(`PR cannot be merged with "target: lts" into feature-freeze/release-candidate branch. Consider changing the label to "target: rc" if this is intentional.`);
             }
-            await lts_branch_1.assertActiveLtsBranch(repo, config.release, githubTargetBranch);
+            await (0, lts_branch_1.assertActiveLtsBranch)(repo, config.release, githubTargetBranch);
             return [githubTargetBranch];
           }
         }
@@ -58971,10 +58968,10 @@ var require_target_label = __commonJS({
       if (config.noTargetLabeling) {
         throw Error("This repository does not use target labels");
       }
-      const targetLabels = await labels_1.getTargetLabels();
+      const targetLabels = await (0, labels_1.getTargetLabels)();
       const matches = [];
       for (const label of labels) {
-        const match = targetLabels.find(({ pattern }) => string_pattern_1.matchesPattern(label, pattern));
+        const match = targetLabels.find(({ pattern }) => (0, string_pattern_1.matchesPattern)(label, pattern));
         if (match !== void 0) {
           matches.push(match);
         }
@@ -59014,27 +59011,27 @@ var require_check_target_branches = __commonJS({
       const githubTargetBranch = prData.base.ref;
       let targetLabel;
       try {
-        targetLabel = await target_label_1.getTargetLabelFromPullRequest(config.merge, labels);
+        targetLabel = await (0, target_label_1.getTargetLabelFromPullRequest)(config.merge, labels);
       } catch (e) {
         if (e instanceof target_label_1.InvalidTargetLabelError) {
-          console_12.error(console_12.red(e.failureMessage));
+          (0, console_12.error)((0, console_12.red)(e.failureMessage));
           process.exit(1);
         }
         throw e;
       }
-      return await target_label_1.getBranchesFromTargetLabel(targetLabel, githubTargetBranch);
+      return await (0, target_label_1.getBranchesFromTargetLabel)(targetLabel, githubTargetBranch);
     }
     async function printTargetBranchesForPr(prNumber) {
-      const config = config_1.getConfig();
-      config_1.assertValidGithubConfig(config);
-      config_2.assertValidMergeConfig(config);
+      const config = (0, config_1.getConfig)();
+      (0, config_1.assertValidGithubConfig)(config);
+      (0, config_2.assertValidMergeConfig)(config);
       if (config.merge.noTargetLabeling) {
-        console_12.info(`PR #${prNumber} will merge into: ${config.github.mainBranchName}`);
+        (0, console_12.info)(`PR #${prNumber} will merge into: ${config.github.mainBranchName}`);
         return;
       }
       const targets = await getTargetBranchesForPr(prNumber, config);
       console_12.info.group(`PR #${prNumber} will merge into:`);
-      targets.forEach((target) => console_12.info(`- ${target}`));
+      targets.forEach((target) => (0, console_12.info)(`- ${target}`));
       console_12.info.groupEnd();
     }
     exports2.printTargetBranchesForPr = printTargetBranchesForPr;
@@ -59056,7 +59053,7 @@ var require_cli10 = __commonJS({
       });
     }
     async function handler({ pr }) {
-      await check_target_branches_1.printTargetBranchesForPr(pr);
+      await (0, check_target_branches_1.printTargetBranchesForPr)(pr);
     }
     exports2.CheckTargetBranchesModule = {
       handler,
@@ -59076,13 +59073,13 @@ var require_github3 = __commonJS({
     var typed_graphqlify_1 = require_dist();
     async function getPr(prSchema, prNumber, git) {
       const { owner, name } = git.remoteConfig;
-      const PR_QUERY = typed_graphqlify_1.params({
+      const PR_QUERY = (0, typed_graphqlify_1.params)({
         $number: "Int!",
         $owner: "String!",
         $name: "String!"
       }, {
-        repository: typed_graphqlify_1.params({ owner: "$owner", name: "$name" }, {
-          pullRequest: typed_graphqlify_1.params({ number: "$number" }, prSchema)
+        repository: (0, typed_graphqlify_1.params)({ owner: "$owner", name: "$name" }, {
+          pullRequest: (0, typed_graphqlify_1.params)({ number: "$number" }, prSchema)
         })
       });
       const result = await git.github.graphql(PR_QUERY, { number: prNumber, owner, name });
@@ -59091,14 +59088,14 @@ var require_github3 = __commonJS({
     exports2.getPr = getPr;
     async function getPendingPrs(prSchema, git) {
       const { owner, name } = git.remoteConfig;
-      const PRS_QUERY = typed_graphqlify_1.params({
+      const PRS_QUERY = (0, typed_graphqlify_1.params)({
         $first: "Int",
         $after: "String",
         $owner: "String!",
         $name: "String!"
       }, {
-        repository: typed_graphqlify_1.params({ owner: "$owner", name: "$name" }, {
-          pullRequests: typed_graphqlify_1.params({
+        repository: (0, typed_graphqlify_1.params)({ owner: "$owner", name: "$name" }, {
+          pullRequests: (0, typed_graphqlify_1.params)({
             first: "$first",
             after: "$after",
             states: `OPEN`
@@ -59183,16 +59180,16 @@ var require_checkout_pr = __commonJS({
         throw new UnexpectedLocalChangesError("Unable to checkout PR due to uncommitted changes.");
       }
       const previousBranchOrRevision = git.getCurrentBranchOrRevision();
-      const pr = await github_1.getPr(PR_SCHEMA, prNumber, git);
+      const pr = await (0, github_1.getPr)(PR_SCHEMA, prNumber, git);
       const headRefName = pr.headRef.name;
       const fullHeadRef = `${pr.headRef.repository.nameWithOwner}:${headRefName}`;
-      const headRefUrl = github_urls_1.addTokenToGitHttpsUrl(pr.headRef.repository.url, githubToken);
+      const headRefUrl = (0, github_urls_1.addTokenToGitHttpsUrl)(pr.headRef.repository.url, githubToken);
       const forceWithLeaseFlag = `--force-with-lease=${headRefName}:${pr.headRefOid}`;
       if (!pr.maintainerCanModify && !pr.viewerDidAuthor && !opts.allowIfMaintainerCannotModify) {
         throw new MaintainerModifyAccessError("PR is not set to allow maintainers to modify the PR");
       }
       try {
-        console_12.info(`Checking out PR #${prNumber} from ${fullHeadRef}`);
+        (0, console_12.info)(`Checking out PR #${prNumber} from ${fullHeadRef}`);
         git.run(["fetch", "-q", headRefUrl, headRefName]);
         git.run(["checkout", "--detach", "FETCH_HEAD"]);
       } catch (e) {
@@ -59222,11 +59219,11 @@ var require_cli11 = __commonJS({
     var github_yargs_1 = require_github_yargs();
     var checkout_pr_1 = require_checkout_pr();
     function builder(yargs2) {
-      return github_yargs_1.addGithubTokenOption(yargs2).positional("prNumber", { type: "number", demandOption: true });
+      return (0, github_yargs_1.addGithubTokenOption)(yargs2).positional("prNumber", { type: "number", demandOption: true });
     }
     async function handler({ prNumber, githubToken }) {
       const prCheckoutOptions = { allowIfMaintainerCannotModify: true, branchName: `pr-${prNumber}` };
-      await checkout_pr_1.checkOutPullRequestLocally(prNumber, githubToken, prCheckoutOptions);
+      await (0, checkout_pr_1.checkOutPullRequestLocally)(prNumber, githubToken, prCheckoutOptions);
     }
     exports2.CheckoutCommandModule = {
       handler,
@@ -59276,25 +59273,25 @@ var require_discover_new_conflicts = __commonJS({
     async function discoverNewConflictsForPr(newPrNumber, updatedAfter) {
       const git = authenticated_git_client_1.AuthenticatedGitClient.get();
       if (git.hasUncommittedChanges()) {
-        console_12.error("Cannot run with local changes. Please make sure there are no local changes.");
+        (0, console_12.error)("Cannot run with local changes. Please make sure there are no local changes.");
         process.exit(1);
       }
       const previousBranchOrRevision = git.getCurrentBranchOrRevision();
       const progressBar = new cli_progress_1.Bar({ format: `[{bar}] ETA: {eta}s | {value}/{total}` });
       const conflicts = [];
-      console_12.info(`Requesting pending PRs from Github`);
-      const allPendingPRs = (await github_1.getPendingPrs(PR_SCHEMA, git)).map(processPr);
+      (0, console_12.info)(`Requesting pending PRs from Github`);
+      const allPendingPRs = (await (0, github_1.getPendingPrs)(PR_SCHEMA, git)).map(processPr);
       const requestedPr = allPendingPRs.find((pr) => pr.number === newPrNumber);
       if (requestedPr === void 0) {
-        console_12.error(`The request PR, #${newPrNumber} was not found as a pending PR on github, please confirm`);
-        console_12.error(`the PR number is correct and is an open PR`);
+        (0, console_12.error)(`The request PR, #${newPrNumber} was not found as a pending PR on github, please confirm`);
+        (0, console_12.error)(`the PR number is correct and is an open PR`);
         process.exit(1);
       }
       const pendingPrs = allPendingPRs.filter((pr) => {
         return pr.baseRef.name === requestedPr.baseRef.name && pr.mergeable !== "CONFLICTING" && pr.updatedAt >= updatedAfter;
       });
-      console_12.info(`Retrieved ${allPendingPRs.length} total pending PRs`);
-      console_12.info(`Checking ${pendingPrs.length} PRs for conflicts after a merge of #${newPrNumber}`);
+      (0, console_12.info)(`Retrieved ${allPendingPRs.length} total pending PRs`);
+      (0, console_12.info)(`Checking ${pendingPrs.length} PRs for conflicts after a merge of #${newPrNumber}`);
       git.run(["fetch", "-q", requestedPr.headRef.repository.url, requestedPr.headRef.name]);
       git.run(["checkout", "-q", "-B", tempWorkingBranch, "FETCH_HEAD"]);
       git.run(["fetch", "-q", requestedPr.baseRef.repository.url, requestedPr.baseRef.name]);
@@ -59302,7 +59299,7 @@ var require_discover_new_conflicts = __commonJS({
         git.run(["rebase", "FETCH_HEAD"], { stdio: "ignore" });
       } catch (err) {
         if (err instanceof git_client_1.GitCommandError) {
-          console_12.error("The requested PR currently has conflicts");
+          (0, console_12.error)("The requested PR currently has conflicts");
           git.checkout(previousBranchOrRevision, true);
           process.exit(1);
         }
@@ -59325,16 +59322,16 @@ var require_discover_new_conflicts = __commonJS({
         progressBar.increment(1);
       }
       progressBar.stop();
-      console_12.info();
-      console_12.info(`Result:`);
+      (0, console_12.info)();
+      (0, console_12.info)(`Result:`);
       git.checkout(previousBranchOrRevision, true);
       if (conflicts.length === 0) {
-        console_12.info(`No new conflicting PRs found after #${newPrNumber} merging`);
+        (0, console_12.info)(`No new conflicting PRs found after #${newPrNumber} merging`);
         process.exit(0);
       }
       console_12.error.group(`${conflicts.length} PR(s) which conflict(s) after #${newPrNumber} merges:`);
       for (const pr of conflicts) {
-        console_12.error(`  - #${pr.number}: ${pr.title}`);
+        (0, console_12.error)(`  - #${pr.number}: ${pr.title}`);
       }
       console_12.error.groupEnd();
       process.exit(1);
@@ -59353,7 +59350,7 @@ var require_cli12 = __commonJS({
     var github_yargs_1 = require_github_yargs();
     var index_12 = require_discover_new_conflicts();
     function buildDiscoverNewConflictsCommand(yargs2) {
-      return github_yargs_1.addGithubTokenOption(yargs2).option("date", {
+      return (0, github_yargs_1.addGithubTokenOption)(yargs2).option("date", {
         description: "Only consider PRs updated since provided date",
         defaultDescription: "30 days ago",
         coerce: (date) => typeof date === "number" ? date : Date.parse(date),
@@ -59363,10 +59360,10 @@ var require_cli12 = __commonJS({
     exports2.buildDiscoverNewConflictsCommand = buildDiscoverNewConflictsCommand;
     async function handleDiscoverNewConflictsCommand({ "pr-number": prNumber, date }) {
       if (isNaN(date)) {
-        console_12.error("Unable to parse the value provided via --date flag");
+        (0, console_12.error)("Unable to parse the value provided via --date flag");
         process.exit(1);
       }
-      await index_12.discoverNewConflictsForPr(prNumber, date);
+      await (0, index_12.discoverNewConflictsForPr)(prNumber, date);
     }
     exports2.handleDiscoverNewConflictsCommand = handleDiscoverNewConflictsCommand;
     function getThirtyDaysAgoDate() {
@@ -59475,7 +59472,7 @@ var require_messages = __commonJS({
     exports2.getTargettedBranchesConfirmationPromptMessage = exports2.getCaretakerNotePromptMessage = void 0;
     var console_12 = require_console();
     function getCaretakerNotePromptMessage(pullRequest) {
-      return console_12.red("Pull request has a caretaker note applied. Please make sure you read it.") + `
+      return (0, console_12.red)("Pull request has a caretaker note applied. Please make sure you read it.") + `
 Quick link to PR: ${pullRequest.url}
 Do you want to proceed merging?`;
     }
@@ -59511,20 +59508,23 @@ var require_pull_request = __commonJS({
         return failures_1.PullRequestFailure.notFound();
       }
       const labels = prData.labels.nodes.map((l) => l.name);
-      if (!labels.some((name) => string_pattern_1.matchesPattern(name, config.mergeReadyLabel))) {
+      if (!labels.some((name) => (0, string_pattern_1.matchesPattern)(name, config.mergeReadyLabel))) {
         return failures_1.PullRequestFailure.notMergeReady();
       }
-      if (!labels.some((name) => string_pattern_1.matchesPattern(name, config.claSignedLabel))) {
+      if (!labels.some((name) => (0, string_pattern_1.matchesPattern)(name, config.claSignedLabel))) {
         return failures_1.PullRequestFailure.claUnsigned();
       }
-      const commitsInPr = prData.commits.nodes.map((n) => parse_1.parseCommitMessage(n.commit.message));
+      const commitsInPr = prData.commits.nodes.map((n) => (0, parse_1.parseCommitMessage)(n.commit.message));
       const githubTargetBranch = prData.baseRefName;
       const targetBranches = await getTargetBranches({ github: git.config.github, merge: config }, labels, githubTargetBranch, commitsInPr);
       try {
         assertPendingState(prData);
         assertCorrectBreakingChangeLabeling(commitsInPr, labels);
       } catch (error) {
-        return error;
+        if (error instanceof failures_1.PullRequestFailure) {
+          return error;
+        }
+        throw error;
       }
       const state = prData.commits.nodes.slice(-1)[0].commit.status.state;
       if (state === "FAILURE" && !ignoreNonFatalFailures) {
@@ -59534,8 +59534,8 @@ var require_pull_request = __commonJS({
         return failures_1.PullRequestFailure.pendingCiJobs();
       }
       const requiredBaseSha = config.requiredBaseCommits && config.requiredBaseCommits[githubTargetBranch];
-      const needsCommitMessageFixup = !!config.commitMessageFixupLabel && labels.some((name) => string_pattern_1.matchesPattern(name, config.commitMessageFixupLabel));
-      const hasCaretakerNote = !!config.caretakerNoteLabel && labels.some((name) => string_pattern_1.matchesPattern(name, config.caretakerNoteLabel));
+      const needsCommitMessageFixup = !!config.commitMessageFixupLabel && labels.some((name) => (0, string_pattern_1.matchesPattern)(name, config.commitMessageFixupLabel));
+      const hasCaretakerNote = !!config.caretakerNoteLabel && labels.some((name) => (0, string_pattern_1.matchesPattern)(name, config.caretakerNoteLabel));
       return {
         url: prData.url,
         prNumber,
@@ -59555,7 +59555,7 @@ var require_pull_request = __commonJS({
       isDraft: typed_graphqlify_1.types.boolean,
       state: typed_graphqlify_1.types.oneOf(["OPEN", "MERGED", "CLOSED"]),
       number: typed_graphqlify_1.types.number,
-      commits: typed_graphqlify_1.params({ last: 100 }, {
+      commits: (0, typed_graphqlify_1.params)({ last: 100 }, {
         totalCount: typed_graphqlify_1.types.number,
         nodes: [
           {
@@ -59570,7 +59570,7 @@ var require_pull_request = __commonJS({
       }),
       baseRefName: typed_graphqlify_1.types.string,
       title: typed_graphqlify_1.types.string,
-      labels: typed_graphqlify_1.params({ first: 100 }, {
+      labels: (0, typed_graphqlify_1.params)({ first: 100 }, {
         nodes: [
           {
             name: typed_graphqlify_1.types.string
@@ -59580,7 +59580,7 @@ var require_pull_request = __commonJS({
     };
     async function fetchPullRequestFromGithub(git, prNumber) {
       try {
-        return await github_1.getPr(PR_SCHEMA, prNumber, git);
+        return await (0, github_1.getPr)(PR_SCHEMA, prNumber, git);
       } catch (e) {
         if (e.status === 404) {
           return null;
@@ -59620,8 +59620,8 @@ var require_pull_request = __commonJS({
           }
           break;
         default:
-          console_12.warn(console_12.red("WARNING: Unable to confirm all commits in the pull request are eligible to be"));
-          console_12.warn(console_12.red(`merged into the target branch: ${label.pattern}`));
+          (0, console_12.warn)((0, console_12.red)("WARNING: Unable to confirm all commits in the pull request are eligible to be"));
+          (0, console_12.warn)((0, console_12.red)(`merged into the target branch: ${label.pattern}`));
           break;
       }
     }
@@ -59651,8 +59651,8 @@ var require_pull_request = __commonJS({
         return [config.github.mainBranchName];
       } else {
         try {
-          let targetLabel = await target_label_1.getTargetLabelFromPullRequest(config.merge, labels);
-          let targetBranches = await target_label_1.getBranchesFromTargetLabel(targetLabel, githubTargetBranch);
+          let targetLabel = await (0, target_label_1.getTargetLabelFromPullRequest)(config.merge, labels);
+          let targetBranches = await (0, target_label_1.getBranchesFromTargetLabel)(targetLabel, githubTargetBranch);
           assertChangesAllowForTargetLabel(commits, targetLabel, config.merge);
           return targetBranches;
         } catch (error) {
@@ -59752,6 +59752,7 @@ var require_api_merge = __commonJS({
     var failures_1 = require_failures();
     var string_pattern_1 = require_string_pattern();
     var strategy_1 = require_strategy();
+    var github_1 = require_github();
     var COMMIT_HEADER_SEPARATOR = "\n\n";
     var GithubApiMergeStrategy = class extends strategy_1.MergeStrategy {
       constructor(git, _config) {
@@ -59789,7 +59790,7 @@ var require_api_merge = __commonJS({
           mergeStatusCode = result.status;
           targetSha = result.data.sha;
         } catch (e) {
-          if (e.status === 403 || e.status === 404) {
+          if (e instanceof github_1.GithubApiRequestError && (e.status === 403 || e.status === 404)) {
             return failures_1.PullRequestFailure.insufficientPermissionsToMerge();
           }
           throw e;
@@ -59816,7 +59817,7 @@ var require_api_merge = __commonJS({
       }
       async _promptCommitMessageEdit(pullRequest, mergeOptions) {
         const commitMessage = await this._getDefaultSquashCommitMessage(pullRequest);
-        const { result } = await inquirer_1.prompt({
+        const { result } = await (0, inquirer_1.prompt)({
           type: "editor",
           name: "result",
           message: "Please update the commit message",
@@ -59829,7 +59830,7 @@ var require_api_merge = __commonJS({
       async _getDefaultSquashCommitMessage(pullRequest) {
         const commits = (await this._getPullRequestCommitMessages(pullRequest)).map((message) => ({
           message,
-          parsed: parse_1.parseCommitMessage(message)
+          parsed: (0, parse_1.parseCommitMessage)(message)
         }));
         const messageBase = `${pullRequest.title}${COMMIT_HEADER_SEPARATOR}`;
         if (commits.length <= 1) {
@@ -59856,7 +59857,7 @@ var require_api_merge = __commonJS({
       }
       _getMergeActionFromPullRequest({ labels }) {
         if (this._config.labels) {
-          const matchingLabel = this._config.labels.find(({ pattern }) => labels.some((l) => string_pattern_1.matchesPattern(l, pattern)));
+          const matchingLabel = this._config.labels.find(({ pattern }) => labels.some((l) => (0, string_pattern_1.matchesPattern)(l, pattern)));
           if (matchingLabel !== void 0) {
             return matchingLabel.method;
           }
@@ -59877,7 +59878,7 @@ var require_autosquash_merge = __commonJS({
     var path_1 = require("path");
     var failures_1 = require_failures();
     var strategy_1 = require_strategy();
-    var MSG_FILTER_SCRIPT = path_1.join(__dirname, "./commit-message-filter.js").replace(/\\/g, "/");
+    var MSG_FILTER_SCRIPT = (0, path_1.join)(__dirname, "./commit-message-filter.js").replace(/\\/g, "/");
     var AutosquashMergeStrategy = class extends strategy_1.MergeStrategy {
       async merge(pullRequest) {
         const { prNumber, targetBranches, requiredBaseSha, needsCommitMessageFixup, githubTargetBranch } = pullRequest;
@@ -59968,14 +59969,14 @@ var require_task = __commonJS({
         if (this.git.hasUncommittedChanges()) {
           return { status: 1 };
         }
-        const pullRequest = await pull_request_1.loadAndValidatePullRequest(this, prNumber, force);
-        if (!pull_request_1.isPullRequest(pullRequest)) {
+        const pullRequest = await (0, pull_request_1.loadAndValidatePullRequest)(this, prNumber, force);
+        if (!(0, pull_request_1.isPullRequest)(pullRequest)) {
           return { status: 3, failure: pullRequest };
         }
-        if (this.flags.branchPrompt && !await console_12.promptConfirm(messages_1.getTargettedBranchesConfirmationPromptMessage(pullRequest))) {
+        if (this.flags.branchPrompt && !await (0, console_12.promptConfirm)((0, messages_1.getTargettedBranchesConfirmationPromptMessage)(pullRequest))) {
           return { status: 4 };
         }
-        if (pullRequest.hasCaretakerNote && !await console_12.promptConfirm(messages_1.getCaretakerNotePromptMessage(pullRequest))) {
+        if (pullRequest.hasCaretakerNote && !await (0, console_12.promptConfirm)((0, messages_1.getCaretakerNotePromptMessage)(pullRequest))) {
           return { status: 4 };
         }
         const strategy = this.config.githubApiMerge ? new api_merge_1.GithubApiMergeStrategy(this.git, this.config.githubApiMerge) : new autosquash_merge_1.AutosquashMergeStrategy(this.git);
@@ -60031,16 +60032,16 @@ var require_merge3 = __commonJS({
           return await handleMergeResult(result, ignoreFatalErrors);
         } catch (e) {
           if (e instanceof github_1.GithubApiRequestError && e.status === 401) {
-            console_12.error(console_12.red("Github API request failed. " + e.message));
-            console_12.error(console_12.yellow("Please ensure that your provided token is valid."));
-            console_12.error(console_12.yellow(`You can generate a token here: ${github_urls_1.GITHUB_TOKEN_GENERATE_URL}`));
+            (0, console_12.error)((0, console_12.red)("Github API request failed. " + e.message));
+            (0, console_12.error)((0, console_12.yellow)("Please ensure that your provided token is valid."));
+            (0, console_12.error)((0, console_12.yellow)(`You can generate a token here: ${github_urls_1.GITHUB_TOKEN_GENERATE_URL}`));
             process.exit(1);
           }
           throw e;
         }
       }
       async function promptAndPerformForceMerge() {
-        if (await console_12.promptConfirm("Do you want to forcibly proceed with merging?")) {
+        if (await (0, console_12.promptConfirm)("Do you want to forcibly proceed with merging?")) {
           return performMerge(true);
         }
         return false;
@@ -60050,28 +60051,28 @@ var require_merge3 = __commonJS({
         const canForciblyMerge = failure && failure.nonFatal;
         switch (status) {
           case 2:
-            console_12.info(console_12.green(`Successfully merged the pull request: #${prNumber}`));
+            (0, console_12.info)((0, console_12.green)(`Successfully merged the pull request: #${prNumber}`));
             return true;
           case 1:
-            console_12.error(console_12.red(`Local working repository not clean. Please make sure there are no uncommitted changes.`));
+            (0, console_12.error)((0, console_12.red)(`Local working repository not clean. Please make sure there are no uncommitted changes.`));
             return false;
           case 0:
-            console_12.error(console_12.red("An unknown Git error has been thrown. Please check the output above for details."));
+            (0, console_12.error)((0, console_12.red)("An unknown Git error has been thrown. Please check the output above for details."));
             return false;
           case 5:
-            console_12.error(console_12.red("An error related to interacting with Github has been discovered."));
-            console_12.error(failure.message);
+            (0, console_12.error)((0, console_12.red)("An error related to interacting with Github has been discovered."));
+            (0, console_12.error)(failure.message);
             return false;
           case 4:
-            console_12.info(`Merge of pull request has been aborted manually: #${prNumber}`);
+            (0, console_12.info)(`Merge of pull request has been aborted manually: #${prNumber}`);
             return true;
           case 3:
-            console_12.error(console_12.yellow(`Could not merge the specified pull request.`));
-            console_12.error(console_12.red(failure.message));
+            (0, console_12.error)((0, console_12.yellow)(`Could not merge the specified pull request.`));
+            (0, console_12.error)((0, console_12.red)(failure.message));
             if (canForciblyMerge && !disableForceMergePrompt) {
-              console_12.info();
-              console_12.info(console_12.yellow("The pull request above failed due to non-critical errors."));
-              console_12.info(console_12.yellow(`This error can be forcibly ignored if desired.`));
+              (0, console_12.info)();
+              (0, console_12.info)((0, console_12.yellow)("The pull request above failed due to non-critical errors."));
+              (0, console_12.info)((0, console_12.yellow)(`This error can be forcibly ignored if desired.`));
               return await promptAndPerformForceMerge();
             }
             return false;
@@ -60083,9 +60084,9 @@ var require_merge3 = __commonJS({
     exports2.mergePullRequest = mergePullRequest;
     async function createPullRequestMergeTask(flags) {
       try {
-        const config = config_1.getConfig();
-        config_1.assertValidGithubConfig(config);
-        config_2.assertValidMergeConfig(config);
+        const config = (0, config_1.getConfig)();
+        (0, config_1.assertValidGithubConfig)(config);
+        (0, config_2.assertValidMergeConfig)(config);
         const git = authenticated_git_client_1.AuthenticatedGitClient.get();
         const mergeConfig = __spreadValues({
           remote: config.github
@@ -60094,10 +60095,10 @@ var require_merge3 = __commonJS({
       } catch (e) {
         if (e instanceof config_1.ConfigValidationError) {
           if (e.errors.length) {
-            console_12.error(console_12.red("Invalid merge configuration:"));
-            e.errors.forEach((desc) => console_12.error(console_12.yellow(`  -  ${desc}`)));
+            (0, console_12.error)((0, console_12.red)("Invalid merge configuration:"));
+            e.errors.forEach((desc) => (0, console_12.error)((0, console_12.yellow)(`  -  ${desc}`)));
           } else {
-            console_12.error(console_12.red(e.message));
+            (0, console_12.error)((0, console_12.red)(e.message));
           }
           process.exit(1);
         }
@@ -60116,7 +60117,7 @@ var require_cli13 = __commonJS({
     var github_yargs_1 = require_github_yargs();
     var index_12 = require_merge3();
     function builder(yargs2) {
-      return github_yargs_1.addGithubTokenOption(yargs2).help().strict().positional("pr", {
+      return (0, github_yargs_1.addGithubTokenOption)(yargs2).help().strict().positional("pr", {
         demandOption: true,
         type: "number",
         description: "The PR to be merged."
@@ -60127,7 +60128,7 @@ var require_cli13 = __commonJS({
       });
     }
     async function handler({ pr, branchPrompt }) {
-      await index_12.mergePullRequest(pr, { branchPrompt });
+      await (0, index_12.mergePullRequest)(pr, { branchPrompt });
     }
     exports2.MergeCommandModule = {
       handler,
@@ -60173,59 +60174,59 @@ var require_rebase = __commonJS({
     async function rebasePr(prNumber, githubToken) {
       const git = authenticated_git_client_1.AuthenticatedGitClient.get();
       if (git.hasUncommittedChanges()) {
-        console_12.error("Cannot perform rebase of PR with local changes.");
+        (0, console_12.error)("Cannot perform rebase of PR with local changes.");
         return 1;
       }
       const previousBranchOrRevision = git.getCurrentBranchOrRevision();
-      const pr = await github_1.getPr(PR_SCHEMA, prNumber, git);
+      const pr = await (0, github_1.getPr)(PR_SCHEMA, prNumber, git);
       const headRefName = pr.headRef.name;
       const baseRefName = pr.baseRef.name;
       const fullHeadRef = `${pr.headRef.repository.nameWithOwner}:${headRefName}`;
       const fullBaseRef = `${pr.baseRef.repository.nameWithOwner}:${baseRefName}`;
-      const headRefUrl = github_urls_1.addTokenToGitHttpsUrl(pr.headRef.repository.url, githubToken);
-      const baseRefUrl = github_urls_1.addTokenToGitHttpsUrl(pr.baseRef.repository.url, githubToken);
+      const headRefUrl = (0, github_urls_1.addTokenToGitHttpsUrl)(pr.headRef.repository.url, githubToken);
+      const baseRefUrl = (0, github_urls_1.addTokenToGitHttpsUrl)(pr.baseRef.repository.url, githubToken);
       const forceWithLeaseFlag = `--force-with-lease=${headRefName}:${pr.headRefOid}`;
       if (!pr.maintainerCanModify && !pr.viewerDidAuthor) {
-        console_12.error(`Cannot rebase as you did not author the PR and the PR does not allow maintainersto modify the PR`);
+        (0, console_12.error)(`Cannot rebase as you did not author the PR and the PR does not allow maintainersto modify the PR`);
         return 1;
       }
       try {
-        console_12.info(`Checking out PR #${prNumber} from ${fullHeadRef}`);
+        (0, console_12.info)(`Checking out PR #${prNumber} from ${fullHeadRef}`);
         git.run(["fetch", "-q", headRefUrl, headRefName, "--depth=500"]);
         git.run(["checkout", "-q", "--detach", "FETCH_HEAD"]);
-        console_12.info(`Fetching ${fullBaseRef} to rebase #${prNumber} on`);
+        (0, console_12.info)(`Fetching ${fullBaseRef} to rebase #${prNumber} on`);
         git.run(["fetch", "-q", baseRefUrl, baseRefName, "--depth=500"]);
         const commonAncestorSha = git.run(["merge-base", "HEAD", "FETCH_HEAD"]).stdout.trim();
-        const commits = await utils_1.getCommitsInRange(commonAncestorSha, "HEAD");
-        let squashFixups = process.env["CI"] !== void 0 || commits.filter((commit) => commit.isFixup).length === 0 ? false : await console_12.promptConfirm(`PR #${prNumber} contains fixup commits, would you like to squash them during rebase?`, true);
-        console_12.info(`Attempting to rebase PR #${prNumber} on ${fullBaseRef}`);
+        const commits = await (0, utils_1.getCommitsInRange)(commonAncestorSha, "HEAD");
+        let squashFixups = process.env["CI"] !== void 0 || commits.filter((commit) => commit.isFixup).length === 0 ? false : await (0, console_12.promptConfirm)(`PR #${prNumber} contains fixup commits, would you like to squash them during rebase?`, true);
+        (0, console_12.info)(`Attempting to rebase PR #${prNumber} on ${fullBaseRef}`);
         const [flags, env] = squashFixups ? [["--interactive", "--autosquash"], __spreadProps(__spreadValues({}, process.env), { GIT_SEQUENCE_EDITOR: "true" })] : [[], void 0];
         const rebaseResult = git.runGraceful(["rebase", ...flags, "FETCH_HEAD"], { env });
         if (rebaseResult.status === 0) {
-          console_12.info(`Rebase was able to complete automatically without conflicts`);
-          console_12.info(`Pushing rebased PR #${prNumber} to ${fullHeadRef}`);
+          (0, console_12.info)(`Rebase was able to complete automatically without conflicts`);
+          (0, console_12.info)(`Pushing rebased PR #${prNumber} to ${fullHeadRef}`);
           git.run(["push", headRefUrl, `HEAD:${headRefName}`, forceWithLeaseFlag]);
-          console_12.info(`Rebased and updated PR #${prNumber}`);
+          (0, console_12.info)(`Rebased and updated PR #${prNumber}`);
           git.checkout(previousBranchOrRevision, true);
           return 0;
         }
       } catch (err) {
-        console_12.error(err.message);
+        (0, console_12.error)(err);
         git.checkout(previousBranchOrRevision, true);
         return 1;
       }
-      console_12.info(`Rebase was unable to complete automatically without conflicts.`);
-      const continueRebase = process.env["CI"] === void 0 && await console_12.promptConfirm("Manually complete rebase?");
+      (0, console_12.info)(`Rebase was unable to complete automatically without conflicts.`);
+      const continueRebase = process.env["CI"] === void 0 && await (0, console_12.promptConfirm)("Manually complete rebase?");
       if (continueRebase) {
-        console_12.info(`After manually completing rebase, run the following command to update PR #${prNumber}:`);
-        console_12.info(` $ git push ${pr.headRef.repository.url} HEAD:${headRefName} ${forceWithLeaseFlag}`);
-        console_12.info();
-        console_12.info(`To abort the rebase and return to the state of the repository before this command`);
-        console_12.info(`run the following command:`);
-        console_12.info(` $ git rebase --abort && git reset --hard && git checkout ${previousBranchOrRevision}`);
+        (0, console_12.info)(`After manually completing rebase, run the following command to update PR #${prNumber}:`);
+        (0, console_12.info)(` $ git push ${pr.headRef.repository.url} HEAD:${headRefName} ${forceWithLeaseFlag}`);
+        (0, console_12.info)();
+        (0, console_12.info)(`To abort the rebase and return to the state of the repository before this command`);
+        (0, console_12.info)(`run the following command:`);
+        (0, console_12.info)(` $ git rebase --abort && git reset --hard && git checkout ${previousBranchOrRevision}`);
         return 1;
       } else {
-        console_12.info(`Cleaning up git state, and restoring previous state.`);
+        (0, console_12.info)(`Cleaning up git state, and restoring previous state.`);
       }
       git.checkout(previousBranchOrRevision, true);
       return 1;
@@ -60243,11 +60244,11 @@ var require_cli14 = __commonJS({
     var github_yargs_1 = require_github_yargs();
     var index_12 = require_rebase();
     function buildRebaseCommand(yargs2) {
-      return github_yargs_1.addGithubTokenOption(yargs2).positional("prNumber", { type: "number", demandOption: true });
+      return (0, github_yargs_1.addGithubTokenOption)(yargs2).positional("prNumber", { type: "number", demandOption: true });
     }
     exports2.buildRebaseCommand = buildRebaseCommand;
     async function handleRebaseCommand({ prNumber, githubToken }) {
-      process.exitCode = await index_12.rebasePr(prNumber, githubToken);
+      process.exitCode = await (0, index_12.rebasePr)(prNumber, githubToken);
     }
     exports2.handleRebaseCommand = handleRebaseCommand;
   }
@@ -60301,9 +60302,9 @@ var require_logging = __commonJS({
       const leftSpace = Math.ceil((fillWidth - headerText.length) / 2);
       const rightSpace = fillWidth - leftSpace - headerText.length;
       const fill = (count, content) => content.repeat(count);
-      console_12.info(`\u250C${fill(fillWidth, "\u2500")}\u2510`);
-      console_12.info(`\u2502${fill(leftSpace, " ")}${headerText}${fill(rightSpace, " ")}\u2502`);
-      console_12.info(`\u2514${fill(fillWidth, "\u2500")}\u2518`);
+      (0, console_12.info)(`\u250C${fill(fillWidth, "\u2500")}\u2510`);
+      (0, console_12.info)(`\u2502${fill(leftSpace, " ")}${headerText}${fill(rightSpace, " ")}\u2502`);
+      (0, console_12.info)(`\u2514${fill(fillWidth, "\u2500")}\u2518`);
     }
     exports2.logHeader = logHeader;
   }
@@ -60350,10 +60351,10 @@ var require_pullapprove_arrays = __commonJS({
         Object.setPrototypeOf(this, PullApproveStringArray.prototype);
       }
       include(pattern) {
-        return new PullApproveStringArray(...this.filter((s) => utils_1.getOrCreateGlob(pattern).match(s)));
+        return new PullApproveStringArray(...this.filter((s) => (0, utils_1.getOrCreateGlob)(pattern).match(s)));
       }
       exclude(pattern) {
-        return new PullApproveStringArray(...this.filter((s) => !utils_1.getOrCreateGlob(pattern).match(s)));
+        return new PullApproveStringArray(...this.filter((s) => !(0, utils_1.getOrCreateGlob)(pattern).match(s)));
       }
     };
     exports2.PullApproveStringArray = PullApproveStringArray;
@@ -60399,7 +60400,7 @@ var require_condition_evaluator = __commonJS({
     var conditionContext = {
       "len": (value) => value.length,
       "contains_any_globs": (files, patterns) => {
-        return files.some((f) => patterns.some((pattern) => utils_1.getOrCreateGlob(pattern).match(f)));
+        return files.some((f) => patterns.some((pattern) => (0, utils_1.getOrCreateGlob)(pattern).match(f)));
       }
     };
     function convertConditionToFunction(expr) {
@@ -60450,16 +60451,14 @@ var require_group = __commonJS({
             try {
               this.conditions.push({
                 expression,
-                checkFn: condition_evaluator_1.convertConditionToFunction(expression),
+                checkFn: (0, condition_evaluator_1.convertConditionToFunction)(expression),
                 matchedFiles: new Set(),
                 unverifiable: false
               });
             } catch (e) {
-              console_12.error(`Could not parse condition in group: ${this.groupName}`);
-              console_12.error(` - ${expression}`);
-              console_12.error(`Error:`);
-              console_12.error(e.message);
-              console_12.error(e.stack);
+              (0, console_12.error)(`Could not parse condition in group: ${this.groupName}`);
+              (0, console_12.error)(` - ${expression}`);
+              (0, console_12.error)(`Error:`, e);
               process.exit(1);
             }
           });
@@ -60482,12 +60481,8 @@ var require_group = __commonJS({
               const errMessage = `Condition could not be evaluated: 
 
 From the [${this.groupName}] group:
- - ${expression}
-
-${e.message} ${e.stack}
-
-`;
-              console_12.error(errMessage);
+ - ${expression}`;
+              (0, console_12.error)(errMessage, "\n\n", e, "\n\n");
               process.exit(1);
             }
           }
@@ -60520,7 +60515,7 @@ var require_parse_yaml = __commonJS({
     var yaml_1 = require_yaml();
     var group_1 = require_group();
     function parsePullApproveYaml(rawYaml) {
-      return yaml_1.parse(rawYaml, { merge: true });
+      return (0, yaml_1.parse)(rawYaml, { merge: true });
     }
     exports2.parsePullApproveYaml = parsePullApproveYaml;
     function getGroupsFromYaml(pullApproveYamlRaw) {
@@ -60547,10 +60542,10 @@ var require_verify2 = __commonJS({
     var parse_yaml_1 = require_parse_yaml();
     function verify() {
       const git = git_client_1.GitClient.get();
-      const PULL_APPROVE_YAML_PATH = path_1.resolve(git.baseDir, ".pullapprove.yml");
+      const PULL_APPROVE_YAML_PATH = (0, path_1.resolve)(git.baseDir, ".pullapprove.yml");
       const REPO_FILES = git.allFiles();
-      const pullApproveYamlRaw = fs_1.readFileSync(PULL_APPROVE_YAML_PATH, "utf8");
-      const groups = parse_yaml_1.getGroupsFromYaml(pullApproveYamlRaw);
+      const pullApproveYamlRaw = (0, fs_1.readFileSync)(PULL_APPROVE_YAML_PATH, "utf8");
+      const groups = (0, parse_yaml_1.getGroupsFromYaml)(pullApproveYamlRaw);
       const groupsSkipped = groups.filter((group) => !group.conditions.length);
       const groupsWithConditions = groups.filter((group) => !!group.conditions.length);
       const matchedFiles = [];
@@ -60566,46 +60561,46 @@ var require_verify2 = __commonJS({
       const allGroupConditionsValid = resultsByGroup.every((r) => !r.unmatchedCount) && !unmatchedFiles.length;
       const groupsWithoutReviewers = groups.filter((group) => Object.keys(group.reviewers).length === 0);
       const overallResult = allGroupConditionsValid && groupsWithoutReviewers.length === 0;
-      logging_1.logHeader("Overall Result");
+      (0, logging_1.logHeader)("Overall Result");
       if (overallResult) {
-        console_12.info("PullApprove verification succeeded!");
+        (0, console_12.info)("PullApprove verification succeeded!");
       } else {
-        console_12.info(`PullApprove verification failed.`);
-        console_12.info();
-        console_12.info(`Please update '.pullapprove.yml' to ensure that all necessary`);
-        console_12.info(`files/directories have owners and all patterns that appear in`);
-        console_12.info(`the file correspond to actual files/directories in the repo.`);
+        (0, console_12.info)(`PullApprove verification failed.`);
+        (0, console_12.info)();
+        (0, console_12.info)(`Please update '.pullapprove.yml' to ensure that all necessary`);
+        (0, console_12.info)(`files/directories have owners and all patterns that appear in`);
+        (0, console_12.info)(`the file correspond to actual files/directories in the repo.`);
       }
-      logging_1.logHeader(`Group Reviewers Check`);
+      (0, logging_1.logHeader)(`Group Reviewers Check`);
       if (groupsWithoutReviewers.length === 0) {
-        console_12.info("All group contain at least one reviewer user or team.");
+        (0, console_12.info)("All group contain at least one reviewer user or team.");
       } else {
         console_12.info.group(`Discovered ${groupsWithoutReviewers.length} group(s) without a reviewer defined`);
-        groupsWithoutReviewers.forEach((g) => console_12.info(g.groupName));
+        groupsWithoutReviewers.forEach((g) => (0, console_12.info)(g.groupName));
         console_12.info.groupEnd();
       }
-      logging_1.logHeader("PullApprove results by file");
+      (0, logging_1.logHeader)("PullApprove results by file");
       console_12.info.group(`Matched Files (${matchedFiles.length} files)`);
-      matchedFiles.forEach((file) => console_12.debug(file));
+      matchedFiles.forEach((file) => (0, console_12.debug)(file));
       console_12.info.groupEnd();
       console_12.info.group(`Unmatched Files (${unmatchedFiles.length} files)`);
-      unmatchedFiles.forEach((file) => console_12.info(file));
+      unmatchedFiles.forEach((file) => (0, console_12.info)(file));
       console_12.info.groupEnd();
-      logging_1.logHeader("PullApprove results by group");
+      (0, logging_1.logHeader)("PullApprove results by group");
       console_12.info.group(`Groups skipped (${groupsSkipped.length} groups)`);
-      groupsSkipped.forEach((group) => console_12.debug(`${group.groupName}`));
+      groupsSkipped.forEach((group) => (0, console_12.debug)(`${group.groupName}`));
       console_12.info.groupEnd();
       const matchedGroups = resultsByGroup.filter((group) => !group.unmatchedCount);
       console_12.info.group(`Matched conditions by Group (${matchedGroups.length} groups)`);
-      matchedGroups.forEach((group) => logging_1.logGroup(group, "matchedConditions", console_12.debug));
+      matchedGroups.forEach((group) => (0, logging_1.logGroup)(group, "matchedConditions", console_12.debug));
       console_12.info.groupEnd();
       const unmatchedGroups = resultsByGroup.filter((group) => group.unmatchedCount);
       console_12.info.group(`Unmatched conditions by Group (${unmatchedGroups.length} groups)`);
-      unmatchedGroups.forEach((group) => logging_1.logGroup(group, "unmatchedConditions"));
+      unmatchedGroups.forEach((group) => (0, logging_1.logGroup)(group, "unmatchedConditions"));
       console_12.info.groupEnd();
       const unverifiableConditionsInGroups = resultsByGroup.filter((group) => group.unverifiableConditions.length > 0);
       console_12.info.group(`Unverifiable conditions by Group (${unverifiableConditionsInGroups.length} groups)`);
-      unverifiableConditionsInGroups.forEach((group) => logging_1.logGroup(group, "unverifiableConditions"));
+      unverifiableConditionsInGroups.forEach((group) => (0, logging_1.logGroup)(group, "unverifiableConditions"));
       console_12.info.groupEnd();
       process.exit(overallResult ? 0 : 1);
     }
@@ -60621,7 +60616,7 @@ var require_cli16 = __commonJS({
     exports2.buildPullapproveParser = void 0;
     var verify_1 = require_verify2();
     function buildPullapproveParser(localYargs) {
-      return localYargs.help().strict().demandCommand().command("verify", "Verify the pullapprove config", {}, () => verify_1.verify());
+      return localYargs.help().strict().demandCommand().command("verify", "Verify the pullapprove config", {}, () => (0, verify_1.verify)());
     }
     exports2.buildPullapproveParser = buildPullapproveParser;
   }
@@ -60636,7 +60631,7 @@ var require_build5 = __commonJS({
     var child_process_1 = require("child_process");
     async function buildReleaseOutput(stampForRelease = false) {
       return new Promise((resolve) => {
-        const buildProcess = child_process_1.fork(require.resolve("./build-worker"), [`${stampForRelease}`], {
+        const buildProcess = (0, child_process_1.fork)(require.resolve("./build-worker"), [`${stampForRelease}`], {
           stdio: ["inherit", 2, 2, "ipc"]
         });
         let builtPackages = null;
@@ -60666,30 +60661,30 @@ var require_cli17 = __commonJS({
       });
     }
     async function handler(args) {
-      const config = config_1.getConfig();
-      index_12.assertValidReleaseConfig(config);
+      const config = (0, config_1.getConfig)();
+      (0, index_12.assertValidReleaseConfig)(config);
       const { npmPackages } = config.release;
-      let builtPackages = await index_2.buildReleaseOutput(true);
+      let builtPackages = await (0, index_2.buildReleaseOutput)(true);
       if (builtPackages === null) {
-        console_12.error(console_12.red(`  \u2718   Could not build release output. Please check output above.`));
+        (0, console_12.error)((0, console_12.red)(`  \u2718   Could not build release output. Please check output above.`));
         process.exit(1);
       }
       if (builtPackages.length === 0) {
-        console_12.error(console_12.red(`  \u2718   No release packages have been built. Please ensure that the`));
-        console_12.error(console_12.red(`      build script is configured correctly in ".ng-dev".`));
+        (0, console_12.error)((0, console_12.red)(`  \u2718   No release packages have been built. Please ensure that the`));
+        (0, console_12.error)((0, console_12.red)(`      build script is configured correctly in ".ng-dev".`));
         process.exit(1);
       }
       const missingPackages = npmPackages.filter((pkgName) => !builtPackages.find((b) => b.name === pkgName));
       if (missingPackages.length > 0) {
-        console_12.error(console_12.red(`  \u2718   Release output missing for the following packages:`));
-        missingPackages.forEach((pkgName) => console_12.error(console_12.red(`      - ${pkgName}`)));
+        (0, console_12.error)((0, console_12.red)(`  \u2718   Release output missing for the following packages:`));
+        missingPackages.forEach((pkgName) => (0, console_12.error)((0, console_12.red)(`      - ${pkgName}`)));
         process.exit(1);
       }
       if (args.json) {
         process.stdout.write(JSON.stringify(builtPackages, null, 2));
       } else {
-        console_12.info(console_12.green("  \u2713   Built release packages."));
-        builtPackages.forEach(({ name }) => console_12.info(console_12.green(`      - ${name}`)));
+        (0, console_12.info)((0, console_12.green)("  \u2713   Built release packages."));
+        builtPackages.forEach(({ name }) => (0, console_12.info)((0, console_12.green)(`      - ${name}`)));
       }
     }
     exports2.ReleaseBuildCommandModule = {
@@ -60712,38 +60707,38 @@ var require_print_active_trains = __commonJS({
     var npm_registry_1 = require_npm_registry();
     async function printActiveReleaseTrains(active, config) {
       const { releaseCandidate, next, latest } = active;
-      const isNextPublishedToNpm = await npm_registry_1.isVersionPublishedToNpm(next.version, config);
+      const isNextPublishedToNpm = await (0, npm_registry_1.isVersionPublishedToNpm)(next.version, config);
       const nextTrainType = next.isMajor ? "major" : "minor";
-      const ltsBranches = await long_term_support_1.fetchLongTermSupportBranchesFromNpm(config);
-      console_12.info();
-      console_12.info(console_12.blue("Current version branches in the project:"));
+      const ltsBranches = await (0, long_term_support_1.fetchLongTermSupportBranchesFromNpm)(config);
+      (0, console_12.info)();
+      (0, console_12.info)((0, console_12.blue)("Current version branches in the project:"));
       if (releaseCandidate !== null) {
         const rcVersion = releaseCandidate.version;
         const rcTrainType = releaseCandidate.isMajor ? "major" : "minor";
         const rcTrainPhase = rcVersion.prerelease[0] === "next" ? "feature-freeze" : "release-candidate";
-        console_12.info(` \u2022 ${console_12.bold(releaseCandidate.branchName)} contains changes for an upcoming ${rcTrainType} that is currently in ${console_12.bold(rcTrainPhase)} phase.`);
-        console_12.info(`   Most recent pre-release for this branch is "${console_12.bold(`v${rcVersion}`)}".`);
+        (0, console_12.info)(` \u2022 ${(0, console_12.bold)(releaseCandidate.branchName)} contains changes for an upcoming ${rcTrainType} that is currently in ${(0, console_12.bold)(rcTrainPhase)} phase.`);
+        (0, console_12.info)(`   Most recent pre-release for this branch is "${(0, console_12.bold)(`v${rcVersion}`)}".`);
       }
-      console_12.info(` \u2022 ${console_12.bold(latest.branchName)} contains changes for the most recent patch.`);
-      console_12.info(`   Most recent patch version for this branch is "${console_12.bold(`v${latest.version}`)}".`);
-      console_12.info(` \u2022 ${console_12.bold(next.branchName)} contains changes for a ${nextTrainType} currently in active development.`);
+      (0, console_12.info)(` \u2022 ${(0, console_12.bold)(latest.branchName)} contains changes for the most recent patch.`);
+      (0, console_12.info)(`   Most recent patch version for this branch is "${(0, console_12.bold)(`v${latest.version}`)}".`);
+      (0, console_12.info)(` \u2022 ${(0, console_12.bold)(next.branchName)} contains changes for a ${nextTrainType} currently in active development.`);
       if (isNextPublishedToNpm) {
-        console_12.info(`   Most recent pre-release version for this branch is "${console_12.bold(`v${next.version}`)}".`);
+        (0, console_12.info)(`   Most recent pre-release version for this branch is "${(0, console_12.bold)(`v${next.version}`)}".`);
       } else {
-        console_12.info(`   Version is currently set to "${console_12.bold(`v${next.version}`)}", but has not been published yet.`);
+        (0, console_12.info)(`   Version is currently set to "${(0, console_12.bold)(`v${next.version}`)}", but has not been published yet.`);
       }
       if (releaseCandidate === null) {
-        console_12.info(" \u2022 No release-candidate or feature-freeze branch currently active.");
+        (0, console_12.info)(" \u2022 No release-candidate or feature-freeze branch currently active.");
       }
-      console_12.info();
-      console_12.info(console_12.blue("Current active LTS version branches:"));
+      (0, console_12.info)();
+      (0, console_12.info)((0, console_12.blue)("Current active LTS version branches:"));
       if (ltsBranches.active.length !== 0) {
         for (const ltsBranch of ltsBranches.active) {
-          console_12.info(` \u2022 ${console_12.bold(ltsBranch.name)} is currently in active long-term support phase.`);
-          console_12.info(`   Most recent patch version for this branch is "${console_12.bold(`v${ltsBranch.version}`)}".`);
+          (0, console_12.info)(` \u2022 ${(0, console_12.bold)(ltsBranch.name)} is currently in active long-term support phase.`);
+          (0, console_12.info)(`   Most recent patch version for this branch is "${(0, console_12.bold)(`v${ltsBranch.version}`)}".`);
         }
       }
-      console_12.info();
+      (0, console_12.info)();
     }
     exports2.printActiveReleaseTrains = printActiveReleaseTrains;
   }
@@ -60763,12 +60758,12 @@ var require_cli18 = __commonJS({
     var config_1 = require_config2();
     async function handler() {
       const git = git_client_1.GitClient.get();
-      const nextBranchName = versioning_1.getNextBranchName(git.config.github);
+      const nextBranchName = (0, versioning_1.getNextBranchName)(git.config.github);
       const repo = __spreadProps(__spreadValues({ api: git.github }, git.remoteConfig), { nextBranchName });
-      const releaseTrains = await active_release_trains_1.fetchActiveReleaseTrains(repo);
-      const config = config_1.getConfig();
-      index_12.assertValidReleaseConfig(config);
-      await print_active_trains_1.printActiveReleaseTrains(releaseTrains, config.release);
+      const releaseTrains = await (0, active_release_trains_1.fetchActiveReleaseTrains)(repo);
+      const config = (0, config_1.getConfig)();
+      (0, index_12.assertValidReleaseConfig)(config);
+      await (0, print_active_trains_1.printActiveReleaseTrains)(releaseTrains, config.release);
     }
     exports2.ReleaseInfoCommandModule = {
       handler,
@@ -61459,9 +61454,9 @@ var require_context = __commonJS({
         this.urlFragmentForRelease = this.data.version;
         this.commits = this._categorizeCommits(this.data.commits);
         this._commitsWithinGroupComparator = (a, b) => {
-          const typeCompareOrder = locale_1.compareString(a.type, b.type);
+          const typeCompareOrder = (0, locale_1.compareString)(a.type, b.type);
           if (typeCompareOrder === 0) {
-            return locale_1.compareString(a.description, b.description);
+            return (0, locale_1.compareString)(a.description, b.description);
           }
           return typeCompareOrder;
         };
@@ -61487,7 +61482,7 @@ var require_context = __commonJS({
         const commitGroups = Array.from(groups.entries()).map(([title, commits2]) => ({
           title,
           commits: commits2.sort(this._commitsWithinGroupComparator)
-        })).sort((a, b) => locale_1.compareString(a.title, b.title));
+        })).sort((a, b) => (0, locale_1.compareString)(a.title, b.title));
         if (this.groupOrder.length) {
           for (const groupTitle of this.groupOrder.reverse()) {
             const currentIdx = commitGroups.findIndex((k) => k.title === groupTitle);
@@ -61753,12 +61748,12 @@ var require_get_commits_in_range = __commonJS({
       const commitsForBase = fetchCommitsForRevisionRange(client, `${headRef}..${baseRef}`);
       const knownCommitsOnlyInBase = new Map();
       for (const commit of commitsForBase) {
-        const id = unique_commit_id_1.computeUniqueIdFromCommitMessage(commit);
+        const id = (0, unique_commit_id_1.computeUniqueIdFromCommitMessage)(commit);
         const numSimilarCommits = (_a = knownCommitsOnlyInBase.get(id)) != null ? _a : 0;
         knownCommitsOnlyInBase.set(id, numSimilarCommits + 1);
       }
       for (const commit of commitsForHead) {
-        const id = unique_commit_id_1.computeUniqueIdFromCommitMessage(commit);
+        const id = (0, unique_commit_id_1.computeUniqueIdFromCommitMessage)(commit);
         const numSimilarCommits = (_b = knownCommitsOnlyInBase.get(id)) != null ? _b : 0;
         if (numSimilarCommits > 0) {
           knownCommitsOnlyInBase.set(id, numSimilarCommits - 1);
@@ -61776,7 +61771,7 @@ var require_get_commits_in_range = __commonJS({
         `--format=${parse_1.gitLogFormatForParsing}${splitDelimiter}`,
         revisionRange
       ]);
-      return output.stdout.split(splitDelimiter).filter((entry) => !!entry.trim()).map((entry) => parse_1.parseCommitFromGitLog(Buffer.from(entry, "utf-8")));
+      return output.stdout.split(splitDelimiter).filter((entry) => !!entry.trim()).map((entry) => (0, parse_1.parseCommitFromGitLog)(Buffer.from(entry, "utf-8")));
     }
     exports2.fetchCommitsForRevisionRange = fetchCommitsForRevisionRange;
   }
@@ -61807,16 +61802,16 @@ var require_release_notes = __commonJS({
       }
       static async forRange(version, baseRef, headRef) {
         const client = git_client_1.GitClient.get();
-        const commits = get_commits_in_range_1.getCommitsForRangeWithDeduping(client, baseRef, headRef);
+        const commits = (0, get_commits_in_range_1.getCommitsForRangeWithDeduping)(client, baseRef, headRef);
         return new ReleaseNotes(version, commits);
       }
       async getGithubReleaseEntry() {
-        return ejs_1.render(github_release_1.default, await this.generateRenderContext(), {
+        return (0, ejs_1.render)(github_release_1.default, await this.generateRenderContext(), {
           rmWhitespace: true
         });
       }
       async getChangelogEntry() {
-        return ejs_1.render(changelog_1.default, await this.generateRenderContext(), { rmWhitespace: true });
+        return (0, ejs_1.render)(changelog_1.default, await this.generateRenderContext(), { rmWhitespace: true });
       }
       async getCommitCountInReleaseNotes() {
         const context = await this.generateRenderContext();
@@ -61828,7 +61823,7 @@ var require_release_notes = __commonJS({
       async promptForReleaseTitle() {
         if (this.title === void 0) {
           if (this.config.useReleaseTitle) {
-            this.title = await console_12.promptInput("Please provide a title for the release:");
+            this.title = await (0, console_12.promptInput)("Please provide a title for the release:");
           } else {
             this.title = false;
           }
@@ -61850,8 +61845,8 @@ var require_release_notes = __commonJS({
         return this.renderContext;
       }
       getReleaseConfig() {
-        const config = config_1.getConfig();
-        index_12.assertValidReleaseConfig(config);
+        const config = (0, config_1.getConfig)();
+        (0, index_12.assertValidReleaseConfig)(config);
         return config.release;
       }
     };
@@ -61891,15 +61886,15 @@ var require_cli19 = __commonJS({
       }).option("outFile", {
         type: "string",
         description: "File location to write the generated release notes to",
-        coerce: (filePath) => filePath ? path_1.join(process.cwd(), filePath) : void 0
+        coerce: (filePath) => filePath ? (0, path_1.join)(process.cwd(), filePath) : void 0
       });
     }
     async function handler({ releaseVersion, from, to, outFile, type }) {
       const releaseNotes = await release_notes_1.ReleaseNotes.forRange(releaseVersion, from, to);
       const releaseNotesEntry = await (type === "changelog" ? releaseNotes.getChangelogEntry() : releaseNotes.getGithubReleaseEntry());
       if (outFile) {
-        fs_1.writeFileSync(outFile, releaseNotesEntry);
-        console_12.info(`Generated release notes for "${releaseVersion}" written to ${outFile}`);
+        (0, fs_1.writeFileSync)(outFile, releaseNotesEntry);
+        (0, console_12.info)(`Generated release notes for "${releaseVersion}" written to ${outFile}`);
       } else {
         process.stdout.write(releaseNotesEntry);
       }
@@ -61925,7 +61920,7 @@ var require_npm_publish = __commonJS({
       if (registryUrl !== void 0) {
         args.push("--registry", registryUrl);
       }
-      await child_process_1.spawn("npm", args, { cwd: packagePath, mode: "silent" });
+      await (0, child_process_1.spawn)("npm", args, { cwd: packagePath, mode: "silent" });
     }
     exports2.runNpmPublish = runNpmPublish;
     async function setNpmTagForPackage(packageName, distTag, version, registryUrl) {
@@ -61933,7 +61928,7 @@ var require_npm_publish = __commonJS({
       if (registryUrl !== void 0) {
         args.push("--registry", registryUrl);
       }
-      await child_process_1.spawn("npm", args, { mode: "silent" });
+      await (0, child_process_1.spawn)("npm", args, { mode: "silent" });
     }
     exports2.setNpmTagForPackage = setNpmTagForPackage;
     async function npmIsLoggedIn(registryUrl) {
@@ -61942,7 +61937,7 @@ var require_npm_publish = __commonJS({
         args.push("--registry", registryUrl);
       }
       try {
-        await child_process_1.spawn("npm", args, { mode: "silent" });
+        await (0, child_process_1.spawn)("npm", args, { mode: "silent" });
       } catch (e) {
         return false;
       }
@@ -61954,7 +61949,7 @@ var require_npm_publish = __commonJS({
       if (registryUrl !== void 0) {
         args.splice(1, 0, "--registry", registryUrl);
       }
-      await child_process_1.spawnInteractive("npm", args);
+      await (0, child_process_1.spawnInteractive)("npm", args);
     }
     exports2.npmLogin = npmLogin;
     async function npmLogout(registryUrl) {
@@ -61963,7 +61958,7 @@ var require_npm_publish = __commonJS({
         args.splice(1, 0, "--registry", registryUrl);
       }
       try {
-        await child_process_1.spawn("npm", args, { mode: "silent" });
+        await (0, child_process_1.spawn)("npm", args, { mode: "silent" });
       } finally {
         return npmIsLoggedIn(registryUrl);
       }
@@ -62040,10 +62035,10 @@ var require_spinner = __commonJS({
         return this.spinnerCharacters[this.currentSpinnerCharacterIndex];
       }
       printFrame(prefix = this.getNextSpinnerCharacter(), text = this.text) {
-        readline_1.cursorTo(process.stdout, 0);
+        (0, readline_1.cursorTo)(process.stdout, 0);
         process.stdout.write(` ${prefix} ${text}`);
-        readline_1.clearLine(process.stdout, 1);
-        readline_1.cursorTo(process.stdout, 0);
+        (0, readline_1.clearLine)(process.stdout, 1);
+        (0, readline_1.cursorTo)(process.stdout, 0);
       }
       update(text) {
         this.text = text;
@@ -62108,7 +62103,7 @@ var require_external_commands = __commonJS({
     var actions_error_1 = require_actions_error();
     async function invokeSetNpmDistCommand(npmDistTag, version) {
       try {
-        await child_process_1.spawn("yarn", [
+        await (0, child_process_1.spawn)("yarn", [
           "--silent",
           "ng-dev",
           "release",
@@ -62116,10 +62111,10 @@ var require_external_commands = __commonJS({
           npmDistTag,
           version.format()
         ]);
-        console_12.info(console_12.green(`  \u2713   Set "${npmDistTag}" NPM dist tag for all packages to v${version}.`));
+        (0, console_12.info)((0, console_12.green)(`  \u2713   Set "${npmDistTag}" NPM dist tag for all packages to v${version}.`));
       } catch (e) {
-        console_12.error(e);
-        console_12.error(console_12.red(`  \u2718   An error occurred while setting the NPM dist tag for "${npmDistTag}".`));
+        (0, console_12.error)(e);
+        (0, console_12.error)((0, console_12.red)(`  \u2718   An error occurred while setting the NPM dist tag for "${npmDistTag}".`));
         throw new actions_error_1.FatalReleaseActionError();
       }
     }
@@ -62127,27 +62122,27 @@ var require_external_commands = __commonJS({
     async function invokeReleaseBuildCommand() {
       const spinner = new spinner_1.Spinner("Building release output.");
       try {
-        const { stdout } = await child_process_1.spawn("yarn", ["--silent", "ng-dev", "release", "build", "--json"], {
+        const { stdout } = await (0, child_process_1.spawn)("yarn", ["--silent", "ng-dev", "release", "build", "--json"], {
           mode: "silent"
         });
         spinner.complete();
-        console_12.info(console_12.green("  \u2713   Built release output for all packages."));
+        (0, console_12.info)((0, console_12.green)("  \u2713   Built release output for all packages."));
         return JSON.parse(stdout.trim());
       } catch (e) {
         spinner.complete();
-        console_12.error(e);
-        console_12.error(console_12.red("  \u2718   An error occurred while building the release packages."));
+        (0, console_12.error)(e);
+        (0, console_12.error)((0, console_12.red)("  \u2718   An error occurred while building the release packages."));
         throw new actions_error_1.FatalReleaseActionError();
       }
     }
     exports2.invokeReleaseBuildCommand = invokeReleaseBuildCommand;
     async function invokeYarnInstallCommand(projectDir) {
       try {
-        await child_process_1.spawn("yarn", ["install", "--frozen-lockfile", "--non-interactive"], { cwd: projectDir });
-        console_12.info(console_12.green("  \u2713   Installed project dependencies."));
+        await (0, child_process_1.spawn)("yarn", ["install", "--frozen-lockfile", "--non-interactive"], { cwd: projectDir });
+        (0, console_12.info)((0, console_12.green)("  \u2713   Installed project dependencies."));
       } catch (e) {
-        console_12.error(e);
-        console_12.error(console_12.red("  \u2718   An error occurred while installing dependencies."));
+        (0, console_12.error)(e);
+        (0, console_12.error)((0, console_12.red)("  \u2718   An error occurred while installing dependencies."));
         throw new actions_error_1.FatalReleaseActionError();
       }
     }
@@ -62162,12 +62157,12 @@ var require_graphql_queries = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.findOwnedForksOfRepoQuery = void 0;
     var typed_graphqlify_1 = require_dist();
-    exports2.findOwnedForksOfRepoQuery = typed_graphqlify_1.params({
+    exports2.findOwnedForksOfRepoQuery = (0, typed_graphqlify_1.params)({
       $owner: "String!",
       $name: "String!"
     }, {
-      repository: typed_graphqlify_1.params({ owner: "$owner", name: "$name" }, {
-        forks: typed_graphqlify_1.params({ affiliations: "OWNER", first: 1 }, {
+      repository: (0, typed_graphqlify_1.params)({ owner: "$owner", name: "$name" }, {
+        forks: (0, typed_graphqlify_1.params)({ affiliations: "OWNER", first: 1 }, {
           nodes: [
             {
               owner: {
@@ -62260,6 +62255,7 @@ var require_actions = __commonJS({
     var graphql_queries_1 = require_graphql_queries();
     var pull_request_state_1 = require_pull_request_state();
     var version_tags_1 = require_version_tags();
+    var github_1 = require_github();
     var ReleaseAction = class {
       constructor(active, git, config, projectDir) {
         this.active = active;
@@ -62272,17 +62268,17 @@ var require_actions = __commonJS({
         throw Error("Not implemented.");
       }
       async getProjectVersion() {
-        const pkgJsonPath = path_1.join(this.projectDir, constants_1.packageJsonPath);
+        const pkgJsonPath = (0, path_1.join)(this.projectDir, constants_1.packageJsonPath);
         const pkgJson = JSON.parse(await fs_1.promises.readFile(pkgJsonPath, "utf8"));
         return new semver.SemVer(pkgJson.version);
       }
       async updateProjectVersion(newVersion) {
-        const pkgJsonPath = path_1.join(this.projectDir, constants_1.packageJsonPath);
+        const pkgJsonPath = (0, path_1.join)(this.projectDir, constants_1.packageJsonPath);
         const pkgJson = JSON.parse(await fs_1.promises.readFile(pkgJsonPath, "utf8"));
         pkgJson.version = newVersion.format();
         await fs_1.promises.writeFile(pkgJsonPath, `${JSON.stringify(pkgJson, null, 2)}
 `);
-        console_12.info(console_12.green(`  \u2713   Updated project version to ${pkgJson.version}`));
+        (0, console_12.info)((0, console_12.green)(`  \u2713   Updated project version to ${pkgJson.version}`));
       }
       async _getCommitOfBranch(branchName) {
         const { data: { commit } } = await this.git.github.repos.getBranch(__spreadProps(__spreadValues({}, this.git.remoteParams), { branch: branchName }));
@@ -62293,34 +62289,34 @@ var require_actions = __commonJS({
         const { data: { state } } = await this.git.github.repos.getCombinedStatusForRef(__spreadProps(__spreadValues({}, this.git.remoteParams), {
           ref: commitSha
         }));
-        const branchCommitsUrl = github_urls_1.getListCommitsInBranchUrl(this.git, branchName);
+        const branchCommitsUrl = (0, github_urls_1.getListCommitsInBranchUrl)(this.git, branchName);
         if (state === "failure") {
-          console_12.error(console_12.red(`  \u2718   Cannot stage release. Commit "${commitSha}" does not pass all github status checks. Please make sure this commit passes all checks before re-running.`));
-          console_12.error(`      Please have a look at: ${branchCommitsUrl}`);
-          if (await console_12.promptConfirm("Do you want to ignore the Github status and proceed?")) {
-            console_12.info(console_12.yellow("  \u26A0   Upstream commit is failing CI checks, but status has been forcibly ignored."));
+          (0, console_12.error)((0, console_12.red)(`  \u2718   Cannot stage release. Commit "${commitSha}" does not pass all github status checks. Please make sure this commit passes all checks before re-running.`));
+          (0, console_12.error)(`      Please have a look at: ${branchCommitsUrl}`);
+          if (await (0, console_12.promptConfirm)("Do you want to ignore the Github status and proceed?")) {
+            (0, console_12.info)((0, console_12.yellow)("  \u26A0   Upstream commit is failing CI checks, but status has been forcibly ignored."));
             return;
           }
           throw new actions_error_1.UserAbortedReleaseActionError();
         } else if (state === "pending") {
-          console_12.error(console_12.red(`  \u2718   Commit "${commitSha}" still has pending github statuses that need to succeed before staging a release.`));
-          console_12.error(console_12.red(`      Please have a look at: ${branchCommitsUrl}`));
-          if (await console_12.promptConfirm("Do you want to ignore the Github status and proceed?")) {
-            console_12.info(console_12.yellow("  \u26A0   Upstream commit is pending CI, but status has been forcibly ignored."));
+          (0, console_12.error)((0, console_12.red)(`  \u2718   Commit "${commitSha}" still has pending github statuses that need to succeed before staging a release.`));
+          (0, console_12.error)((0, console_12.red)(`      Please have a look at: ${branchCommitsUrl}`));
+          if (await (0, console_12.promptConfirm)("Do you want to ignore the Github status and proceed?")) {
+            (0, console_12.info)((0, console_12.yellow)("  \u26A0   Upstream commit is pending CI, but status has been forcibly ignored."));
             return;
           }
           throw new actions_error_1.UserAbortedReleaseActionError();
         }
-        console_12.info(console_12.green("  \u2713   Upstream commit is passing all github status checks."));
+        (0, console_12.info)((0, console_12.green)("  \u2713   Upstream commit is passing all github status checks."));
       }
       async waitForEditsAndCreateReleaseCommit(newVersion) {
-        console_12.info(console_12.yellow("  \u26A0   Please review the changelog and ensure that the log contains only changes that apply to the public API surface. Manual changes can be made. When done, please proceed with the prompt below."));
-        if (!await console_12.promptConfirm("Do you want to proceed and commit the changes?")) {
+        (0, console_12.info)((0, console_12.yellow)("  \u26A0   Please review the changelog and ensure that the log contains only changes that apply to the public API surface. Manual changes can be made. When done, please proceed with the prompt below."));
+        if (!await (0, console_12.promptConfirm)("Do you want to proceed and commit the changes?")) {
           throw new actions_error_1.UserAbortedReleaseActionError();
         }
-        const commitMessage = commit_message_1.getCommitMessageForRelease(newVersion);
+        const commitMessage = (0, commit_message_1.getCommitMessageForRelease)(newVersion);
         await this.createCommit(commitMessage, [constants_1.packageJsonPath, constants_1.changelogPath]);
-        console_12.info(console_12.green(`  \u2713   Created release commit for: "${newVersion}".`));
+        (0, console_12.info)((0, console_12.green)(`  \u2713   Created release commit for: "${newVersion}".`));
       }
       async _getForkOfAuthenticatedUser() {
         if (this._cachedForkRepo !== null) {
@@ -62330,8 +62326,8 @@ var require_actions = __commonJS({
         const result = await this.git.github.graphql(graphql_queries_1.findOwnedForksOfRepoQuery, { owner, name });
         const forks = result.repository.forks.nodes;
         if (forks.length === 0) {
-          console_12.error(console_12.red("  \u2718   Unable to find fork for currently authenticated user."));
-          console_12.error(console_12.red(`      Please ensure you created a fork of: ${owner}/${name}.`));
+          (0, console_12.error)((0, console_12.red)("  \u2718   Unable to find fork for currently authenticated user."));
+          (0, console_12.error)((0, console_12.red)(`      Please ensure you created a fork of: ${owner}/${name}.`));
           throw new actions_error_1.FatalReleaseActionError();
         }
         const fork = forks[0];
@@ -62342,7 +62338,7 @@ var require_actions = __commonJS({
           await this.git.github.repos.getBranch({ owner: repo.owner, repo: repo.name, branch: name });
           return true;
         } catch (e) {
-          if (e.status === 404) {
+          if (e instanceof github_1.GithubApiRequestError && e.status === 404) {
             return false;
           }
           throw e;
@@ -62365,7 +62361,7 @@ var require_actions = __commonJS({
       }
       async _pushHeadToFork(proposedBranchName, trackLocalBranch) {
         const fork = await this._getForkOfAuthenticatedUser();
-        const repoGitUrl = github_urls_1.getRepositoryGitUrl(__spreadProps(__spreadValues({}, fork), { useSsh: this.git.remoteConfig.useSsh }), this.git.githubToken);
+        const repoGitUrl = (0, github_urls_1.getRepositoryGitUrl)(__spreadProps(__spreadValues({}, fork), { useSsh: this.git.remoteConfig.useSsh }), this.git.githubToken);
         const branchName = await this._findAvailableBranchName(fork, proposedBranchName);
         const pushArgs = [];
         if (trackLocalBranch) {
@@ -62390,7 +62386,7 @@ var require_actions = __commonJS({
             labels: this.config.releasePrLabels
           }));
         }
-        console_12.info(console_12.green(`  \u2713   Created pull request #${data.number} in ${repoSlug}.`));
+        (0, console_12.info)((0, console_12.green)(`  \u2713   Created pull request #${data.number} in ${repoSlug}.`));
         return {
           id: data.number,
           url: data.html_url,
@@ -62400,18 +62396,18 @@ var require_actions = __commonJS({
       }
       async waitForPullRequestToBeMerged({ id }, interval = constants_1.waitForPullRequestInterval) {
         return new Promise((resolve, reject) => {
-          console_12.debug(`Waiting for pull request #${id} to be merged.`);
+          (0, console_12.debug)(`Waiting for pull request #${id} to be merged.`);
           const spinner = new spinner_1.Spinner(`Waiting for pull request #${id} to be merged.`);
           const intervalId = setInterval(async () => {
-            const prState = await pull_request_state_1.getPullRequestState(this.git, id);
+            const prState = await (0, pull_request_state_1.getPullRequestState)(this.git, id);
             if (prState === "merged") {
               spinner.complete();
-              console_12.info(console_12.green(`  \u2713   Pull request #${id} has been merged.`));
+              (0, console_12.info)((0, console_12.green)(`  \u2713   Pull request #${id} has been merged.`));
               clearInterval(intervalId);
               resolve();
             } else if (prState === "closed") {
               spinner.complete();
-              console_12.warn(console_12.yellow(`  \u2718   Pull request #${id} has been closed.`));
+              (0, console_12.warn)((0, console_12.yellow)(`  \u2718   Pull request #${id} has been closed.`));
               clearInterval(intervalId);
               reject(new actions_error_1.UserAbortedReleaseActionError());
             }
@@ -62419,13 +62415,13 @@ var require_actions = __commonJS({
         });
       }
       async prependReleaseNotesToChangelog(releaseNotes) {
-        const localChangelogPath = path_1.join(this.projectDir, constants_1.changelogPath);
+        const localChangelogPath = (0, path_1.join)(this.projectDir, constants_1.changelogPath);
         const localChangelog = await fs_1.promises.readFile(localChangelogPath, "utf8");
         const releaseNotesEntry = await releaseNotes.getChangelogEntry();
         await fs_1.promises.writeFile(localChangelogPath, `${releaseNotesEntry}
 
 ${localChangelog}`);
-        console_12.info(console_12.green(`  \u2713   Updated the changelog to capture changes for "${releaseNotes.version}".`));
+        (0, console_12.info)((0, console_12.green)(`  \u2713   Updated the changelog to capture changes for "${releaseNotes.version}".`));
       }
       async checkoutUpstreamBranch(branchName) {
         this.git.run(["fetch", "-q", this.git.getRepoGitUrl(), branchName]);
@@ -62436,15 +62432,15 @@ ${localChangelog}`);
         this.git.run(["commit", "-q", "--no-verify", "-m", message, ...files]);
       }
       async stageVersionForBranchAndCreatePullRequest(newVersion, compareVersionForReleaseNotes, pullRequestTargetBranch) {
-        const releaseNotesCompareTag = version_tags_1.getReleaseTagForVersion(compareVersionForReleaseNotes);
+        const releaseNotesCompareTag = (0, version_tags_1.getReleaseTagForVersion)(compareVersionForReleaseNotes);
         this.git.run(["fetch", this.git.getRepoGitUrl(), `refs/tags/${releaseNotesCompareTag}`]);
         const releaseNotes = await release_notes_1.ReleaseNotes.forRange(newVersion, releaseNotesCompareTag, "HEAD");
         await this.updateProjectVersion(newVersion);
         await this.prependReleaseNotesToChangelog(releaseNotes);
         await this.waitForEditsAndCreateReleaseCommit(newVersion);
         const pullRequest = await this.pushChangesToForkAndCreatePullRequest(pullRequestTargetBranch, `release-stage-${newVersion}`, `Bump version to "v${newVersion}" with changelog.`);
-        console_12.info(console_12.green("  \u2713   Release staging pull request has been created."));
-        console_12.info(console_12.yellow(`      Please ask team members to review: ${pullRequest.url}.`));
+        (0, console_12.info)((0, console_12.green)("  \u2713   Release staging pull request has been created."));
+        (0, console_12.info)((0, console_12.yellow)(`      Please ask team members to review: ${pullRequest.url}.`));
         return { releaseNotes, pullRequest };
       }
       async checkoutBranchAndStageVersion(newVersion, compareVersionForReleaseNotes, stagingBranch) {
@@ -62454,24 +62450,24 @@ ${localChangelog}`);
       }
       async cherryPickChangelogIntoNextBranch(releaseNotes, stagingBranch) {
         const nextBranch = this.active.next.branchName;
-        const commitMessage = commit_message_1.getReleaseNoteCherryPickCommitMessage(releaseNotes.version);
+        const commitMessage = (0, commit_message_1.getReleaseNoteCherryPickCommitMessage)(releaseNotes.version);
         await this.checkoutUpstreamBranch(nextBranch);
         await this.prependReleaseNotesToChangelog(releaseNotes);
         await this.createCommit(commitMessage, [constants_1.changelogPath]);
-        console_12.info(console_12.green(`  \u2713   Created changelog cherry-pick commit for: "${releaseNotes.version}".`));
+        (0, console_12.info)((0, console_12.green)(`  \u2713   Created changelog cherry-pick commit for: "${releaseNotes.version}".`));
         const pullRequest = await this.pushChangesToForkAndCreatePullRequest(nextBranch, `changelog-cherry-pick-${releaseNotes.version}`, commitMessage, `Cherry-picks the changelog from the "${stagingBranch}" branch to the next branch (${nextBranch}).`);
-        console_12.info(console_12.green(`  \u2713   Pull request for cherry-picking the changelog into "${nextBranch}" has been created.`));
-        console_12.info(console_12.yellow(`      Please ask team members to review: ${pullRequest.url}.`));
+        (0, console_12.info)((0, console_12.green)(`  \u2713   Pull request for cherry-picking the changelog into "${nextBranch}" has been created.`));
+        (0, console_12.info)((0, console_12.yellow)(`      Please ask team members to review: ${pullRequest.url}.`));
         await this.waitForPullRequestToBeMerged(pullRequest);
         return true;
       }
       async _createGithubReleaseForVersion(releaseNotes, versionBumpCommitSha, isPrerelease) {
-        const tagName = version_tags_1.getReleaseTagForVersion(releaseNotes.version);
+        const tagName = (0, version_tags_1.getReleaseTagForVersion)(releaseNotes.version);
         await this.git.github.git.createRef(__spreadProps(__spreadValues({}, this.git.remoteParams), {
           ref: `refs/tags/${tagName}`,
           sha: versionBumpCommitSha
         }));
-        console_12.info(console_12.green(`  \u2713   Tagged v${releaseNotes.version} release upstream.`));
+        (0, console_12.info)((0, console_12.green)(`  \u2713   Tagged v${releaseNotes.version} release upstream.`));
         let releaseBody = await releaseNotes.getGithubReleaseEntry();
         if (releaseBody.length > constants_1.githubReleaseBodyLimit) {
           const releaseNotesUrl = await this._getGithubChangelogUrlForRef(releaseNotes, tagName);
@@ -62483,41 +62479,41 @@ ${localChangelog}`);
           prerelease: isPrerelease,
           body: releaseBody
         }));
-        console_12.info(console_12.green(`  \u2713   Created v${releaseNotes.version} release in Github.`));
+        (0, console_12.info)((0, console_12.green)(`  \u2713   Created v${releaseNotes.version} release in Github.`));
       }
       async _getGithubChangelogUrlForRef(releaseNotes, ref) {
-        const baseUrl = github_urls_1.getFileContentsUrl(this.git, ref, constants_1.changelogPath);
+        const baseUrl = (0, github_urls_1.getFileContentsUrl)(this.git, ref, constants_1.changelogPath);
         const urlFragment = await releaseNotes.getUrlFragmentForRelease();
         return `${baseUrl}#${urlFragment}`;
       }
       async buildAndPublish(releaseNotes, publishBranch, npmDistTag) {
         const versionBumpCommitSha = await this._getCommitOfBranch(publishBranch);
         if (!await this._isCommitForVersionStaging(releaseNotes.version, versionBumpCommitSha)) {
-          console_12.error(console_12.red(`  \u2718   Latest commit in "${publishBranch}" branch is not a staging commit.`));
-          console_12.error(console_12.red("      Please make sure the staging pull request has been merged."));
+          (0, console_12.error)((0, console_12.red)(`  \u2718   Latest commit in "${publishBranch}" branch is not a staging commit.`));
+          (0, console_12.error)((0, console_12.red)("      Please make sure the staging pull request has been merged."));
           throw new actions_error_1.FatalReleaseActionError();
         }
         await this.checkoutUpstreamBranch(publishBranch);
-        await external_commands_1.invokeYarnInstallCommand(this.projectDir);
-        const builtPackages = await external_commands_1.invokeReleaseBuildCommand();
+        await (0, external_commands_1.invokeYarnInstallCommand)(this.projectDir);
+        const builtPackages = await (0, external_commands_1.invokeReleaseBuildCommand)();
         await this._verifyPackageVersions(releaseNotes.version, builtPackages);
         await this._createGithubReleaseForVersion(releaseNotes, versionBumpCommitSha, npmDistTag === "next");
         for (const builtPackage of builtPackages) {
           await this._publishBuiltPackageToNpm(builtPackage, npmDistTag);
         }
-        console_12.info(console_12.green("  \u2713   Published all packages successfully"));
+        (0, console_12.info)((0, console_12.green)("  \u2713   Published all packages successfully"));
       }
       async _publishBuiltPackageToNpm(pkg, npmDistTag) {
-        console_12.debug(`Starting publish of "${pkg.name}".`);
+        (0, console_12.debug)(`Starting publish of "${pkg.name}".`);
         const spinner = new spinner_1.Spinner(`Publishing "${pkg.name}"`);
         try {
-          await npm_publish_1.runNpmPublish(pkg.outputPath, npmDistTag, this.config.publishRegistry);
+          await (0, npm_publish_1.runNpmPublish)(pkg.outputPath, npmDistTag, this.config.publishRegistry);
           spinner.complete();
-          console_12.info(console_12.green(`  \u2713   Successfully published "${pkg.name}.`));
+          (0, console_12.info)((0, console_12.green)(`  \u2713   Successfully published "${pkg.name}.`));
         } catch (e) {
           spinner.complete();
-          console_12.error(e);
-          console_12.error(console_12.red(`  \u2718   An error occurred while publishing "${pkg.name}".`));
+          (0, console_12.error)(e);
+          (0, console_12.error)((0, console_12.red)(`  \u2718   An error occurred while publishing "${pkg.name}".`));
           throw new actions_error_1.FatalReleaseActionError();
         }
       }
@@ -62525,18 +62521,18 @@ ${localChangelog}`);
         const { data } = await this.git.github.repos.getCommit(__spreadProps(__spreadValues({}, this.git.remoteParams), {
           ref: commitSha
         }));
-        return data.commit.message.startsWith(commit_message_1.getCommitMessageForRelease(version));
+        return data.commit.message.startsWith((0, commit_message_1.getCommitMessageForRelease)(version));
       }
       async _verifyPackageVersions(version, packages) {
-        const experimentalVersion = semver_1.createExperimentalSemver(version);
+        const experimentalVersion = (0, semver_1.createExperimentalSemver)(version);
         for (const pkg of packages) {
-          const { version: packageJsonVersion } = JSON.parse(await fs_1.promises.readFile(path_1.join(pkg.outputPath, "package.json"), "utf8"));
+          const { version: packageJsonVersion } = JSON.parse(await fs_1.promises.readFile((0, path_1.join)(pkg.outputPath, "package.json"), "utf8"));
           const mismatchesVersion = version.compare(packageJsonVersion) !== 0;
           const mismatchesExperimental = experimentalVersion.compare(packageJsonVersion) !== 0;
           if (mismatchesExperimental && mismatchesVersion) {
-            console_12.error(console_12.red("The built package version does not match the version being released."));
-            console_12.error(`  Release Version:   ${version.version} (${experimentalVersion.version})`);
-            console_12.error(`  Generated Version: ${packageJsonVersion}`);
+            (0, console_12.error)((0, console_12.red)("The built package version does not match the version being released."));
+            (0, console_12.error)(`  Release Version:   ${version.version} (${experimentalVersion.version})`);
+            (0, console_12.error)(`  Generated Version: ${packageJsonVersion}`);
             throw new actions_error_1.FatalReleaseActionError();
           }
         }
@@ -62559,7 +62555,7 @@ var require_cut_lts_patch = __commonJS({
     var CutLongTermSupportPatchAction = class extends actions_1.ReleaseAction {
       constructor() {
         super(...arguments);
-        this.ltsBranches = long_term_support_1.fetchLongTermSupportBranchesFromNpm(this.config);
+        this.ltsBranches = (0, long_term_support_1.fetchLongTermSupportBranchesFromNpm)(this.config);
       }
       async getDescription() {
         const { active } = await this.ltsBranches;
@@ -62567,7 +62563,7 @@ var require_cut_lts_patch = __commonJS({
       }
       async perform() {
         const ltsBranch = await this._promptForTargetLtsBranch();
-        const newVersion = semver_1.semverInc(ltsBranch.version, "patch");
+        const newVersion = (0, semver_1.semverInc)(ltsBranch.version, "patch");
         const compareVersionForReleaseNotes = ltsBranch.version;
         const { pullRequest, releaseNotes } = await this.checkoutBranchAndStageVersion(newVersion, compareVersionForReleaseNotes, ltsBranch.name);
         await this.waitForPullRequestToBeMerged(pullRequest);
@@ -62580,7 +62576,7 @@ var require_cut_lts_patch = __commonJS({
         if (inactive.length !== 0) {
           activeBranchChoices.push({ name: "Inactive LTS versions (not recommended)", value: null });
         }
-        const { activeLtsBranch, inactiveLtsBranch } = await inquirer_1.prompt([
+        const { activeLtsBranch, inactiveLtsBranch } = await (0, inquirer_1.prompt)([
           {
             name: "activeLtsBranch",
             type: "list",
@@ -62620,7 +62616,7 @@ var require_cut_new_patch = __commonJS({
       constructor() {
         super(...arguments);
         this._previousVersion = this.active.latest.version;
-        this._newVersion = semver_1.semverInc(this._previousVersion, "patch");
+        this._newVersion = (0, semver_1.semverInc)(this._previousVersion, "patch");
       }
       async getDescription() {
         const { branchName } = this.active.latest;
@@ -62654,15 +62650,15 @@ var require_next_prerelease_version = __commonJS({
     var npm_registry_1 = require_npm_registry();
     async function getReleaseNotesCompareVersionForNext(active, config) {
       const { version: nextVersion } = active.next;
-      const isNextPublishedToNpm = await npm_registry_1.isVersionPublishedToNpm(nextVersion, config);
+      const isNextPublishedToNpm = await (0, npm_registry_1.isVersionPublishedToNpm)(nextVersion, config);
       return isNextPublishedToNpm ? nextVersion : active.latest.version;
     }
     exports2.getReleaseNotesCompareVersionForNext = getReleaseNotesCompareVersionForNext;
     async function computeNewPrereleaseVersionForNext(active, config) {
       const { version: nextVersion } = active.next;
-      const isNextPublishedToNpm = await npm_registry_1.isVersionPublishedToNpm(nextVersion, config);
+      const isNextPublishedToNpm = await (0, npm_registry_1.isVersionPublishedToNpm)(nextVersion, config);
       if (isNextPublishedToNpm) {
-        return semver_1.semverInc(nextVersion, "prerelease");
+        return (0, semver_1.semverInc)(nextVersion, "prerelease");
       } else {
         return nextVersion;
       }
@@ -62709,15 +62705,15 @@ var require_cut_next_prerelease = __commonJS({
       async _computeNewVersion() {
         const releaseTrain = this._getActivePrereleaseTrain();
         if (releaseTrain === this.active.next) {
-          return await next_prerelease_version_1.computeNewPrereleaseVersionForNext(this.active, this.config);
+          return await (0, next_prerelease_version_1.computeNewPrereleaseVersionForNext)(this.active, this.config);
         } else {
-          return semver_1.semverInc(releaseTrain.version, "prerelease");
+          return (0, semver_1.semverInc)(releaseTrain.version, "prerelease");
         }
       }
       async _getCompareVersionForReleaseNotes() {
         const releaseTrain = this._getActivePrereleaseTrain();
         if (releaseTrain === this.active.next) {
-          return await next_prerelease_version_1.getReleaseNotesCompareVersionForNext(this.active, this.config);
+          return await (0, next_prerelease_version_1.getReleaseNotesCompareVersionForNext)(this.active, this.config);
         } else {
           return releaseTrain.version;
         }
@@ -62741,7 +62737,7 @@ var require_cut_release_candidate_for_feature_freeze = __commonJS({
     var CutReleaseCandidateForFeatureFreezeAction = class extends actions_1.ReleaseAction {
       constructor() {
         super(...arguments);
-        this._newVersion = semver_1.semverInc(this.active.releaseCandidate.version, "prerelease", "rc");
+        this._newVersion = (0, semver_1.semverInc)(this.active.releaseCandidate.version, "prerelease", "rc");
       }
       async getDescription() {
         const newVersion = this._newVersion;
@@ -62794,10 +62790,10 @@ var require_cut_stable = __commonJS({
         await this.buildAndPublish(releaseNotes, branchName, isNewMajor ? "next" : "latest");
         if (isNewMajor) {
           const previousPatch = this.active.latest;
-          const ltsTagForPatch = long_term_support_1.getLtsNpmDistTagOfMajor(previousPatch.version.major);
+          const ltsTagForPatch = (0, long_term_support_1.getLtsNpmDistTagOfMajor)(previousPatch.version.major);
           await this.checkoutUpstreamBranch(previousPatch.branchName);
-          await external_commands_1.invokeYarnInstallCommand(this.projectDir);
-          await external_commands_1.invokeSetNpmDistCommand(ltsTagForPatch, previousPatch.version);
+          await (0, external_commands_1.invokeYarnInstallCommand)(this.projectDir);
+          await (0, external_commands_1.invokeSetNpmDistCommand)(ltsTagForPatch, previousPatch.version);
         }
         await this.cherryPickChangelogIntoNextBranch(releaseNotes, branchName);
       }
@@ -62833,7 +62829,7 @@ var require_branch_off_next_branch = __commonJS({
         return `Move the "${branchName}" branch into ${this.newPhaseName} phase (v${newVersion}).`;
       }
       async perform() {
-        const compareVersionForReleaseNotes = await next_prerelease_version_1.getReleaseNotesCompareVersionForNext(this.active, this.config);
+        const compareVersionForReleaseNotes = await (0, next_prerelease_version_1.getReleaseNotesCompareVersionForNext)(this.active, this.config);
         const newVersion = await this._computeNewVersion();
         const newBranch = `${newVersion.major}.${newVersion.minor}.x`;
         await this._createNewVersionBranchFromNext(newBranch);
@@ -62844,9 +62840,9 @@ var require_branch_off_next_branch = __commonJS({
       }
       async _computeNewVersion() {
         if (this.newPhaseName === "feature-freeze") {
-          return next_prerelease_version_1.computeNewPrereleaseVersionForNext(this.active, this.config);
+          return (0, next_prerelease_version_1.computeNewPrereleaseVersionForNext)(this.active, this.config);
         } else {
-          return semver_1.semverInc(this.active.next.version, "prerelease", "rc");
+          return (0, semver_1.semverInc)(this.active.next.version, "prerelease", "rc");
         }
       }
       async _createNewVersionBranchFromNext(newBranch) {
@@ -62855,24 +62851,24 @@ var require_branch_off_next_branch = __commonJS({
         await this.checkoutUpstreamBranch(nextBranch);
         await this.createLocalBranchFromHead(newBranch);
         await this.pushHeadToRemoteBranch(newBranch);
-        console_12.info(console_12.green(`  \u2713   Version branch "${newBranch}" created.`));
+        (0, console_12.info)((0, console_12.green)(`  \u2713   Version branch "${newBranch}" created.`));
       }
       async _createNextBranchUpdatePullRequest(releaseNotes, newVersion) {
         const { branchName: nextBranch, version } = this.active.next;
         const newNextVersion = semver.parse(`${version.major}.${version.minor + 1}.0-next.0`);
-        const bumpCommitMessage = commit_message_1.getCommitMessageForExceptionalNextVersionBump(newNextVersion);
+        const bumpCommitMessage = (0, commit_message_1.getCommitMessageForExceptionalNextVersionBump)(newNextVersion);
         await this.checkoutUpstreamBranch(nextBranch);
         await this.updateProjectVersion(newNextVersion);
         await this.createCommit(bumpCommitMessage, [constants_1.packageJsonPath]);
         await this.prependReleaseNotesToChangelog(releaseNotes);
-        const commitMessage = commit_message_1.getReleaseNoteCherryPickCommitMessage(releaseNotes.version);
+        const commitMessage = (0, commit_message_1.getReleaseNoteCherryPickCommitMessage)(releaseNotes.version);
         await this.createCommit(commitMessage, [constants_1.changelogPath]);
         let nextPullRequestMessage = `The previous "next" release-train has moved into the ${this.newPhaseName} phase. This PR updates the next branch to the subsequent release-train.
 
 Also this PR cherry-picks the changelog for v${newVersion} into the ${nextBranch} branch so that the changelog is up to date.`;
         const nextUpdatePullRequest = await this.pushChangesToForkAndCreatePullRequest(nextBranch, `next-release-train-${newNextVersion}`, `Update next branch to reflect new release-train "v${newNextVersion}".`, nextPullRequestMessage);
-        console_12.info(console_12.green(`  \u2713   Pull request for updating the "${nextBranch}" branch has been created.`));
-        console_12.info(console_12.yellow(`      Please ask team members to review: ${nextUpdatePullRequest.url}.`));
+        (0, console_12.info)((0, console_12.green)(`  \u2713   Pull request for updating the "${nextBranch}" branch has been created.`));
+        (0, console_12.info)((0, console_12.yellow)(`      Please ask team members to review: ${nextUpdatePullRequest.url}.`));
       }
     };
     exports2.BranchOffNextBranchBaseAction = BranchOffNextBranchBaseAction;
@@ -62937,11 +62933,11 @@ var require_tag_recent_major_as_latest = __commonJS({
       async perform() {
         await this.updateGithubReleaseEntryToStable(this.active.latest.version);
         await this.checkoutUpstreamBranch(this.active.latest.branchName);
-        await external_commands_1.invokeYarnInstallCommand(this.projectDir);
-        await external_commands_1.invokeSetNpmDistCommand("latest", this.active.latest.version);
+        await (0, external_commands_1.invokeYarnInstallCommand)(this.projectDir);
+        await (0, external_commands_1.invokeSetNpmDistCommand)("latest", this.active.latest.version);
       }
       async updateGithubReleaseEntryToStable(version) {
-        const releaseTagName = version_tags_1.getReleaseTagForVersion(version);
+        const releaseTagName = (0, version_tags_1.getReleaseTagForVersion)(version);
         const { data: releaseInfo } = await this.git.github.repos.getReleaseByTag(__spreadProps(__spreadValues({}, this.git.remoteParams), {
           tag: releaseTagName
         }));
@@ -62954,7 +62950,7 @@ var require_tag_recent_major_as_latest = __commonJS({
         if (latest.version.minor !== 0 || latest.version.patch !== 0) {
           return false;
         }
-        const packageInfo = await npm_registry_1.fetchProjectNpmPackageInfo(config);
+        const packageInfo = await (0, npm_registry_1.fetchProjectNpmPackageInfo)(config);
         const npmLatestVersion = semver.parse(packageInfo["dist-tags"]["latest"]);
         return npmLatestVersion !== null && npmLatestVersion.major === latest.version.major - 1;
       }
@@ -63020,13 +63016,13 @@ var require_publish2 = __commonJS({
         this.previousGitBranchOrRevision = this._git.getCurrentBranchOrRevision();
       }
       async run() {
-        console_12.log();
-        console_12.log(console_12.yellow("--------------------------------------------"));
-        console_12.log(console_12.yellow("  Angular Dev-Infra release staging script"));
-        console_12.log(console_12.yellow("--------------------------------------------"));
-        console_12.log();
+        (0, console_12.log)();
+        (0, console_12.log)((0, console_12.yellow)("--------------------------------------------"));
+        (0, console_12.log)((0, console_12.yellow)("  Angular Dev-Infra release staging script"));
+        (0, console_12.log)((0, console_12.yellow)("--------------------------------------------"));
+        (0, console_12.log)();
         const { owner, name } = this._github;
-        const nextBranchName = version_branches_1.getNextBranchName(this._github);
+        const nextBranchName = (0, version_branches_1.getNextBranchName)(this._github);
         if (!await this._verifyNoUncommittedChanges() || !await this._verifyRunningFromNextBranch(nextBranchName)) {
           return CompletionState.FATAL_ERROR;
         }
@@ -63034,8 +63030,8 @@ var require_publish2 = __commonJS({
           return CompletionState.MANUALLY_ABORTED;
         }
         const repo = { owner, name, api: this._git.github, nextBranchName };
-        const releaseTrains = await active_release_trains_1.fetchActiveReleaseTrains(repo);
-        await print_active_trains_1.printActiveReleaseTrains(releaseTrains, this._config);
+        const releaseTrains = await (0, active_release_trains_1.fetchActiveReleaseTrains)(repo);
+        await (0, print_active_trains_1.printActiveReleaseTrains)(releaseTrains, this._config);
         const action = await this._promptForReleaseAction(releaseTrains);
         try {
           await action.perform();
@@ -63054,7 +63050,7 @@ var require_publish2 = __commonJS({
       }
       async cleanup() {
         this._git.checkout(this.previousGitBranchOrRevision, true);
-        await npm_publish_1.npmLogout(this._config.publishRegistry);
+        await (0, npm_publish_1.npmLogout)(this._config.publishRegistry);
       }
       async _promptForReleaseAction(activeTrains) {
         const choices = [];
@@ -63064,8 +63060,8 @@ var require_publish2 = __commonJS({
             choices.push({ name: await action.getDescription(), value: action });
           }
         }
-        console_12.info("Please select the type of release you want to perform.");
-        const { releaseAction } = await inquirer_1.prompt({
+        (0, console_12.info)("Please select the type of release you want to perform.");
+        const { releaseAction } = await (0, inquirer_1.prompt)({
           name: "releaseAction",
           message: "Please select an action:",
           type: "list",
@@ -63075,7 +63071,7 @@ var require_publish2 = __commonJS({
       }
       async _verifyNoUncommittedChanges() {
         if (this._git.hasUncommittedChanges()) {
-          console_12.error(console_12.red("  \u2718   There are changes which are not committed and should be discarded."));
+          (0, console_12.error)((0, console_12.red)("  \u2718   There are changes which are not committed and should be discarded."));
           return false;
         }
         return true;
@@ -63086,8 +63082,8 @@ var require_publish2 = __commonJS({
           branch: this._git.mainBranchName
         }));
         if (headSha !== data.commit.sha) {
-          console_12.error(console_12.red("  \u2718   Running release tool from an outdated local branch."));
-          console_12.error(console_12.red(`      Please make sure you are running from the "${nextBranchName}" branch.`));
+          (0, console_12.error)((0, console_12.red)("  \u2718   Running release tool from an outdated local branch."));
+          (0, console_12.error)((0, console_12.red)(`      Please make sure you are running from the "${nextBranchName}" branch.`));
           return false;
         }
         return true;
@@ -63096,24 +63092,24 @@ var require_publish2 = __commonJS({
         var _a, _b;
         const registry = `NPM at the ${(_a = this._config.publishRegistry) != null ? _a : "default NPM"} registry`;
         if ((_b = this._config.publishRegistry) == null ? void 0 : _b.includes("wombat-dressing-room.appspot.com")) {
-          console_12.info("Unable to determine NPM login state for wombat proxy, requiring login now.");
+          (0, console_12.info)("Unable to determine NPM login state for wombat proxy, requiring login now.");
           try {
-            await npm_publish_1.npmLogin(this._config.publishRegistry);
+            await (0, npm_publish_1.npmLogin)(this._config.publishRegistry);
           } catch {
             return false;
           }
           return true;
         }
-        if (await npm_publish_1.npmIsLoggedIn(this._config.publishRegistry)) {
-          console_12.debug(`Already logged into ${registry}.`);
+        if (await (0, npm_publish_1.npmIsLoggedIn)(this._config.publishRegistry)) {
+          (0, console_12.debug)(`Already logged into ${registry}.`);
           return true;
         }
-        console_12.error(console_12.red(`  \u2718   Not currently logged into ${registry}.`));
-        const shouldLogin = await console_12.promptConfirm("Would you like to log into NPM now?");
+        (0, console_12.error)((0, console_12.red)(`  \u2718   Not currently logged into ${registry}.`));
+        const shouldLogin = await (0, console_12.promptConfirm)("Would you like to log into NPM now?");
         if (shouldLogin) {
-          console_12.debug("Starting NPM login.");
+          (0, console_12.debug)("Starting NPM login.");
           try {
-            await npm_publish_1.npmLogin(this._config.publishRegistry);
+            await (0, npm_publish_1.npmLogin)(this._config.publishRegistry);
           } catch {
             return false;
           }
@@ -63139,26 +63135,26 @@ var require_cli20 = __commonJS({
     var index_12 = require_config7();
     var index_2 = require_publish2();
     function builder(argv) {
-      return github_yargs_1.addGithubTokenOption(argv);
+      return (0, github_yargs_1.addGithubTokenOption)(argv);
     }
     async function handler() {
       const git = git_client_1.GitClient.get();
-      const config = config_1.getConfig();
-      index_12.assertValidReleaseConfig(config);
-      config_1.assertValidGithubConfig(config);
+      const config = (0, config_1.getConfig)();
+      (0, index_12.assertValidReleaseConfig)(config);
+      (0, config_1.assertValidGithubConfig)(config);
       const task = new index_2.ReleaseTool(config.release, config.github, git.baseDir);
       const result = await task.run();
       switch (result) {
         case index_2.CompletionState.FATAL_ERROR:
-          console_12.error(console_12.red(`Release action has been aborted due to fatal errors. See above.`));
+          (0, console_12.error)((0, console_12.red)(`Release action has been aborted due to fatal errors. See above.`));
           process.exitCode = 2;
           break;
         case index_2.CompletionState.MANUALLY_ABORTED:
-          console_12.info(console_12.yellow(`Release action has been manually aborted.`));
+          (0, console_12.info)((0, console_12.yellow)(`Release action has been manually aborted.`));
           process.exitCode = 1;
           break;
         case index_2.CompletionState.SUCCESS:
-          console_12.info(console_12.green(`Release action has completed successfully.`));
+          (0, console_12.info)((0, console_12.green)(`Release action has completed successfully.`));
           break;
       }
     }
@@ -63196,31 +63192,31 @@ var require_cli21 = __commonJS({
     }
     async function handler(args) {
       const { targetVersion: rawVersion, tagName } = args;
-      const config = config_1.getConfig();
-      index_12.assertValidReleaseConfig(config);
+      const config = (0, config_1.getConfig)();
+      (0, index_12.assertValidReleaseConfig)(config);
       const { npmPackages, publishRegistry } = config.release;
       const version = semver.parse(rawVersion);
       if (version === null) {
-        console_12.error(console_12.red(`Invalid version specified (${rawVersion}). Unable to set NPM dist tag.`));
+        (0, console_12.error)((0, console_12.red)(`Invalid version specified (${rawVersion}). Unable to set NPM dist tag.`));
         process.exit(1);
       }
-      console_12.debug(`Setting "${tagName}" NPM dist tag for release packages to v${version}.`);
+      (0, console_12.debug)(`Setting "${tagName}" NPM dist tag for release packages to v${version}.`);
       const spinner = new spinner_1.Spinner("");
       for (const pkgName of npmPackages) {
         spinner.update(`Setting NPM dist tag for "${pkgName}"`);
         try {
-          await npm_publish_1.setNpmTagForPackage(pkgName, tagName, version, publishRegistry);
-          console_12.debug(`Successfully set "${tagName}" NPM dist tag for "${pkgName}".`);
+          await (0, npm_publish_1.setNpmTagForPackage)(pkgName, tagName, version, publishRegistry);
+          (0, console_12.debug)(`Successfully set "${tagName}" NPM dist tag for "${pkgName}".`);
         } catch (e) {
           spinner.complete();
-          console_12.error(e);
-          console_12.error(console_12.red(`  \u2718   An error occurred while setting the NPM dist tag for "${pkgName}".`));
+          (0, console_12.error)(e);
+          (0, console_12.error)((0, console_12.red)(`  \u2718   An error occurred while setting the NPM dist tag for "${pkgName}".`));
           process.exit(1);
         }
       }
       spinner.complete();
-      console_12.info(console_12.green(`  \u2713   Set NPM dist tag for all release packages.`));
-      console_12.info(console_12.green(`      ${console_12.bold(tagName)} will now point to ${console_12.bold(`v${version}`)}.`));
+      (0, console_12.info)((0, console_12.green)(`  \u2713   Set NPM dist tag for all release packages.`));
+      (0, console_12.info)((0, console_12.green)(`      ${(0, console_12.bold)(tagName)} will now point to ${(0, console_12.bold)(`v${version}`)}.`));
     }
     exports2.ReleaseSetDistTagCommand = {
       builder,
@@ -63275,15 +63271,15 @@ var require_env_stamp = __commonJS({
             "HEAD"
           ]);
           const { version } = new semver_1.SemVer(rawVersion);
-          const { version: experimentalVersion } = semver_2.createExperimentalSemver(version);
+          const { version: experimentalVersion } = (0, semver_2.createExperimentalSemver)(version);
           return {
             version: `${version.replace(/-([0-9]+)-g/, "+$1.sha-")}${localChanges}`,
             experimentalVersion: `${experimentalVersion.replace(/-([0-9]+)-g/, "+$1.sha-")}${localChanges}`
           };
         } else {
-          const packageJsonPath = path_1.join(git.baseDir, "package.json");
+          const packageJsonPath = (0, path_1.join)(git.baseDir, "package.json");
           const { version } = new semver_1.SemVer(require(packageJsonPath).version);
-          const { version: experimentalVersion } = semver_2.createExperimentalSemver(new semver_1.SemVer(version));
+          const { version: experimentalVersion } = (0, semver_2.createExperimentalSemver)(new semver_1.SemVer(version));
           return { version, experimentalVersion };
         }
       } catch {
@@ -63337,7 +63333,7 @@ var require_cli22 = __commonJS({
       });
     }
     async function handler({ mode }) {
-      env_stamp_1.buildEnvStamp(mode);
+      (0, env_stamp_1.buildEnvStamp)(mode);
     }
     exports2.BuildEnvStampCommand = {
       builder,
@@ -64810,7 +64806,7 @@ var require_file_system = __commonJS({
     var fs_1 = require("fs");
     function getFileStatus(filePath) {
       try {
-        return fs_1.statSync(filePath);
+        return (0, fs_1.statSync)(filePath);
       } catch {
         return null;
       }
@@ -64876,7 +64872,7 @@ var require_analyzer = __commonJS({
         path.push(sf);
         visited.add(sf);
         const result = [];
-        for (const ref of parser_1.getModuleReferences(sf)) {
+        for (const ref of (0, parser_1.getModuleReferences)(sf)) {
           const targetFile = this._resolveImport(ref, sf.fileName);
           if (targetFile !== null) {
             result.push(...this.findCycles(this.getSourceFile(targetFile), visited, path.slice()));
@@ -64885,11 +64881,11 @@ var require_analyzer = __commonJS({
         return result;
       }
       getSourceFile(filePath) {
-        const resolvedPath = path_1.resolve(filePath);
+        const resolvedPath = (0, path_1.resolve)(filePath);
         if (this._sourceFileCache.has(resolvedPath)) {
           return this._sourceFileCache.get(resolvedPath);
         }
-        const fileContent = fs_1.readFileSync(resolvedPath, "utf8");
+        const fileContent = (0, fs_1.readFileSync)(resolvedPath, "utf8");
         const sourceFile = ts.createSourceFile(resolvedPath, fileContent, ts.ScriptTarget.Latest, false);
         this._sourceFileCache.set(resolvedPath, sourceFile);
         return sourceFile;
@@ -64921,20 +64917,20 @@ var require_analyzer = __commonJS({
         this.unresolvedFiles.get(originFilePath).push(specifier);
       }
       _resolveFileSpecifier(specifier, containingFilePath) {
-        const importFullPath = containingFilePath !== void 0 ? path_1.join(path_1.dirname(containingFilePath), specifier) : specifier;
-        const stat = file_system_1.getFileStatus(importFullPath);
+        const importFullPath = containingFilePath !== void 0 ? (0, path_1.join)((0, path_1.dirname)(containingFilePath), specifier) : specifier;
+        const stat = (0, file_system_1.getFileStatus)(importFullPath);
         if (stat && stat.isFile()) {
           return importFullPath;
         }
         for (const extension of this.extensions) {
           const pathWithExtension = `${importFullPath}.${extension}`;
-          const stat2 = file_system_1.getFileStatus(pathWithExtension);
+          const stat2 = (0, file_system_1.getFileStatus)(pathWithExtension);
           if (stat2 && stat2.isFile()) {
             return pathWithExtension;
           }
         }
         if (stat && stat.isDirectory()) {
-          return this._resolveFileSpecifier(path_1.join(importFullPath, "index"));
+          return this._resolveFileSpecifier((0, path_1.join)(importFullPath, "index"));
         }
         return null;
       }
@@ -64952,23 +64948,23 @@ var require_config8 = __commonJS({
     var path_1 = require("path");
     var console_12 = require_console();
     function loadTestConfig(configPath) {
-      const configBaseDir = path_1.dirname(configPath);
-      const resolveRelativePath = (relativePath) => path_1.resolve(configBaseDir, relativePath);
+      const configBaseDir = (0, path_1.dirname)(configPath);
+      const resolveRelativePath = (relativePath) => (0, path_1.resolve)(configBaseDir, relativePath);
       try {
         const config = require(configPath);
-        if (!path_1.isAbsolute(config.baseDir)) {
+        if (!(0, path_1.isAbsolute)(config.baseDir)) {
           config.baseDir = resolveRelativePath(config.baseDir);
         }
-        if (!path_1.isAbsolute(config.goldenFile)) {
+        if (!(0, path_1.isAbsolute)(config.goldenFile)) {
           config.goldenFile = resolveRelativePath(config.goldenFile);
         }
-        if (!path_1.isAbsolute(config.glob)) {
+        if (!(0, path_1.isAbsolute)(config.glob)) {
           config.glob = resolveRelativePath(config.glob);
         }
         return config;
       } catch (e) {
-        console_12.error("Could not load test configuration file at: " + configPath);
-        console_12.error(`Failed with: ${e.message}`);
+        (0, console_12.error)("Could not load test configuration file at: " + configPath);
+        (0, console_12.error)(`Failed with error:`, e);
         process.exit(1);
       }
     }
@@ -64985,7 +64981,7 @@ var require_golden = __commonJS({
     var path_1 = require("path");
     var file_system_1 = require_file_system();
     function convertReferenceChainToGolden(refs, baseDir) {
-      return refs.map((chain) => normalizeCircularDependency(chain.map(({ fileName }) => file_system_1.convertPathToForwardSlash(path_1.relative(baseDir, fileName))))).sort(compareCircularDependency);
+      return refs.map((chain) => normalizeCircularDependency(chain.map(({ fileName }) => (0, file_system_1.convertPathToForwardSlash)((0, path_1.relative)(baseDir, fileName))))).sort(compareCircularDependency);
     }
     exports2.convertReferenceChainToGolden = convertReferenceChainToGolden;
     function compareGoldens(actual, expected) {
@@ -65066,13 +65062,13 @@ var require_ts_circular_dependencies = __commonJS({
         description: "Path to the configuration file."
       }).option("warnings", { type: "boolean", description: "Prints all warnings." }).command("check", "Checks if the circular dependencies have changed.", (args) => args, (argv) => {
         const { config: configArg, warnings } = argv;
-        const configPath = path_1.isAbsolute(configArg) ? configArg : path_1.resolve(configArg);
-        const config = config_1.loadTestConfig(configPath);
+        const configPath = (0, path_1.isAbsolute)(configArg) ? configArg : (0, path_1.resolve)(configArg);
+        const config = (0, config_1.loadTestConfig)(configPath);
         process.exit(main(false, config, !!warnings));
       }).command("approve", "Approves the current circular dependencies.", (args) => args, (argv) => {
         const { config: configArg, warnings } = argv;
-        const configPath = path_1.isAbsolute(configArg) ? configArg : path_1.resolve(configArg);
-        const config = config_1.loadTestConfig(configPath);
+        const configPath = (0, path_1.isAbsolute)(configArg) ? configArg : (0, path_1.resolve)(configArg);
+        const config = (0, config_1.loadTestConfig)(configPath);
         process.exit(main(true, config, !!warnings));
       });
     }
@@ -65082,62 +65078,62 @@ var require_ts_circular_dependencies = __commonJS({
       const analyzer = new analyzer_1.Analyzer(resolveModule);
       const cycles = [];
       const checkedNodes = new WeakSet();
-      glob_1.sync(glob, { absolute: true, ignore: ["**/node_modules/**"] }).forEach((filePath) => {
+      (0, glob_1.sync)(glob, { absolute: true, ignore: ["**/node_modules/**"] }).forEach((filePath) => {
         const sourceFile = analyzer.getSourceFile(filePath);
         cycles.push(...analyzer.findCycles(sourceFile, checkedNodes));
       });
-      const actual = golden_1.convertReferenceChainToGolden(cycles, baseDir);
-      console_12.info(console_12.green(`   Current number of cycles: ${console_12.yellow(cycles.length.toString())}`));
+      const actual = (0, golden_1.convertReferenceChainToGolden)(cycles, baseDir);
+      (0, console_12.info)((0, console_12.green)(`   Current number of cycles: ${(0, console_12.yellow)(cycles.length.toString())}`));
       if (approve) {
-        fs_1.writeFileSync(goldenFile, JSON.stringify(actual, null, 2));
-        console_12.info(console_12.green("\u2705  Updated golden file."));
+        (0, fs_1.writeFileSync)(goldenFile, JSON.stringify(actual, null, 2));
+        (0, console_12.info)((0, console_12.green)("\u2705  Updated golden file."));
         return 0;
-      } else if (!fs_1.existsSync(goldenFile)) {
-        console_12.error(console_12.red(`\u274C  Could not find golden file: ${goldenFile}`));
+      } else if (!(0, fs_1.existsSync)(goldenFile)) {
+        (0, console_12.error)((0, console_12.red)(`\u274C  Could not find golden file: ${goldenFile}`));
         return 1;
       }
       const warningsCount = analyzer.unresolvedFiles.size + analyzer.unresolvedModules.size;
       if (printWarnings && warningsCount !== 0) {
-        console_12.info(console_12.yellow("\u26A0  The following imports could not be resolved:"));
-        Array.from(analyzer.unresolvedModules).sort().forEach((specifier) => console_12.info(`  \u2022 ${specifier}`));
+        (0, console_12.info)((0, console_12.yellow)("\u26A0  The following imports could not be resolved:"));
+        Array.from(analyzer.unresolvedModules).sort().forEach((specifier) => (0, console_12.info)(`  \u2022 ${specifier}`));
         analyzer.unresolvedFiles.forEach((value, key) => {
-          console_12.info(`  \u2022 ${getRelativePath(baseDir, key)}`);
-          value.sort().forEach((specifier) => console_12.info(`      ${specifier}`));
+          (0, console_12.info)(`  \u2022 ${getRelativePath(baseDir, key)}`);
+          value.sort().forEach((specifier) => (0, console_12.info)(`      ${specifier}`));
         });
       } else {
-        console_12.info(console_12.yellow(`\u26A0  ${warningsCount} imports could not be resolved.`));
-        console_12.info(console_12.yellow(`   Please rerun with "--warnings" to inspect unresolved imports.`));
+        (0, console_12.info)((0, console_12.yellow)(`\u26A0  ${warningsCount} imports could not be resolved.`));
+        (0, console_12.info)((0, console_12.yellow)(`   Please rerun with "--warnings" to inspect unresolved imports.`));
       }
-      const expected = JSON.parse(fs_1.readFileSync(goldenFile, "utf8"));
-      const { fixedCircularDeps, newCircularDeps } = golden_1.compareGoldens(actual, expected);
+      const expected = JSON.parse((0, fs_1.readFileSync)(goldenFile, "utf8"));
+      const { fixedCircularDeps, newCircularDeps } = (0, golden_1.compareGoldens)(actual, expected);
       const isMatching = fixedCircularDeps.length === 0 && newCircularDeps.length === 0;
       if (isMatching) {
-        console_12.info(console_12.green("\u2705  Golden matches current circular dependencies."));
+        (0, console_12.info)((0, console_12.green)("\u2705  Golden matches current circular dependencies."));
         return 0;
       }
-      console_12.error(console_12.red("\u274C  Golden does not match current circular dependencies."));
+      (0, console_12.error)((0, console_12.red)("\u274C  Golden does not match current circular dependencies."));
       if (newCircularDeps.length !== 0) {
-        console_12.error(console_12.yellow(`   New circular dependencies which are not allowed:`));
-        newCircularDeps.forEach((c) => console_12.error(`     \u2022 ${convertReferenceChainToString(c)}`));
-        console_12.error();
+        (0, console_12.error)((0, console_12.yellow)(`   New circular dependencies which are not allowed:`));
+        newCircularDeps.forEach((c) => (0, console_12.error)(`     \u2022 ${convertReferenceChainToString(c)}`));
+        (0, console_12.error)();
       }
       if (fixedCircularDeps.length !== 0) {
-        console_12.error(console_12.yellow(`   Fixed circular dependencies that need to be removed from the golden:`));
-        fixedCircularDeps.forEach((c) => console_12.error(`     \u2022 ${convertReferenceChainToString(c)}`));
-        console_12.info(console_12.yellow(`
+        (0, console_12.error)((0, console_12.yellow)(`   Fixed circular dependencies that need to be removed from the golden:`));
+        fixedCircularDeps.forEach((c) => (0, console_12.error)(`     \u2022 ${convertReferenceChainToString(c)}`));
+        (0, console_12.info)((0, console_12.yellow)(`
    Total: ${newCircularDeps.length} new cycle(s), ${fixedCircularDeps.length} fixed cycle(s). 
 `));
         if (approveCommand) {
-          console_12.info(console_12.yellow(`   Please approve the new golden with: ${approveCommand}`));
+          (0, console_12.info)((0, console_12.yellow)(`   Please approve the new golden with: ${approveCommand}`));
         } else {
-          console_12.info(console_12.yellow(`   Please update the golden. The following command can be run: yarn ts-circular-deps approve ${getRelativePath(process.cwd(), goldenFile)}.`));
+          (0, console_12.info)((0, console_12.yellow)(`   Please update the golden. The following command can be run: yarn ts-circular-deps approve ${getRelativePath(process.cwd(), goldenFile)}.`));
         }
       }
       return 1;
     }
     exports2.main = main;
     function getRelativePath(baseDir, path) {
-      return file_system_1.convertPathToForwardSlash(path_1.relative(baseDir, path));
+      return (0, file_system_1.convertPathToForwardSlash)((0, path_1.relative)(baseDir, path));
     }
     function convertReferenceChainToString(chain) {
       return chain.join(" \u2192 ");
@@ -65161,31 +65157,31 @@ var require_cli24 = __commonJS({
       return argv.positional("projectRoot", {
         type: "string",
         normalize: true,
-        coerce: (path) => path_1.resolve(path),
+        coerce: (path) => (0, path_1.resolve)(path),
         demandOption: true
       });
     }
     async function handler({ projectRoot }) {
       try {
-        if (!fs_1.lstatSync(projectRoot).isDirectory()) {
-          console_12.error(console_12.red(`  \u2718   The 'projectRoot' must be a directory: ${projectRoot}`));
+        if (!(0, fs_1.lstatSync)(projectRoot).isDirectory()) {
+          (0, console_12.error)((0, console_12.red)(`  \u2718   The 'projectRoot' must be a directory: ${projectRoot}`));
           process.exit(1);
         }
       } catch {
-        console_12.error(console_12.red(`  \u2718   Could not find the 'projectRoot' provided: ${projectRoot}`));
+        (0, console_12.error)((0, console_12.red)(`  \u2718   Could not find the 'projectRoot' provided: ${projectRoot}`));
         process.exit(1);
       }
-      const releaseOutputs = await index_12.buildReleaseOutput(false);
+      const releaseOutputs = await (0, index_12.buildReleaseOutput)(false);
       if (releaseOutputs === null) {
-        console_12.error(console_12.red(`  \u2718   Could not build release output. Please check output above.`));
+        (0, console_12.error)((0, console_12.red)(`  \u2718   Could not build release output. Please check output above.`));
         process.exit(1);
       }
-      console_12.info(chalk_1.green(` \u2713  Built release output.`));
+      (0, console_12.info)((0, chalk_1.green)(` \u2713  Built release output.`));
       for (const { outputPath, name } of releaseOutputs) {
-        await child_process_1.spawn("yarn", ["link", "--cwd", outputPath]);
-        await child_process_1.spawn("yarn", ["link", "--cwd", projectRoot, name]);
+        await (0, child_process_1.spawn)("yarn", ["link", "--cwd", outputPath]);
+        await (0, child_process_1.spawn)("yarn", ["link", "--cwd", projectRoot, name]);
       }
-      console_12.info(chalk_1.green(` \u2713  Linked release packages in provided project.`));
+      (0, console_12.info)((0, chalk_1.green)(` \u2713  Linked release packages in provided project.`));
     }
     exports2.BuildAndLinkCommandModule = {
       builder,

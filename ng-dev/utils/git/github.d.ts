@@ -9,7 +9,9 @@ import { OctokitOptions } from '@octokit/core/dist-types/types';
 import { PaginateInterface } from '@octokit/plugin-paginate-rest';
 import { RestEndpointMethods } from '@octokit/plugin-rest-endpoint-methods/dist-types/generated/method-types';
 import { RequestParameters } from '@octokit/types';
+import { RequestError } from '@octokit/request-error';
 import { query } from 'typed-graphqlify';
+export { RequestError as GithubApiRequestError };
 /**
  * An object representation of a Graphql Query to be used as a response type and
  * to generate a Graphql query string.
@@ -21,11 +23,6 @@ export interface GithubRepo {
     owner: string;
     /** Name of the repository. */
     name: string;
-}
-/** Error for failed Github API requests. */
-export declare class GithubApiRequestError extends Error {
-    status: number;
-    constructor(status: number, message: string);
 }
 /** A Github client for interacting with the Github APIs. */
 export declare class GithubClient {

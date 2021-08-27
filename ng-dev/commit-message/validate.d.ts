@@ -21,7 +21,7 @@ export interface ValidateCommitMessageResult {
 export declare function validateCommitMessage(commitMsg: string | Commit, options?: ValidateCommitMessageOptions): ValidateCommitMessageResult;
 /** Print the error messages from the commit message validation to the console. */
 export declare function printValidationErrors(errors: string[], print?: {
-    (...text: string[]): void;
-    group(text: string, collapsed?: boolean | undefined): void;
+    (...text: unknown[]): void;
+    group(label: unknown, collapsed?: boolean | undefined): void;
     groupEnd(): void;
 }): void;
