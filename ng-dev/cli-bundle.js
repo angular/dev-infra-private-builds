@@ -62037,8 +62037,8 @@ var require_spinner = __commonJS({
         process.stdout.write(hideCursor);
       }
       getNextSpinnerCharacter() {
-        this.currentSpinnerCharacterIndex = this.currentSpinnerCharacterIndex % this.spinnerCharacters.length + 1;
-        return this.spinnerCharacters[this.currentSpinnerCharacterIndex - 1];
+        this.currentSpinnerCharacterIndex = (this.currentSpinnerCharacterIndex + 1) % this.spinnerCharacters.length;
+        return this.spinnerCharacters[this.currentSpinnerCharacterIndex];
       }
       printFrame(prefix = this.getNextSpinnerCharacter(), text = this.text) {
         readline_1.cursorTo(process.stdout, 0);
