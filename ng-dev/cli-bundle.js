@@ -37569,17 +37569,20 @@ var require_dist_node6 = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     var request = require_dist_node5();
     var universalUserAgent = require_dist_node();
-    var VERSION = "4.6.4";
-    var GraphqlError = class extends Error {
-      constructor(request2, response) {
-        const message = response.data.errors[0].message;
-        super(message);
-        Object.assign(this, response.data);
-        Object.assign(this, {
-          headers: response.headers
-        });
-        this.name = "GraphqlError";
+    var VERSION = "4.7.0";
+    function _buildMessageForResponseErrors(data) {
+      return `Request failed due to following response errors:
+` + data.errors.map((e) => ` - ${e.message}`).join("\n");
+    }
+    var GraphqlResponseError = class extends Error {
+      constructor(request2, headers, response) {
+        super(_buildMessageForResponseErrors(response));
         this.request = request2;
+        this.headers = headers;
+        this.response = response;
+        this.name = "GraphqlResponseError";
+        this.errors = response.errors;
+        this.data = response.data;
         if (Error.captureStackTrace) {
           Error.captureStackTrace(this, this.constructor);
         }
@@ -37623,10 +37626,7 @@ var require_dist_node6 = __commonJS({
           for (const key of Object.keys(response.headers)) {
             headers[key] = response.headers[key];
           }
-          throw new GraphqlError(requestOptions, {
-            headers,
-            data: response.data
-          });
+          throw new GraphqlResponseError(requestOptions, headers, response.data);
         }
         return response.data.data;
       });
@@ -37654,6 +37654,7 @@ var require_dist_node6 = __commonJS({
         url: "/graphql"
       });
     }
+    exports2.GraphqlResponseError = GraphqlResponseError;
     exports2.graphql = graphql$1;
     exports2.withCustomRequest = withCustomRequest;
   }
