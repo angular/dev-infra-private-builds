@@ -35868,7 +35868,6 @@ var require_dry_run = __commonJS({
     var DryRunError = class extends Error {
       constructor() {
         super("Cannot call this function in dryRun mode.");
-        Object.setPrototypeOf(this, DryRunError.prototype);
       }
     };
     exports2.DryRunError = DryRunError;
@@ -39793,7 +39792,6 @@ var require_git_client = __commonJS({
       constructor(client, args) {
         super(`Command failed: git ${client.sanitizeConsoleOutput(args.join(" "))}`);
         this.args = args;
-        Object.setPrototypeOf(this, GitCommandError.prototype);
       }
     };
     exports2.GitCommandError = GitCommandError;
@@ -40080,7 +40078,6 @@ var require_config2 = __commonJS({
       constructor(message, errors = []) {
         super(message);
         this.errors = errors;
-        Object.setPrototypeOf(this, ConfigValidationError.prototype);
       }
     };
     exports2.ConfigValidationError = ConfigValidationError;
@@ -60339,18 +60336,9 @@ var require_pullapprove_arrays = __commonJS({
     exports2.PullApproveGroupArray = exports2.PullApproveStringArray = exports2.PullApproveGroupStateDependencyError = void 0;
     var utils_1 = require_utils3();
     var PullApproveGroupStateDependencyError = class extends Error {
-      constructor(message) {
-        super(message);
-        Object.setPrototypeOf(this, PullApproveGroupStateDependencyError.prototype);
-        this.name = PullApproveGroupStateDependencyError.name;
-      }
     };
     exports2.PullApproveGroupStateDependencyError = PullApproveGroupStateDependencyError;
     var PullApproveStringArray = class extends Array {
-      constructor(...elements) {
-        super(...elements);
-        Object.setPrototypeOf(this, PullApproveStringArray.prototype);
-      }
       include(pattern) {
         return new PullApproveStringArray(...this.filter((s) => (0, utils_1.getOrCreateGlob)(pattern).match(s)));
       }
@@ -60360,10 +60348,6 @@ var require_pullapprove_arrays = __commonJS({
     };
     exports2.PullApproveStringArray = PullApproveStringArray;
     var PullApproveGroupArray = class extends Array {
-      constructor(...elements) {
-        super(...elements);
-        Object.setPrototypeOf(this, PullApproveGroupArray.prototype);
-      }
       include(pattern) {
         return new PullApproveGroupArray(...this.filter((s) => s.groupName.match(pattern)));
       }
@@ -61975,17 +61959,9 @@ var require_actions_error = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.FatalReleaseActionError = exports2.UserAbortedReleaseActionError = void 0;
     var UserAbortedReleaseActionError = class extends Error {
-      constructor() {
-        super();
-        Object.setPrototypeOf(this, UserAbortedReleaseActionError.prototype);
-      }
     };
     exports2.UserAbortedReleaseActionError = UserAbortedReleaseActionError;
     var FatalReleaseActionError = class extends Error {
-      constructor() {
-        super();
-        Object.setPrototypeOf(this, FatalReleaseActionError.prototype);
-      }
     };
     exports2.FatalReleaseActionError = FatalReleaseActionError;
   }

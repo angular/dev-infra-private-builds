@@ -32507,7 +32507,6 @@ var require_dry_run = __commonJS({
     var DryRunError = class extends Error {
       constructor() {
         super("Cannot call this function in dryRun mode.");
-        Object.setPrototypeOf(this, DryRunError.prototype);
       }
     };
     exports2.DryRunError = DryRunError;
@@ -36432,7 +36431,6 @@ var require_git_client = __commonJS({
       constructor(client, args) {
         super(`Command failed: git ${client.sanitizeConsoleOutput(args.join(" "))}`);
         this.args = args;
-        Object.setPrototypeOf(this, GitCommandError.prototype);
       }
     };
     exports2.GitCommandError = GitCommandError;
@@ -36719,7 +36717,6 @@ var require_config2 = __commonJS({
       constructor(message, errors = []) {
         super(message);
         this.errors = errors;
-        Object.setPrototypeOf(this, ConfigValidationError.prototype);
       }
     };
     exports2.ConfigValidationError = ConfigValidationError;

@@ -7,9 +7,7 @@
  */
 /** Error that will be thrown if the user manually aborted a release action. */
 export declare class UserAbortedReleaseActionError extends Error {
-    constructor();
 }
 /** Error that will be thrown if the action has been aborted due to a fatal error. */
 export declare class FatalReleaseActionError extends Error {
-    constructor();
 }
