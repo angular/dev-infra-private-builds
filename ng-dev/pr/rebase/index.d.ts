@@ -11,4 +11,4 @@
  *
  * @returns a status code indicating whether the rebase was successful.
  */
-export declare function rebasePr(prNumber: number, githubToken: string): Promise<1 | 0>;
+export declare function rebasePr(prNumber: number, githubToken: string): Promise<number>;

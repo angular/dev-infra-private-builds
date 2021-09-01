@@ -9,6 +9,6 @@ import { AuthenticatedGitClient } from './git/authenticated-git-client';
 /**
  * Gets the given pull request from Github using the GraphQL API endpoint.
  */
-export declare function getPr<PrSchema>(prSchema: PrSchema, prNumber: number, git: AuthenticatedGitClient): Promise<PrSchema>;
+export declare function getPr<PrSchema>(prSchema: PrSchema, prNumber: number, git: AuthenticatedGitClient): Promise<PrSchema | null>;
 /** Get all pending PRs from github  */
 export declare function getPendingPrs<PrSchema>(prSchema: PrSchema, git: AuthenticatedGitClient): Promise<PrSchema[]>;

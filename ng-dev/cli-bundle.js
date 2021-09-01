@@ -37568,7 +37568,7 @@ var require_dist_node6 = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     var request = require_dist_node5();
     var universalUserAgent = require_dist_node();
-    var VERSION = "4.7.0";
+    var VERSION = "4.8.0";
     function _buildMessageForResponseErrors(data) {
       return `Request failed due to following response errors:
 ` + data.errors.map((e) => ` - ${e.message}`).join("\n");
@@ -59069,7 +59069,9 @@ var require_github3 = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.getPendingPrs = exports2.getPr = void 0;
     var typed_graphqlify_1 = require_dist();
+    var graphql_1 = require_dist_node6();
     async function getPr(prSchema, prNumber, git) {
+      var _a;
       const { owner, name } = git.remoteConfig;
       const PR_QUERY = (0, typed_graphqlify_1.params)({
         $number: "Int!",
@@ -59080,8 +59082,15 @@ var require_github3 = __commonJS({
           pullRequest: (0, typed_graphqlify_1.params)({ number: "$number" }, prSchema)
         })
       });
-      const result = await git.github.graphql(PR_QUERY, { number: prNumber, owner, name });
-      return result.repository.pullRequest;
+      try {
+        const result = await git.github.graphql(PR_QUERY, { number: prNumber, owner, name });
+        return result.repository.pullRequest;
+      } catch (e) {
+        if (e instanceof graphql_1.GraphqlResponseError && ((_a = e.errors) == null ? void 0 : _a.every((e2) => e2.type === "NOT_FOUND"))) {
+          return null;
+        }
+        throw e;
+      }
     }
     exports2.getPr = getPr;
     async function getPendingPrs(prSchema, git) {
@@ -59132,7 +59141,7 @@ var require_checkout_pr = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/pr/common/checkout-pr.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.checkOutPullRequestLocally = exports2.MaintainerModifyAccessError = exports2.UnexpectedLocalChangesError = void 0;
+    exports2.checkOutPullRequestLocally = exports2.MaintainerModifyAccessError = exports2.PullRequestNotFoundError = exports2.UnexpectedLocalChangesError = void 0;
     var typed_graphqlify_1 = require_dist();
     var console_12 = require_console();
     var authenticated_git_client_1 = require_authenticated_git_client();
@@ -59159,17 +59168,12 @@ var require_checkout_pr = __commonJS({
       }
     };
     var UnexpectedLocalChangesError = class extends Error {
-      constructor(m) {
-        super(m);
-        Object.setPrototypeOf(this, UnexpectedLocalChangesError.prototype);
-      }
     };
     exports2.UnexpectedLocalChangesError = UnexpectedLocalChangesError;
+    var PullRequestNotFoundError = class extends Error {
+    };
+    exports2.PullRequestNotFoundError = PullRequestNotFoundError;
     var MaintainerModifyAccessError = class extends Error {
-      constructor(m) {
-        super(m);
-        Object.setPrototypeOf(this, MaintainerModifyAccessError.prototype);
-      }
     };
     exports2.MaintainerModifyAccessError = MaintainerModifyAccessError;
     async function checkOutPullRequestLocally(prNumber, githubToken, opts = {}) {
@@ -59179,6 +59183,9 @@ var require_checkout_pr = __commonJS({
       }
       const previousBranchOrRevision = git.getCurrentBranchOrRevision();
       const pr = await (0, github_1.getPr)(PR_SCHEMA, prNumber, git);
+      if (pr === null) {
+        throw new PullRequestNotFoundError(`Pull request #${prNumber} could not be found.`);
+      }
       const headRefName = pr.headRef.name;
       const fullHeadRef = `${pr.headRef.repository.nameWithOwner}:${headRefName}`;
       const headRefUrl = (0, github_urls_1.addTokenToGitHttpsUrl)(pr.headRef.repository.url, githubToken);
@@ -59577,14 +59584,7 @@ var require_pull_request = __commonJS({
       })
     };
     async function fetchPullRequestFromGithub(git, prNumber) {
-      try {
-        return await (0, github_1.getPr)(PR_SCHEMA, prNumber, git);
-      } catch (e) {
-        if (e.status === 404) {
-          return null;
-        }
-        throw e;
-      }
+      return await (0, github_1.getPr)(PR_SCHEMA, prNumber, git);
     }
     function isPullRequest(v) {
       return v.targetBranches !== void 0;
@@ -60177,6 +60177,10 @@ var require_rebase = __commonJS({
       }
       const previousBranchOrRevision = git.getCurrentBranchOrRevision();
       const pr = await (0, github_1.getPr)(PR_SCHEMA, prNumber, git);
+      if (pr === null) {
+        (0, console_12.error)(`Specified pull request does not exist.`);
+        return 1;
+      }
       const headRefName = pr.headRef.name;
       const baseRefName = pr.baseRef.name;
       const fullHeadRef = `${pr.headRef.repository.nameWithOwner}:${headRefName}`;
