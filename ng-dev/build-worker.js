@@ -36387,7 +36387,8 @@ var require_github_urls = __commonJS({
     exports2.GITHUB_TOKEN_GENERATE_URL = "https://github.com/settings/tokens/new";
     function addTokenToGitHttpsUrl(githubHttpsUrl, token) {
       const url = new url_1.URL(githubHttpsUrl);
-      url.username = token;
+      url.password = token;
+      url.username = "_";
       return url.href;
     }
     exports2.addTokenToGitHttpsUrl = addTokenToGitHttpsUrl;
