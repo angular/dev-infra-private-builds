@@ -13,4 +13,4 @@ import { BuiltPackage } from '../config/index';
  * pollute the stdout in such cases, we launch a child process for building the release packages
  * and redirect all stdout output to the stderr channel (which can be read in the terminal).
  */
-export declare function buildReleaseOutput(stampForRelease?: boolean): Promise<BuiltPackage[] | null>;
+export declare function buildReleaseOutput(): Promise<BuiltPackage[] | null>;

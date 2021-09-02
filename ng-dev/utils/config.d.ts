@@ -53,8 +53,3 @@ export declare function assertValidGithubConfig<T>(config: T & Partial<{
 }>): asserts config is T & {
     github: GithubConfig;
 };
-/**
- * Asserts the provided array of error messages is empty. If any errors are in the array,
- * logs the errors and exit the process as a failure.
- */
-export declare function assertNoErrors(errors: string[]): void;

@@ -40042,7 +40042,7 @@ var require_config2 = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/utils/config.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.assertNoErrors = exports2.assertValidGithubConfig = exports2.ConfigValidationError = exports2.getUserConfig = exports2.getConfig = exports2.setConfig = void 0;
+    exports2.assertValidGithubConfig = exports2.ConfigValidationError = exports2.getUserConfig = exports2.getConfig = exports2.setConfig = void 0;
     var fs_1 = require("fs");
     var path_1 = require("path");
     var console_12 = require_console();
@@ -40119,17 +40119,6 @@ var require_config2 = __commonJS({
         process.exit(1);
       }
     }
-    function assertNoErrors(errors) {
-      if (errors.length == 0) {
-        return;
-      }
-      (0, console_12.error)(`Errors discovered while loading configuration file:`);
-      for (const err of errors) {
-        (0, console_12.error)(`  - ${err}`);
-      }
-      process.exit(1);
-    }
-    exports2.assertNoErrors = assertNoErrors;
   }
 });
 
@@ -60618,9 +60607,9 @@ var require_build5 = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.buildReleaseOutput = void 0;
     var child_process_1 = require("child_process");
-    async function buildReleaseOutput(stampForRelease = false) {
+    async function buildReleaseOutput() {
       return new Promise((resolve) => {
-        const buildProcess = (0, child_process_1.fork)(require.resolve("./build-worker"), [`${stampForRelease}`], {
+        const buildProcess = (0, child_process_1.fork)(require.resolve("./build-worker"), {
           stdio: ["inherit", 2, 2, "ipc"]
         });
         let builtPackages = null;
@@ -60653,7 +60642,7 @@ var require_cli17 = __commonJS({
       const config = (0, config_1.getConfig)();
       (0, index_12.assertValidReleaseConfig)(config);
       const { npmPackages } = config.release;
-      let builtPackages = await (0, index_2.buildReleaseOutput)(true);
+      let builtPackages = await (0, index_2.buildReleaseOutput)();
       if (builtPackages === null) {
         (0, console_12.error)((0, console_12.red)(`  \u2718   Could not build release output. Please check output above.`));
         process.exit(1);
@@ -65134,6 +65123,8 @@ var require_cli24 = __commonJS({
     var index_12 = require_build5();
     var child_process_1 = require_child_process();
     var console_12 = require_console();
+    var config_1 = require_config2();
+    var config_2 = require_config7();
     function builder(argv) {
       return argv.positional("projectRoot", {
         type: "string",
@@ -65152,13 +65143,15 @@ var require_cli24 = __commonJS({
         (0, console_12.error)((0, console_12.red)(`  \u2718   Could not find the 'projectRoot' provided: ${projectRoot}`));
         process.exit(1);
       }
-      const releaseOutputs = await (0, index_12.buildReleaseOutput)(false);
-      if (releaseOutputs === null) {
+      const config = (0, config_1.getConfig)();
+      (0, config_2.assertValidReleaseConfig)(config);
+      const builtPackages = await (0, index_12.buildReleaseOutput)();
+      if (builtPackages === null) {
         (0, console_12.error)((0, console_12.red)(`  \u2718   Could not build release output. Please check output above.`));
         process.exit(1);
       }
       (0, console_12.info)((0, chalk_1.green)(` \u2713  Built release output.`));
-      for (const { outputPath, name } of releaseOutputs) {
+      for (const { outputPath, name } of builtPackages) {
         await (0, child_process_1.spawn)("yarn", ["link", "--cwd", outputPath]);
         await (0, child_process_1.spawn)("yarn", ["link", "--cwd", projectRoot, name]);
       }

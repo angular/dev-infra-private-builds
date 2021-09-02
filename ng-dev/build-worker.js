@@ -36681,7 +36681,7 @@ var require_config2 = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/utils/config.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.assertNoErrors = exports2.assertValidGithubConfig = exports2.ConfigValidationError = exports2.getUserConfig = exports2.getConfig = exports2.setConfig = void 0;
+    exports2.assertValidGithubConfig = exports2.ConfigValidationError = exports2.getUserConfig = exports2.getConfig = exports2.setConfig = void 0;
     var fs_1 = require("fs");
     var path_1 = require("path");
     var console_1 = require_console();
@@ -36758,17 +36758,6 @@ var require_config2 = __commonJS({
         process.exit(1);
       }
     }
-    function assertNoErrors(errors) {
-      if (errors.length == 0) {
-        return;
-      }
-      (0, console_1.error)(`Errors discovered while loading configuration file:`);
-      for (const err of errors) {
-        (0, console_1.error)(`  - ${err}`);
-      }
-      process.exit(1);
-    }
-    exports2.assertNoErrors = assertNoErrors;
   }
 });
 
@@ -36803,14 +36792,17 @@ var require_config3 = __commonJS({
 Object.defineProperty(exports, "__esModule", { value: true });
 var config_1 = require_config2();
 var index_1 = require_config3();
-main(process.argv[2] === "true");
-async function main(stampForRelease) {
+main().catch((e) => {
+  console.error(e);
+  throw e;
+});
+async function main() {
   if (process.send === void 0) {
     throw Error("This script needs to be invoked as a NodeJS worker.");
   }
   const config = (0, config_1.getConfig)();
   (0, index_1.assertValidReleaseConfig)(config);
-  const builtPackages = await config.release.buildPackages(stampForRelease);
+  const builtPackages = await config.release.buildPackages();
   process.send(builtPackages);
 }
 /*!
