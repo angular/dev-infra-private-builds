@@ -58840,14 +58840,14 @@ var require_labels = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/defaults/labels.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.getTargetLabels = void 0;
+    exports2.getTargetLabelsForActiveReleaseTrains = void 0;
     var index_12 = require_config7();
     var versioning_1 = require_versioning();
     var config_1 = require_config2();
     var git_client_1 = require_git_client();
     var target_label_1 = require_target_label();
     var lts_branch_1 = require_lts_branch();
-    async function getTargetLabels(api = git_client_1.GitClient.get().github, config = (0, config_1.getConfig)()) {
+    async function getTargetLabelsForActiveReleaseTrains(api = git_client_1.GitClient.get().github, config = (0, config_1.getConfig)()) {
       (0, index_12.assertValidReleaseConfig)(config);
       (0, config_1.assertValidGithubConfig)(config);
       const nextBranchName = (0, versioning_1.getNextBranchName)(config.github);
@@ -58860,7 +58860,7 @@ var require_labels = __commonJS({
       const { latest, releaseCandidate, next } = await (0, versioning_1.fetchActiveReleaseTrains)(repo);
       return [
         {
-          pattern: "target: major",
+          name: target_label_1.TargetLabelName.MAJOR,
           branches: () => {
             if (!next.isMajor) {
               throw new target_label_1.InvalidTargetLabelError(`Unable to merge pull request. The "${nextBranchName}" branch will be released as a minor version.`);
@@ -58869,11 +58869,11 @@ var require_labels = __commonJS({
           }
         },
         {
-          pattern: "target: minor",
-          branches: [nextBranchName]
+          name: target_label_1.TargetLabelName.MINOR,
+          branches: () => [nextBranchName]
         },
         {
-          pattern: "target: patch",
+          name: target_label_1.TargetLabelName.PATCH,
           branches: (githubTargetBranch) => {
             if (githubTargetBranch === latest.branchName) {
               return [latest.branchName];
@@ -58886,7 +58886,7 @@ var require_labels = __commonJS({
           }
         },
         {
-          pattern: "target: rc",
+          name: target_label_1.TargetLabelName.RELEASE_CANDIDATE,
           branches: (githubTargetBranch) => {
             if (releaseCandidate === null) {
               throw new target_label_1.InvalidTargetLabelError(`No active feature-freeze/release-candidate branch. Unable to merge pull request using "target: rc" label.`);
@@ -58898,7 +58898,7 @@ var require_labels = __commonJS({
           }
         },
         {
-          pattern: "target: lts",
+          name: target_label_1.TargetLabelName.LONG_TERM_SUPPORT,
           branches: async (githubTargetBranch) => {
             if (!(0, versioning_1.isVersionBranch)(githubTargetBranch)) {
               throw new target_label_1.InvalidTargetBranchError(`PR cannot be merged as it does not target a long-term support branch: "${githubTargetBranch}"`);
@@ -58915,20 +58915,192 @@ var require_labels = __commonJS({
         }
       ];
     }
-    exports2.getTargetLabels = getTargetLabels;
+    exports2.getTargetLabelsForActiveReleaseTrains = getTargetLabelsForActiveReleaseTrains;
   }
 });
 
-// bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/string-pattern.js
-var require_string_pattern = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/string-pattern.js"(exports2) {
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/defaults/index.js
+var require_defaults3 = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/defaults/index.js"(exports2) {
+    "use strict";
+    var __createBinding = exports2 && exports2.__createBinding || (Object.create ? function(o, m, k, k2) {
+      if (k2 === void 0)
+        k2 = k;
+      Object.defineProperty(o, k2, { enumerable: true, get: function() {
+        return m[k];
+      } });
+    } : function(o, m, k, k2) {
+      if (k2 === void 0)
+        k2 = k;
+      o[k2] = m[k];
+    });
+    var __exportStar = exports2 && exports2.__exportStar || function(m, exports3) {
+      for (var p in m)
+        if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports3, p))
+          __createBinding(exports3, m, p);
+    };
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    __exportStar(require_labels(), exports2);
+    __exportStar(require_lts_branch(), exports2);
+  }
+});
+
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/constants.js
+var require_constants2 = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/constants.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.matchesPattern = void 0;
-    function matchesPattern(value, pattern) {
-      return typeof pattern === "string" ? value === pattern : pattern.test(value);
+    exports2.breakingChangeLabel = void 0;
+    exports2.breakingChangeLabel = "flag: breaking change";
+  }
+});
+
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/failures.js
+var require_failures = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/failures.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.PullRequestFailure = void 0;
+    var constants_1 = require_constants2();
+    var PullRequestFailure = class {
+      constructor(message, nonFatal = false) {
+        this.message = message;
+        this.nonFatal = nonFatal;
+      }
+      static claUnsigned() {
+        return new this(`CLA has not been signed. Please make sure the PR author has signed the CLA.`);
+      }
+      static failingCiJobs() {
+        return new this(`Failing CI jobs.`, true);
+      }
+      static pendingCiJobs() {
+        return new this(`Pending CI jobs.`, true);
+      }
+      static notMergeReady() {
+        return new this(`Not marked as merge ready.`);
+      }
+      static isDraft() {
+        return new this("Pull request is still in draft.");
+      }
+      static isClosed() {
+        return new this("Pull request is already closed.");
+      }
+      static isMerged() {
+        return new this("Pull request is already merged.");
+      }
+      static mismatchingTargetBranch(allowedBranches) {
+        return new this(`Pull request is set to wrong base branch. Please update the PR in the Github UI to one of the following branches: ${allowedBranches.join(", ")}.`);
+      }
+      static unsatisfiedBaseSha() {
+        return new this(`Pull request has not been rebased recently and could be bypassing CI checks. Please rebase the PR.`);
+      }
+      static mergeConflicts(failedBranches) {
+        return new this(`Could not merge pull request into the following branches due to merge conflicts: ${failedBranches.join(", ")}. Please rebase the PR or update the target label.`);
+      }
+      static unknownMergeError() {
+        return new this(`Unknown merge error occurred. Please see console output above for debugging.`);
+      }
+      static unableToFixupCommitMessageSquashOnly() {
+        return new this(`Unable to fixup commit message of pull request. Commit message can only be modified if the PR is merged using squash.`);
+      }
+      static notFound() {
+        return new this(`Pull request could not be found upstream.`);
+      }
+      static insufficientPermissionsToMerge(message = `Insufficient Github API permissions to merge pull request. Please ensure that your auth token has write access.`) {
+        return new this(message);
+      }
+      static hasBreakingChanges(label) {
+        const message = `Cannot merge into branch for "${label.name}" as the pull request has breaking changes. Breaking changes can only be merged with the "target: major" label.`;
+        return new this(message);
+      }
+      static hasDeprecations(label) {
+        const message = `Cannot merge into branch for "${label.name}" as the pull request contains deprecations. Deprecations can only be merged with the "target: minor" or "target: major" label.`;
+        return new this(message);
+      }
+      static hasFeatureCommits(label) {
+        const message = `Cannot merge into branch for "${label.name}" as the pull request has commits with the "feat" type. New features can only be merged with the "target: minor" or "target: major" label.`;
+        return new this(message);
+      }
+      static missingBreakingChangeLabel() {
+        const message = `Pull Request has at least one commit containing a breaking change note, but does not have a breaking change label. Make sure to apply the following label: ${constants_1.breakingChangeLabel}`;
+        return new this(message);
+      }
+      static missingBreakingChangeCommit() {
+        const message = "Pull Request has a breaking change label, but does not contain any commits with breaking change notes (i.e. commits do not have a `BREAKING CHANGE: <..>` section).";
+        return new this(message);
+      }
+    };
+    exports2.PullRequestFailure = PullRequestFailure;
+  }
+});
+
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/validations.js
+var require_validations = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/validations.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.assertPendingState = exports2.assertCorrectBreakingChangeLabeling = exports2.assertChangesAllowForTargetLabel = void 0;
+    var target_label_1 = require_target_label();
+    var failures_1 = require_failures();
+    var console_12 = require_console();
+    var constants_1 = require_constants2();
+    function assertChangesAllowForTargetLabel(commits, label, config) {
+      const exemptedScopes = config.targetLabelExemptScopes || [];
+      commits = commits.filter((commit) => !exemptedScopes.includes(commit.scope));
+      const hasBreakingChanges = commits.some((commit) => commit.breakingChanges.length !== 0);
+      const hasDeprecations = commits.some((commit) => commit.deprecations.length !== 0);
+      const hasFeatureCommits = commits.some((commit) => commit.type === "feat");
+      switch (label.name) {
+        case target_label_1.TargetLabelName.MAJOR:
+          break;
+        case target_label_1.TargetLabelName.MINOR:
+          if (hasBreakingChanges) {
+            throw failures_1.PullRequestFailure.hasBreakingChanges(label);
+          }
+          break;
+        case target_label_1.TargetLabelName.RELEASE_CANDIDATE:
+        case target_label_1.TargetLabelName.LONG_TERM_SUPPORT:
+        case target_label_1.TargetLabelName.PATCH:
+          if (hasBreakingChanges) {
+            throw failures_1.PullRequestFailure.hasBreakingChanges(label);
+          }
+          if (hasFeatureCommits) {
+            throw failures_1.PullRequestFailure.hasFeatureCommits(label);
+          }
+          if (hasDeprecations) {
+            throw failures_1.PullRequestFailure.hasDeprecations(label);
+          }
+          break;
+        default:
+          (0, console_12.warn)((0, console_12.red)("WARNING: Unable to confirm all commits in the pull request are eligible to be"));
+          (0, console_12.warn)((0, console_12.red)(`merged into the target branch: ${label.name}`));
+          break;
+      }
     }
-    exports2.matchesPattern = matchesPattern;
+    exports2.assertChangesAllowForTargetLabel = assertChangesAllowForTargetLabel;
+    function assertCorrectBreakingChangeLabeling(commits, pullRequestLabels) {
+      const hasLabel = pullRequestLabels.includes(constants_1.breakingChangeLabel);
+      const hasCommit = commits.some((commit) => commit.breakingChanges.length !== 0);
+      if (!hasLabel && hasCommit) {
+        throw failures_1.PullRequestFailure.missingBreakingChangeLabel();
+      }
+      if (hasLabel && !hasCommit) {
+        throw failures_1.PullRequestFailure.missingBreakingChangeCommit();
+      }
+    }
+    exports2.assertCorrectBreakingChangeLabeling = assertCorrectBreakingChangeLabeling;
+    function assertPendingState(pullRequest) {
+      if (pullRequest.isDraft) {
+        throw failures_1.PullRequestFailure.isDraft();
+      }
+      switch (pullRequest.state) {
+        case "CLOSED":
+          throw failures_1.PullRequestFailure.isClosed();
+        case "MERGED":
+          throw failures_1.PullRequestFailure.isMerged();
+      }
+    }
+    exports2.assertPendingState = assertPendingState;
   }
 });
 
@@ -58937,9 +59109,18 @@ var require_target_label = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/target-label.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.getBranchesFromTargetLabel = exports2.getTargetLabelFromPullRequest = exports2.InvalidTargetLabelError = exports2.InvalidTargetBranchError = void 0;
-    var labels_1 = require_labels();
-    var string_pattern_1 = require_string_pattern();
+    exports2.getBranchesFromTargetLabel = exports2.getTargetBranchesForPullRequest = exports2.getMatchingTargetLabelForPullRequest = exports2.InvalidTargetLabelError = exports2.InvalidTargetBranchError = exports2.TargetLabelName = void 0;
+    var defaults_1 = require_defaults3();
+    var validations_1 = require_validations();
+    var failures_1 = require_failures();
+    var TargetLabelName;
+    (function(TargetLabelName2) {
+      TargetLabelName2["MAJOR"] = "target: major";
+      TargetLabelName2["MINOR"] = "target: minor";
+      TargetLabelName2["PATCH"] = "target: patch";
+      TargetLabelName2["RELEASE_CANDIDATE"] = "target: rc";
+      TargetLabelName2["LONG_TERM_SUPPORT"] = "target: lts";
+    })(TargetLabelName = exports2.TargetLabelName || (exports2.TargetLabelName = {}));
     var InvalidTargetBranchError = class {
       constructor(failureMessage) {
         this.failureMessage = failureMessage;
@@ -58952,14 +59133,13 @@ var require_target_label = __commonJS({
       }
     };
     exports2.InvalidTargetLabelError = InvalidTargetLabelError;
-    async function getTargetLabelFromPullRequest(config, labels) {
+    async function getMatchingTargetLabelForPullRequest(config, labelsOnPullRequest, allTargetLabels) {
       if (config.noTargetLabeling) {
         throw Error("This repository does not use target labels");
       }
-      const targetLabels = await (0, labels_1.getTargetLabels)();
       const matches = [];
-      for (const label of labels) {
-        const match = targetLabels.find(({ pattern }) => (0, string_pattern_1.matchesPattern)(label, pattern));
+      for (const label of labelsOnPullRequest) {
+        const match = allTargetLabels.find(({ name }) => label === name);
         if (match !== void 0) {
           matches.push(match);
         }
@@ -58972,7 +59152,25 @@ var require_target_label = __commonJS({
       }
       throw new InvalidTargetLabelError("Unable to determine target for the PR as it has multiple target labels.");
     }
-    exports2.getTargetLabelFromPullRequest = getTargetLabelFromPullRequest;
+    exports2.getMatchingTargetLabelForPullRequest = getMatchingTargetLabelForPullRequest;
+    async function getTargetBranchesForPullRequest(config, labelsOnPullRequest, githubTargetBranch, commits) {
+      if (config.merge.noTargetLabeling) {
+        return [config.github.mainBranchName];
+      }
+      try {
+        const targetLabels = await (0, defaults_1.getTargetLabelsForActiveReleaseTrains)();
+        const matchingLabel = await getMatchingTargetLabelForPullRequest(config.merge, labelsOnPullRequest, targetLabels);
+        const targetBranches = await getBranchesFromTargetLabel(matchingLabel, githubTargetBranch);
+        (0, validations_1.assertChangesAllowForTargetLabel)(commits, matchingLabel, config.merge);
+        return targetBranches;
+      } catch (error) {
+        if (error instanceof InvalidTargetBranchError || error instanceof InvalidTargetLabelError) {
+          throw new failures_1.PullRequestFailure(error.failureMessage);
+        }
+        throw error;
+      }
+    }
+    exports2.getTargetBranchesForPullRequest = getTargetBranchesForPullRequest;
     async function getBranchesFromTargetLabel(label, githubTargetBranch) {
       return typeof label.branches === "function" ? await label.branches(githubTargetBranch) : await label.branches;
     }
@@ -58997,17 +59195,7 @@ var require_check_target_branches = __commonJS({
       const prData = (await git.github.pulls.get({ owner, repo, pull_number: prNumber })).data;
       const labels = prData.labels.map((l) => l.name);
       const githubTargetBranch = prData.base.ref;
-      let targetLabel;
-      try {
-        targetLabel = await (0, target_label_1.getTargetLabelFromPullRequest)(config.merge, labels);
-      } catch (e) {
-        if (e instanceof target_label_1.InvalidTargetLabelError) {
-          (0, console_12.error)((0, console_12.red)(e.failureMessage));
-          process.exit(1);
-        }
-        throw e;
-      }
-      return await (0, target_label_1.getBranchesFromTargetLabel)(targetLabel, githubTargetBranch);
+      return (0, target_label_1.getTargetBranchesForPullRequest)(config, labels, githubTargetBranch, []);
     }
     async function printTargetBranchesForPr(prNumber) {
       const config = (0, config_1.getConfig)();
@@ -59370,95 +59558,6 @@ var require_cli12 = __commonJS({
   }
 });
 
-// bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/constants.js
-var require_constants2 = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/constants.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.breakingChangeLabel = void 0;
-    exports2.breakingChangeLabel = "flag: breaking change";
-  }
-});
-
-// bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/failures.js
-var require_failures = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/failures.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.PullRequestFailure = void 0;
-    var constants_1 = require_constants2();
-    var PullRequestFailure = class {
-      constructor(message, nonFatal = false) {
-        this.message = message;
-        this.nonFatal = nonFatal;
-      }
-      static claUnsigned() {
-        return new this(`CLA has not been signed. Please make sure the PR author has signed the CLA.`);
-      }
-      static failingCiJobs() {
-        return new this(`Failing CI jobs.`, true);
-      }
-      static pendingCiJobs() {
-        return new this(`Pending CI jobs.`, true);
-      }
-      static notMergeReady() {
-        return new this(`Not marked as merge ready.`);
-      }
-      static isDraft() {
-        return new this("Pull request is still in draft.");
-      }
-      static isClosed() {
-        return new this("Pull request is already closed.");
-      }
-      static isMerged() {
-        return new this("Pull request is already merged.");
-      }
-      static mismatchingTargetBranch(allowedBranches) {
-        return new this(`Pull request is set to wrong base branch. Please update the PR in the Github UI to one of the following branches: ${allowedBranches.join(", ")}.`);
-      }
-      static unsatisfiedBaseSha() {
-        return new this(`Pull request has not been rebased recently and could be bypassing CI checks. Please rebase the PR.`);
-      }
-      static mergeConflicts(failedBranches) {
-        return new this(`Could not merge pull request into the following branches due to merge conflicts: ${failedBranches.join(", ")}. Please rebase the PR or update the target label.`);
-      }
-      static unknownMergeError() {
-        return new this(`Unknown merge error occurred. Please see console output above for debugging.`);
-      }
-      static unableToFixupCommitMessageSquashOnly() {
-        return new this(`Unable to fixup commit message of pull request. Commit message can only be modified if the PR is merged using squash.`);
-      }
-      static notFound() {
-        return new this(`Pull request could not be found upstream.`);
-      }
-      static insufficientPermissionsToMerge(message = `Insufficient Github API permissions to merge pull request. Please ensure that your auth token has write access.`) {
-        return new this(message);
-      }
-      static hasBreakingChanges(label) {
-        const message = `Cannot merge into branch for "${label.pattern}" as the pull request has breaking changes. Breaking changes can only be merged with the "target: major" label.`;
-        return new this(message);
-      }
-      static hasDeprecations(label) {
-        const message = `Cannot merge into branch for "${label.pattern}" as the pull request contains deprecations. Deprecations can only be merged with the "target: minor" or "target: major" label.`;
-        return new this(message);
-      }
-      static hasFeatureCommits(label) {
-        const message = `Cannot merge into branch for "${label.pattern}" as the pull request has commits with the "feat" type. New features can only be merged with the "target: minor" or "target: major" label.`;
-        return new this(message);
-      }
-      static missingBreakingChangeLabel() {
-        const message = `Pull Request has at least one commit containing a breaking change note, but does not have a breaking change label. Make sure to apply the following label: ${constants_1.breakingChangeLabel}`;
-        return new this(message);
-      }
-      static missingBreakingChangeCommit() {
-        const message = "Pull Request has a breaking change label, but does not contain any commits with breaking change notes (i.e. commits do not have a `BREAKING CHANGE: <..>` section).";
-        return new this(message);
-      }
-    };
-    exports2.PullRequestFailure = PullRequestFailure;
-  }
-});
-
 // bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/messages.js
 var require_messages = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/messages.js"(exports2) {
@@ -59483,68 +59582,27 @@ Do you want to proceed merging?`;
   }
 });
 
-// bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/pull-request.js
-var require_pull_request = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/pull-request.js"(exports2) {
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/string-pattern.js
+var require_string_pattern = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/string-pattern.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.isPullRequest = exports2.loadAndValidatePullRequest = void 0;
-    var typed_graphqlify_1 = require_dist();
-    var parse_1 = require_parse2();
-    var console_12 = require_console();
-    var github_1 = require_github3();
-    var failures_1 = require_failures();
-    var string_pattern_1 = require_string_pattern();
-    var target_label_1 = require_target_label();
-    var constants_1 = require_constants2();
-    async function loadAndValidatePullRequest({ git, config }, prNumber, ignoreNonFatalFailures = false) {
-      const prData = await fetchPullRequestFromGithub(git, prNumber);
-      if (prData === null) {
-        return failures_1.PullRequestFailure.notFound();
-      }
-      const labels = prData.labels.nodes.map((l) => l.name);
-      if (!labels.some((name) => (0, string_pattern_1.matchesPattern)(name, config.mergeReadyLabel))) {
-        return failures_1.PullRequestFailure.notMergeReady();
-      }
-      if (!labels.some((name) => (0, string_pattern_1.matchesPattern)(name, config.claSignedLabel))) {
-        return failures_1.PullRequestFailure.claUnsigned();
-      }
-      const commitsInPr = prData.commits.nodes.map((n) => (0, parse_1.parseCommitMessage)(n.commit.message));
-      const githubTargetBranch = prData.baseRefName;
-      const targetBranches = await getTargetBranches({ github: git.config.github, merge: config }, labels, githubTargetBranch, commitsInPr);
-      try {
-        assertPendingState(prData);
-        assertCorrectBreakingChangeLabeling(commitsInPr, labels);
-      } catch (error) {
-        if (error instanceof failures_1.PullRequestFailure) {
-          return error;
-        }
-        throw error;
-      }
-      const state = prData.commits.nodes.slice(-1)[0].commit.status.state;
-      if (state === "FAILURE" && !ignoreNonFatalFailures) {
-        return failures_1.PullRequestFailure.failingCiJobs();
-      }
-      if (state === "PENDING" && !ignoreNonFatalFailures) {
-        return failures_1.PullRequestFailure.pendingCiJobs();
-      }
-      const requiredBaseSha = config.requiredBaseCommits && config.requiredBaseCommits[githubTargetBranch];
-      const needsCommitMessageFixup = !!config.commitMessageFixupLabel && labels.some((name) => (0, string_pattern_1.matchesPattern)(name, config.commitMessageFixupLabel));
-      const hasCaretakerNote = !!config.caretakerNoteLabel && labels.some((name) => (0, string_pattern_1.matchesPattern)(name, config.caretakerNoteLabel));
-      return {
-        url: prData.url,
-        prNumber,
-        labels,
-        requiredBaseSha,
-        githubTargetBranch,
-        needsCommitMessageFixup,
-        hasCaretakerNote,
-        targetBranches,
-        title: prData.title,
-        commitCount: prData.commits.totalCount
-      };
+    exports2.matchesPattern = void 0;
+    function matchesPattern(value, pattern) {
+      return typeof pattern === "string" ? value === pattern : pattern.test(value);
     }
-    exports2.loadAndValidatePullRequest = loadAndValidatePullRequest;
+    exports2.matchesPattern = matchesPattern;
+  }
+});
+
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/fetch-pull-request.js
+var require_fetch_pull_request = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/fetch-pull-request.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.fetchPullRequestFromGithub = void 0;
+    var typed_graphqlify_1 = require_dist();
+    var github_1 = require_github3();
     var PR_SCHEMA = {
       url: typed_graphqlify_1.types.string,
       isDraft: typed_graphqlify_1.types.boolean,
@@ -59576,81 +59634,74 @@ var require_pull_request = __commonJS({
     async function fetchPullRequestFromGithub(git, prNumber) {
       return await (0, github_1.getPr)(PR_SCHEMA, prNumber, git);
     }
+    exports2.fetchPullRequestFromGithub = fetchPullRequestFromGithub;
+  }
+});
+
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/pull-request.js
+var require_pull_request = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/pull-request.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.isPullRequest = exports2.loadAndValidatePullRequest = void 0;
+    var parse_1 = require_parse2();
+    var failures_1 = require_failures();
+    var string_pattern_1 = require_string_pattern();
+    var target_label_1 = require_target_label();
+    var validations_1 = require_validations();
+    var fetch_pull_request_1 = require_fetch_pull_request();
+    async function loadAndValidatePullRequest({ git, config }, prNumber, ignoreNonFatalFailures = false) {
+      const prData = await (0, fetch_pull_request_1.fetchPullRequestFromGithub)(git, prNumber);
+      if (prData === null) {
+        return failures_1.PullRequestFailure.notFound();
+      }
+      const labels = prData.labels.nodes.map((l) => l.name);
+      if (!labels.some((name) => (0, string_pattern_1.matchesPattern)(name, config.mergeReadyLabel))) {
+        return failures_1.PullRequestFailure.notMergeReady();
+      }
+      if (!labels.some((name) => (0, string_pattern_1.matchesPattern)(name, config.claSignedLabel))) {
+        return failures_1.PullRequestFailure.claUnsigned();
+      }
+      const commitsInPr = prData.commits.nodes.map((n) => (0, parse_1.parseCommitMessage)(n.commit.message));
+      const githubTargetBranch = prData.baseRefName;
+      const targetBranches = await (0, target_label_1.getTargetBranchesForPullRequest)({ github: git.config.github, merge: config }, labels, githubTargetBranch, commitsInPr);
+      try {
+        (0, validations_1.assertPendingState)(prData);
+        (0, validations_1.assertCorrectBreakingChangeLabeling)(commitsInPr, labels);
+      } catch (error) {
+        if (error instanceof failures_1.PullRequestFailure) {
+          return error;
+        }
+        throw error;
+      }
+      const state = prData.commits.nodes.slice(-1)[0].commit.status.state;
+      if (state === "FAILURE" && !ignoreNonFatalFailures) {
+        return failures_1.PullRequestFailure.failingCiJobs();
+      }
+      if (state === "PENDING" && !ignoreNonFatalFailures) {
+        return failures_1.PullRequestFailure.pendingCiJobs();
+      }
+      const requiredBaseSha = config.requiredBaseCommits && config.requiredBaseCommits[githubTargetBranch];
+      const needsCommitMessageFixup = !!config.commitMessageFixupLabel && labels.some((name) => (0, string_pattern_1.matchesPattern)(name, config.commitMessageFixupLabel));
+      const hasCaretakerNote = !!config.caretakerNoteLabel && labels.some((name) => (0, string_pattern_1.matchesPattern)(name, config.caretakerNoteLabel));
+      return {
+        url: prData.url,
+        prNumber,
+        labels,
+        requiredBaseSha,
+        githubTargetBranch,
+        needsCommitMessageFixup,
+        hasCaretakerNote,
+        targetBranches,
+        title: prData.title,
+        commitCount: prData.commits.totalCount
+      };
+    }
+    exports2.loadAndValidatePullRequest = loadAndValidatePullRequest;
     function isPullRequest(v) {
       return v.targetBranches !== void 0;
     }
     exports2.isPullRequest = isPullRequest;
-    function assertChangesAllowForTargetLabel(commits, label, config) {
-      const exemptedScopes = config.targetLabelExemptScopes || [];
-      commits = commits.filter((commit) => !exemptedScopes.includes(commit.scope));
-      const hasBreakingChanges = commits.some((commit) => commit.breakingChanges.length !== 0);
-      const hasDeprecations = commits.some((commit) => commit.deprecations.length !== 0);
-      const hasFeatureCommits = commits.some((commit) => commit.type === "feat");
-      switch (label.pattern) {
-        case "target: major":
-          break;
-        case "target: minor":
-          if (hasBreakingChanges) {
-            throw failures_1.PullRequestFailure.hasBreakingChanges(label);
-          }
-          break;
-        case "target: rc":
-        case "target: patch":
-        case "target: lts":
-          if (hasBreakingChanges) {
-            throw failures_1.PullRequestFailure.hasBreakingChanges(label);
-          }
-          if (hasFeatureCommits) {
-            throw failures_1.PullRequestFailure.hasFeatureCommits(label);
-          }
-          if (hasDeprecations) {
-            throw failures_1.PullRequestFailure.hasDeprecations(label);
-          }
-          break;
-        default:
-          (0, console_12.warn)((0, console_12.red)("WARNING: Unable to confirm all commits in the pull request are eligible to be"));
-          (0, console_12.warn)((0, console_12.red)(`merged into the target branch: ${label.pattern}`));
-          break;
-      }
-    }
-    function assertCorrectBreakingChangeLabeling(commits, labels) {
-      const hasLabel = labels.includes(constants_1.breakingChangeLabel);
-      const hasCommit = commits.some((commit) => commit.breakingChanges.length !== 0);
-      if (!hasLabel && hasCommit) {
-        throw failures_1.PullRequestFailure.missingBreakingChangeLabel();
-      }
-      if (hasLabel && !hasCommit) {
-        throw failures_1.PullRequestFailure.missingBreakingChangeCommit();
-      }
-    }
-    function assertPendingState(pr) {
-      if (pr.isDraft) {
-        throw failures_1.PullRequestFailure.isDraft();
-      }
-      switch (pr.state) {
-        case "CLOSED":
-          throw failures_1.PullRequestFailure.isClosed();
-        case "MERGED":
-          throw failures_1.PullRequestFailure.isMerged();
-      }
-    }
-    async function getTargetBranches(config, labels, githubTargetBranch, commits) {
-      if (config.merge.noTargetLabeling) {
-        return [config.github.mainBranchName];
-      } else {
-        try {
-          let targetLabel = await (0, target_label_1.getTargetLabelFromPullRequest)(config.merge, labels);
-          let targetBranches = await (0, target_label_1.getBranchesFromTargetLabel)(targetLabel, githubTargetBranch);
-          assertChangesAllowForTargetLabel(commits, targetLabel, config.merge);
-          return targetBranches;
-        } catch (error) {
-          if (error instanceof target_label_1.InvalidTargetBranchError || error instanceof target_label_1.InvalidTargetLabelError) {
-            throw new failures_1.PullRequestFailure(error.failureMessage);
-          }
-          throw error;
-        }
-      }
-    }
   }
 });
 

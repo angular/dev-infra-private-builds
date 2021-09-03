@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { TargetLabel } from './config';
+import { TargetLabel } from './target-label';
 /**
  * Class that can be used to describe pull request failures. A failure
  * is described through a human-readable message and a flag indicating
