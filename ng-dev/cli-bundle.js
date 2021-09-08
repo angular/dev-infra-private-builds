@@ -62455,7 +62455,12 @@ ${localChangelog}`);
       }
       async stageVersionForBranchAndCreatePullRequest(newVersion, compareVersionForReleaseNotes, pullRequestTargetBranch) {
         const releaseNotesCompareTag = (0, version_tags_1.getReleaseTagForVersion)(compareVersionForReleaseNotes);
-        this.git.run(["fetch", this.git.getRepoGitUrl(), `refs/tags/${releaseNotesCompareTag}`]);
+        this.git.run([
+          "fetch",
+          "--force",
+          this.git.getRepoGitUrl(),
+          `refs/tags/${releaseNotesCompareTag}:refs/tags/${releaseNotesCompareTag}`
+        ]);
         const releaseNotes = await release_notes_1.ReleaseNotes.forRange(newVersion, releaseNotesCompareTag, "HEAD");
         await this.updateProjectVersion(newVersion);
         await this.prependReleaseNotesToChangelog(releaseNotes);
