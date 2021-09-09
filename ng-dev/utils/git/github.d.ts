@@ -13641,6 +13641,7 @@ export declare class GithubClient {
                 action: string | null;
                 installation_id: number | null;
                 repository_id: number | null;
+                url?: string | undefined;
                 request: {
                     headers: {
                         [key: string]: any;
@@ -18524,6 +18525,22 @@ export declare class GithubClient {
                     previous_filename?: string | undefined;
                 }[] | undefined;
             }, 201>>;
+            defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
+            endpoint: import("@octokit/types").EndpointInterface<{
+                url: string;
+            }>;
+        };
+        mergeUpstream: {
+            (params?: (RequestParameters & Omit<{
+                owner: string;
+                repo: string;
+            } & {
+                branch: string;
+            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
+                message?: string | undefined;
+                merge_type?: "merge" | "fast-forward" | "none" | undefined;
+                base_branch?: string | undefined;
+            }, 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
                 url: string;
@@ -31746,13 +31763,13 @@ export declare class GithubClient {
                 owner: string;
                 repo: string;
                 issue_number: number;
-            } & Partial<{
+            } & ({
                 labels?: string[] | undefined;
-            }> & Partial<{
+            } | {
                 labels?: {
                     name: string;
                 }[] | undefined;
-            }>, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
+            }), "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 id: number;
                 node_id: string;
                 url: string;
