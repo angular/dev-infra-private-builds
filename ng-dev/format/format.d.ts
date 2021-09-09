@@ -7,9 +7,13 @@
  */
 /**
  * Format provided files in place.
+ *
+ * @returns a status code indicating whether the formatting run was successful.
  */
-export declare function formatFiles(files: string[]): Promise<void>;
+export declare function formatFiles(files: string[]): Promise<1 | 0>;
 /**
  * Check provided files for formatting correctness.
+ *
+ * @returns a status code indicating whether the format check run was successful.
  */
-export declare function checkFiles(files: string[]): Promise<void>;
+export declare function checkFiles(files: string[]): Promise<1 | 0>;

@@ -36696,11 +36696,21 @@ var require_config2 = __commonJS({
       cachedConfig = config;
     }
     exports2.setConfig = setConfig;
-    function getConfig(baseDir) {
+    function getConfig(baseDirOrAssertions) {
+      let baseDir;
+      if (typeof baseDirOrAssertions === "string") {
+        baseDir = baseDirOrAssertions;
+      } else {
+        baseDir = git_client_1.GitClient.get().baseDir;
+      }
       if (cachedConfig === null) {
-        baseDir = baseDir || git_client_1.GitClient.get().baseDir;
         const configPath = (0, path_1.join)(baseDir, CONFIG_FILE_PATH);
         cachedConfig = readConfigFile(configPath);
+      }
+      if (Array.isArray(baseDirOrAssertions)) {
+        for (const assertion of baseDirOrAssertions) {
+          assertion(cachedConfig);
+        }
       }
       return __spreadValues({}, cachedConfig);
     }

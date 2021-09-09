@@ -8,12 +8,12 @@
 import { SemVer } from 'semver';
 import { CommandModule } from 'yargs';
 /** Command line options for building a release. */
-export interface ReleaseNotesOptions {
+export interface Options {
     from: string;
     to: string;
-    outFile?: string;
+    prependToChangelog: boolean;
     releaseVersion: SemVer;
     type: 'github-release' | 'changelog';
 }
 /** CLI command module for generating release notes. */
-export declare const ReleaseNotesCommandModule: CommandModule<{}, ReleaseNotesOptions>;
+export declare const ReleaseNotesCommandModule: CommandModule<{}, Options>;

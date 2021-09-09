@@ -7,4 +7,4 @@
  */
 import * as yargs from 'yargs';
 /** Build the parser for the release commands. */
-export declare function buildReleaseParser(localYargs: yargs.Argv): yargs.Argv<import("./notes/cli").ReleaseNotesOptions>;
+export declare function buildReleaseParser(localYargs: yargs.Argv): yargs.Argv<import("./notes/cli").Options>;

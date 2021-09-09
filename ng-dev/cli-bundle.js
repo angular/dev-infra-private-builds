@@ -40057,11 +40057,21 @@ var require_config2 = __commonJS({
       cachedConfig = config;
     }
     exports2.setConfig = setConfig;
-    function getConfig(baseDir) {
+    function getConfig(baseDirOrAssertions) {
+      let baseDir;
+      if (typeof baseDirOrAssertions === "string") {
+        baseDir = baseDirOrAssertions;
+      } else {
+        baseDir = git_client_1.GitClient.get().baseDir;
+      }
       if (cachedConfig === null) {
-        baseDir = baseDir || git_client_1.GitClient.get().baseDir;
         const configPath = (0, path_1.join)(baseDir, CONFIG_FILE_PATH);
         cachedConfig = readConfigFile(configPath);
+      }
+      if (Array.isArray(baseDirOrAssertions)) {
+        for (const assertion of baseDirOrAssertions) {
+          assertion(cachedConfig);
+        }
       }
       return __spreadValues({}, cachedConfig);
     }
@@ -49787,9 +49797,8 @@ var require_cli3 = __commonJS({
     }
     exports2.buildCaretakerParser = buildCaretakerParser;
     function caretakerCommandCanRun(argv) {
-      const config = (0, config_1.getConfig)();
       try {
-        (0, config_2.assertValidCaretakerConfig)(config);
+        (0, config_1.getConfig)([config_2.assertValidCaretakerConfig, config_1.assertValidGithubConfig]);
       } catch {
         (0, console_12.info)("The `caretaker` command is not enabled in this repository.");
         (0, console_12.info)(`   To enable it, provide a caretaker config in the repository's .ng-dev/ directory`);
@@ -58600,7 +58609,7 @@ var require_format = __commonJS({
       let failures = await (0, run_commands_parallel_1.runFormatterInParallel)(files, "format");
       if (failures === false) {
         (0, console_12.info)("No files matched for formatting.");
-        process.exit(0);
+        return 0;
       }
       if (failures.length !== 0) {
         (0, console_12.error)((0, console_12.red)(`The following files could not be formatted:`));
@@ -58608,17 +58617,17 @@ var require_format = __commonJS({
           (0, console_12.info)(`  \u2022 ${filePath}: ${message}`);
         });
         (0, console_12.error)((0, console_12.red)(`Formatting failed, see errors above for more information.`));
-        process.exit(1);
+        return 1;
       }
       (0, console_12.info)(`\u221A  Formatting complete.`);
-      process.exit(0);
+      return 0;
     }
     exports2.formatFiles = formatFiles;
     async function checkFiles(files) {
       const failures = await (0, run_commands_parallel_1.runFormatterInParallel)(files, "check");
       if (failures === false) {
         (0, console_12.info)("No files matched for formatting check.");
-        process.exit(0);
+        return 0;
       }
       if (failures.length) {
         console_12.info.group("\nThe following files are out of format:");
@@ -58632,17 +58641,16 @@ var require_format = __commonJS({
           runFormatter = await (0, console_12.promptConfirm)("Format the files now?", true);
         }
         if (runFormatter) {
-          await formatFiles(failures.map((f) => f.filePath));
-          process.exit(0);
+          return await formatFiles(failures.map((f) => f.filePath)) || 0;
         } else {
           (0, console_12.info)();
           (0, console_12.info)(`To format the failing file run the following command:`);
           (0, console_12.info)(`  yarn ng-dev format files ${failures.map((f) => f.filePath).join(" ")}`);
-          process.exit(1);
+          return 1;
         }
       } else {
         (0, console_12.info)("\u221A  All files correctly formatted.");
-        process.exit(0);
+        return 0;
       }
     }
     exports2.checkFiles = checkFiles;
@@ -58662,23 +58670,23 @@ var require_cli8 = __commonJS({
         type: "boolean",
         default: process.env["CI"] ? true : false,
         description: "Run the formatter to check formatting rather than updating code format"
-      }).command("all", "Run the formatter on all files in the repository", (args) => args, ({ check }) => {
+      }).command("all", "Run the formatter on all files in the repository", (args) => args, async ({ check }) => {
         const executionCmd = check ? format_1.checkFiles : format_1.formatFiles;
         const allFiles = git_client_1.GitClient.get().allFiles();
-        executionCmd(allFiles);
-      }).command("changed [shaOrRef]", "Run the formatter on files changed since the provided sha/ref", (args) => args.positional("shaOrRef", { type: "string" }), ({ shaOrRef, check }) => {
+        process.exitCode = await executionCmd(allFiles);
+      }).command("changed [shaOrRef]", "Run the formatter on files changed since the provided sha/ref", (args) => args.positional("shaOrRef", { type: "string" }), async ({ shaOrRef, check }) => {
         const git = git_client_1.GitClient.get();
         const sha = shaOrRef || git.mainBranchName;
         const executionCmd = check ? format_1.checkFiles : format_1.formatFiles;
         const allChangedFilesSince = git.allChangesFilesSince(sha);
-        executionCmd(allChangedFilesSince);
-      }).command("staged", "Run the formatter on all staged files", (args) => args, ({ check }) => {
+        process.exitCode = await executionCmd(allChangedFilesSince);
+      }).command("staged", "Run the formatter on all staged files", (args) => args, async ({ check }) => {
         const executionCmd = check ? format_1.checkFiles : format_1.formatFiles;
         const allStagedFiles = git_client_1.GitClient.get().allStagedFiles();
-        executionCmd(allStagedFiles);
-      }).command("files <files..>", "Run the formatter on provided files", (args) => args.positional("files", { array: true, type: "string" }), ({ check, files }) => {
+        process.exitCode = await executionCmd(allStagedFiles);
+      }).command("files <files..>", "Run the formatter on provided files", (args) => args.positional("files", { array: true, type: "string" }), async ({ check, files }) => {
         const executionCmd = check ? format_1.checkFiles : format_1.formatFiles;
-        executionCmd(files);
+        process.exitCode = await executionCmd(files);
       });
     }
     exports2.buildFormatParser = buildFormatParser;
@@ -61812,9 +61820,10 @@ var require_release_notes = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/release/notes/release-notes.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.ReleaseNotes = void 0;
+    exports2.ReleaseNotes = exports2.changelogPath = void 0;
     var ejs_1 = require_ejs();
     var console_12 = require_console();
+    var format_1 = require_format();
     var git_client_1 = require_git_client();
     var index_12 = require_config7();
     var context_1 = require_context();
@@ -61822,18 +61831,26 @@ var require_release_notes = __commonJS({
     var github_release_1 = require_github_release();
     var get_commits_in_range_1 = require_get_commits_in_range();
     var config_1 = require_config2();
+    var fs_1 = require("fs");
+    var path_1 = require("path");
+    var config_2 = require_config5();
+    exports2.changelogPath = "CHANGELOG.md";
     var ReleaseNotes = class {
-      constructor(version, commits) {
-        var _a;
+      constructor(version, commits, git) {
         this.version = version;
         this.commits = commits;
-        this.git = git_client_1.GitClient.get();
-        this.config = (_a = this.getReleaseConfig().releaseNotes) != null ? _a : {};
+        this.git = git;
+        this.changelogPath = (0, path_1.join)(this.git.baseDir, exports2.changelogPath);
+        this.config = (0, config_1.getConfig)([index_12.assertValidReleaseConfig]);
       }
       static async forRange(version, baseRef, headRef) {
-        const client = git_client_1.GitClient.get();
-        const commits = (0, get_commits_in_range_1.getCommitsForRangeWithDeduping)(client, baseRef, headRef);
-        return new ReleaseNotes(version, commits);
+        const git = git_client_1.GitClient.get();
+        const commits = (0, get_commits_in_range_1.getCommitsForRangeWithDeduping)(git, baseRef, headRef);
+        return new ReleaseNotes(version, commits, git);
+      }
+      get notesConfig() {
+        var _a;
+        return (_a = this.config.release.releaseNotes) != null ? _a : {};
       }
       async getGithubReleaseEntry() {
         return (0, ejs_1.render)(github_release_1.default, await this.generateRenderContext(), {
@@ -61842,6 +61859,21 @@ var require_release_notes = __commonJS({
       }
       async getChangelogEntry() {
         return (0, ejs_1.render)(changelog_1.default, await this.generateRenderContext(), { rmWhitespace: true });
+      }
+      async prependEntryToChangelog() {
+        let changelog = "";
+        if ((0, fs_1.existsSync)(this.changelogPath)) {
+          changelog = (0, fs_1.readFileSync)(this.changelogPath, { encoding: "utf8" });
+        }
+        const entry = await this.getChangelogEntry();
+        (0, fs_1.writeFileSync)(this.changelogPath, `${entry}
+
+${changelog}`);
+        try {
+          (0, config_2.assertValidFormatConfig)(this.config);
+          await (0, format_1.formatFiles)([this.changelogPath]);
+        } catch {
+        }
       }
       async getCommitCountInReleaseNotes() {
         const context = await this.generateRenderContext();
@@ -61852,7 +61884,7 @@ var require_release_notes = __commonJS({
       }
       async promptForReleaseTitle() {
         if (this.title === void 0) {
-          if (this.config.useReleaseTitle) {
+          if (this.notesConfig.useReleaseTitle) {
             this.title = await (0, console_12.promptInput)("Please provide a title for the release:");
           } else {
             this.title = false;
@@ -61866,18 +61898,13 @@ var require_release_notes = __commonJS({
             commits: this.commits,
             github: this.git.remoteConfig,
             version: this.version.format(),
-            groupOrder: this.config.groupOrder,
-            hiddenScopes: this.config.hiddenScopes,
-            categorizeCommit: this.config.categorizeCommit,
+            groupOrder: this.notesConfig.groupOrder,
+            hiddenScopes: this.notesConfig.hiddenScopes,
+            categorizeCommit: this.notesConfig.categorizeCommit,
             title: await this.promptForReleaseTitle()
           });
         }
         return this.renderContext;
-      }
-      getReleaseConfig() {
-        const config = (0, config_1.getConfig)();
-        (0, index_12.assertValidReleaseConfig)(config);
-        return config.release;
       }
     };
     exports2.ReleaseNotes = ReleaseNotes;
@@ -61890,8 +61917,6 @@ var require_cli19 = __commonJS({
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ReleaseNotesCommandModule = void 0;
-    var fs_1 = require("fs");
-    var path_1 = require("path");
     var semver_1 = require_semver2();
     var console_12 = require_console();
     var release_notes_1 = require_release_notes();
@@ -61913,21 +61938,21 @@ var require_cli19 = __commonJS({
         description: "The type of release notes to create",
         choices: ["github-release", "changelog"],
         default: "changelog"
-      }).option("outFile", {
-        type: "string",
-        description: "File location to write the generated release notes to",
-        coerce: (filePath) => filePath ? (0, path_1.join)(process.cwd(), filePath) : void 0
+      }).option("prependToChangelog", {
+        type: "boolean",
+        default: false,
+        description: "Whether to update the changelog with the newly created entry"
       });
     }
-    async function handler({ releaseVersion, from, to, outFile, type }) {
+    async function handler({ releaseVersion, from, to, prependToChangelog, type }) {
       const releaseNotes = await release_notes_1.ReleaseNotes.forRange(releaseVersion, from, to);
-      const releaseNotesEntry = await (type === "changelog" ? releaseNotes.getChangelogEntry() : releaseNotes.getGithubReleaseEntry());
-      if (outFile) {
-        (0, fs_1.writeFileSync)(outFile, releaseNotesEntry);
-        (0, console_12.info)(`Generated release notes for "${releaseVersion}" written to ${outFile}`);
-      } else {
-        process.stdout.write(releaseNotesEntry);
+      if (prependToChangelog) {
+        await releaseNotes.prependEntryToChangelog();
+        (0, console_12.info)(`Added release notes for "${releaseVersion}" to the changelog`);
+        return;
       }
+      const releaseNotesEntry = type === "changelog" ? await releaseNotes.getChangelogEntry() : await releaseNotes.getGithubReleaseEntry();
+      process.stdout.write(releaseNotesEntry);
     }
     exports2.ReleaseNotesCommandModule = {
       builder,
@@ -62105,9 +62130,8 @@ var require_constants3 = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/constants.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.githubReleaseBodyLimit = exports2.waitForPullRequestInterval = exports2.changelogPath = exports2.packageJsonPath = void 0;
+    exports2.githubReleaseBodyLimit = exports2.waitForPullRequestInterval = exports2.packageJsonPath = void 0;
     exports2.packageJsonPath = "package.json";
-    exports2.changelogPath = "CHANGELOG.md";
     exports2.waitForPullRequestInterval = 1e4;
     exports2.githubReleaseBodyLimit = 125e3;
   }
@@ -62337,7 +62361,7 @@ var require_actions = __commonJS({
           throw new actions_error_1.UserAbortedReleaseActionError();
         }
         const commitMessage = (0, commit_message_1.getCommitMessageForRelease)(newVersion);
-        await this.createCommit(commitMessage, [constants_1.packageJsonPath, constants_1.changelogPath]);
+        await this.createCommit(commitMessage, [constants_1.packageJsonPath, release_notes_1.changelogPath]);
         (0, console_12.info)((0, console_12.green)(`  \u2713   Created release commit for: "${newVersion}".`));
       }
       async _getForkOfAuthenticatedUser() {
@@ -62437,12 +62461,7 @@ var require_actions = __commonJS({
         });
       }
       async prependReleaseNotesToChangelog(releaseNotes) {
-        const localChangelogPath = (0, path_1.join)(this.projectDir, constants_1.changelogPath);
-        const localChangelog = await fs_1.promises.readFile(localChangelogPath, "utf8");
-        const releaseNotesEntry = await releaseNotes.getChangelogEntry();
-        await fs_1.promises.writeFile(localChangelogPath, `${releaseNotesEntry}
-
-${localChangelog}`);
+        await releaseNotes.prependEntryToChangelog();
         (0, console_12.info)((0, console_12.green)(`  \u2713   Updated the changelog to capture changes for "${releaseNotes.version}".`));
       }
       async checkoutUpstreamBranch(branchName) {
@@ -62480,7 +62499,7 @@ ${localChangelog}`);
         const commitMessage = (0, commit_message_1.getReleaseNoteCherryPickCommitMessage)(releaseNotes.version);
         await this.checkoutUpstreamBranch(nextBranch);
         await this.prependReleaseNotesToChangelog(releaseNotes);
-        await this.createCommit(commitMessage, [constants_1.changelogPath]);
+        await this.createCommit(commitMessage, [release_notes_1.changelogPath]);
         (0, console_12.info)((0, console_12.green)(`  \u2713   Created changelog cherry-pick commit for: "${releaseNotes.version}".`));
         const pullRequest = await this.pushChangesToForkAndCreatePullRequest(nextBranch, `changelog-cherry-pick-${releaseNotes.version}`, commitMessage, `Cherry-picks the changelog from the "${stagingBranch}" branch to the next branch (${nextBranch}).`);
         (0, console_12.info)((0, console_12.green)(`  \u2713   Pull request for cherry-picking the changelog into "${nextBranch}" has been created.`));
@@ -62509,7 +62528,7 @@ ${localChangelog}`);
         (0, console_12.info)((0, console_12.green)(`  \u2713   Created v${releaseNotes.version} release in Github.`));
       }
       async _getGithubChangelogUrlForRef(releaseNotes, ref) {
-        const baseUrl = (0, github_urls_1.getFileContentsUrl)(this.git, ref, constants_1.changelogPath);
+        const baseUrl = (0, github_urls_1.getFileContentsUrl)(this.git, ref, release_notes_1.changelogPath);
         const urlFragment = await releaseNotes.getUrlFragmentForRelease();
         return `${baseUrl}#${urlFragment}`;
       }
@@ -62845,6 +62864,7 @@ var require_branch_off_next_branch = __commonJS({
     var semver = require_semver2();
     var console_12 = require_console();
     var semver_1 = require_semver3();
+    var release_notes_1 = require_release_notes();
     var next_prerelease_version_1 = require_next_prerelease_version();
     var actions_1 = require_actions();
     var commit_message_1 = require_commit_message();
@@ -62889,7 +62909,7 @@ var require_branch_off_next_branch = __commonJS({
         await this.createCommit(bumpCommitMessage, [constants_1.packageJsonPath]);
         await this.prependReleaseNotesToChangelog(releaseNotes);
         const commitMessage = (0, commit_message_1.getReleaseNoteCherryPickCommitMessage)(releaseNotes.version);
-        await this.createCommit(commitMessage, [constants_1.changelogPath]);
+        await this.createCommit(commitMessage, [release_notes_1.changelogPath]);
         let nextPullRequestMessage = `The previous "next" release-train has moved into the ${this.newPhaseName} phase. This PR updates the next branch to the subsequent release-train.
 
 Also this PR cherry-picks the changelog for v${newVersion} into the ${nextBranch} branch so that the changelog is up to date.`;

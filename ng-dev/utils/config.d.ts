@@ -5,6 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+import { Assertions, MultipleAssertions } from './assertion-typings';
 /**
  * Describes the Github configuration for dev-infra. This configuration is
  * used for API requests, determining the upstream remote, etc.
@@ -31,7 +32,8 @@ export declare function setConfig(config: {}): void;
  * copy if it is defined.
  */
 export declare function getConfig(): {};
-export declare function getConfig(baseDir?: string): {};
+export declare function getConfig(baseDir: string): {};
+export declare function getConfig<A extends MultipleAssertions>(assertions: A): Assertions<A>;
 /**
  * Get the local user configuration from the file system, returning the already loaded copy if it is
  * defined.
