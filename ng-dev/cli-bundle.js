@@ -60030,16 +60030,13 @@ var require_task = __commonJS({
           return { status: 4 };
         }
         const strategy = this.config.githubApiMerge ? new api_merge_1.GithubApiMergeStrategy(this.git, this.config.githubApiMerge) : new autosquash_merge_1.AutosquashMergeStrategy(this.git);
-        let previousBranchOrRevision = null;
+        const previousBranchOrRevision = this.git.getCurrentBranchOrRevision();
         try {
-          previousBranchOrRevision = this.git.getCurrentBranchOrRevision();
           await strategy.prepare(pullRequest);
           const failure = await strategy.merge(pullRequest);
           if (failure !== null) {
             return { status: 3, failure };
           }
-          this.git.run(["checkout", "-f", previousBranchOrRevision]);
-          await strategy.cleanup(pullRequest);
           return { status: 2 };
         } catch (e) {
           if (e instanceof git_client_1.GitCommandError) {
@@ -60047,9 +60044,8 @@ var require_task = __commonJS({
           }
           throw e;
         } finally {
-          if (previousBranchOrRevision !== null) {
-            this.git.runGraceful(["checkout", "-f", previousBranchOrRevision]);
-          }
+          this.git.run(["checkout", "-f", previousBranchOrRevision]);
+          await strategy.cleanup(pullRequest);
         }
       }
     };
