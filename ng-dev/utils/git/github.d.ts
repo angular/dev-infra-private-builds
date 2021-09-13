@@ -172,7 +172,7 @@ export declare class GithubClient {
                     site_admin: boolean;
                     starred_at?: string | undefined;
                 } | null;
-                assignees?: ({
+                assignees?: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
                     login: string;
@@ -194,8 +194,8 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null)[] | null | undefined;
-                requested_reviewers?: ({
+                }[] | null | undefined;
+                requested_reviewers?: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
                     login: string;
@@ -217,8 +217,8 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null)[] | null | undefined;
-                requested_teams?: ({
+                }[] | null | undefined;
+                requested_teams?: {
                     id: number;
                     node_id: string;
                     url: string;
@@ -231,7 +231,7 @@ export declare class GithubClient {
                     repositories_url: string;
                     slug: string;
                     ldap_dn?: string | undefined;
-                } | null)[] | null | undefined;
+                }[] | null | undefined;
                 head: {
                     label: string;
                     ref: string;
@@ -559,7 +559,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     merge_method: "rebase" | "merge" | "squash";
                     commit_title: string;
                     commit_message: string;
@@ -647,7 +647,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 body: string;
                 created_at: string;
                 updated_at: string;
@@ -807,7 +807,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 body: string;
                 created_at: string;
                 updated_at: string;
@@ -1099,7 +1099,7 @@ export declare class GithubClient {
                     site_admin: boolean;
                     starred_at?: string | undefined;
                 } | null;
-                assignees?: ({
+                assignees?: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
                     login: string;
@@ -1121,8 +1121,8 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null)[] | null | undefined;
-                requested_reviewers?: ({
+                }[] | null | undefined;
+                requested_reviewers?: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
                     login: string;
@@ -1144,8 +1144,8 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null)[] | null | undefined;
-                requested_teams?: ({
+                }[] | null | undefined;
+                requested_teams?: {
                     id: number;
                     node_id: string;
                     url: string;
@@ -1158,7 +1158,7 @@ export declare class GithubClient {
                     repositories_url: string;
                     slug: string;
                     ldap_dn?: string | undefined;
-                } | null)[] | null | undefined;
+                }[] | null | undefined;
                 head: {
                     label: string;
                     ref: string;
@@ -1486,7 +1486,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     merge_method: "rebase" | "merge" | "squash";
                     commit_title: string;
                     commit_message: string;
@@ -1626,7 +1626,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 body: string;
                 created_at: string;
                 updated_at: string;
@@ -1801,7 +1801,7 @@ export declare class GithubClient {
                     site_admin: boolean;
                     starred_at?: string | undefined;
                 } | null;
-                assignees?: ({
+                assignees?: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
                     login: string;
@@ -1823,8 +1823,8 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null)[] | null | undefined;
-                requested_reviewers?: ({
+                }[] | null | undefined;
+                requested_reviewers?: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
                     login: string;
@@ -1846,7 +1846,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null)[] | null | undefined;
+                }[] | null | undefined;
                 requested_teams?: {
                     id: number;
                     node_id: string;
@@ -1950,7 +1950,7 @@ export declare class GithubClient {
                             type: string;
                             site_admin: boolean;
                             starred_at?: string | undefined;
-                        } | null;
+                        };
                         private: boolean;
                         html_url: string;
                         description: string | null;
@@ -2233,7 +2233,7 @@ export declare class GithubClient {
                             type: string;
                             site_admin: boolean;
                             starred_at?: string | undefined;
-                        } | null;
+                        };
                         private: boolean;
                         html_url: string;
                         description: string | null;
@@ -2497,7 +2497,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     merge_method: "rebase" | "merge" | "squash";
                     commit_title: string;
                     commit_message: string;
@@ -2745,7 +2745,7 @@ export declare class GithubClient {
                 per_page?: number | undefined;
                 page?: number | undefined;
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
-                users: ({
+                users: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
                     login: string;
@@ -2767,7 +2767,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null)[];
+                }[];
                 teams: {
                     id: number;
                     node_id: string;
@@ -2853,7 +2853,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 body: string;
                 created_at: string;
                 updated_at: string;
@@ -2941,7 +2941,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 body: string;
                 created_at: string;
                 updated_at: string;
@@ -3189,7 +3189,7 @@ export declare class GithubClient {
                     site_admin: boolean;
                     starred_at?: string | undefined;
                 } | null;
-                assignees?: ({
+                assignees?: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
                     login: string;
@@ -3211,8 +3211,8 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null)[] | null | undefined;
-                requested_reviewers?: ({
+                }[] | null | undefined;
+                requested_reviewers?: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
                     login: string;
@@ -3234,7 +3234,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null)[] | null | undefined;
+                }[] | null | undefined;
                 requested_teams?: {
                     id: number;
                     node_id: string;
@@ -3338,7 +3338,7 @@ export declare class GithubClient {
                             type: string;
                             site_admin: boolean;
                             starred_at?: string | undefined;
-                        } | null;
+                        };
                         private: boolean;
                         html_url: string;
                         description: string | null;
@@ -3621,7 +3621,7 @@ export declare class GithubClient {
                             type: string;
                             site_admin: boolean;
                             starred_at?: string | undefined;
-                        } | null;
+                        };
                         private: boolean;
                         html_url: string;
                         description: string | null;
@@ -3885,7 +3885,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     merge_method: "rebase" | "merge" | "squash";
                     commit_title: string;
                     commit_message: string;
@@ -4024,7 +4024,7 @@ export declare class GithubClient {
                     site_admin: boolean;
                     starred_at?: string | undefined;
                 } | null;
-                assignees?: ({
+                assignees?: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
                     login: string;
@@ -4046,8 +4046,8 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null)[] | null | undefined;
-                requested_reviewers?: ({
+                }[] | null | undefined;
+                requested_reviewers?: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
                     login: string;
@@ -4069,7 +4069,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null)[] | null | undefined;
+                }[] | null | undefined;
                 requested_teams?: {
                     id: number;
                     node_id: string;
@@ -4173,7 +4173,7 @@ export declare class GithubClient {
                             type: string;
                             site_admin: boolean;
                             starred_at?: string | undefined;
-                        } | null;
+                        };
                         private: boolean;
                         html_url: string;
                         description: string | null;
@@ -4456,7 +4456,7 @@ export declare class GithubClient {
                             type: string;
                             site_admin: boolean;
                             starred_at?: string | undefined;
-                        } | null;
+                        };
                         private: boolean;
                         html_url: string;
                         description: string | null;
@@ -4720,7 +4720,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     merge_method: "rebase" | "merge" | "squash";
                     commit_title: string;
                     commit_message: string;
@@ -4920,7 +4920,7 @@ export declare class GithubClient {
                     site_admin: boolean;
                     starred_at?: string | undefined;
                 } | null;
-                assignees?: ({
+                assignees?: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
                     login: string;
@@ -4942,8 +4942,8 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null)[] | null | undefined;
-                requested_reviewers?: ({
+                }[] | null | undefined;
+                requested_reviewers?: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
                     login: string;
@@ -4965,8 +4965,8 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null)[] | null | undefined;
-                requested_teams?: ({
+                }[] | null | undefined;
+                requested_teams?: {
                     id: number;
                     node_id: string;
                     url: string;
@@ -4979,7 +4979,7 @@ export declare class GithubClient {
                     repositories_url: string;
                     slug: string;
                     ldap_dn?: string | undefined;
-                } | null)[] | null | undefined;
+                }[] | null | undefined;
                 head: {
                     label: string;
                     ref: string;
@@ -5307,7 +5307,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     merge_method: "rebase" | "merge" | "squash";
                     commit_title: string;
                     commit_message: string;
@@ -5471,7 +5471,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 body: string;
                 created_at: string;
                 updated_at: string;
@@ -5533,7 +5533,7 @@ export declare class GithubClient {
                 branch: string;
             } & {
                 apps: string[];
-            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<({
+            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 id: number;
                 slug?: string | undefined;
                 node_id: string;
@@ -5581,7 +5581,7 @@ export declare class GithubClient {
                 client_secret?: string | undefined;
                 webhook_secret?: string | null | undefined;
                 pem?: string | undefined;
-            } | null)[], 200>>;
+            }[], 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
                 url: string;
@@ -5624,7 +5624,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     private: boolean;
                     html_url: string;
                     description: string | null;
@@ -5765,7 +5765,7 @@ export declare class GithubClient {
                             type: string;
                             site_admin: boolean;
                             starred_at?: string | undefined;
-                        } | null;
+                        };
                         private: boolean;
                         html_url: string;
                         description: string | null;
@@ -6100,7 +6100,7 @@ export declare class GithubClient {
                 branch: string;
             } & {
                 users: string[];
-            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<({
+            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 name?: string | null | undefined;
                 email?: string | null | undefined;
                 login: string;
@@ -6122,7 +6122,7 @@ export declare class GithubClient {
                 type: string;
                 site_admin: boolean;
                 starred_at?: string | undefined;
-            } | null)[], 200>>;
+            }[], 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
                 url: string;
@@ -7326,7 +7326,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 private: boolean;
                 html_url: string;
                 description: string | null;
@@ -7553,7 +7553,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 private: boolean;
                 html_url: string;
                 description: string | null;
@@ -7695,7 +7695,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     private: boolean;
                     html_url: string;
                     description: string | null;
@@ -7988,7 +7988,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     private: boolean;
                     html_url: string;
                     description: string | null;
@@ -8243,7 +8243,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     private: boolean;
                     html_url: string;
                     description: string | null;
@@ -8545,7 +8545,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 private: boolean;
                 html_url: string;
                 description: string | null;
@@ -9057,7 +9057,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 assets: {
                     url: string;
                     browser_download_url: string;
@@ -9197,7 +9197,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 private: boolean;
                 html_url: string;
                 description: string | null;
@@ -9825,7 +9825,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 private: boolean;
                 html_url: string;
                 description: string | null;
@@ -9967,7 +9967,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     private: boolean;
                     html_url: string;
                     description: string | null;
@@ -10260,7 +10260,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     private: boolean;
                     html_url: string;
                     description: string | null;
@@ -10515,7 +10515,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     private: boolean;
                     html_url: string;
                     description: string | null;
@@ -10969,7 +10969,7 @@ export declare class GithubClient {
                 owner: string;
                 repo: string;
                 branch: string;
-            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<({
+            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 id: number;
                 slug?: string | undefined;
                 node_id: string;
@@ -11017,7 +11017,7 @@ export declare class GithubClient {
                 client_secret?: string | undefined;
                 webhook_secret?: string | null | undefined;
                 pem?: string | undefined;
-            } | null)[], 200>>;
+            }[], 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
                 url: string;
@@ -11168,7 +11168,7 @@ export declare class GithubClient {
                     required_pull_request_reviews?: {
                         url?: string | undefined;
                         dismissal_restrictions?: {
-                            users?: ({
+                            users?: {
                                 name?: string | null | undefined;
                                 email?: string | null | undefined;
                                 login: string;
@@ -11190,7 +11190,7 @@ export declare class GithubClient {
                                 type: string;
                                 site_admin: boolean;
                                 starred_at?: string | undefined;
-                            } | null)[] | undefined;
+                            }[] | undefined;
                             teams?: {
                                 id: number;
                                 node_id: string;
@@ -11366,7 +11366,7 @@ export declare class GithubClient {
                 required_pull_request_reviews?: {
                     url?: string | undefined;
                     dismissal_restrictions?: {
-                        users?: ({
+                        users?: {
                             name?: string | null | undefined;
                             email?: string | null | undefined;
                             login: string;
@@ -11388,7 +11388,7 @@ export declare class GithubClient {
                             type: string;
                             site_admin: boolean;
                             starred_at?: string | undefined;
-                        } | null)[] | undefined;
+                        }[] | undefined;
                         teams?: {
                             id: number;
                             node_id: string;
@@ -11658,7 +11658,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     private: boolean;
                     html_url: string;
                     description: string | null;
@@ -11799,7 +11799,7 @@ export declare class GithubClient {
                             type: string;
                             site_admin: boolean;
                             starred_at?: string | undefined;
-                        } | null;
+                        };
                         private: boolean;
                         html_url: string;
                         description: string | null;
@@ -12801,7 +12801,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 assets: {
                     url: string;
                     browser_download_url: string;
@@ -13027,7 +13027,7 @@ export declare class GithubClient {
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 url?: string | undefined;
                 dismissal_restrictions?: {
-                    users?: ({
+                    users?: {
                         name?: string | null | undefined;
                         email?: string | null | undefined;
                         login: string;
@@ -13049,7 +13049,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null)[] | undefined;
+                    }[] | undefined;
                     teams?: {
                         id: number;
                         node_id: string;
@@ -13214,7 +13214,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 assets: {
                     url: string;
                     browser_download_url: string;
@@ -13365,7 +13365,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 assets: {
                     url: string;
                     browser_download_url: string;
@@ -13519,7 +13519,7 @@ export declare class GithubClient {
                 owner: string;
                 repo: string;
                 branch: string;
-            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<({
+            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 name?: string | null | undefined;
                 email?: string | null | undefined;
                 login: string;
@@ -13541,7 +13541,7 @@ export declare class GithubClient {
                 type: string;
                 site_admin: boolean;
                 starred_at?: string | undefined;
-            } | null)[], 200>>;
+            }[], 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
                 url: string;
@@ -13710,7 +13710,7 @@ export declare class GithubClient {
                     required_pull_request_reviews?: {
                         url?: string | undefined;
                         dismissal_restrictions?: {
-                            users?: ({
+                            users?: {
                                 name?: string | null | undefined;
                                 email?: string | null | undefined;
                                 login: string;
@@ -13732,7 +13732,7 @@ export declare class GithubClient {
                                 type: string;
                                 site_admin: boolean;
                                 starred_at?: string | undefined;
-                            } | null)[] | undefined;
+                            }[] | undefined;
                             teams?: {
                                 id: number;
                                 node_id: string;
@@ -14579,7 +14579,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 private: boolean;
                 html_url: string;
                 description: string | null;
@@ -14809,7 +14809,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 private: boolean;
                 html_url: string;
                 description: string | null;
@@ -14950,7 +14950,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     private: boolean;
                     html_url: string;
                     description: string | null;
@@ -15202,7 +15202,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 private: boolean;
                 html_url: string;
                 description: string | null;
@@ -15343,7 +15343,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     private: boolean;
                     html_url: string;
                     description: string | null;
@@ -15594,7 +15594,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 private: boolean;
                 html_url: string;
                 description: string | null;
@@ -15735,7 +15735,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     private: boolean;
                     html_url: string;
                     description: string | null;
@@ -15987,7 +15987,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     private: boolean;
                     html_url: string;
                     description: string | null;
@@ -16128,7 +16128,7 @@ export declare class GithubClient {
                             type: string;
                             site_admin: boolean;
                             starred_at?: string | undefined;
-                        } | null;
+                        };
                         private: boolean;
                         html_url: string;
                         description: string | null;
@@ -16430,7 +16430,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     private: boolean;
                     html_url: string;
                     description: string | null;
@@ -16571,7 +16571,7 @@ export declare class GithubClient {
                             type: string;
                             site_admin: boolean;
                             starred_at?: string | undefined;
-                        } | null;
+                        };
                         private: boolean;
                         html_url: string;
                         description: string | null;
@@ -16928,7 +16928,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 private: boolean;
                 html_url: string;
                 description: string | null;
@@ -17069,7 +17069,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     private: boolean;
                     html_url: string;
                     description: string | null;
@@ -17416,7 +17416,7 @@ export declare class GithubClient {
                     site_admin: boolean;
                     starred_at?: string | undefined;
                 } | null;
-                assignees?: ({
+                assignees?: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
                     login: string;
@@ -17438,8 +17438,8 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null)[] | null | undefined;
-                requested_reviewers?: ({
+                }[] | null | undefined;
+                requested_reviewers?: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
                     login: string;
@@ -17461,7 +17461,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null)[] | null | undefined;
+                }[] | null | undefined;
                 requested_teams?: {
                     id: number;
                     node_id: string;
@@ -17565,7 +17565,7 @@ export declare class GithubClient {
                             type: string;
                             site_admin: boolean;
                             starred_at?: string | undefined;
-                        } | null;
+                        };
                         private: boolean;
                         html_url: string;
                         description: string | null;
@@ -17848,7 +17848,7 @@ export declare class GithubClient {
                             type: string;
                             site_admin: boolean;
                             starred_at?: string | undefined;
-                        } | null;
+                        };
                         private: boolean;
                         html_url: string;
                         description: string | null;
@@ -18112,7 +18112,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     merge_method: "rebase" | "merge" | "squash";
                     commit_title: string;
                     commit_message: string;
@@ -18220,7 +18220,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 assets: {
                     url: string;
                     browser_download_url: string;
@@ -18578,7 +18578,7 @@ export declare class GithubClient {
                 branch: string;
             } & {
                 apps: string[];
-            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<({
+            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 id: number;
                 slug?: string | undefined;
                 node_id: string;
@@ -18626,7 +18626,7 @@ export declare class GithubClient {
                 client_secret?: string | undefined;
                 webhook_secret?: string | null | undefined;
                 pem?: string | undefined;
-            } | null)[], 200>>;
+            }[], 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
                 url: string;
@@ -18720,7 +18720,7 @@ export declare class GithubClient {
                 branch: string;
             } & {
                 users: string[];
-            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<({
+            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 name?: string | null | undefined;
                 email?: string | null | undefined;
                 login: string;
@@ -18742,7 +18742,7 @@ export declare class GithubClient {
                 type: string;
                 site_admin: boolean;
                 starred_at?: string | undefined;
-            } | null)[], 200>>;
+            }[], 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
                 url: string;
@@ -18880,7 +18880,7 @@ export declare class GithubClient {
                     required_pull_request_reviews?: {
                         url?: string | undefined;
                         dismissal_restrictions?: {
-                            users?: ({
+                            users?: {
                                 name?: string | null | undefined;
                                 email?: string | null | undefined;
                                 login: string;
@@ -18902,7 +18902,7 @@ export declare class GithubClient {
                                 type: string;
                                 site_admin: boolean;
                                 starred_at?: string | undefined;
-                            } | null)[] | undefined;
+                            }[] | undefined;
                             teams?: {
                                 id: number;
                                 node_id: string;
@@ -19108,7 +19108,7 @@ export declare class GithubClient {
                 branch: string;
             } & {
                 apps: string[];
-            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<({
+            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 id: number;
                 slug?: string | undefined;
                 node_id: string;
@@ -19156,7 +19156,7 @@ export declare class GithubClient {
                 client_secret?: string | undefined;
                 webhook_secret?: string | null | undefined;
                 pem?: string | undefined;
-            } | null)[], 200>>;
+            }[], 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
                 url: string;
@@ -19228,7 +19228,7 @@ export declare class GithubClient {
                 branch: string;
             } & {
                 users: string[];
-            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<({
+            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 name?: string | null | undefined;
                 email?: string | null | undefined;
                 login: string;
@@ -19250,7 +19250,7 @@ export declare class GithubClient {
                 type: string;
                 site_admin: boolean;
                 starred_at?: string | undefined;
-            } | null)[], 200>>;
+            }[], 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
                 url: string;
@@ -19301,7 +19301,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 private: boolean;
                 html_url: string;
                 description: string | null;
@@ -19442,7 +19442,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     private: boolean;
                     html_url: string;
                     description: string | null;
@@ -19714,7 +19714,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 private: boolean;
                 html_url: string;
                 description: string | null;
@@ -19856,7 +19856,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     private: boolean;
                     html_url: string;
                     description: string | null;
@@ -20149,7 +20149,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     private: boolean;
                     html_url: string;
                     description: string | null;
@@ -20404,7 +20404,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     private: boolean;
                     html_url: string;
                     description: string | null;
@@ -20664,7 +20664,7 @@ export declare class GithubClient {
                         url: string;
                         users_url: string;
                         teams_url: string;
-                        users: ({
+                        users: {
                             name?: string | null | undefined;
                             email?: string | null | undefined;
                             login: string;
@@ -20686,7 +20686,7 @@ export declare class GithubClient {
                             type: string;
                             site_admin: boolean;
                             starred_at?: string | undefined;
-                        } | null)[];
+                        }[];
                         teams: {
                             id: number;
                             node_id: string;
@@ -20947,7 +20947,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     private: boolean;
                     html_url: string;
                     description: string | null;
@@ -21088,7 +21088,7 @@ export declare class GithubClient {
                             type: string;
                             site_admin: boolean;
                             starred_at?: string | undefined;
-                        } | null;
+                        };
                         private: boolean;
                         html_url: string;
                         description: string | null;
@@ -21373,7 +21373,7 @@ export declare class GithubClient {
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 url?: string | undefined;
                 dismissal_restrictions?: {
-                    users?: ({
+                    users?: {
                         name?: string | null | undefined;
                         email?: string | null | undefined;
                         login: string;
@@ -21395,7 +21395,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null)[] | undefined;
+                    }[] | undefined;
                     teams?: {
                         id: number;
                         node_id: string;
@@ -21495,7 +21495,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 assets: {
                     url: string;
                     browser_download_url: string;
@@ -21847,7 +21847,7 @@ export declare class GithubClient {
                     site_admin: boolean;
                     starred_at?: string | undefined;
                 } | null;
-                assignees?: ({
+                assignees?: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
                     login: string;
@@ -21869,7 +21869,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null)[] | null | undefined;
+                }[] | null | undefined;
                 milestone: {
                     url: string;
                     html_url: string;
@@ -21993,7 +21993,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     private: boolean;
                     html_url: string;
                     description: string | null;
@@ -22357,7 +22357,7 @@ export declare class GithubClient {
                     site_admin: boolean;
                     starred_at?: string | undefined;
                 } | null;
-                assignees?: ({
+                assignees?: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
                     login: string;
@@ -22379,7 +22379,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null)[] | null | undefined;
+                }[] | null | undefined;
                 milestone: {
                     url: string;
                     html_url: string;
@@ -22525,7 +22525,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     private: boolean;
                     html_url: string;
                     description: string | null;
@@ -23073,7 +23073,7 @@ export declare class GithubClient {
                     site_admin: boolean;
                     starred_at?: string | undefined;
                 } | null;
-                assignees?: ({
+                assignees?: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
                     login: string;
@@ -23095,7 +23095,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null)[] | null | undefined;
+                }[] | null | undefined;
                 milestone: {
                     url: string;
                     html_url: string;
@@ -23241,7 +23241,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     private: boolean;
                     html_url: string;
                     description: string | null;
@@ -23709,7 +23709,7 @@ export declare class GithubClient {
                         site_admin: boolean;
                         starred_at?: string | undefined;
                     } | null;
-                    assignees?: ({
+                    assignees?: {
                         name?: string | null | undefined;
                         email?: string | null | undefined;
                         login: string;
@@ -23731,7 +23731,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null)[] | null | undefined;
+                    }[] | null | undefined;
                     milestone: {
                         url: string;
                         html_url: string;
@@ -23855,7 +23855,7 @@ export declare class GithubClient {
                             type: string;
                             site_admin: boolean;
                             starred_at?: string | undefined;
-                        } | null;
+                        };
                         private: boolean;
                         html_url: string;
                         description: string | null;
@@ -24453,7 +24453,7 @@ export declare class GithubClient {
                     site_admin: boolean;
                     starred_at?: string | undefined;
                 } | null;
-                assignees?: ({
+                assignees?: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
                     login: string;
@@ -24475,7 +24475,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null)[] | null | undefined;
+                }[] | null | undefined;
                 milestone: {
                     url: string;
                     html_url: string;
@@ -24621,7 +24621,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     private: boolean;
                     html_url: string;
                     description: string | null;
@@ -24885,7 +24885,7 @@ export declare class GithubClient {
             } & {
                 per_page?: number | undefined;
                 page?: number | undefined;
-            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<({
+            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 name?: string | null | undefined;
                 email?: string | null | undefined;
                 login: string;
@@ -24907,7 +24907,7 @@ export declare class GithubClient {
                 type: string;
                 site_admin: boolean;
                 starred_at?: string | undefined;
-            } | null)[], 200>>;
+            }[], 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
                 url: string;
@@ -25170,7 +25170,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 event: string;
                 commit_id: string | null;
                 commit_url: string | null;
@@ -25254,7 +25254,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 event: string;
                 commit_id: string | null;
                 commit_url: string | null;
@@ -25338,7 +25338,133 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
+                event: string;
+                commit_id: string | null;
+                commit_url: string | null;
+                created_at: string;
+                performed_via_github_app: {
+                    id: number;
+                    slug?: string | undefined;
+                    node_id: string;
+                    owner: {
+                        name?: string | null | undefined;
+                        email?: string | null | undefined;
+                        login: string;
+                        id: number;
+                        node_id: string;
+                        avatar_url: string;
+                        gravatar_id: string | null;
+                        url: string;
+                        html_url: string;
+                        followers_url: string;
+                        following_url: string;
+                        gists_url: string;
+                        starred_url: string;
+                        subscriptions_url: string;
+                        organizations_url: string;
+                        repos_url: string;
+                        events_url: string;
+                        received_events_url: string;
+                        type: string;
+                        site_admin: boolean;
+                        starred_at?: string | undefined;
+                    } | null;
+                    name: string;
+                    description: string | null;
+                    external_url: string;
+                    html_url: string;
+                    created_at: string;
+                    updated_at: string;
+                    permissions: {
+                        issues?: string | undefined;
+                        checks?: string | undefined;
+                        metadata?: string | undefined;
+                        contents?: string | undefined;
+                        deployments?: string | undefined;
+                    } & {
+                        [key: string]: string;
+                    };
+                    events: string[];
+                    installations_count?: number | undefined;
+                    client_id?: string | undefined;
+                    client_secret?: string | undefined;
+                    webhook_secret?: string | null | undefined;
+                    pem?: string | undefined;
+                };
+                assignee: {
+                    name?: string | null | undefined;
+                    email?: string | null | undefined;
+                    login: string;
+                    id: number;
+                    node_id: string;
+                    avatar_url: string;
+                    gravatar_id: string | null;
+                    url: string;
+                    html_url: string;
+                    followers_url: string;
+                    following_url: string;
+                    gists_url: string;
+                    starred_url: string;
+                    subscriptions_url: string;
+                    organizations_url: string;
+                    repos_url: string;
+                    events_url: string;
+                    received_events_url: string;
+                    type: string;
+                    site_admin: boolean;
+                    starred_at?: string | undefined;
+                };
+                assigner: {
+                    name?: string | null | undefined;
+                    email?: string | null | undefined;
+                    login: string;
+                    id: number;
+                    node_id: string;
+                    avatar_url: string;
+                    gravatar_id: string | null;
+                    url: string;
+                    html_url: string;
+                    followers_url: string;
+                    following_url: string;
+                    gists_url: string;
+                    starred_url: string;
+                    subscriptions_url: string;
+                    organizations_url: string;
+                    repos_url: string;
+                    events_url: string;
+                    received_events_url: string;
+                    type: string;
+                    site_admin: boolean;
+                    starred_at?: string | undefined;
+                };
+            }> & Partial<{
+                id: number;
+                node_id: string;
+                url: string;
+                actor: {
+                    name?: string | null | undefined;
+                    email?: string | null | undefined;
+                    login: string;
+                    id: number;
+                    node_id: string;
+                    avatar_url: string;
+                    gravatar_id: string | null;
+                    url: string;
+                    html_url: string;
+                    followers_url: string;
+                    following_url: string;
+                    gists_url: string;
+                    starred_url: string;
+                    subscriptions_url: string;
+                    organizations_url: string;
+                    repos_url: string;
+                    events_url: string;
+                    received_events_url: string;
+                    type: string;
+                    site_admin: boolean;
+                    starred_at?: string | undefined;
+                };
                 event: string;
                 commit_id: string | null;
                 commit_url: string | null;
@@ -25414,7 +25540,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 assigner: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
@@ -25437,7 +25563,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
             }> & Partial<{
                 id: number;
                 node_id: string;
@@ -25464,133 +25590,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
-                event: string;
-                commit_id: string | null;
-                commit_url: string | null;
-                created_at: string;
-                performed_via_github_app: {
-                    id: number;
-                    slug?: string | undefined;
-                    node_id: string;
-                    owner: {
-                        name?: string | null | undefined;
-                        email?: string | null | undefined;
-                        login: string;
-                        id: number;
-                        node_id: string;
-                        avatar_url: string;
-                        gravatar_id: string | null;
-                        url: string;
-                        html_url: string;
-                        followers_url: string;
-                        following_url: string;
-                        gists_url: string;
-                        starred_url: string;
-                        subscriptions_url: string;
-                        organizations_url: string;
-                        repos_url: string;
-                        events_url: string;
-                        received_events_url: string;
-                        type: string;
-                        site_admin: boolean;
-                        starred_at?: string | undefined;
-                    } | null;
-                    name: string;
-                    description: string | null;
-                    external_url: string;
-                    html_url: string;
-                    created_at: string;
-                    updated_at: string;
-                    permissions: {
-                        issues?: string | undefined;
-                        checks?: string | undefined;
-                        metadata?: string | undefined;
-                        contents?: string | undefined;
-                        deployments?: string | undefined;
-                    } & {
-                        [key: string]: string;
-                    };
-                    events: string[];
-                    installations_count?: number | undefined;
-                    client_id?: string | undefined;
-                    client_secret?: string | undefined;
-                    webhook_secret?: string | null | undefined;
-                    pem?: string | undefined;
-                } | null;
-                assignee: {
-                    name?: string | null | undefined;
-                    email?: string | null | undefined;
-                    login: string;
-                    id: number;
-                    node_id: string;
-                    avatar_url: string;
-                    gravatar_id: string | null;
-                    url: string;
-                    html_url: string;
-                    followers_url: string;
-                    following_url: string;
-                    gists_url: string;
-                    starred_url: string;
-                    subscriptions_url: string;
-                    organizations_url: string;
-                    repos_url: string;
-                    events_url: string;
-                    received_events_url: string;
-                    type: string;
-                    site_admin: boolean;
-                    starred_at?: string | undefined;
-                } | null;
-                assigner: {
-                    name?: string | null | undefined;
-                    email?: string | null | undefined;
-                    login: string;
-                    id: number;
-                    node_id: string;
-                    avatar_url: string;
-                    gravatar_id: string | null;
-                    url: string;
-                    html_url: string;
-                    followers_url: string;
-                    following_url: string;
-                    gists_url: string;
-                    starred_url: string;
-                    subscriptions_url: string;
-                    organizations_url: string;
-                    repos_url: string;
-                    events_url: string;
-                    received_events_url: string;
-                    type: string;
-                    site_admin: boolean;
-                    starred_at?: string | undefined;
-                } | null;
-            }> & Partial<{
-                id: number;
-                node_id: string;
-                url: string;
-                actor: {
-                    name?: string | null | undefined;
-                    email?: string | null | undefined;
-                    login: string;
-                    id: number;
-                    node_id: string;
-                    avatar_url: string;
-                    gravatar_id: string | null;
-                    url: string;
-                    html_url: string;
-                    followers_url: string;
-                    following_url: string;
-                    gists_url: string;
-                    starred_url: string;
-                    subscriptions_url: string;
-                    organizations_url: string;
-                    repos_url: string;
-                    events_url: string;
-                    received_events_url: string;
-                    type: string;
-                    site_admin: boolean;
-                    starred_at?: string | undefined;
-                } | null;
+                };
                 event: string;
                 commit_id: string | null;
                 commit_url: string | null;
@@ -25673,7 +25673,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 event: string;
                 commit_id: string | null;
                 commit_url: string | null;
@@ -25756,7 +25756,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 event: string;
                 commit_id: string | null;
                 commit_url: string | null;
@@ -25840,7 +25840,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 event: string;
                 commit_id: string | null;
                 commit_url: string | null;
@@ -25916,7 +25916,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 requested_team?: {
                     id: number;
                     node_id: string;
@@ -25973,7 +25973,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null | undefined;
+                } | undefined;
             }> & Partial<{
                 id: number;
                 node_id: string;
@@ -26000,7 +26000,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 event: string;
                 commit_id: string | null;
                 commit_url: string | null;
@@ -26076,7 +26076,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 requested_team?: {
                     id: number;
                     node_id: string;
@@ -26133,7 +26133,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null | undefined;
+                } | undefined;
             }> & Partial<{
                 id: number;
                 node_id: string;
@@ -26160,7 +26160,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 event: string;
                 commit_id: string | null;
                 commit_url: string | null;
@@ -26246,7 +26246,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 event: string;
                 commit_id: string | null;
                 commit_url: string | null;
@@ -26327,7 +26327,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 event: string;
                 commit_id: string | null;
                 commit_url: string | null;
@@ -26415,7 +26415,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 event: string;
                 commit_id: string | null;
                 commit_url: string | null;
@@ -26503,7 +26503,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 event: string;
                 commit_id: string | null;
                 commit_url: string | null;
@@ -26591,7 +26591,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 event: string;
                 commit_id: string | null;
                 commit_url: string | null;
@@ -26644,7 +26644,7 @@ export declare class GithubClient {
                     client_secret?: string | undefined;
                     webhook_secret?: string | null | undefined;
                     pem?: string | undefined;
-                } | null;
+                };
                 project_card?: {
                     id: number;
                     url: string;
@@ -26765,7 +26765,7 @@ export declare class GithubClient {
                         site_admin: boolean;
                         starred_at?: string | undefined;
                     } | null;
-                    assignees?: ({
+                    assignees?: {
                         name?: string | null | undefined;
                         email?: string | null | undefined;
                         login: string;
@@ -26787,7 +26787,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null)[] | null | undefined;
+                    }[] | null | undefined;
                     milestone: {
                         url: string;
                         html_url: string;
@@ -26911,7 +26911,7 @@ export declare class GithubClient {
                             type: string;
                             site_admin: boolean;
                             starred_at?: string | undefined;
-                        } | null;
+                        };
                         private: boolean;
                         html_url: string;
                         description: string | null;
@@ -27396,7 +27396,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 event: string;
                 commit_id: string | null;
                 commit_url: string | null;
@@ -27480,7 +27480,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 event: string;
                 commit_id: string | null;
                 commit_url: string | null;
@@ -27564,7 +27564,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 event: string;
                 commit_id: string | null;
                 commit_url: string | null;
@@ -27647,7 +27647,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 event: string;
                 commit_id: string | null;
                 commit_url: string | null;
@@ -27730,7 +27730,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 event: string;
                 commit_id: string | null;
                 commit_url: string | null;
@@ -27814,7 +27814,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 event: string;
                 commit_id: string | null;
                 commit_url: string | null;
@@ -27890,7 +27890,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 requested_team?: {
                     id: number;
                     node_id: string;
@@ -27947,7 +27947,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null | undefined;
+                } | undefined;
             }> & Partial<{
                 id: number;
                 node_id: string;
@@ -27974,7 +27974,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 event: string;
                 commit_id: string | null;
                 commit_url: string | null;
@@ -28050,7 +28050,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 requested_team?: {
                     id: number;
                     node_id: string;
@@ -28107,7 +28107,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null | undefined;
+                } | undefined;
             }> & Partial<{
                 id: number;
                 node_id: string;
@@ -28134,7 +28134,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 event: string;
                 commit_id: string | null;
                 commit_url: string | null;
@@ -28220,7 +28220,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 event: string;
                 commit_id: string | null;
                 commit_url: string | null;
@@ -28301,7 +28301,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 event: string;
                 commit_id: string | null;
                 commit_url: string | null;
@@ -28389,7 +28389,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 event: string;
                 commit_id: string | null;
                 commit_url: string | null;
@@ -28477,7 +28477,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 event: string;
                 commit_id: string | null;
                 commit_url: string | null;
@@ -28565,7 +28565,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 event: string;
                 commit_id: string | null;
                 commit_url: string | null;
@@ -28618,7 +28618,7 @@ export declare class GithubClient {
                     client_secret?: string | undefined;
                     webhook_secret?: string | null | undefined;
                     pem?: string | undefined;
-                } | null;
+                };
                 project_card?: {
                     id: number;
                     url: string;
@@ -28651,7 +28651,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 id: number;
                 node_id: string;
                 url: string;
@@ -28681,7 +28681,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 created_at: string;
                 updated_at: string;
                 issue_url: string;
@@ -28771,7 +28771,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null | undefined;
+                } | undefined;
                 created_at: string;
                 updated_at: string;
                 source: {
@@ -28844,7 +28844,7 @@ export declare class GithubClient {
                             site_admin: boolean;
                             starred_at?: string | undefined;
                         } | null;
-                        assignees?: ({
+                        assignees?: {
                             name?: string | null | undefined;
                             email?: string | null | undefined;
                             login: string;
@@ -28866,7 +28866,7 @@ export declare class GithubClient {
                             type: string;
                             site_admin: boolean;
                             starred_at?: string | undefined;
-                        } | null)[] | null | undefined;
+                        }[] | null | undefined;
                         milestone: {
                             url: string;
                             html_url: string;
@@ -28990,7 +28990,7 @@ export declare class GithubClient {
                                 type: string;
                                 site_admin: boolean;
                                 starred_at?: string | undefined;
-                            } | null;
+                            };
                             private: boolean;
                             html_url: string;
                             description: string | null;
@@ -29288,7 +29288,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 body: string | null;
                 state: string;
                 html_url: string;
@@ -29343,7 +29343,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     body: string;
                     created_at: string;
                     updated_at: string;
@@ -29461,7 +29461,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 event: string;
                 commit_id: string | null;
                 commit_url: string | null;
@@ -29537,7 +29537,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
             }> & Partial<{
                 id: number;
                 node_id: string;
@@ -29564,7 +29564,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 event: string;
                 commit_id: string | null;
                 commit_url: string | null;
@@ -29640,7 +29640,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
             }>)[], 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
@@ -29725,7 +29725,7 @@ export declare class GithubClient {
                     site_admin: boolean;
                     starred_at?: string | undefined;
                 } | null;
-                assignees?: ({
+                assignees?: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
                     login: string;
@@ -29747,7 +29747,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null)[] | null | undefined;
+                }[] | null | undefined;
                 milestone: {
                     url: string;
                     html_url: string;
@@ -29893,7 +29893,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     private: boolean;
                     html_url: string;
                     description: string | null;
@@ -30230,7 +30230,7 @@ export declare class GithubClient {
                     site_admin: boolean;
                     starred_at?: string | undefined;
                 } | null;
-                assignees?: ({
+                assignees?: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
                     login: string;
@@ -30252,7 +30252,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null)[] | null | undefined;
+                }[] | null | undefined;
                 milestone: {
                     url: string;
                     html_url: string;
@@ -30398,7 +30398,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     private: boolean;
                     html_url: string;
                     description: string | null;
@@ -30739,7 +30739,7 @@ export declare class GithubClient {
                     site_admin: boolean;
                     starred_at?: string | undefined;
                 } | null;
-                assignees?: ({
+                assignees?: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
                     login: string;
@@ -30761,7 +30761,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null)[] | null | undefined;
+                }[] | null | undefined;
                 milestone: {
                     url: string;
                     html_url: string;
@@ -30885,7 +30885,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     private: boolean;
                     html_url: string;
                     description: string | null;
@@ -31348,7 +31348,7 @@ export declare class GithubClient {
                     site_admin: boolean;
                     starred_at?: string | undefined;
                 } | null;
-                assignees?: ({
+                assignees?: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
                     login: string;
@@ -31370,7 +31370,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null)[] | null | undefined;
+                }[] | null | undefined;
                 milestone: {
                     url: string;
                     html_url: string;
@@ -31494,7 +31494,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     private: boolean;
                     html_url: string;
                     description: string | null;
@@ -31880,7 +31880,7 @@ export declare class GithubClient {
                     site_admin: boolean;
                     starred_at?: string | undefined;
                 } | null;
-                assignees?: ({
+                assignees?: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
                     login: string;
@@ -31902,7 +31902,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null)[] | null | undefined;
+                }[] | null | undefined;
                 milestone: {
                     url: string;
                     html_url: string;
@@ -32048,7 +32048,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     private: boolean;
                     html_url: string;
                     description: string | null;
@@ -33004,7 +33004,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 created_at: string;
                 updated_at: string;
                 organization_permission?: string | undefined;
@@ -33204,7 +33204,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     private: boolean;
                     html_url: string;
                     description: string | null;
@@ -34225,7 +34225,7 @@ export declare class GithubClient {
                 role?: "all" | "member" | "maintainer" | undefined;
                 per_page?: number | undefined;
                 page?: number | undefined;
-            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<({
+            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 name?: string | null | undefined;
                 email?: string | null | undefined;
                 login: string;
@@ -34247,7 +34247,7 @@ export declare class GithubClient {
                 type: string;
                 site_admin: boolean;
                 starred_at?: string | undefined;
-            } | null)[], 200>>;
+            }[], 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
                 url: string;
@@ -34290,7 +34290,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 team_count: number;
                 node_id: string;
                 invitation_teams_url: string;
@@ -34344,7 +34344,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 created_at: string;
                 updated_at: string;
                 organization_permission?: string | undefined;
@@ -34394,7 +34394,7 @@ export declare class GithubClient {
                     type: string;
                     site_admin: boolean;
                     starred_at?: string | undefined;
-                } | null;
+                };
                 private: boolean;
                 html_url: string;
                 description: string | null;
@@ -34535,7 +34535,7 @@ export declare class GithubClient {
                         type: string;
                         site_admin: boolean;
                         starred_at?: string | undefined;
-                    } | null;
+                    };
                     private: boolean;
                     html_url: string;
                     description: string | null;

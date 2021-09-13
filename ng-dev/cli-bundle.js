@@ -38007,7 +38007,7 @@ var require_dist_node10 = __commonJS({
   "node_modules/@octokit/plugin-paginate-rest/dist-node/index.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    var VERSION = "2.16.0";
+    var VERSION = "2.16.1";
     function ownKeys(object, enumerableOnly) {
       var keys = Object.keys(object);
       if (Object.getOwnPropertySymbols) {
@@ -39327,7 +39327,7 @@ var require_dist_node11 = __commonJS({
         updateAuthenticated: ["PATCH /user"]
       }
     };
-    var VERSION = "5.10.0";
+    var VERSION = "5.10.2";
     function endpointsToMethods(octokit, endpointsMap) {
       const newMethods = {};
       for (const [scope, endpoints] of Object.entries(endpointsMap)) {
@@ -50005,17 +50005,6 @@ var require_config4 = __commonJS({
   }
 });
 
-// node_modules/trim-off-newlines/index.js
-var require_trim_off_newlines = __commonJS({
-  "node_modules/trim-off-newlines/index.js"(exports2, module2) {
-    "use strict";
-    var regex = /^(?:\r\n|\n|\r)+|(?:\r\n|\n|\r)+$/g;
-    module2.exports = function(str) {
-      return str.replace(regex, "");
-    };
-  }
-});
-
 // node_modules/lodash/lodash.js
 var require_lodash = __commonJS({
   "node_modules/lodash/lodash.js"(exports2, module2) {
@@ -55431,10 +55420,12 @@ var require_lodash = __commonJS({
 var require_parser = __commonJS({
   "node_modules/conventional-commits-parser/lib/parser.js"(exports2, module2) {
     "use strict";
-    var trimOffNewlines = require_trim_off_newlines();
     var _ = require_lodash();
     var CATCH_ALL = /()(.+)/gi;
     var SCISSOR = "# ------------------------ >8 ------------------------";
+    function trimOffNewlines(input) {
+      return input.replace(/^(?:\r|\n)+|(?:\r|\n)+$/g, "");
+    }
     function append(src, line) {
       if (src) {
         src += "\n" + line;
