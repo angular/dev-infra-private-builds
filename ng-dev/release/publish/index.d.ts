@@ -33,6 +33,11 @@ export declare class ReleaseTool {
      */
     private _verifyNoUncommittedChanges;
     /**
+     * Verifies that the local repository is not configured as shallow.
+     * @returns a boolean indicating success or failure.
+     */
+    private _verifyNoShallowRepository;
+    /**
      * Verifies that the next branch from the configured repository is checked out.
      * @returns a boolean indicating success or failure.
      */

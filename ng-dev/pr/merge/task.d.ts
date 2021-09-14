@@ -12,10 +12,11 @@ import { PullRequestFailure } from './failures';
 export declare const enum MergeStatus {
     UNKNOWN_GIT_ERROR = 0,
     DIRTY_WORKING_DIR = 1,
-    SUCCESS = 2,
-    FAILED = 3,
-    USER_ABORTED = 4,
-    GITHUB_ERROR = 5
+    UNEXPECTED_SHALLOW_REPO = 2,
+    SUCCESS = 3,
+    FAILED = 4,
+    USER_ABORTED = 5,
+    GITHUB_ERROR = 6
 }
 /** Result of a pull request merge. */
 export interface MergeResult {

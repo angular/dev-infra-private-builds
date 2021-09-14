@@ -39854,6 +39854,9 @@ var require_git_client = __commonJS({
       hasCommit(branchName, sha) {
         return this.run(["branch", branchName, "--contains", sha]).stdout !== "";
       }
+      isShallowRepo() {
+        return this.run(["rev-parse", "--is-shallow-repository"]).stdout.trim() === "true";
+      }
       getCurrentBranchOrRevision() {
         const branchName = this.run(["rev-parse", "--abbrev-ref", "HEAD"]).stdout.trim();
         if (branchName === "HEAD") {
@@ -59998,6 +60001,12 @@ var require_task = __commonJS({
         this.flags = __spreadValues(__spreadValues({}, defaultPullRequestMergeTaskFlags), flags);
       }
       async merge(prNumber, force = false) {
+        if (this.git.hasUncommittedChanges()) {
+          return { status: 1 };
+        }
+        if (this.git.isShallowRepo()) {
+          return { status: 2 };
+        }
         const hasOauthScopes = await this.git.hasOauthScopes((scopes, missing) => {
           if (!scopes.includes("repo")) {
             if (this.config.remote.private) {
@@ -60012,22 +60021,19 @@ var require_task = __commonJS({
         });
         if (hasOauthScopes !== true) {
           return {
-            status: 5,
+            status: 6,
             failure: failures_1.PullRequestFailure.insufficientPermissionsToMerge(hasOauthScopes.error)
           };
         }
-        if (this.git.hasUncommittedChanges()) {
-          return { status: 1 };
-        }
         const pullRequest = await (0, pull_request_1.loadAndValidatePullRequest)(this, prNumber, force);
         if (!(0, pull_request_1.isPullRequest)(pullRequest)) {
-          return { status: 3, failure: pullRequest };
+          return { status: 4, failure: pullRequest };
         }
         if (this.flags.branchPrompt && !await (0, console_12.promptConfirm)((0, messages_1.getTargettedBranchesConfirmationPromptMessage)(pullRequest))) {
-          return { status: 4 };
+          return { status: 5 };
         }
         if (pullRequest.hasCaretakerNote && !await (0, console_12.promptConfirm)((0, messages_1.getCaretakerNotePromptMessage)(pullRequest))) {
-          return { status: 4 };
+          return { status: 5 };
         }
         const strategy = this.config.githubApiMerge ? new api_merge_1.GithubApiMergeStrategy(this.git, this.config.githubApiMerge) : new autosquash_merge_1.AutosquashMergeStrategy(this.git);
         const previousBranchOrRevision = this.git.getCurrentBranchOrRevision();
@@ -60035,9 +60041,9 @@ var require_task = __commonJS({
           await strategy.prepare(pullRequest);
           const failure = await strategy.merge(pullRequest);
           if (failure !== null) {
-            return { status: 3, failure };
+            return { status: 4, failure };
           }
-          return { status: 2 };
+          return { status: 3 };
         } catch (e) {
           if (e instanceof git_client_1.GitCommandError) {
             return { status: 0 };
@@ -60096,23 +60102,28 @@ var require_merge3 = __commonJS({
         const { failure, status } = result;
         const canForciblyMerge = failure && failure.nonFatal;
         switch (status) {
-          case 2:
+          case 3:
             (0, console_12.info)((0, console_12.green)(`Successfully merged the pull request: #${prNumber}`));
             return true;
           case 1:
             (0, console_12.error)((0, console_12.red)(`Local working repository not clean. Please make sure there are no uncommitted changes.`));
             return false;
+          case 2:
+            (0, console_12.error)((0, console_12.red)(`Unable to perform merge in a local repository that is configured as shallow.`));
+            (0, console_12.error)((0, console_12.red)(`Please convert the repository to a complete one by syncing with upstream.`));
+            (0, console_12.error)((0, console_12.red)(`https://git-scm.com/docs/git-fetch#Documentation/git-fetch.txt---unshallow`));
+            return false;
           case 0:
             (0, console_12.error)((0, console_12.red)("An unknown Git error has been thrown. Please check the output above for details."));
             return false;
-          case 5:
+          case 6:
             (0, console_12.error)((0, console_12.red)("An error related to interacting with Github has been discovered."));
             (0, console_12.error)(failure.message);
             return false;
-          case 4:
+          case 5:
             (0, console_12.info)(`Merge of pull request has been aborted manually: #${prNumber}`);
             return true;
-          case 3:
+          case 4:
             (0, console_12.error)((0, console_12.yellow)(`Could not merge the specified pull request.`));
             (0, console_12.error)((0, console_12.red)(failure.message));
             if (canForciblyMerge && !disableForceMergePrompt) {
@@ -63142,7 +63153,7 @@ var require_publish2 = __commonJS({
         (0, console_12.log)();
         const { owner, name } = this._github;
         const nextBranchName = (0, version_branches_1.getNextBranchName)(this._github);
-        if (!await this._verifyNoUncommittedChanges() || !await this._verifyRunningFromNextBranch(nextBranchName)) {
+        if (!await this._verifyNoUncommittedChanges() || !await this._verifyRunningFromNextBranch(nextBranchName) || !await this._verifyNoShallowRepository()) {
           return CompletionState.FATAL_ERROR;
         }
         if (!await this._verifyNpmLoginState()) {
@@ -63191,6 +63202,15 @@ var require_publish2 = __commonJS({
       async _verifyNoUncommittedChanges() {
         if (this._git.hasUncommittedChanges()) {
           (0, console_12.error)((0, console_12.red)("  \u2718   There are changes which are not committed and should be discarded."));
+          return false;
+        }
+        return true;
+      }
+      async _verifyNoShallowRepository() {
+        if (this._git.isShallowRepo()) {
+          (0, console_12.error)((0, console_12.red)("  \u2718   The local repository is configured as shallow."));
+          (0, console_12.error)((0, console_12.red)(`      Please convert the repository to a complete one by syncing with upstream.`));
+          (0, console_12.error)((0, console_12.red)(`      https://git-scm.com/docs/git-fetch#Documentation/git-fetch.txt---unshallow`));
           return false;
         }
         return true;

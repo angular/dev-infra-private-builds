@@ -36493,6 +36493,9 @@ var require_git_client = __commonJS({
       hasCommit(branchName, sha) {
         return this.run(["branch", branchName, "--contains", sha]).stdout !== "";
       }
+      isShallowRepo() {
+        return this.run(["rev-parse", "--is-shallow-repository"]).stdout.trim() === "true";
+      }
       getCurrentBranchOrRevision() {
         const branchName = this.run(["rev-parse", "--abbrev-ref", "HEAD"]).stdout.trim();
         if (branchName === "HEAD") {
