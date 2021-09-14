@@ -60242,10 +60242,10 @@ var require_rebase = __commonJS({
       }
       try {
         (0, console_12.info)(`Checking out PR #${prNumber} from ${fullHeadRef}`);
-        git.run(["fetch", "-q", headRefUrl, headRefName, "--depth=500"]);
+        git.run(["fetch", "-q", headRefUrl, headRefName, "--deepen=500"]);
         git.run(["checkout", "-q", "--detach", "FETCH_HEAD"]);
         (0, console_12.info)(`Fetching ${fullBaseRef} to rebase #${prNumber} on`);
-        git.run(["fetch", "-q", baseRefUrl, baseRefName, "--depth=500"]);
+        git.run(["fetch", "-q", baseRefUrl, baseRefName, "--deepen=500"]);
         const commonAncestorSha = git.run(["merge-base", "HEAD", "FETCH_HEAD"]).stdout.trim();
         const commits = await (0, utils_1.getCommitsInRange)(commonAncestorSha, "HEAD");
         let squashFixups = process.env["CI"] !== void 0 || commits.filter((commit) => commit.isFixup).length === 0 ? false : await (0, console_12.promptConfirm)(`PR #${prNumber} contains fixup commits, would you like to squash them during rebase?`, true);
