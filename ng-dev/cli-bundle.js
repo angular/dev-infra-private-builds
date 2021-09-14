@@ -61814,6 +61814,87 @@ var require_get_commits_in_range = __commonJS({
   }
 });
 
+// bazel-out/k8-fastbuild/bin/ng-dev/release/notes/changelog.js
+var require_changelog2 = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/release/notes/changelog.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.Changelog = exports2.splitMarker = exports2.changelogArchivePath = exports2.changelogPath = void 0;
+    var fs_1 = require("fs");
+    var path_1 = require("path");
+    var semver = require_semver2();
+    exports2.changelogPath = "CHANGELOG.md";
+    exports2.changelogArchivePath = "CHANGELOG_ARCHIVE.md";
+    exports2.splitMarker = "<!-- CHANGELOG SPLIT MARKER -->";
+    var joinMarker = `
+
+${exports2.splitMarker}
+
+`;
+    var versionAnchorMatcher = new RegExp(`<a name="(.*)"></a>`);
+    var Changelog = class {
+      constructor(git) {
+        this.git = git;
+        this.filePath = (0, path_1.join)(this.git.baseDir, exports2.changelogPath);
+        this.archiveFilePath = (0, path_1.join)(this.git.baseDir, exports2.changelogArchivePath);
+        this.entries = this.getEntriesFor(this.filePath);
+        this._archiveEntries = void 0;
+      }
+      get archiveEntries() {
+        if (this._archiveEntries === void 0) {
+          return this._archiveEntries = this.getEntriesFor(this.archiveFilePath);
+        }
+        return this._archiveEntries;
+      }
+      prependEntryToChangelog(entry) {
+        this.entries.unshift(parseChangelogEntry(entry));
+        this.writeToChangelogFile();
+      }
+      moveEntriesPriorToVersionToArchive(version) {
+        [...this.entries].reverse().forEach((entry) => {
+          if (semver.lt(entry.version, version)) {
+            this.archiveEntries.unshift(entry);
+            this.entries.splice(this.entries.indexOf(entry), 1);
+          }
+        });
+        this.writeToChangelogFile();
+        if (this.archiveEntries.length) {
+          this.writeToChangelogArchiveFile();
+        }
+      }
+      writeToChangelogArchiveFile() {
+        const changelogArchive = this.archiveEntries.map((entry) => entry.content).join(joinMarker);
+        (0, fs_1.writeFileSync)(this.archiveFilePath, changelogArchive);
+      }
+      writeToChangelogFile() {
+        const changelog = this.entries.map((entry) => entry.content).join(joinMarker);
+        (0, fs_1.writeFileSync)(this.filePath, changelog);
+      }
+      getEntriesFor(path) {
+        if (!(0, fs_1.existsSync)(path)) {
+          return [];
+        }
+        return (0, fs_1.readFileSync)(path, { encoding: "utf8" }).split(exports2.splitMarker).filter((entry) => entry.trim().length !== 0).map(parseChangelogEntry);
+      }
+    };
+    exports2.Changelog = Changelog;
+    function parseChangelogEntry(content) {
+      const versionMatcherResult = versionAnchorMatcher.exec(content);
+      if (versionMatcherResult === null) {
+        throw Error(`Unable to determine version for changelog entry: ${content}`);
+      }
+      const version = semver.parse(versionMatcherResult[1]);
+      if (version === null) {
+        throw Error(`Unable to determine version for changelog entry, with tag: ${versionMatcherResult[1]}`);
+      }
+      return {
+        content: content.trim(),
+        version
+      };
+    }
+  }
+});
+
 // bazel-out/k8-fastbuild/bin/ng-dev/release/notes/release-notes.js
 var require_release_notes = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/release/notes/release-notes.js"(exports2) {
@@ -61830,16 +61911,15 @@ var require_release_notes = __commonJS({
     var github_release_1 = require_github_release();
     var get_commits_in_range_1 = require_get_commits_in_range();
     var config_1 = require_config2();
-    var fs_1 = require("fs");
-    var path_1 = require("path");
     var config_2 = require_config5();
+    var changelog_2 = require_changelog2();
     exports2.changelogPath = "CHANGELOG.md";
     var ReleaseNotes = class {
       constructor(version, commits, git) {
         this.version = version;
         this.commits = commits;
         this.git = git;
-        this.changelogPath = (0, path_1.join)(this.git.baseDir, exports2.changelogPath);
+        this.changelog = new changelog_2.Changelog(this.git);
         this.config = (0, config_1.getConfig)([index_12.assertValidReleaseConfig]);
       }
       static async forRange(version, baseRef, headRef) {
@@ -61860,17 +61940,10 @@ var require_release_notes = __commonJS({
         return (0, ejs_1.render)(changelog_1.default, await this.generateRenderContext(), { rmWhitespace: true });
       }
       async prependEntryToChangelog() {
-        let changelog = "";
-        if ((0, fs_1.existsSync)(this.changelogPath)) {
-          changelog = (0, fs_1.readFileSync)(this.changelogPath, { encoding: "utf8" });
-        }
-        const entry = await this.getChangelogEntry();
-        (0, fs_1.writeFileSync)(this.changelogPath, `${entry}
-
-${changelog}`);
+        this.changelog.prependEntryToChangelog(await this.getChangelogEntry());
         try {
           (0, config_2.assertValidFormatConfig)(this.config);
-          await (0, format_1.formatFiles)([this.changelogPath]);
+          await (0, format_1.formatFiles)([this.changelog.filePath]);
         } catch {
         }
       }
