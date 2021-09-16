@@ -59959,13 +59959,13 @@ var require_autosquash_merge = __commonJS({
           return failures_1.PullRequestFailure.mergeConflicts(failedBranches);
         }
         this.pushTargetBranchesUpstream(targetBranches);
+        const localBranch = this.getLocalTargetBranchName(githubTargetBranch);
+        const sha = this.git.run(["rev-parse", localBranch]).stdout.trim();
+        await this.git.github.issues.createComment(__spreadProps(__spreadValues({}, this.git.remoteParams), {
+          issue_number: pullRequest.prNumber,
+          body: `This PR was merged into the repository by commit ${sha}.`
+        }));
         if (githubTargetBranch !== this.git.mainBranchName) {
-          const localBranch = this.getLocalTargetBranchName(githubTargetBranch);
-          const sha = this.git.run(["rev-parse", localBranch]).stdout.trim();
-          await this.git.github.issues.createComment(__spreadProps(__spreadValues({}, this.git.remoteParams), {
-            issue_number: pullRequest.prNumber,
-            body: `Closed by commit ${sha}`
-          }));
           await this.git.github.pulls.update(__spreadProps(__spreadValues({}, this.git.remoteParams), {
             pull_number: pullRequest.prNumber,
             state: "closed"
