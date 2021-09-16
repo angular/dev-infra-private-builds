@@ -61830,12 +61830,13 @@ var require_changelog2 = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/release/notes/changelog.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.Changelog = exports2.splitMarker = exports2.changelogArchivePath = exports2.changelogPath = void 0;
+    exports2.Changelog = exports2.splitMarker = void 0;
     var fs_1 = require("fs");
     var path_1 = require("path");
     var semver = require_semver2();
-    exports2.changelogPath = "CHANGELOG.md";
-    exports2.changelogArchivePath = "CHANGELOG_ARCHIVE.md";
+    var git_client_1 = require_git_client();
+    var changelogPath = "CHANGELOG.md";
+    var changelogArchivePath = "CHANGELOG_ARCHIVE.md";
     exports2.splitMarker = "<!-- CHANGELOG SPLIT MARKER -->";
     var joinMarker = `
 
@@ -61846,10 +61847,27 @@ ${exports2.splitMarker}
     var Changelog = class {
       constructor(git) {
         this.git = git;
-        this.filePath = (0, path_1.join)(this.git.baseDir, exports2.changelogPath);
-        this.archiveFilePath = (0, path_1.join)(this.git.baseDir, exports2.changelogArchivePath);
-        this.entries = this.getEntriesFor(this.filePath);
+        this.filePath = (0, path_1.join)(this.git.baseDir, changelogPath);
+        this.archiveFilePath = (0, path_1.join)(this.git.baseDir, changelogArchivePath);
+        this._entries = void 0;
         this._archiveEntries = void 0;
+      }
+      static prependEntryToChangelogFile(entry, git = git_client_1.GitClient.get()) {
+        const changelog = new this(git);
+        changelog.prependEntryToChangelogFile(entry);
+      }
+      static moveEntriesPriorToVersionToArchive(version, git = git_client_1.GitClient.get()) {
+        const changelog = new this(git);
+        changelog.moveEntriesPriorToVersionToArchive(version);
+      }
+      static getChangelogFilePaths(git = git_client_1.GitClient.get()) {
+        return new this(git);
+      }
+      get entries() {
+        if (this._entries === void 0) {
+          return this._entries = this.getEntriesFor(this.filePath);
+        }
+        return this._entries;
       }
       get archiveEntries() {
         if (this._archiveEntries === void 0) {
@@ -61857,7 +61875,7 @@ ${exports2.splitMarker}
         }
         return this._archiveEntries;
       }
-      prependEntryToChangelog(entry) {
+      prependEntryToChangelogFile(entry) {
         this.entries.unshift(parseChangelogEntry(entry));
         this.writeToChangelogFile();
       }
@@ -61930,7 +61948,6 @@ var require_release_notes = __commonJS({
         this.version = version;
         this.commits = commits;
         this.git = git;
-        this.changelog = new changelog_2.Changelog(this.git);
         this.config = (0, config_1.getConfig)([index_12.assertValidReleaseConfig]);
       }
       static async forRange(version, baseRef, headRef) {
@@ -61950,11 +61967,11 @@ var require_release_notes = __commonJS({
       async getChangelogEntry() {
         return (0, ejs_1.render)(changelog_1.default, await this.generateRenderContext(), { rmWhitespace: true });
       }
-      async prependEntryToChangelog() {
-        this.changelog.prependEntryToChangelog(await this.getChangelogEntry());
+      async prependEntryToChangelogFile() {
+        changelog_2.Changelog.prependEntryToChangelogFile(await this.getChangelogEntry(), this.git);
         try {
           (0, config_2.assertValidFormatConfig)(this.config);
-          await (0, format_1.formatFiles)([this.changelog.filePath]);
+          await (0, format_1.formatFiles)([changelog_2.Changelog.getChangelogFilePaths(this.git).filePath]);
         } catch {
         }
       }
@@ -62030,7 +62047,7 @@ var require_cli19 = __commonJS({
     async function handler({ releaseVersion, from, to, prependToChangelog, type }) {
       const releaseNotes = await release_notes_1.ReleaseNotes.forRange(releaseVersion, from, to);
       if (prependToChangelog) {
-        await releaseNotes.prependEntryToChangelog();
+        await releaseNotes.prependEntryToChangelogFile();
         (0, console_12.info)(`Added release notes for "${releaseVersion}" to the changelog`);
         return;
       }
@@ -62544,7 +62561,7 @@ var require_actions = __commonJS({
         });
       }
       async prependReleaseNotesToChangelog(releaseNotes) {
-        await releaseNotes.prependEntryToChangelog();
+        await releaseNotes.prependEntryToChangelogFile();
         (0, console_12.info)((0, console_12.green)(`  \u2713   Updated the changelog to capture changes for "${releaseNotes.version}".`));
       }
       async checkoutUpstreamBranch(branchName) {

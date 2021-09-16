@@ -9,8 +9,6 @@ export declare class ReleaseNotes {
     private commits;
     private git;
     static forRange(version: semver.SemVer, baseRef: string, headRef: string): Promise<ReleaseNotes>;
-    /** The changelog writer. */
-    private changelog;
     /** The RenderContext to be used during rendering. */
     private renderContext;
     /** The title to use for the release. */
@@ -28,7 +26,7 @@ export declare class ReleaseNotes {
      * Prepend generated release note to the CHANGELOG.md file in the base directory of the repository
      * provided by the GitClient.
      */
-    prependEntryToChangelog(): Promise<void>;
+    prependEntryToChangelogFile(): Promise<void>;
     /** Retrieve the number of commits included in the release notes after filtering and deduping. */
     getCommitCountInReleaseNotes(): Promise<number>;
     /**
