@@ -58741,9 +58741,9 @@ var require_cli9 = __commonJS({
   }
 });
 
-// bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/config.js
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/config.js
 var require_config6 = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/config.js"(exports2) {
+  "bazel-out/k8-fastbuild/bin/ng-dev/pr/config.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.assertValidMergeConfig = void 0;

@@ -6,20 +6,10 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { AuthenticatedGitClient } from '../../../utils/git/authenticated-git-client';
-import { GithubApiMergeMethod } from '../config';
+import { GithubApiMergeStrategyConfig } from '../../config';
 import { PullRequestFailure } from '../failures';
 import { PullRequest } from '../pull-request';
 import { MergeStrategy } from './strategy';
-/** Configuration for the Github API merge strategy. */
-export interface GithubApiMergeStrategyConfig {
-    /** Default method used for merging pull requests */
-    default: GithubApiMergeMethod;
-    /** Labels which specify a different merge method than the default. */
-    labels?: {
-        pattern: string;
-        method: GithubApiMergeMethod;
-    }[];
-}
 /**
  * Merge strategy that primarily leverages the Github API. The strategy merges a given
  * pull request into a target branch using the API. This ensures that Github displays

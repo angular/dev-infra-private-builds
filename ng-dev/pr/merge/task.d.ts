@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { AuthenticatedGitClient } from '../../utils/git/authenticated-git-client';
-import { MergeConfigWithRemote } from './config';
+import { MergeConfigWithRemote } from '../config';
 import { PullRequestFailure } from './failures';
 /** Describes the status of a pull request merge. */
 export declare const enum MergeStatus {

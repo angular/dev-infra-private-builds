@@ -5,13 +5,22 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { GithubConfig } from '../../utils/config';
-import { GithubApiMergeStrategyConfig } from './strategies/api-merge';
+import { GithubConfig } from '../utils/config';
 /**
  * Possible merge methods supported by the Github API.
  * https://developer.github.com/v3/pulls/#merge-a-pull-request-merge-button.
  */
 export declare type GithubApiMergeMethod = 'merge' | 'squash' | 'rebase';
+/** Configuration for the Github API merge strategy. */
+export interface GithubApiMergeStrategyConfig {
+    /** Default method used for merging pull requests */
+    default: GithubApiMergeMethod;
+    /** Labels which specify a different merge method than the default. */
+    labels?: {
+        pattern: string;
+        method: GithubApiMergeMethod;
+    }[];
+}
 /**
  * Configuration for the merge script with all remote options specified. The
  * default `MergeConfig` has does not require any of these options as defaults
