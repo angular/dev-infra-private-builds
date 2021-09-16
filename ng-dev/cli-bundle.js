@@ -59609,9 +59609,9 @@ var require_string_pattern = __commonJS({
   }
 });
 
-// bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/fetch-pull-request.js
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/common/fetch-pull-request.js
 var require_fetch_pull_request = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/fetch-pull-request.js"(exports2) {
+  "bazel-out/k8-fastbuild/bin/ng-dev/pr/common/fetch-pull-request.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.fetchPullRequestFromGithub = void 0;

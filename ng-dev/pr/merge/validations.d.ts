@@ -8,7 +8,7 @@
 import { Commit } from '../../commit-message/parse';
 import { TargetLabel } from './target-label';
 import { MergeConfig } from './config';
-import { RawPullRequest } from './fetch-pull-request';
+import { RawPullRequest } from '../common/fetch-pull-request';
 /**
  * Assert the commits provided are allowed to merge to the provided target label,
  * throwing an error otherwise.
