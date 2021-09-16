@@ -6,6 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { GithubConfig } from '../../utils/config';
+import { AuthenticatedGitClient } from '../../utils/git/authenticated-git-client';
 import { ReleaseConfig } from '../config/index';
 export declare enum CompletionState {
     SUCCESS = 0,
@@ -13,14 +14,13 @@ export declare enum CompletionState {
     MANUALLY_ABORTED = 2
 }
 export declare class ReleaseTool {
+    protected _git: AuthenticatedGitClient;
     protected _config: ReleaseConfig;
     protected _github: GithubConfig;
     protected _projectRoot: string;
-    /** The singleton instance of the authenticated git client. */
-    private _git;
     /** The previous git commit to return back to after the release tool runs. */
     private previousGitBranchOrRevision;
-    constructor(_config: ReleaseConfig, _github: GithubConfig, _projectRoot: string);
+    constructor(_git: AuthenticatedGitClient, _config: ReleaseConfig, _github: GithubConfig, _projectRoot: string);
     /** Runs the interactive release tool. */
     run(): Promise<CompletionState>;
     /** Run post release tool cleanups. */

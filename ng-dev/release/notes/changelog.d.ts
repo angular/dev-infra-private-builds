@@ -5,7 +5,7 @@ export declare const splitMarker = "<!-- CHANGELOG SPLIT MARKER -->";
 export declare class Changelog {
     private git;
     /** Prepend a changelog entry to the current changelog file. */
-    static prependEntryToChangelogFile(entry: string, git?: GitClient): void;
+    static prependEntryToChangelogFile(git: GitClient, entry: string): void;
     /**
      * Move all changelog entries from the CHANGELOG.md file for versions prior to the provided
      * version to the changelog archive.
@@ -15,9 +15,9 @@ export declare class Changelog {
      * other changelog entries.  This allows for example, moving all changelog entries out of the
      * main changelog when a version moves out of support.
      */
-    static moveEntriesPriorToVersionToArchive(version: semver.SemVer, git?: GitClient): void;
+    static moveEntriesPriorToVersionToArchive(git: GitClient, version: semver.SemVer): void;
     /** Retrieve the file paths for the changelog files. */
-    static getChangelogFilePaths(git?: GitClient): Changelog;
+    static getChangelogFilePaths(git: GitClient): Changelog;
     /** The absolute path to the changelog file. */
     readonly filePath: string;
     /** The absolute path to the changelog archive file. */

@@ -8,6 +8,7 @@
 import { MergeConfig } from './config';
 import { GithubConfig } from '../../utils/config';
 import { Commit } from '../../commit-message/parse';
+import { GithubClient } from '../../utils/git/github';
 /**
  * Enum capturing available target label names in the Angular organization. A target
  * label is set on a pull request to specify where its changes should land.
@@ -58,7 +59,7 @@ export declare class InvalidTargetLabelError {
 /** Gets the target label from the specified pull request labels. */
 export declare function getMatchingTargetLabelForPullRequest(config: Pick<MergeConfig, 'noTargetLabeling'>, labelsOnPullRequest: string[], allTargetLabels: TargetLabel[]): Promise<TargetLabel>;
 /** Get the branches the pull request should be merged into. */
-export declare function getTargetBranchesForPullRequest(config: {
+export declare function getTargetBranchesForPullRequest(api: GithubClient, config: {
     merge: MergeConfig;
     github: GithubConfig;
 }, labelsOnPullRequest: string[], githubTargetBranch: string, commits: Commit[]): Promise<string[]>;

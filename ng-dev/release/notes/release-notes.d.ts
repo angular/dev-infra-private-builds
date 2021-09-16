@@ -8,7 +8,7 @@ export declare class ReleaseNotes {
     version: semver.SemVer;
     private commits;
     private git;
-    static forRange(version: semver.SemVer, baseRef: string, headRef: string): Promise<ReleaseNotes>;
+    static forRange(git: GitClient, version: semver.SemVer, baseRef: string, headRef: string): Promise<ReleaseNotes>;
     /** The RenderContext to be used during rendering. */
     private renderContext;
     /** The title to use for the release. */

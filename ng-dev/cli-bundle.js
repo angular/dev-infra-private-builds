@@ -58858,10 +58858,9 @@ var require_labels = __commonJS({
     var index_12 = require_config7();
     var versioning_1 = require_versioning();
     var config_1 = require_config2();
-    var git_client_1 = require_git_client();
     var target_label_1 = require_target_label();
     var lts_branch_1 = require_lts_branch();
-    async function getTargetLabelsForActiveReleaseTrains(api = git_client_1.GitClient.get().github, config = (0, config_1.getConfig)()) {
+    async function getTargetLabelsForActiveReleaseTrains(api, config) {
       (0, index_12.assertValidReleaseConfig)(config);
       (0, config_1.assertValidGithubConfig)(config);
       const nextBranchName = (0, versioning_1.getNextBranchName)(config.github);
@@ -59167,12 +59166,12 @@ var require_target_label = __commonJS({
       throw new InvalidTargetLabelError("Unable to determine target for the PR as it has multiple target labels.");
     }
     exports2.getMatchingTargetLabelForPullRequest = getMatchingTargetLabelForPullRequest;
-    async function getTargetBranchesForPullRequest(config, labelsOnPullRequest, githubTargetBranch, commits) {
+    async function getTargetBranchesForPullRequest(api, config, labelsOnPullRequest, githubTargetBranch, commits) {
       if (config.merge.noTargetLabeling) {
         return [config.github.mainBranchName];
       }
       try {
-        const targetLabels = await (0, defaults_1.getTargetLabelsForActiveReleaseTrains)();
+        const targetLabels = await (0, defaults_1.getTargetLabelsForActiveReleaseTrains)(api, config);
         const matchingLabel = await getMatchingTargetLabelForPullRequest(config.merge, labelsOnPullRequest, targetLabels);
         const targetBranches = await getBranchesFromTargetLabel(matchingLabel, githubTargetBranch);
         (0, validations_1.assertChangesAllowForTargetLabel)(commits, matchingLabel, config.merge);
@@ -59209,7 +59208,7 @@ var require_check_target_branches = __commonJS({
       const prData = (await git.github.pulls.get({ owner, repo, pull_number: prNumber })).data;
       const labels = prData.labels.map((l) => l.name);
       const githubTargetBranch = prData.base.ref;
-      return (0, target_label_1.getTargetBranchesForPullRequest)(config, labels, githubTargetBranch, []);
+      return (0, target_label_1.getTargetBranchesForPullRequest)(git.github, config, labels, githubTargetBranch, []);
     }
     async function printTargetBranchesForPr(prNumber) {
       const config = (0, config_1.getConfig)();
@@ -59678,7 +59677,7 @@ var require_pull_request = __commonJS({
       }
       const commitsInPr = prData.commits.nodes.map((n) => (0, parse_1.parseCommitMessage)(n.commit.message));
       const githubTargetBranch = prData.baseRefName;
-      const targetBranches = await (0, target_label_1.getTargetBranchesForPullRequest)({ github: git.config.github, merge: config }, labels, githubTargetBranch, commitsInPr);
+      const targetBranches = await (0, target_label_1.getTargetBranchesForPullRequest)(git.github, { github: git.config.github, merge: config }, labels, githubTargetBranch, commitsInPr);
       try {
         (0, validations_1.assertPendingState)(prData);
         (0, validations_1.assertCorrectBreakingChangeLabeling)(commitsInPr, labels);
@@ -61834,7 +61833,6 @@ var require_changelog2 = __commonJS({
     var fs_1 = require("fs");
     var path_1 = require("path");
     var semver = require_semver2();
-    var git_client_1 = require_git_client();
     var changelogPath = "CHANGELOG.md";
     var changelogArchivePath = "CHANGELOG_ARCHIVE.md";
     exports2.splitMarker = "<!-- CHANGELOG SPLIT MARKER -->";
@@ -61852,15 +61850,15 @@ ${exports2.splitMarker}
         this._entries = void 0;
         this._archiveEntries = void 0;
       }
-      static prependEntryToChangelogFile(entry, git = git_client_1.GitClient.get()) {
+      static prependEntryToChangelogFile(git, entry) {
         const changelog = new this(git);
         changelog.prependEntryToChangelogFile(entry);
       }
-      static moveEntriesPriorToVersionToArchive(version, git = git_client_1.GitClient.get()) {
+      static moveEntriesPriorToVersionToArchive(git, version) {
         const changelog = new this(git);
         changelog.moveEntriesPriorToVersionToArchive(version);
       }
-      static getChangelogFilePaths(git = git_client_1.GitClient.get()) {
+      static getChangelogFilePaths(git) {
         return new this(git);
       }
       get entries() {
@@ -61933,7 +61931,6 @@ var require_release_notes = __commonJS({
     var ejs_1 = require_ejs();
     var console_12 = require_console();
     var format_1 = require_format();
-    var git_client_1 = require_git_client();
     var index_12 = require_config7();
     var context_1 = require_context();
     var changelog_1 = require_changelog();
@@ -61950,8 +61947,7 @@ var require_release_notes = __commonJS({
         this.git = git;
         this.config = (0, config_1.getConfig)([index_12.assertValidReleaseConfig]);
       }
-      static async forRange(version, baseRef, headRef) {
-        const git = git_client_1.GitClient.get();
+      static async forRange(git, version, baseRef, headRef) {
         const commits = (0, get_commits_in_range_1.getCommitsForRangeWithDeduping)(git, baseRef, headRef);
         return new ReleaseNotes(version, commits, git);
       }
@@ -61968,7 +61964,7 @@ var require_release_notes = __commonJS({
         return (0, ejs_1.render)(changelog_1.default, await this.generateRenderContext(), { rmWhitespace: true });
       }
       async prependEntryToChangelogFile() {
-        changelog_2.Changelog.prependEntryToChangelogFile(await this.getChangelogEntry(), this.git);
+        changelog_2.Changelog.prependEntryToChangelogFile(this.git, await this.getChangelogEntry());
         try {
           (0, config_2.assertValidFormatConfig)(this.config);
           await (0, format_1.formatFiles)([changelog_2.Changelog.getChangelogFilePaths(this.git).filePath]);
@@ -62020,6 +62016,7 @@ var require_cli19 = __commonJS({
     var semver_1 = require_semver2();
     var console_12 = require_console();
     var release_notes_1 = require_release_notes();
+    var git_client_1 = require_git_client();
     function builder(argv) {
       return argv.option("releaseVersion", {
         type: "string",
@@ -62045,7 +62042,8 @@ var require_cli19 = __commonJS({
       });
     }
     async function handler({ releaseVersion, from, to, prependToChangelog, type }) {
-      const releaseNotes = await release_notes_1.ReleaseNotes.forRange(releaseVersion, from, to);
+      const git = git_client_1.GitClient.get();
+      const releaseNotes = await release_notes_1.ReleaseNotes.forRange(git, releaseVersion, from, to);
       if (prependToChangelog) {
         await releaseNotes.prependEntryToChangelogFile();
         (0, console_12.info)(`Added release notes for "${releaseVersion}" to the changelog`);
@@ -62580,7 +62578,7 @@ var require_actions = __commonJS({
           this.git.getRepoGitUrl(),
           `refs/tags/${releaseNotesCompareTag}:refs/tags/${releaseNotesCompareTag}`
         ]);
-        const releaseNotes = await release_notes_1.ReleaseNotes.forRange(newVersion, releaseNotesCompareTag, "HEAD");
+        const releaseNotes = await release_notes_1.ReleaseNotes.forRange(this.git, newVersion, releaseNotesCompareTag, "HEAD");
         await this.updateProjectVersion(newVersion);
         await this.prependReleaseNotesToChangelog(releaseNotes);
         await this.waitForEditsAndCreateReleaseCommit(newVersion);
@@ -63141,7 +63139,6 @@ var require_publish2 = __commonJS({
     exports2.ReleaseTool = exports2.CompletionState = void 0;
     var inquirer_1 = require_inquirer();
     var console_12 = require_console();
-    var authenticated_git_client_1 = require_authenticated_git_client();
     var active_release_trains_1 = require_active_release_trains();
     var npm_publish_1 = require_npm_publish();
     var print_active_trains_1 = require_print_active_trains();
@@ -63155,11 +63152,11 @@ var require_publish2 = __commonJS({
       CompletionState2[CompletionState2["MANUALLY_ABORTED"] = 2] = "MANUALLY_ABORTED";
     })(CompletionState = exports2.CompletionState || (exports2.CompletionState = {}));
     var ReleaseTool = class {
-      constructor(_config, _github, _projectRoot) {
+      constructor(_git, _config, _github, _projectRoot) {
+        this._git = _git;
         this._config = _config;
         this._github = _github;
         this._projectRoot = _projectRoot;
-        this._git = authenticated_git_client_1.AuthenticatedGitClient.get();
         this.previousGitBranchOrRevision = this._git.getCurrentBranchOrRevision();
       }
       async run() {
@@ -63286,19 +63283,19 @@ var require_cli20 = __commonJS({
     exports2.ReleasePublishCommandModule = void 0;
     var config_1 = require_config2();
     var console_12 = require_console();
-    var git_client_1 = require_git_client();
     var github_yargs_1 = require_github_yargs();
     var index_12 = require_config7();
     var index_2 = require_publish2();
+    var authenticated_git_client_1 = require_authenticated_git_client();
     function builder(argv) {
       return (0, github_yargs_1.addGithubTokenOption)(argv);
     }
     async function handler() {
-      const git = git_client_1.GitClient.get();
+      const git = authenticated_git_client_1.AuthenticatedGitClient.get();
       const config = (0, config_1.getConfig)();
       (0, index_12.assertValidReleaseConfig)(config);
       (0, config_1.assertValidGithubConfig)(config);
-      const task = new index_2.ReleaseTool(config.release, config.github, git.baseDir);
+      const task = new index_2.ReleaseTool(git, config.release, config.github, git.baseDir);
       const result = await task.run();
       switch (result) {
         case index_2.CompletionState.FATAL_ERROR:
@@ -63394,30 +63391,29 @@ var require_env_stamp = __commonJS({
     var git_client_1 = require_git_client();
     var semver_2 = require_semver3();
     function buildEnvStamp(mode) {
-      console.info(`BUILD_SCM_BRANCH ${getCurrentBranch()}`);
-      console.info(`BUILD_SCM_COMMIT_SHA ${getCurrentBranchOrRevision()}`);
-      console.info(`BUILD_SCM_HASH ${getCurrentBranchOrRevision()}`);
-      console.info(`BUILD_SCM_LOCAL_CHANGES ${hasLocalChanges()}`);
-      console.info(`BUILD_SCM_USER ${getCurrentGitUser()}`);
-      const { version, experimentalVersion } = getSCMVersions(mode);
+      const git = git_client_1.GitClient.get();
+      console.info(`BUILD_SCM_BRANCH ${getCurrentBranch(git)}`);
+      console.info(`BUILD_SCM_COMMIT_SHA ${getCurrentBranchOrRevision(git)}`);
+      console.info(`BUILD_SCM_HASH ${getCurrentBranchOrRevision(git)}`);
+      console.info(`BUILD_SCM_LOCAL_CHANGES ${hasLocalChanges(git)}`);
+      console.info(`BUILD_SCM_USER ${getCurrentGitUser(git)}`);
+      const { version, experimentalVersion } = getSCMVersions(git, mode);
       console.info(`BUILD_SCM_VERSION ${version}`);
       console.info(`BUILD_SCM_EXPERIMENTAL_VERSION ${experimentalVersion}`);
       process.exit();
     }
     exports2.buildEnvStamp = buildEnvStamp;
-    function hasLocalChanges() {
+    function hasLocalChanges(git) {
       try {
-        const git = git_client_1.GitClient.get();
         return git.hasUncommittedChanges();
       } catch {
         return true;
       }
     }
-    function getSCMVersions(mode) {
+    function getSCMVersions(git, mode) {
       try {
-        const git = git_client_1.GitClient.get();
         if (mode === "snapshot") {
-          const localChanges = hasLocalChanges() ? ".with-local-changes" : "";
+          const localChanges = hasLocalChanges(git) ? ".with-local-changes" : "";
           const { stdout: rawVersion } = git.run([
             "describe",
             "--match",
@@ -63445,25 +63441,22 @@ var require_env_stamp = __commonJS({
         };
       }
     }
-    function getCurrentBranchOrRevision() {
+    function getCurrentBranchOrRevision(git) {
       try {
-        const git = git_client_1.GitClient.get();
         return git.getCurrentBranchOrRevision();
       } catch {
         return "";
       }
     }
-    function getCurrentBranch() {
+    function getCurrentBranch(git) {
       try {
-        const git = git_client_1.GitClient.get();
         return git.run(["symbolic-ref", "--short", "HEAD"]).stdout.trim();
       } catch {
         return "";
       }
     }
-    function getCurrentGitUser() {
+    function getCurrentGitUser(git) {
       try {
-        const git = git_client_1.GitClient.get();
         let userName = git.runGraceful(["config", "user.name"]).stdout.trim() || "Unknown User";
         let userEmail = git.runGraceful(["config", "user.email"]).stdout.trim() || "unknown_email";
         return `${userName} <${userEmail}>`;
