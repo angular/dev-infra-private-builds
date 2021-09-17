@@ -23,6 +23,23 @@ declare const PR_SCHEMA: {
             };
         }[];
     };
+    maintainerCanModify: boolean;
+    viewerDidAuthor: boolean;
+    headRefOid: string;
+    headRef: {
+        name: string;
+        repository: {
+            url: string;
+            nameWithOwner: string;
+        };
+    };
+    baseRef: {
+        name: string;
+        repository: {
+            url: string;
+            nameWithOwner: string;
+        };
+    };
     baseRefName: string;
     title: string;
     labels: {

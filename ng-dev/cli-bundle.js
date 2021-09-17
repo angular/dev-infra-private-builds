@@ -59634,6 +59634,23 @@ var require_fetch_pull_request = __commonJS({
           }
         ]
       }),
+      maintainerCanModify: typed_graphqlify_1.types.boolean,
+      viewerDidAuthor: typed_graphqlify_1.types.boolean,
+      headRefOid: typed_graphqlify_1.types.string,
+      headRef: {
+        name: typed_graphqlify_1.types.string,
+        repository: {
+          url: typed_graphqlify_1.types.string,
+          nameWithOwner: typed_graphqlify_1.types.string
+        }
+      },
+      baseRef: {
+        name: typed_graphqlify_1.types.string,
+        repository: {
+          url: typed_graphqlify_1.types.string,
+          nameWithOwner: typed_graphqlify_1.types.string
+        }
+      },
       baseRefName: typed_graphqlify_1.types.string,
       title: typed_graphqlify_1.types.string,
       labels: (0, typed_graphqlify_1.params)({ first: 100 }, {
@@ -60201,32 +60218,11 @@ var require_rebase = __commonJS({
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.rebasePr = void 0;
-    var typed_graphqlify_1 = require_dist();
     var utils_1 = require_utils2();
     var console_12 = require_console();
     var authenticated_git_client_1 = require_authenticated_git_client();
     var github_urls_1 = require_github_urls();
-    var github_1 = require_github3();
-    var PR_SCHEMA = {
-      state: typed_graphqlify_1.types.string,
-      maintainerCanModify: typed_graphqlify_1.types.boolean,
-      viewerDidAuthor: typed_graphqlify_1.types.boolean,
-      headRefOid: typed_graphqlify_1.types.string,
-      headRef: {
-        name: typed_graphqlify_1.types.string,
-        repository: {
-          url: typed_graphqlify_1.types.string,
-          nameWithOwner: typed_graphqlify_1.types.string
-        }
-      },
-      baseRef: {
-        name: typed_graphqlify_1.types.string,
-        repository: {
-          url: typed_graphqlify_1.types.string,
-          nameWithOwner: typed_graphqlify_1.types.string
-        }
-      }
-    };
+    var fetch_pull_request_1 = require_fetch_pull_request();
     async function rebasePr(prNumber, githubToken) {
       const git = authenticated_git_client_1.AuthenticatedGitClient.get();
       if (git.hasUncommittedChanges()) {
@@ -60234,7 +60230,7 @@ var require_rebase = __commonJS({
         return 1;
       }
       const previousBranchOrRevision = git.getCurrentBranchOrRevision();
-      const pr = await (0, github_1.getPr)(PR_SCHEMA, prNumber, git);
+      const pr = await (0, fetch_pull_request_1.fetchPullRequestFromGithub)(git, prNumber);
       if (pr === null) {
         (0, console_12.error)(`Specified pull request does not exist.`);
         return 1;
