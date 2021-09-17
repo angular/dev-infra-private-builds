@@ -58741,12 +58741,12 @@ var require_cli9 = __commonJS({
   }
 });
 
-// bazel-out/k8-fastbuild/bin/ng-dev/pr/config.js
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/config/index.js
 var require_config6 = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/pr/config.js"(exports2) {
+  "bazel-out/k8-fastbuild/bin/ng-dev/pr/config/index.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.assertValidMergeConfig = void 0;
+    exports2.breakingChangeLabel = exports2.assertValidMergeConfig = void 0;
     var config_1 = require_config2();
     function assertValidMergeConfig(config) {
       const errors = [];
@@ -58767,6 +58767,7 @@ var require_config6 = __commonJS({
       }
     }
     exports2.assertValidMergeConfig = assertValidMergeConfig;
+    exports2.breakingChangeLabel = "flag: breaking change";
   }
 });
 
@@ -58810,9 +58811,9 @@ var require_locale = __commonJS({
   }
 });
 
-// bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/defaults/lts-branch.js
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/common/targeting/lts-branch.js
 var require_lts_branch = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/defaults/lts-branch.js"(exports2) {
+  "bazel-out/k8-fastbuild/bin/ng-dev/pr/common/targeting/lts-branch.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.assertActiveLtsBranch = void 0;
@@ -58849,9 +58850,9 @@ var require_lts_branch = __commonJS({
   }
 });
 
-// bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/defaults/labels.js
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/common/targeting/labels.js
 var require_labels = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/defaults/labels.js"(exports2) {
+  "bazel-out/k8-fastbuild/bin/ng-dev/pr/common/targeting/labels.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.getTargetLabelsForActiveReleaseTrains = void 0;
@@ -58932,49 +58933,13 @@ var require_labels = __commonJS({
   }
 });
 
-// bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/defaults/index.js
-var require_defaults3 = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/defaults/index.js"(exports2) {
-    "use strict";
-    var __createBinding = exports2 && exports2.__createBinding || (Object.create ? function(o, m, k, k2) {
-      if (k2 === void 0)
-        k2 = k;
-      Object.defineProperty(o, k2, { enumerable: true, get: function() {
-        return m[k];
-      } });
-    } : function(o, m, k, k2) {
-      if (k2 === void 0)
-        k2 = k;
-      o[k2] = m[k];
-    });
-    var __exportStar = exports2 && exports2.__exportStar || function(m, exports3) {
-      for (var p in m)
-        if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports3, p))
-          __createBinding(exports3, m, p);
-    };
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    __exportStar(require_labels(), exports2);
-    __exportStar(require_lts_branch(), exports2);
-  }
-});
-
-// bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/constants.js
-var require_constants2 = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/constants.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.breakingChangeLabel = void 0;
-    exports2.breakingChangeLabel = "flag: breaking change";
-  }
-});
-
-// bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/failures.js
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/common/validation/failures.js
 var require_failures = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/failures.js"(exports2) {
+  "bazel-out/k8-fastbuild/bin/ng-dev/pr/common/validation/failures.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.PullRequestFailure = void 0;
-    var constants_1 = require_constants2();
+    var config_1 = require_config6();
     var PullRequestFailure = class {
       constructor(message, nonFatal = false) {
         this.message = message;
@@ -59035,7 +59000,7 @@ var require_failures = __commonJS({
         return new this(message);
       }
       static missingBreakingChangeLabel() {
-        const message = `Pull Request has at least one commit containing a breaking change note, but does not have a breaking change label. Make sure to apply the following label: ${constants_1.breakingChangeLabel}`;
+        const message = `Pull Request has at least one commit containing a breaking change note, but does not have a breaking change label. Make sure to apply the following label: ${config_1.breakingChangeLabel}`;
         return new this(message);
       }
       static missingBreakingChangeCommit() {
@@ -59047,16 +59012,16 @@ var require_failures = __commonJS({
   }
 });
 
-// bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/validations.js
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/common/validation/validations.js
 var require_validations = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/validations.js"(exports2) {
+  "bazel-out/k8-fastbuild/bin/ng-dev/pr/common/validation/validations.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.assertPendingState = exports2.assertCorrectBreakingChangeLabeling = exports2.assertChangesAllowForTargetLabel = void 0;
     var target_label_1 = require_target_label();
+    var config_1 = require_config6();
     var failures_1 = require_failures();
     var console_12 = require_console();
-    var constants_1 = require_constants2();
     function assertChangesAllowForTargetLabel(commits, label, config) {
       const exemptedScopes = config.targetLabelExemptScopes || [];
       commits = commits.filter((commit) => !exemptedScopes.includes(commit.scope));
@@ -59092,7 +59057,7 @@ var require_validations = __commonJS({
     }
     exports2.assertChangesAllowForTargetLabel = assertChangesAllowForTargetLabel;
     function assertCorrectBreakingChangeLabeling(commits, pullRequestLabels) {
-      const hasLabel = pullRequestLabels.includes(constants_1.breakingChangeLabel);
+      const hasLabel = pullRequestLabels.includes(config_1.breakingChangeLabel);
       const hasCommit = commits.some((commit) => commit.breakingChanges.length !== 0);
       if (!hasLabel && hasCommit) {
         throw failures_1.PullRequestFailure.missingBreakingChangeLabel();
@@ -59117,13 +59082,13 @@ var require_validations = __commonJS({
   }
 });
 
-// bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/target-label.js
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/common/targeting/target-label.js
 var require_target_label = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/target-label.js"(exports2) {
+  "bazel-out/k8-fastbuild/bin/ng-dev/pr/common/targeting/target-label.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.getBranchesFromTargetLabel = exports2.getTargetBranchesForPullRequest = exports2.getMatchingTargetLabelForPullRequest = exports2.InvalidTargetLabelError = exports2.InvalidTargetBranchError = exports2.TargetLabelName = void 0;
-    var defaults_1 = require_defaults3();
+    var labels_1 = require_labels();
     var validations_1 = require_validations();
     var failures_1 = require_failures();
     var TargetLabelName;
@@ -59171,7 +59136,7 @@ var require_target_label = __commonJS({
         return [config.github.mainBranchName];
       }
       try {
-        const targetLabels = await (0, defaults_1.getTargetLabelsForActiveReleaseTrains)(api, config);
+        const targetLabels = await (0, labels_1.getTargetLabelsForActiveReleaseTrains)(api, config);
         const matchingLabel = await getMatchingTargetLabelForPullRequest(config.merge, labelsOnPullRequest, targetLabels);
         const targetBranches = await getBranchesFromTargetLabel(matchingLabel, githubTargetBranch);
         (0, validations_1.assertChangesAllowForTargetLabel)(commits, matchingLabel, config.merge);
@@ -62220,7 +62185,7 @@ var require_commit_message = __commonJS({
 });
 
 // bazel-out/k8-fastbuild/bin/ng-dev/release/publish/constants.js
-var require_constants3 = __commonJS({
+var require_constants2 = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/constants.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
@@ -62390,7 +62355,7 @@ var require_actions = __commonJS({
     var npm_publish_1 = require_npm_publish();
     var actions_error_1 = require_actions_error();
     var commit_message_1 = require_commit_message();
-    var constants_1 = require_constants3();
+    var constants_1 = require_constants2();
     var external_commands_1 = require_external_commands();
     var graphql_queries_1 = require_graphql_queries();
     var pull_request_state_1 = require_pull_request_state();
@@ -62962,7 +62927,7 @@ var require_branch_off_next_branch = __commonJS({
     var next_prerelease_version_1 = require_next_prerelease_version();
     var actions_1 = require_actions();
     var commit_message_1 = require_commit_message();
-    var constants_1 = require_constants3();
+    var constants_1 = require_constants2();
     var BranchOffNextBranchBaseAction = class extends actions_1.ReleaseAction {
       async getDescription() {
         const { branchName } = this.active.next;

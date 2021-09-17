@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { AuthenticatedGitClient } from '../../../utils/git/authenticated-git-client';
-import { PullRequestFailure } from '../failures';
+import { PullRequestFailure } from '../../common/validation/failures';
 import { PullRequest } from '../pull-request';
 /**
  * Name of a temporary branch that contains the head of a currently-processed PR. Note

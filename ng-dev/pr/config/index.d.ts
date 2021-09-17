@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { GithubConfig } from '../utils/config';
+import { GithubConfig } from '../../utils/config';
 /**
  * Possible merge methods supported by the Github API.
  * https://developer.github.com/v3/pulls/#merge-a-pull-request-merge-button.
@@ -69,3 +69,5 @@ export declare function assertValidMergeConfig<T>(config: T & Partial<{
 }>): asserts config is T & {
     merge: MergeConfig;
 };
+/** Label for pull requests containing a breaking change. */
+export declare const breakingChangeLabel = "flag: breaking change";

@@ -5,10 +5,10 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { MergeConfig } from '../config';
-import { GithubConfig } from '../../utils/config';
-import { Commit } from '../../commit-message/parse';
-import { GithubClient } from '../../utils/git/github';
+import { MergeConfig } from '../../config';
+import { GithubConfig } from '../../../utils/config';
+import { Commit } from '../../../commit-message/parse';
+import { GithubClient } from '../../../utils/git/github';
 /**
  * Enum capturing available target label names in the Angular organization. A target
  * label is set on a pull request to specify where its changes should land.

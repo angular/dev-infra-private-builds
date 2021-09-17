@@ -7,7 +7,7 @@
  */
 import { ReleaseConfig } from '../../../release/config/index';
 import { GithubConfig } from '../../../utils/config';
-import { TargetLabel } from '../target-label';
+import { TargetLabel } from './target-label';
 import { GithubClient } from '../../../utils/git/github';
 /**
  * Gets a list of target labels which should be considered by the merge

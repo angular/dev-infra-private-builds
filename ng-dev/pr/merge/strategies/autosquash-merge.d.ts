@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { PullRequestFailure } from '../failures';
+import { PullRequestFailure } from '../../common/validation/failures';
 import { PullRequest } from '../pull-request';
 import { MergeStrategy } from './strategy';
 /**

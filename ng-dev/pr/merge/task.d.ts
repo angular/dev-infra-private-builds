@@ -7,7 +7,7 @@
  */
 import { AuthenticatedGitClient } from '../../utils/git/authenticated-git-client';
 import { MergeConfigWithRemote } from '../config';
-import { PullRequestFailure } from './failures';
+import { PullRequestFailure } from '../common/validation/failures';
 /** Describes the status of a pull request merge. */
 export declare const enum MergeStatus {
     UNKNOWN_GIT_ERROR = 0,
