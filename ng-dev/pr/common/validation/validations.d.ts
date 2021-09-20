@@ -7,14 +7,14 @@
  */
 import { Commit } from '../../../commit-message/parse';
 import { TargetLabel } from '../targeting/target-label';
-import { MergeConfig } from '../../config';
+import { PullRequestConfig } from '../../config';
 import { RawPullRequest } from '../fetch-pull-request';
 /**
  * Assert the commits provided are allowed to merge to the provided target label,
  * throwing an error otherwise.
  * @throws {PullRequestFailure}
  */
-export declare function assertChangesAllowForTargetLabel(commits: Commit[], label: TargetLabel, config: MergeConfig): void;
+export declare function assertChangesAllowForTargetLabel(commits: Commit[], label: TargetLabel, config: PullRequestConfig): void;
 /**
  * Assert the pull request has the proper label for breaking changes if there are breaking change
  * commits, and only has the label if there are breaking change commits.

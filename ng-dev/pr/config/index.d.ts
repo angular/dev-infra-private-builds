@@ -21,16 +21,8 @@ export interface GithubApiMergeStrategyConfig {
         method: GithubApiMergeMethod;
     }[];
 }
-/**
- * Configuration for the merge script with all remote options specified. The
- * default `MergeConfig` has does not require any of these options as defaults
- * are provided by the common dev-infra github configuration.
- */
-export declare type MergeConfigWithRemote = MergeConfig & {
-    remote: GithubConfig;
-};
 /** Configuration for the merge script. */
-export interface MergeConfig {
+export interface PullRequestConfig {
     /**
      * Configuration for the upstream remote. All of these options are optional as
      * defaults are provided by the common dev-infra github configuration.
@@ -64,10 +56,10 @@ export interface MergeConfig {
     targetLabelExemptScopes?: string[];
 }
 /** Loads and validates the merge configuration. */
-export declare function assertValidMergeConfig<T>(config: T & Partial<{
-    merge: MergeConfig;
+export declare function assertValidPullRequestConfig<T>(config: T & Partial<{
+    pullRequest: PullRequestConfig;
 }>): asserts config is T & {
-    merge: MergeConfig;
+    pullRequest: PullRequestConfig;
 };
 /** Label for pull requests containing a breaking change. */
 export declare const breakingChangeLabel = "flag: breaking change";

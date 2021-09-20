@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { MergeConfig } from '../../config';
+import { PullRequestConfig } from '../../config';
 import { GithubConfig } from '../../../utils/config';
 import { Commit } from '../../../commit-message/parse';
 import { GithubClient } from '../../../utils/git/github';
@@ -57,10 +57,10 @@ export declare class InvalidTargetLabelError {
     constructor(failureMessage: string);
 }
 /** Gets the target label from the specified pull request labels. */
-export declare function getMatchingTargetLabelForPullRequest(config: Pick<MergeConfig, 'noTargetLabeling'>, labelsOnPullRequest: string[], allTargetLabels: TargetLabel[]): Promise<TargetLabel>;
+export declare function getMatchingTargetLabelForPullRequest(config: Pick<PullRequestConfig, 'noTargetLabeling'>, labelsOnPullRequest: string[], allTargetLabels: TargetLabel[]): Promise<TargetLabel>;
 /** Get the branches the pull request should be merged into. */
 export declare function getTargetBranchesForPullRequest(api: GithubClient, config: {
-    merge: MergeConfig;
+    pullRequest: PullRequestConfig;
     github: GithubConfig;
 }, labelsOnPullRequest: string[], githubTargetBranch: string, commits: Commit[]): Promise<string[]>;
 /**

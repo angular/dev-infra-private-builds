@@ -6,8 +6,9 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { AuthenticatedGitClient } from '../../utils/git/authenticated-git-client';
-import { MergeConfigWithRemote } from '../config';
+import { PullRequestConfig } from '../config';
 import { PullRequestFailure } from '../common/validation/failures';
+import { GithubConfig } from '../../utils/config';
 /** Describes the status of a pull request merge. */
 export declare const enum MergeStatus {
     UNKNOWN_GIT_ERROR = 0,
@@ -34,10 +35,16 @@ export interface PullRequestMergeTaskFlags {
  * labels that have been resolved through the merge script configuration.
  */
 export declare class PullRequestMergeTask {
-    config: MergeConfigWithRemote;
+    config: {
+        pullRequest: PullRequestConfig;
+        github: GithubConfig;
+    };
     git: AuthenticatedGitClient;
     private flags;
-    constructor(config: MergeConfigWithRemote, git: AuthenticatedGitClient, flags: Partial<PullRequestMergeTaskFlags>);
+    constructor(config: {
+        pullRequest: PullRequestConfig;
+        github: GithubConfig;
+    }, git: AuthenticatedGitClient, flags: Partial<PullRequestMergeTaskFlags>);
     /**
      * Merges the given pull request and pushes it upstream.
      * @param prNumber Pull request that should be merged.

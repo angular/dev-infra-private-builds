@@ -58794,27 +58794,27 @@ var require_config6 = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/pr/config/index.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.breakingChangeLabel = exports2.assertValidMergeConfig = void 0;
+    exports2.breakingChangeLabel = exports2.assertValidPullRequestConfig = void 0;
     var config_1 = require_config2();
-    function assertValidMergeConfig(config) {
+    function assertValidPullRequestConfig(config) {
       const errors = [];
-      if (config.merge === void 0) {
-        throw new config_1.ConfigValidationError("No merge configuration found. Set the `merge` configuration.");
+      if (config.pullRequest === void 0) {
+        throw new config_1.ConfigValidationError("No pullRequest configuration found. Set the `pullRequest` configuration.");
       }
-      if (!config.merge.claSignedLabel) {
+      if (!config.pullRequest.claSignedLabel) {
         errors.push("No CLA signed label configured.");
       }
-      if (!config.merge.mergeReadyLabel) {
+      if (!config.pullRequest.mergeReadyLabel) {
         errors.push("No merge ready label configured.");
       }
-      if (config.merge.githubApiMerge === void 0) {
+      if (config.pullRequest.githubApiMerge === void 0) {
         errors.push("No explicit choice of merge strategy. Please set `githubApiMerge`.");
       }
       if (errors.length) {
-        throw new config_1.ConfigValidationError("Invalid `merge` configuration", errors);
+        throw new config_1.ConfigValidationError("Invalid `pullRequest` configuration", errors);
       }
     }
-    exports2.assertValidMergeConfig = assertValidMergeConfig;
+    exports2.assertValidPullRequestConfig = assertValidPullRequestConfig;
     exports2.breakingChangeLabel = "flag: breaking change";
   }
 });
@@ -59180,14 +59180,14 @@ var require_target_label = __commonJS({
     }
     exports2.getMatchingTargetLabelForPullRequest = getMatchingTargetLabelForPullRequest;
     async function getTargetBranchesForPullRequest(api, config, labelsOnPullRequest, githubTargetBranch, commits) {
-      if (config.merge.noTargetLabeling) {
+      if (config.pullRequest.noTargetLabeling) {
         return [config.github.mainBranchName];
       }
       try {
         const targetLabels = await (0, labels_1.getTargetLabelsForActiveReleaseTrains)(api, config);
-        const matchingLabel = await getMatchingTargetLabelForPullRequest(config.merge, labelsOnPullRequest, targetLabels);
+        const matchingLabel = await getMatchingTargetLabelForPullRequest(config.pullRequest, labelsOnPullRequest, targetLabels);
         const targetBranches = await getBranchesFromTargetLabel(matchingLabel, githubTargetBranch);
-        (0, validations_1.assertChangesAllowForTargetLabel)(commits, matchingLabel, config.merge);
+        (0, validations_1.assertChangesAllowForTargetLabel)(commits, matchingLabel, config.pullRequest);
         return targetBranches;
       } catch (error) {
         if (error instanceof InvalidTargetBranchError || error instanceof InvalidTargetLabelError) {
@@ -59226,8 +59226,8 @@ var require_check_target_branches = __commonJS({
     async function printTargetBranchesForPr(prNumber) {
       const config = (0, config_1.getConfig)();
       (0, config_1.assertValidGithubConfig)(config);
-      (0, config_2.assertValidMergeConfig)(config);
-      if (config.merge.noTargetLabeling) {
+      (0, config_2.assertValidPullRequestConfig)(config);
+      if (config.pullRequest.noTargetLabeling) {
         (0, console_12.info)(`PR #${prNumber} will merge into: ${config.github.mainBranchName}`);
         return;
       }
@@ -59699,15 +59699,15 @@ var require_pull_request = __commonJS({
         return failures_1.PullRequestFailure.notFound();
       }
       const labels = prData.labels.nodes.map((l) => l.name);
-      if (!labels.some((name) => (0, string_pattern_1.matchesPattern)(name, config.mergeReadyLabel))) {
+      if (!labels.some((name) => (0, string_pattern_1.matchesPattern)(name, config.pullRequest.mergeReadyLabel))) {
         return failures_1.PullRequestFailure.notMergeReady();
       }
-      if (!labels.some((name) => (0, string_pattern_1.matchesPattern)(name, config.claSignedLabel))) {
+      if (!labels.some((name) => (0, string_pattern_1.matchesPattern)(name, config.pullRequest.claSignedLabel))) {
         return failures_1.PullRequestFailure.claUnsigned();
       }
       const commitsInPr = prData.commits.nodes.map((n) => (0, parse_1.parseCommitMessage)(n.commit.message));
       const githubTargetBranch = prData.baseRefName;
-      const targetBranches = await (0, target_label_1.getTargetBranchesForPullRequest)(git.github, { github: git.config.github, merge: config }, labels, githubTargetBranch, commitsInPr);
+      const targetBranches = await (0, target_label_1.getTargetBranchesForPullRequest)(git.github, config, labels, githubTargetBranch, commitsInPr);
       try {
         (0, validations_1.assertPendingState)(prData);
         (0, validations_1.assertCorrectBreakingChangeLabeling)(commitsInPr, labels);
@@ -59724,9 +59724,9 @@ var require_pull_request = __commonJS({
       if (state === "PENDING" && !ignoreNonFatalFailures) {
         return failures_1.PullRequestFailure.pendingCiJobs();
       }
-      const requiredBaseSha = config.requiredBaseCommits && config.requiredBaseCommits[githubTargetBranch];
-      const needsCommitMessageFixup = !!config.commitMessageFixupLabel && labels.some((name) => (0, string_pattern_1.matchesPattern)(name, config.commitMessageFixupLabel));
-      const hasCaretakerNote = !!config.caretakerNoteLabel && labels.some((name) => (0, string_pattern_1.matchesPattern)(name, config.caretakerNoteLabel));
+      const requiredBaseSha = config.pullRequest.requiredBaseCommits && config.pullRequest.requiredBaseCommits[githubTargetBranch];
+      const needsCommitMessageFixup = !!config.pullRequest.commitMessageFixupLabel && labels.some((name) => (0, string_pattern_1.matchesPattern)(name, config.pullRequest.commitMessageFixupLabel));
+      const hasCaretakerNote = !!config.pullRequest.caretakerNoteLabel && labels.some((name) => (0, string_pattern_1.matchesPattern)(name, config.pullRequest.caretakerNoteLabel));
       return {
         url: prData.url,
         prNumber,
@@ -60038,7 +60038,7 @@ var require_task = __commonJS({
         }
         const hasOauthScopes = await this.git.hasOauthScopes((scopes, missing) => {
           if (!scopes.includes("repo")) {
-            if (this.config.remote.private) {
+            if (this.config.github.private) {
               missing.push("repo");
             } else if (!scopes.includes("public_repo")) {
               missing.push("public_repo");
@@ -60064,7 +60064,7 @@ var require_task = __commonJS({
         if (pullRequest.hasCaretakerNote && !await (0, console_12.promptConfirm)((0, messages_1.getCaretakerNotePromptMessage)(pullRequest))) {
           return { status: 5 };
         }
-        const strategy = this.config.githubApiMerge ? new api_merge_1.GithubApiMergeStrategy(this.git, this.config.githubApiMerge) : new autosquash_merge_1.AutosquashMergeStrategy(this.git);
+        const strategy = this.config.pullRequest.githubApiMerge ? new api_merge_1.GithubApiMergeStrategy(this.git, this.config.pullRequest.githubApiMerge) : new autosquash_merge_1.AutosquashMergeStrategy(this.git);
         const previousBranchOrRevision = this.git.getCurrentBranchOrRevision();
         try {
           await strategy.prepare(pullRequest);
@@ -60172,12 +60172,9 @@ var require_merge3 = __commonJS({
       try {
         const config = (0, config_1.getConfig)();
         (0, config_1.assertValidGithubConfig)(config);
-        (0, config_2.assertValidMergeConfig)(config);
+        (0, config_2.assertValidPullRequestConfig)(config);
         const git = authenticated_git_client_1.AuthenticatedGitClient.get();
-        const mergeConfig = __spreadValues({
-          remote: config.github
-        }, config.merge);
-        return new task_1.PullRequestMergeTask(mergeConfig, git, flags);
+        return new task_1.PullRequestMergeTask(config, git, flags);
       } catch (e) {
         if (e instanceof config_1.ConfigValidationError) {
           if (e.errors.length) {
