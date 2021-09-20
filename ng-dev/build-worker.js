@@ -4642,6 +4642,18 @@ var require_clone = __commonJS({
   }
 });
 
+// node_modules/lodash/get.js
+var require_get = __commonJS({
+  "node_modules/lodash/get.js"(exports2, module2) {
+    var baseGet = require_baseGet();
+    function get(object, path, defaultValue) {
+      var result = object == null ? void 0 : baseGet(object, path);
+      return result === void 0 ? defaultValue : result;
+    }
+    module2.exports = get;
+  }
+});
+
 // node_modules/lodash/_baseSet.js
 var require_baseSet = __commonJS({
   "node_modules/lodash/_baseSet.js"(exports2, module2) {
@@ -14919,6 +14931,7 @@ var require_prompt = __commonJS({
       isPlainObject: require_isPlainObject(),
       clone: require_clone(),
       isArray: require_isArray(),
+      get: require_get(),
       set: require_set(),
       isFunction: require_isFunction()
     };
@@ -14976,7 +14989,7 @@ var require_prompt = __commonJS({
         return defer(() => of(question));
       }
       filterIfRunnable(question) {
-        if (question.askAnswered !== true && this.answers[question.name] !== void 0) {
+        if (question.askAnswered !== true && _.get(this.answers, question.name) !== void 0) {
           return empty();
         }
         if (question.when === false) {
@@ -15477,18 +15490,6 @@ var require_baseMatches = __commonJS({
   }
 });
 
-// node_modules/lodash/get.js
-var require_get = __commonJS({
-  "node_modules/lodash/get.js"(exports2, module2) {
-    var baseGet = require_baseGet();
-    function get(object, path, defaultValue) {
-      var result = object == null ? void 0 : baseGet(object, path);
-      return result === void 0 ? defaultValue : result;
-    }
-    module2.exports = get;
-  }
-});
-
 // node_modules/lodash/_baseHasIn.js
 var require_baseHasIn = __commonJS({
   "node_modules/lodash/_baseHasIn.js"(exports2, module2) {
@@ -15831,124 +15832,152 @@ var require_signals = __commonJS({
 // node_modules/signal-exit/index.js
 var require_signal_exit = __commonJS({
   "node_modules/signal-exit/index.js"(exports2, module2) {
-    var assert = require("assert");
-    var signals = require_signals();
-    var isWin = /^win/i.test(process.platform);
-    var EE = require("events");
-    if (typeof EE !== "function") {
-      EE = EE.EventEmitter;
-    }
-    var emitter;
-    if (process.__signal_exit_emitter__) {
-      emitter = process.__signal_exit_emitter__;
+    var process2 = global.process;
+    if (typeof process2 !== "object" || !process2) {
+      module2.exports = () => {
+      };
     } else {
-      emitter = process.__signal_exit_emitter__ = new EE();
-      emitter.count = 0;
-      emitter.emitted = {};
-    }
-    if (!emitter.infinite) {
-      emitter.setMaxListeners(Infinity);
-      emitter.infinite = true;
-    }
-    module2.exports = function(cb, opts) {
-      assert.equal(typeof cb, "function", "a callback must be provided for exit handler");
-      if (loaded === false) {
-        load();
+      assert = require("assert");
+      signals = require_signals();
+      isWin = /^win/i.test(process2.platform);
+      EE = require("events");
+      if (typeof EE !== "function") {
+        EE = EE.EventEmitter;
       }
-      var ev = "exit";
-      if (opts && opts.alwaysLast) {
-        ev = "afterexit";
-      }
-      var remove = function() {
-        emitter.removeListener(ev, cb);
-        if (emitter.listeners("exit").length === 0 && emitter.listeners("afterexit").length === 0) {
-          unload();
-        }
-      };
-      emitter.on(ev, cb);
-      return remove;
-    };
-    module2.exports.unload = unload;
-    function unload() {
-      if (!loaded) {
-        return;
-      }
-      loaded = false;
-      signals.forEach(function(sig) {
-        try {
-          process.removeListener(sig, sigListeners[sig]);
-        } catch (er) {
-        }
-      });
-      process.emit = originalProcessEmit;
-      process.reallyExit = originalProcessReallyExit;
-      emitter.count -= 1;
-    }
-    function emit(event, code, signal) {
-      if (emitter.emitted[event]) {
-        return;
-      }
-      emitter.emitted[event] = true;
-      emitter.emit(event, code, signal);
-    }
-    var sigListeners = {};
-    signals.forEach(function(sig) {
-      sigListeners[sig] = function listener() {
-        var listeners = process.listeners(sig);
-        if (listeners.length === emitter.count) {
-          unload();
-          emit("exit", null, sig);
-          emit("afterexit", null, sig);
-          if (isWin && sig === "SIGHUP") {
-            sig = "SIGINT";
-          }
-          process.kill(process.pid, sig);
-        }
-      };
-    });
-    module2.exports.signals = function() {
-      return signals;
-    };
-    module2.exports.load = load;
-    var loaded = false;
-    function load() {
-      if (loaded) {
-        return;
-      }
-      loaded = true;
-      emitter.count += 1;
-      signals = signals.filter(function(sig) {
-        try {
-          process.on(sig, sigListeners[sig]);
-          return true;
-        } catch (er) {
-          return false;
-        }
-      });
-      process.emit = processEmit;
-      process.reallyExit = processReallyExit;
-    }
-    var originalProcessReallyExit = process.reallyExit;
-    function processReallyExit(code) {
-      process.exitCode = code || 0;
-      emit("exit", process.exitCode, null);
-      emit("afterexit", process.exitCode, null);
-      originalProcessReallyExit.call(process, process.exitCode);
-    }
-    var originalProcessEmit = process.emit;
-    function processEmit(ev, arg) {
-      if (ev === "exit") {
-        if (arg !== void 0) {
-          process.exitCode = arg;
-        }
-        var ret = originalProcessEmit.apply(this, arguments);
-        emit("exit", process.exitCode, null);
-        emit("afterexit", process.exitCode, null);
-        return ret;
+      if (process2.__signal_exit_emitter__) {
+        emitter = process2.__signal_exit_emitter__;
       } else {
-        return originalProcessEmit.apply(this, arguments);
+        emitter = process2.__signal_exit_emitter__ = new EE();
+        emitter.count = 0;
+        emitter.emitted = {};
       }
+      if (!emitter.infinite) {
+        emitter.setMaxListeners(Infinity);
+        emitter.infinite = true;
+      }
+      module2.exports = function(cb, opts) {
+        if (global.process !== process2) {
+          return;
+        }
+        assert.equal(typeof cb, "function", "a callback must be provided for exit handler");
+        if (loaded === false) {
+          load();
+        }
+        var ev = "exit";
+        if (opts && opts.alwaysLast) {
+          ev = "afterexit";
+        }
+        var remove = function() {
+          emitter.removeListener(ev, cb);
+          if (emitter.listeners("exit").length === 0 && emitter.listeners("afterexit").length === 0) {
+            unload();
+          }
+        };
+        emitter.on(ev, cb);
+        return remove;
+      };
+      unload = function unload2() {
+        if (!loaded || global.process !== process2) {
+          return;
+        }
+        loaded = false;
+        signals.forEach(function(sig) {
+          try {
+            process2.removeListener(sig, sigListeners[sig]);
+          } catch (er) {
+          }
+        });
+        process2.emit = originalProcessEmit;
+        process2.reallyExit = originalProcessReallyExit;
+        emitter.count -= 1;
+      };
+      module2.exports.unload = unload;
+      emit = function emit2(event, code, signal) {
+        if (emitter.emitted[event]) {
+          return;
+        }
+        emitter.emitted[event] = true;
+        emitter.emit(event, code, signal);
+      };
+      sigListeners = {};
+      signals.forEach(function(sig) {
+        sigListeners[sig] = function listener() {
+          if (process2 !== global.process) {
+            return;
+          }
+          var listeners = process2.listeners(sig);
+          if (listeners.length === emitter.count) {
+            unload();
+            emit("exit", null, sig);
+            emit("afterexit", null, sig);
+            if (isWin && sig === "SIGHUP") {
+              sig = "SIGINT";
+            }
+            process2.kill(process2.pid, sig);
+          }
+        };
+      });
+      module2.exports.signals = function() {
+        return signals;
+      };
+      loaded = false;
+      load = function load2() {
+        if (loaded || process2 !== global.process) {
+          return;
+        }
+        loaded = true;
+        emitter.count += 1;
+        signals = signals.filter(function(sig) {
+          try {
+            process2.on(sig, sigListeners[sig]);
+            return true;
+          } catch (er) {
+            return false;
+          }
+        });
+        process2.emit = processEmit;
+        process2.reallyExit = processReallyExit;
+      };
+      module2.exports.load = load;
+      originalProcessReallyExit = process2.reallyExit;
+      processReallyExit = function processReallyExit2(code) {
+        if (process2 !== global.process) {
+          return;
+        }
+        process2.exitCode = code || 0;
+        emit("exit", process2.exitCode, null);
+        emit("afterexit", process2.exitCode, null);
+        originalProcessReallyExit.call(process2, process2.exitCode);
+      };
+      originalProcessEmit = process2.emit;
+      processEmit = function processEmit2(ev, arg) {
+        if (ev === "exit" && process2 === global.process) {
+          if (arg !== void 0) {
+            process2.exitCode = arg;
+          }
+          var ret = originalProcessEmit.apply(this, arguments);
+          emit("exit", process2.exitCode, null);
+          emit("afterexit", process2.exitCode, null);
+          return ret;
+        } else {
+          return originalProcessEmit.apply(this, arguments);
+        }
+      };
     }
+    var assert;
+    var signals;
+    var isWin;
+    var EE;
+    var emitter;
+    var unload;
+    var emit;
+    var sigListeners;
+    var loaded;
+    var load;
+    var originalProcessReallyExit;
+    var processReallyExit;
+    var originalProcessEmit;
+    var processEmit;
   }
 });
 
@@ -16400,7 +16429,7 @@ var require_ansi_regex = __commonJS({
     "use strict";
     module2.exports = ({ onlyFirst = false } = {}) => {
       const pattern = [
-        "[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)",
+        "[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]+)*|[a-zA-Z\\d]+(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)",
         "(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-ntqry=><~]))"
       ].join("|");
       return new RegExp(pattern, onlyFirst ? void 0 : "g");
@@ -21729,11 +21758,15 @@ var require_base = __commonJS({
         };
       }
       startSpinner(value, bottomContent) {
+        value = this.getSpinningValue(value);
         const content = bottomContent ? this.getQuestion() + value : this.getQuestion().slice(this.opt.prefix.length + 1) + value;
         this.screen.renderWithSpinner(content, bottomContent);
       }
+      getSpinningValue(value) {
+        return value;
+      }
       getQuestion() {
-        let message = this.opt.prefix + " " + chalk.bold(this.opt.message) + this.opt.suffix + chalk.reset(" ");
+        let message = (this.opt.prefix ? this.opt.prefix + " " : "") + chalk.bold(this.opt.message) + this.opt.suffix + chalk.reset(" ");
         if (this.opt.default != null && this.status !== "touched" && this.status !== "answered") {
           if (this.opt.type === "password") {
             message += chalk.italic.dim("[hidden] ");
@@ -22257,6 +22290,7 @@ var require_rawlist = __commonJS({
         if (index == null) {
           index = this.rawDefault;
         } else if (index === "") {
+          this.selected = this.selected === void 0 ? -1 : this.selected;
           index = this.selected;
         } else {
           index -= 1;
@@ -22856,16 +22890,23 @@ var require_password = __commonJS({
         let message = this.getQuestion();
         let bottomContent = "";
         if (this.status === "answered") {
-          message += this.opt.mask ? chalk.cyan(mask(this.answer, this.opt.mask)) : chalk.italic.dim("[hidden]");
-        } else if (this.opt.mask) {
-          message += mask(this.rl.line || "", this.opt.mask);
+          message += this.getMaskedValue(this.answer);
         } else {
-          message += chalk.italic.dim("[input is hidden] ");
+          message += this.getMaskedValue(this.rl.line || "");
         }
         if (error) {
           bottomContent = "\n" + chalk.red(">> ") + error;
         }
         this.screen.render(message, bottomContent);
+      }
+      getMaskedValue(value) {
+        if (this.status === "answered") {
+          return this.opt.mask ? chalk.cyan(mask(value, this.opt.mask)) : chalk.italic.dim("[hidden]");
+        }
+        return this.opt.mask ? mask(value, this.opt.mask) : chalk.italic.dim("[input is hidden] ");
+      }
+      getSpinningValue(value) {
+        return this.getMaskedValue(value);
       }
       filterInput(input) {
         if (!input) {
@@ -34444,8 +34485,14 @@ var require_dist_node7 = __commonJS({
   "node_modules/@octokit/auth-token/dist-node/index.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
+    var REGEX_IS_INSTALLATION_LEGACY = /^v1\./;
+    var REGEX_IS_INSTALLATION = /^ghs_/;
+    var REGEX_IS_USER_TO_SERVER = /^ghu_/;
     async function auth(token) {
-      const tokenType = token.split(/\./).length === 3 ? "app" : /^v\d+\./.test(token) ? "installation" : "oauth";
+      const isApp = token.split(/\./).length === 3;
+      const isInstallation = REGEX_IS_INSTALLATION_LEGACY.test(token) || REGEX_IS_INSTALLATION.test(token);
+      const isUserToServer = REGEX_IS_USER_TO_SERVER.test(token);
+      const tokenType = isApp ? "app" : isInstallation ? "installation" : isUserToServer ? "user-to-server" : "oauth";
       return {
         type: "token",
         token,
@@ -34646,7 +34693,7 @@ var require_dist_node10 = __commonJS({
   "node_modules/@octokit/plugin-paginate-rest/dist-node/index.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    var VERSION = "2.16.1";
+    var VERSION = "2.16.3";
     function ownKeys(object, enumerableOnly) {
       var keys = Object.keys(object);
       if (Object.getOwnPropertySymbols) {
@@ -35966,7 +36013,7 @@ var require_dist_node11 = __commonJS({
         updateAuthenticated: ["PATCH /user"]
       }
     };
-    var VERSION = "5.10.2";
+    var VERSION = "5.10.4";
     function endpointsToMethods(octokit, endpointsMap) {
       const newMethods = {};
       for (const [scope, endpoints] of Object.entries(endpointsMap)) {

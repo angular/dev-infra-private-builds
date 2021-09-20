@@ -347,6 +347,7 @@ export declare class GithubClient {
                         watchers_count: number;
                         created_at: string;
                         updated_at: string;
+                        allow_forking?: boolean | undefined;
                     } | null;
                     sha: string;
                     user: {
@@ -486,6 +487,7 @@ export declare class GithubClient {
                         watchers_count: number;
                         created_at: string;
                         updated_at: string;
+                        allow_forking?: boolean | undefined;
                     };
                     sha: string;
                     user: {
@@ -1274,6 +1276,7 @@ export declare class GithubClient {
                         watchers_count: number;
                         created_at: string;
                         updated_at: string;
+                        allow_forking?: boolean | undefined;
                     } | null;
                     sha: string;
                     user: {
@@ -1413,6 +1416,7 @@ export declare class GithubClient {
                         watchers_count: number;
                         created_at: string;
                         updated_at: string;
+                        allow_forking?: boolean | undefined;
                     };
                     sha: string;
                     user: {
@@ -2132,6 +2136,7 @@ export declare class GithubClient {
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
+                        allow_forking?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
                         open_issues: number;
@@ -2415,6 +2420,7 @@ export declare class GithubClient {
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
+                        allow_forking?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
                         open_issues: number;
@@ -2721,7 +2727,7 @@ export declare class GithubClient {
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 sha: string;
                 filename: string;
-                status: string;
+                status: "added" | "removed" | "modified" | "renamed" | "copied" | "changed" | "unchanged";
                 additions: number;
                 deletions: number;
                 changes: number;
@@ -3520,6 +3526,7 @@ export declare class GithubClient {
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
+                        allow_forking?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
                         open_issues: number;
@@ -3803,6 +3810,7 @@ export declare class GithubClient {
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
+                        allow_forking?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
                         open_issues: number;
@@ -4355,6 +4363,7 @@ export declare class GithubClient {
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
+                        allow_forking?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
                         open_issues: number;
@@ -4638,6 +4647,7 @@ export declare class GithubClient {
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
+                        allow_forking?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
                         open_issues: number;
@@ -5095,6 +5105,7 @@ export declare class GithubClient {
                         watchers_count: number;
                         created_at: string;
                         updated_at: string;
+                        allow_forking?: boolean | undefined;
                     } | null;
                     sha: string;
                     user: {
@@ -5234,6 +5245,7 @@ export declare class GithubClient {
                         watchers_count: number;
                         created_at: string;
                         updated_at: string;
+                        allow_forking?: boolean | undefined;
                     };
                     sha: string;
                     user: {
@@ -5947,6 +5959,7 @@ export declare class GithubClient {
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
+                        allow_forking?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
                         open_issues: number;
@@ -5975,6 +5988,7 @@ export declare class GithubClient {
                     forks?: number | undefined;
                     open_issues?: number | undefined;
                     watchers?: number | undefined;
+                    allow_forking?: boolean | undefined;
                 };
                 invitee: {
                     name?: string | null | undefined;
@@ -6478,7 +6492,7 @@ export declare class GithubClient {
                 files?: {
                     sha: string;
                     filename: string;
-                    status: string;
+                    status: "added" | "removed" | "modified" | "renamed" | "copied" | "changed" | "unchanged";
                     additions: number;
                     deletions: number;
                     changes: number;
@@ -6818,7 +6832,7 @@ export declare class GithubClient {
                 files?: {
                     sha: string;
                     filename: string;
-                    status: string;
+                    status: "added" | "removed" | "modified" | "renamed" | "copied" | "changed" | "unchanged";
                     additions: number;
                     deletions: number;
                     changes: number;
@@ -7508,6 +7522,7 @@ export declare class GithubClient {
                 allow_auto_merge?: boolean | undefined;
                 delete_branch_on_merge?: boolean | undefined;
                 allow_merge_commit?: boolean | undefined;
+                allow_forking?: boolean | undefined;
                 subscribers_count?: number | undefined;
                 network_count?: number | undefined;
                 open_issues: number;
@@ -7877,6 +7892,7 @@ export declare class GithubClient {
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
+                    allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
                     network_count?: number | undefined;
                     open_issues: number;
@@ -7889,6 +7905,7 @@ export declare class GithubClient {
                 allow_auto_merge?: boolean | undefined;
                 delete_branch_on_merge?: boolean | undefined;
                 allow_merge_commit?: boolean | undefined;
+                allow_forking?: boolean | undefined;
                 subscribers_count: number;
                 network_count: number;
                 license: {
@@ -8170,6 +8187,7 @@ export declare class GithubClient {
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
+                    allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
                     network_count?: number | undefined;
                     open_issues: number;
@@ -8425,6 +8443,7 @@ export declare class GithubClient {
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
+                    allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
                     network_count?: number | undefined;
                     open_issues: number;
@@ -8727,6 +8746,7 @@ export declare class GithubClient {
                 allow_auto_merge?: boolean | undefined;
                 delete_branch_on_merge?: boolean | undefined;
                 allow_merge_commit?: boolean | undefined;
+                allow_forking?: boolean | undefined;
                 subscribers_count?: number | undefined;
                 network_count?: number | undefined;
                 open_issues: number;
@@ -9379,6 +9399,7 @@ export declare class GithubClient {
                 allow_auto_merge?: boolean | undefined;
                 delete_branch_on_merge?: boolean | undefined;
                 allow_merge_commit?: boolean | undefined;
+                allow_forking?: boolean | undefined;
                 subscribers_count?: number | undefined;
                 network_count?: number | undefined;
                 open_issues: number;
@@ -10149,6 +10170,7 @@ export declare class GithubClient {
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
+                    allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
                     network_count?: number | undefined;
                     open_issues: number;
@@ -10161,6 +10183,7 @@ export declare class GithubClient {
                 allow_auto_merge?: boolean | undefined;
                 delete_branch_on_merge?: boolean | undefined;
                 allow_merge_commit?: boolean | undefined;
+                allow_forking?: boolean | undefined;
                 subscribers_count: number;
                 network_count: number;
                 license: {
@@ -10442,6 +10465,7 @@ export declare class GithubClient {
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
+                    allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
                     network_count?: number | undefined;
                     open_issues: number;
@@ -10697,6 +10721,7 @@ export declare class GithubClient {
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
+                    allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
                     network_count?: number | undefined;
                     open_issues: number;
@@ -11981,6 +12006,7 @@ export declare class GithubClient {
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
+                        allow_forking?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
                         open_issues: number;
@@ -12009,6 +12035,7 @@ export declare class GithubClient {
                     forks?: number | undefined;
                     open_issues?: number | undefined;
                     watchers?: number | undefined;
+                    allow_forking?: boolean | undefined;
                 };
                 commit_url: string;
                 url: string;
@@ -14761,6 +14788,7 @@ export declare class GithubClient {
                 allow_auto_merge?: boolean | undefined;
                 delete_branch_on_merge?: boolean | undefined;
                 allow_merge_commit?: boolean | undefined;
+                allow_forking?: boolean | undefined;
                 subscribers_count?: number | undefined;
                 network_count?: number | undefined;
                 open_issues: number;
@@ -15132,6 +15160,7 @@ export declare class GithubClient {
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
+                    allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
                     network_count?: number | undefined;
                     open_issues: number;
@@ -15160,6 +15189,7 @@ export declare class GithubClient {
                 forks?: number | undefined;
                 open_issues?: number | undefined;
                 watchers?: number | undefined;
+                allow_forking?: boolean | undefined;
             }[], 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
@@ -15525,6 +15555,7 @@ export declare class GithubClient {
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
+                    allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
                     network_count?: number | undefined;
                     open_issues: number;
@@ -15553,6 +15584,7 @@ export declare class GithubClient {
                 forks?: number | undefined;
                 open_issues?: number | undefined;
                 watchers?: number | undefined;
+                allow_forking?: boolean | undefined;
             }[], 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
@@ -15917,6 +15949,7 @@ export declare class GithubClient {
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
+                    allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
                     network_count?: number | undefined;
                     open_issues: number;
@@ -15945,6 +15978,7 @@ export declare class GithubClient {
                 forks?: number | undefined;
                 open_issues?: number | undefined;
                 watchers?: number | undefined;
+                allow_forking?: boolean | undefined;
             }[], 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
@@ -16310,6 +16344,7 @@ export declare class GithubClient {
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
+                        allow_forking?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
                         open_issues: number;
@@ -16338,6 +16373,7 @@ export declare class GithubClient {
                     forks?: number | undefined;
                     open_issues?: number | undefined;
                     watchers?: number | undefined;
+                    allow_forking?: boolean | undefined;
                 };
                 invitee: {
                     name?: string | null | undefined;
@@ -16753,6 +16789,7 @@ export declare class GithubClient {
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
+                        allow_forking?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
                         open_issues: number;
@@ -16781,6 +16818,7 @@ export declare class GithubClient {
                     forks?: number | undefined;
                     open_issues?: number | undefined;
                     watchers?: number | undefined;
+                    allow_forking?: boolean | undefined;
                 };
                 invitee: {
                     name?: string | null | undefined;
@@ -17251,6 +17289,7 @@ export declare class GithubClient {
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
+                    allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
                     network_count?: number | undefined;
                     open_issues: number;
@@ -17279,6 +17318,7 @@ export declare class GithubClient {
                 forks?: number | undefined;
                 open_issues?: number | undefined;
                 watchers?: number | undefined;
+                allow_forking?: boolean | undefined;
             }[], 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
@@ -17747,6 +17787,7 @@ export declare class GithubClient {
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
+                        allow_forking?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
                         open_issues: number;
@@ -18030,6 +18071,7 @@ export declare class GithubClient {
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
+                        allow_forking?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
                         open_issues: number;
@@ -19624,6 +19666,7 @@ export declare class GithubClient {
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
+                    allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
                     network_count?: number | undefined;
                     open_issues: number;
@@ -19652,6 +19695,7 @@ export declare class GithubClient {
                 forks?: number | undefined;
                 open_issues?: number | undefined;
                 watchers?: number | undefined;
+                allow_forking?: boolean | undefined;
             }, 202>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
@@ -19687,6 +19731,7 @@ export declare class GithubClient {
                 allow_auto_merge?: boolean | undefined;
                 delete_branch_on_merge?: boolean | undefined;
                 archived?: boolean | undefined;
+                allow_forking?: boolean | undefined;
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 id: number;
                 node_id: string;
@@ -20038,6 +20083,7 @@ export declare class GithubClient {
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
+                    allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
                     network_count?: number | undefined;
                     open_issues: number;
@@ -20050,6 +20096,7 @@ export declare class GithubClient {
                 allow_auto_merge?: boolean | undefined;
                 delete_branch_on_merge?: boolean | undefined;
                 allow_merge_commit?: boolean | undefined;
+                allow_forking?: boolean | undefined;
                 subscribers_count: number;
                 network_count: number;
                 license: {
@@ -20331,6 +20378,7 @@ export declare class GithubClient {
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
+                    allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
                     network_count?: number | undefined;
                     open_issues: number;
@@ -20586,6 +20634,7 @@ export declare class GithubClient {
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
+                    allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
                     network_count?: number | undefined;
                     open_issues: number;
@@ -21270,6 +21319,7 @@ export declare class GithubClient {
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
+                        allow_forking?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
                         open_issues: number;
@@ -21298,6 +21348,7 @@ export declare class GithubClient {
                     forks?: number | undefined;
                     open_issues?: number | undefined;
                     watchers?: number | undefined;
+                    allow_forking?: boolean | undefined;
                 };
                 invitee: {
                     name?: string | null | undefined;
@@ -22175,6 +22226,7 @@ export declare class GithubClient {
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
+                    allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
                     network_count?: number | undefined;
                     open_issues: number;
@@ -22707,6 +22759,7 @@ export declare class GithubClient {
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
+                    allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
                     network_count?: number | undefined;
                     open_issues: number;
@@ -23423,6 +23476,7 @@ export declare class GithubClient {
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
+                    allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
                     network_count?: number | undefined;
                     open_issues: number;
@@ -24037,6 +24091,7 @@ export declare class GithubClient {
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
+                        allow_forking?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
                         open_issues: number;
@@ -24803,6 +24858,7 @@ export declare class GithubClient {
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
+                    allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
                     network_count?: number | undefined;
                     open_issues: number;
@@ -27093,6 +27149,7 @@ export declare class GithubClient {
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
+                        allow_forking?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
                         open_issues: number;
@@ -29172,6 +29229,7 @@ export declare class GithubClient {
                             allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
+                            allow_forking?: boolean | undefined;
                             subscribers_count?: number | undefined;
                             network_count?: number | undefined;
                             open_issues: number;
@@ -30075,6 +30133,7 @@ export declare class GithubClient {
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
+                    allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
                     network_count?: number | undefined;
                     open_issues: number;
@@ -30580,6 +30639,7 @@ export declare class GithubClient {
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
+                    allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
                     network_count?: number | undefined;
                     open_issues: number;
@@ -31067,6 +31127,7 @@ export declare class GithubClient {
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
+                    allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
                     network_count?: number | undefined;
                     open_issues: number;
@@ -31676,6 +31737,7 @@ export declare class GithubClient {
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
+                    allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
                     network_count?: number | undefined;
                     open_issues: number;
@@ -32230,6 +32292,7 @@ export declare class GithubClient {
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
+                    allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
                     network_count?: number | undefined;
                     open_issues: number;
@@ -33386,6 +33449,7 @@ export declare class GithubClient {
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
+                    allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
                     network_count?: number | undefined;
                     open_issues: number;
@@ -33398,6 +33462,7 @@ export declare class GithubClient {
                 allow_auto_merge?: boolean | undefined;
                 delete_branch_on_merge?: boolean | undefined;
                 allow_merge_commit?: boolean | undefined;
+                allow_forking?: boolean | undefined;
                 subscribers_count?: number | undefined;
                 network_count?: number | undefined;
                 open_issues: number;
@@ -34717,6 +34782,7 @@ export declare class GithubClient {
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
+                    allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
                     network_count?: number | undefined;
                     open_issues: number;
@@ -34745,6 +34811,7 @@ export declare class GithubClient {
                 forks?: number | undefined;
                 open_issues?: number | undefined;
                 watchers?: number | undefined;
+                allow_forking?: boolean | undefined;
             }[], 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
