@@ -26,8 +26,8 @@ var __markAsModule = (target) => __defProp(target, "__esModule", { value: true }
 var __require = typeof require !== "undefined" ? require : (x) => {
   throw new Error('Dynamic require of "' + x + '" is not supported');
 };
-var __commonJS = (cb, mod) => function __require2() {
-  return mod || (0, cb[Object.keys(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+var __commonJS = (cb, mod2) => function __require2() {
+  return mod2 || (0, cb[Object.keys(cb)[0]])((mod2 = { exports: {} }).exports, mod2), mod2.exports;
 };
 var __reExport = (target, module2, desc) => {
   if (module2 && typeof module2 === "object" || typeof module2 === "function") {
@@ -65365,6 +65365,2235 @@ var require_cli25 = __commonJS({
   }
 });
 
+// node_modules/@protobufjs/aspromise/index.js
+var require_aspromise = __commonJS({
+  "node_modules/@protobufjs/aspromise/index.js"(exports2, module2) {
+    "use strict";
+    module2.exports = asPromise;
+    function asPromise(fn, ctx) {
+      var params = new Array(arguments.length - 1), offset = 0, index = 2, pending = true;
+      while (index < arguments.length)
+        params[offset++] = arguments[index++];
+      return new Promise(function executor(resolve, reject) {
+        params[offset] = function callback(err) {
+          if (pending) {
+            pending = false;
+            if (err)
+              reject(err);
+            else {
+              var params2 = new Array(arguments.length - 1), offset2 = 0;
+              while (offset2 < params2.length)
+                params2[offset2++] = arguments[offset2];
+              resolve.apply(null, params2);
+            }
+          }
+        };
+        try {
+          fn.apply(ctx || null, params);
+        } catch (err) {
+          if (pending) {
+            pending = false;
+            reject(err);
+          }
+        }
+      });
+    }
+  }
+});
+
+// node_modules/@protobufjs/base64/index.js
+var require_base64 = __commonJS({
+  "node_modules/@protobufjs/base64/index.js"(exports2) {
+    "use strict";
+    var base64 = exports2;
+    base64.length = function length(string) {
+      var p = string.length;
+      if (!p)
+        return 0;
+      var n = 0;
+      while (--p % 4 > 1 && string.charAt(p) === "=")
+        ++n;
+      return Math.ceil(string.length * 3) / 4 - n;
+    };
+    var b64 = new Array(64);
+    var s64 = new Array(123);
+    for (i = 0; i < 64; )
+      s64[b64[i] = i < 26 ? i + 65 : i < 52 ? i + 71 : i < 62 ? i - 4 : i - 59 | 43] = i++;
+    var i;
+    base64.encode = function encode(buffer, start, end) {
+      var parts = null, chunk = [];
+      var i2 = 0, j = 0, t;
+      while (start < end) {
+        var b = buffer[start++];
+        switch (j) {
+          case 0:
+            chunk[i2++] = b64[b >> 2];
+            t = (b & 3) << 4;
+            j = 1;
+            break;
+          case 1:
+            chunk[i2++] = b64[t | b >> 4];
+            t = (b & 15) << 2;
+            j = 2;
+            break;
+          case 2:
+            chunk[i2++] = b64[t | b >> 6];
+            chunk[i2++] = b64[b & 63];
+            j = 0;
+            break;
+        }
+        if (i2 > 8191) {
+          (parts || (parts = [])).push(String.fromCharCode.apply(String, chunk));
+          i2 = 0;
+        }
+      }
+      if (j) {
+        chunk[i2++] = b64[t];
+        chunk[i2++] = 61;
+        if (j === 1)
+          chunk[i2++] = 61;
+      }
+      if (parts) {
+        if (i2)
+          parts.push(String.fromCharCode.apply(String, chunk.slice(0, i2)));
+        return parts.join("");
+      }
+      return String.fromCharCode.apply(String, chunk.slice(0, i2));
+    };
+    var invalidEncoding = "invalid encoding";
+    base64.decode = function decode(string, buffer, offset) {
+      var start = offset;
+      var j = 0, t;
+      for (var i2 = 0; i2 < string.length; ) {
+        var c = string.charCodeAt(i2++);
+        if (c === 61 && j > 1)
+          break;
+        if ((c = s64[c]) === void 0)
+          throw Error(invalidEncoding);
+        switch (j) {
+          case 0:
+            t = c;
+            j = 1;
+            break;
+          case 1:
+            buffer[offset++] = t << 2 | (c & 48) >> 4;
+            t = c;
+            j = 2;
+            break;
+          case 2:
+            buffer[offset++] = (t & 15) << 4 | (c & 60) >> 2;
+            t = c;
+            j = 3;
+            break;
+          case 3:
+            buffer[offset++] = (t & 3) << 6 | c;
+            j = 0;
+            break;
+        }
+      }
+      if (j === 1)
+        throw Error(invalidEncoding);
+      return offset - start;
+    };
+    base64.test = function test(string) {
+      return /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(string);
+    };
+  }
+});
+
+// node_modules/@protobufjs/eventemitter/index.js
+var require_eventemitter = __commonJS({
+  "node_modules/@protobufjs/eventemitter/index.js"(exports2, module2) {
+    "use strict";
+    module2.exports = EventEmitter;
+    function EventEmitter() {
+      this._listeners = {};
+    }
+    EventEmitter.prototype.on = function on(evt, fn, ctx) {
+      (this._listeners[evt] || (this._listeners[evt] = [])).push({
+        fn,
+        ctx: ctx || this
+      });
+      return this;
+    };
+    EventEmitter.prototype.off = function off(evt, fn) {
+      if (evt === void 0)
+        this._listeners = {};
+      else {
+        if (fn === void 0)
+          this._listeners[evt] = [];
+        else {
+          var listeners = this._listeners[evt];
+          for (var i = 0; i < listeners.length; )
+            if (listeners[i].fn === fn)
+              listeners.splice(i, 1);
+            else
+              ++i;
+        }
+      }
+      return this;
+    };
+    EventEmitter.prototype.emit = function emit(evt) {
+      var listeners = this._listeners[evt];
+      if (listeners) {
+        var args = [], i = 1;
+        for (; i < arguments.length; )
+          args.push(arguments[i++]);
+        for (i = 0; i < listeners.length; )
+          listeners[i].fn.apply(listeners[i++].ctx, args);
+      }
+      return this;
+    };
+  }
+});
+
+// node_modules/@protobufjs/float/index.js
+var require_float = __commonJS({
+  "node_modules/@protobufjs/float/index.js"(exports2, module2) {
+    "use strict";
+    module2.exports = factory(factory);
+    function factory(exports3) {
+      if (typeof Float32Array !== "undefined")
+        (function() {
+          var f32 = new Float32Array([-0]), f8b = new Uint8Array(f32.buffer), le = f8b[3] === 128;
+          function writeFloat_f32_cpy(val, buf, pos) {
+            f32[0] = val;
+            buf[pos] = f8b[0];
+            buf[pos + 1] = f8b[1];
+            buf[pos + 2] = f8b[2];
+            buf[pos + 3] = f8b[3];
+          }
+          function writeFloat_f32_rev(val, buf, pos) {
+            f32[0] = val;
+            buf[pos] = f8b[3];
+            buf[pos + 1] = f8b[2];
+            buf[pos + 2] = f8b[1];
+            buf[pos + 3] = f8b[0];
+          }
+          exports3.writeFloatLE = le ? writeFloat_f32_cpy : writeFloat_f32_rev;
+          exports3.writeFloatBE = le ? writeFloat_f32_rev : writeFloat_f32_cpy;
+          function readFloat_f32_cpy(buf, pos) {
+            f8b[0] = buf[pos];
+            f8b[1] = buf[pos + 1];
+            f8b[2] = buf[pos + 2];
+            f8b[3] = buf[pos + 3];
+            return f32[0];
+          }
+          function readFloat_f32_rev(buf, pos) {
+            f8b[3] = buf[pos];
+            f8b[2] = buf[pos + 1];
+            f8b[1] = buf[pos + 2];
+            f8b[0] = buf[pos + 3];
+            return f32[0];
+          }
+          exports3.readFloatLE = le ? readFloat_f32_cpy : readFloat_f32_rev;
+          exports3.readFloatBE = le ? readFloat_f32_rev : readFloat_f32_cpy;
+        })();
+      else
+        (function() {
+          function writeFloat_ieee754(writeUint, val, buf, pos) {
+            var sign = val < 0 ? 1 : 0;
+            if (sign)
+              val = -val;
+            if (val === 0)
+              writeUint(1 / val > 0 ? 0 : 2147483648, buf, pos);
+            else if (isNaN(val))
+              writeUint(2143289344, buf, pos);
+            else if (val > 34028234663852886e22)
+              writeUint((sign << 31 | 2139095040) >>> 0, buf, pos);
+            else if (val < 11754943508222875e-54)
+              writeUint((sign << 31 | Math.round(val / 1401298464324817e-60)) >>> 0, buf, pos);
+            else {
+              var exponent = Math.floor(Math.log(val) / Math.LN2), mantissa = Math.round(val * Math.pow(2, -exponent) * 8388608) & 8388607;
+              writeUint((sign << 31 | exponent + 127 << 23 | mantissa) >>> 0, buf, pos);
+            }
+          }
+          exports3.writeFloatLE = writeFloat_ieee754.bind(null, writeUintLE);
+          exports3.writeFloatBE = writeFloat_ieee754.bind(null, writeUintBE);
+          function readFloat_ieee754(readUint, buf, pos) {
+            var uint = readUint(buf, pos), sign = (uint >> 31) * 2 + 1, exponent = uint >>> 23 & 255, mantissa = uint & 8388607;
+            return exponent === 255 ? mantissa ? NaN : sign * Infinity : exponent === 0 ? sign * 1401298464324817e-60 * mantissa : sign * Math.pow(2, exponent - 150) * (mantissa + 8388608);
+          }
+          exports3.readFloatLE = readFloat_ieee754.bind(null, readUintLE);
+          exports3.readFloatBE = readFloat_ieee754.bind(null, readUintBE);
+        })();
+      if (typeof Float64Array !== "undefined")
+        (function() {
+          var f64 = new Float64Array([-0]), f8b = new Uint8Array(f64.buffer), le = f8b[7] === 128;
+          function writeDouble_f64_cpy(val, buf, pos) {
+            f64[0] = val;
+            buf[pos] = f8b[0];
+            buf[pos + 1] = f8b[1];
+            buf[pos + 2] = f8b[2];
+            buf[pos + 3] = f8b[3];
+            buf[pos + 4] = f8b[4];
+            buf[pos + 5] = f8b[5];
+            buf[pos + 6] = f8b[6];
+            buf[pos + 7] = f8b[7];
+          }
+          function writeDouble_f64_rev(val, buf, pos) {
+            f64[0] = val;
+            buf[pos] = f8b[7];
+            buf[pos + 1] = f8b[6];
+            buf[pos + 2] = f8b[5];
+            buf[pos + 3] = f8b[4];
+            buf[pos + 4] = f8b[3];
+            buf[pos + 5] = f8b[2];
+            buf[pos + 6] = f8b[1];
+            buf[pos + 7] = f8b[0];
+          }
+          exports3.writeDoubleLE = le ? writeDouble_f64_cpy : writeDouble_f64_rev;
+          exports3.writeDoubleBE = le ? writeDouble_f64_rev : writeDouble_f64_cpy;
+          function readDouble_f64_cpy(buf, pos) {
+            f8b[0] = buf[pos];
+            f8b[1] = buf[pos + 1];
+            f8b[2] = buf[pos + 2];
+            f8b[3] = buf[pos + 3];
+            f8b[4] = buf[pos + 4];
+            f8b[5] = buf[pos + 5];
+            f8b[6] = buf[pos + 6];
+            f8b[7] = buf[pos + 7];
+            return f64[0];
+          }
+          function readDouble_f64_rev(buf, pos) {
+            f8b[7] = buf[pos];
+            f8b[6] = buf[pos + 1];
+            f8b[5] = buf[pos + 2];
+            f8b[4] = buf[pos + 3];
+            f8b[3] = buf[pos + 4];
+            f8b[2] = buf[pos + 5];
+            f8b[1] = buf[pos + 6];
+            f8b[0] = buf[pos + 7];
+            return f64[0];
+          }
+          exports3.readDoubleLE = le ? readDouble_f64_cpy : readDouble_f64_rev;
+          exports3.readDoubleBE = le ? readDouble_f64_rev : readDouble_f64_cpy;
+        })();
+      else
+        (function() {
+          function writeDouble_ieee754(writeUint, off0, off1, val, buf, pos) {
+            var sign = val < 0 ? 1 : 0;
+            if (sign)
+              val = -val;
+            if (val === 0) {
+              writeUint(0, buf, pos + off0);
+              writeUint(1 / val > 0 ? 0 : 2147483648, buf, pos + off1);
+            } else if (isNaN(val)) {
+              writeUint(0, buf, pos + off0);
+              writeUint(2146959360, buf, pos + off1);
+            } else if (val > 17976931348623157e292) {
+              writeUint(0, buf, pos + off0);
+              writeUint((sign << 31 | 2146435072) >>> 0, buf, pos + off1);
+            } else {
+              var mantissa;
+              if (val < 22250738585072014e-324) {
+                mantissa = val / 5e-324;
+                writeUint(mantissa >>> 0, buf, pos + off0);
+                writeUint((sign << 31 | mantissa / 4294967296) >>> 0, buf, pos + off1);
+              } else {
+                var exponent = Math.floor(Math.log(val) / Math.LN2);
+                if (exponent === 1024)
+                  exponent = 1023;
+                mantissa = val * Math.pow(2, -exponent);
+                writeUint(mantissa * 4503599627370496 >>> 0, buf, pos + off0);
+                writeUint((sign << 31 | exponent + 1023 << 20 | mantissa * 1048576 & 1048575) >>> 0, buf, pos + off1);
+              }
+            }
+          }
+          exports3.writeDoubleLE = writeDouble_ieee754.bind(null, writeUintLE, 0, 4);
+          exports3.writeDoubleBE = writeDouble_ieee754.bind(null, writeUintBE, 4, 0);
+          function readDouble_ieee754(readUint, off0, off1, buf, pos) {
+            var lo = readUint(buf, pos + off0), hi = readUint(buf, pos + off1);
+            var sign = (hi >> 31) * 2 + 1, exponent = hi >>> 20 & 2047, mantissa = 4294967296 * (hi & 1048575) + lo;
+            return exponent === 2047 ? mantissa ? NaN : sign * Infinity : exponent === 0 ? sign * 5e-324 * mantissa : sign * Math.pow(2, exponent - 1075) * (mantissa + 4503599627370496);
+          }
+          exports3.readDoubleLE = readDouble_ieee754.bind(null, readUintLE, 0, 4);
+          exports3.readDoubleBE = readDouble_ieee754.bind(null, readUintBE, 4, 0);
+        })();
+      return exports3;
+    }
+    function writeUintLE(val, buf, pos) {
+      buf[pos] = val & 255;
+      buf[pos + 1] = val >>> 8 & 255;
+      buf[pos + 2] = val >>> 16 & 255;
+      buf[pos + 3] = val >>> 24;
+    }
+    function writeUintBE(val, buf, pos) {
+      buf[pos] = val >>> 24;
+      buf[pos + 1] = val >>> 16 & 255;
+      buf[pos + 2] = val >>> 8 & 255;
+      buf[pos + 3] = val & 255;
+    }
+    function readUintLE(buf, pos) {
+      return (buf[pos] | buf[pos + 1] << 8 | buf[pos + 2] << 16 | buf[pos + 3] << 24) >>> 0;
+    }
+    function readUintBE(buf, pos) {
+      return (buf[pos] << 24 | buf[pos + 1] << 16 | buf[pos + 2] << 8 | buf[pos + 3]) >>> 0;
+    }
+  }
+});
+
+// node_modules/@protobufjs/inquire/index.js
+var require_inquire = __commonJS({
+  "node_modules/@protobufjs/inquire/index.js"(exports, module) {
+    "use strict";
+    module.exports = inquire;
+    function inquire(moduleName) {
+      try {
+        var mod = eval("quire".replace(/^/, "re"))(moduleName);
+        if (mod && (mod.length || Object.keys(mod).length))
+          return mod;
+      } catch (e) {
+      }
+      return null;
+    }
+  }
+});
+
+// node_modules/@protobufjs/utf8/index.js
+var require_utf82 = __commonJS({
+  "node_modules/@protobufjs/utf8/index.js"(exports2) {
+    "use strict";
+    var utf8 = exports2;
+    utf8.length = function utf8_length(string) {
+      var len = 0, c = 0;
+      for (var i = 0; i < string.length; ++i) {
+        c = string.charCodeAt(i);
+        if (c < 128)
+          len += 1;
+        else if (c < 2048)
+          len += 2;
+        else if ((c & 64512) === 55296 && (string.charCodeAt(i + 1) & 64512) === 56320) {
+          ++i;
+          len += 4;
+        } else
+          len += 3;
+      }
+      return len;
+    };
+    utf8.read = function utf8_read(buffer, start, end) {
+      var len = end - start;
+      if (len < 1)
+        return "";
+      var parts = null, chunk = [], i = 0, t;
+      while (start < end) {
+        t = buffer[start++];
+        if (t < 128)
+          chunk[i++] = t;
+        else if (t > 191 && t < 224)
+          chunk[i++] = (t & 31) << 6 | buffer[start++] & 63;
+        else if (t > 239 && t < 365) {
+          t = ((t & 7) << 18 | (buffer[start++] & 63) << 12 | (buffer[start++] & 63) << 6 | buffer[start++] & 63) - 65536;
+          chunk[i++] = 55296 + (t >> 10);
+          chunk[i++] = 56320 + (t & 1023);
+        } else
+          chunk[i++] = (t & 15) << 12 | (buffer[start++] & 63) << 6 | buffer[start++] & 63;
+        if (i > 8191) {
+          (parts || (parts = [])).push(String.fromCharCode.apply(String, chunk));
+          i = 0;
+        }
+      }
+      if (parts) {
+        if (i)
+          parts.push(String.fromCharCode.apply(String, chunk.slice(0, i)));
+        return parts.join("");
+      }
+      return String.fromCharCode.apply(String, chunk.slice(0, i));
+    };
+    utf8.write = function utf8_write(string, buffer, offset) {
+      var start = offset, c1, c2;
+      for (var i = 0; i < string.length; ++i) {
+        c1 = string.charCodeAt(i);
+        if (c1 < 128) {
+          buffer[offset++] = c1;
+        } else if (c1 < 2048) {
+          buffer[offset++] = c1 >> 6 | 192;
+          buffer[offset++] = c1 & 63 | 128;
+        } else if ((c1 & 64512) === 55296 && ((c2 = string.charCodeAt(i + 1)) & 64512) === 56320) {
+          c1 = 65536 + ((c1 & 1023) << 10) + (c2 & 1023);
+          ++i;
+          buffer[offset++] = c1 >> 18 | 240;
+          buffer[offset++] = c1 >> 12 & 63 | 128;
+          buffer[offset++] = c1 >> 6 & 63 | 128;
+          buffer[offset++] = c1 & 63 | 128;
+        } else {
+          buffer[offset++] = c1 >> 12 | 224;
+          buffer[offset++] = c1 >> 6 & 63 | 128;
+          buffer[offset++] = c1 & 63 | 128;
+        }
+      }
+      return offset - start;
+    };
+  }
+});
+
+// node_modules/@protobufjs/pool/index.js
+var require_pool = __commonJS({
+  "node_modules/@protobufjs/pool/index.js"(exports2, module2) {
+    "use strict";
+    module2.exports = pool;
+    function pool(alloc, slice, size) {
+      var SIZE = size || 8192;
+      var MAX = SIZE >>> 1;
+      var slab = null;
+      var offset = SIZE;
+      return function pool_alloc(size2) {
+        if (size2 < 1 || size2 > MAX)
+          return alloc(size2);
+        if (offset + size2 > SIZE) {
+          slab = alloc(SIZE);
+          offset = 0;
+        }
+        var buf = slice.call(slab, offset, offset += size2);
+        if (offset & 7)
+          offset = (offset | 7) + 1;
+        return buf;
+      };
+    }
+  }
+});
+
+// node_modules/protobufjs/src/util/longbits.js
+var require_longbits = __commonJS({
+  "node_modules/protobufjs/src/util/longbits.js"(exports2, module2) {
+    "use strict";
+    module2.exports = LongBits;
+    var util = require_minimal();
+    function LongBits(lo, hi) {
+      this.lo = lo >>> 0;
+      this.hi = hi >>> 0;
+    }
+    var zero = LongBits.zero = new LongBits(0, 0);
+    zero.toNumber = function() {
+      return 0;
+    };
+    zero.zzEncode = zero.zzDecode = function() {
+      return this;
+    };
+    zero.length = function() {
+      return 1;
+    };
+    var zeroHash = LongBits.zeroHash = "\0\0\0\0\0\0\0\0";
+    LongBits.fromNumber = function fromNumber(value) {
+      if (value === 0)
+        return zero;
+      var sign = value < 0;
+      if (sign)
+        value = -value;
+      var lo = value >>> 0, hi = (value - lo) / 4294967296 >>> 0;
+      if (sign) {
+        hi = ~hi >>> 0;
+        lo = ~lo >>> 0;
+        if (++lo > 4294967295) {
+          lo = 0;
+          if (++hi > 4294967295)
+            hi = 0;
+        }
+      }
+      return new LongBits(lo, hi);
+    };
+    LongBits.from = function from(value) {
+      if (typeof value === "number")
+        return LongBits.fromNumber(value);
+      if (util.isString(value)) {
+        if (util.Long)
+          value = util.Long.fromString(value);
+        else
+          return LongBits.fromNumber(parseInt(value, 10));
+      }
+      return value.low || value.high ? new LongBits(value.low >>> 0, value.high >>> 0) : zero;
+    };
+    LongBits.prototype.toNumber = function toNumber(unsigned) {
+      if (!unsigned && this.hi >>> 31) {
+        var lo = ~this.lo + 1 >>> 0, hi = ~this.hi >>> 0;
+        if (!lo)
+          hi = hi + 1 >>> 0;
+        return -(lo + hi * 4294967296);
+      }
+      return this.lo + this.hi * 4294967296;
+    };
+    LongBits.prototype.toLong = function toLong(unsigned) {
+      return util.Long ? new util.Long(this.lo | 0, this.hi | 0, Boolean(unsigned)) : { low: this.lo | 0, high: this.hi | 0, unsigned: Boolean(unsigned) };
+    };
+    var charCodeAt = String.prototype.charCodeAt;
+    LongBits.fromHash = function fromHash(hash) {
+      if (hash === zeroHash)
+        return zero;
+      return new LongBits((charCodeAt.call(hash, 0) | charCodeAt.call(hash, 1) << 8 | charCodeAt.call(hash, 2) << 16 | charCodeAt.call(hash, 3) << 24) >>> 0, (charCodeAt.call(hash, 4) | charCodeAt.call(hash, 5) << 8 | charCodeAt.call(hash, 6) << 16 | charCodeAt.call(hash, 7) << 24) >>> 0);
+    };
+    LongBits.prototype.toHash = function toHash() {
+      return String.fromCharCode(this.lo & 255, this.lo >>> 8 & 255, this.lo >>> 16 & 255, this.lo >>> 24, this.hi & 255, this.hi >>> 8 & 255, this.hi >>> 16 & 255, this.hi >>> 24);
+    };
+    LongBits.prototype.zzEncode = function zzEncode() {
+      var mask = this.hi >> 31;
+      this.hi = ((this.hi << 1 | this.lo >>> 31) ^ mask) >>> 0;
+      this.lo = (this.lo << 1 ^ mask) >>> 0;
+      return this;
+    };
+    LongBits.prototype.zzDecode = function zzDecode() {
+      var mask = -(this.lo & 1);
+      this.lo = ((this.lo >>> 1 | this.hi << 31) ^ mask) >>> 0;
+      this.hi = (this.hi >>> 1 ^ mask) >>> 0;
+      return this;
+    };
+    LongBits.prototype.length = function length() {
+      var part0 = this.lo, part1 = (this.lo >>> 28 | this.hi << 4) >>> 0, part2 = this.hi >>> 24;
+      return part2 === 0 ? part1 === 0 ? part0 < 16384 ? part0 < 128 ? 1 : 2 : part0 < 2097152 ? 3 : 4 : part1 < 16384 ? part1 < 128 ? 5 : 6 : part1 < 2097152 ? 7 : 8 : part2 < 128 ? 9 : 10;
+    };
+  }
+});
+
+// node_modules/protobufjs/src/util/minimal.js
+var require_minimal = __commonJS({
+  "node_modules/protobufjs/src/util/minimal.js"(exports2) {
+    "use strict";
+    var util = exports2;
+    util.asPromise = require_aspromise();
+    util.base64 = require_base64();
+    util.EventEmitter = require_eventemitter();
+    util.float = require_float();
+    util.inquire = require_inquire();
+    util.utf8 = require_utf82();
+    util.pool = require_pool();
+    util.LongBits = require_longbits();
+    util.isNode = Boolean(typeof global !== "undefined" && global && global.process && global.process.versions && global.process.versions.node);
+    util.global = util.isNode && global || typeof window !== "undefined" && window || typeof self !== "undefined" && self || exports2;
+    util.emptyArray = Object.freeze ? Object.freeze([]) : [];
+    util.emptyObject = Object.freeze ? Object.freeze({}) : {};
+    util.isInteger = Number.isInteger || function isInteger(value) {
+      return typeof value === "number" && isFinite(value) && Math.floor(value) === value;
+    };
+    util.isString = function isString(value) {
+      return typeof value === "string" || value instanceof String;
+    };
+    util.isObject = function isObject(value) {
+      return value && typeof value === "object";
+    };
+    util.isset = util.isSet = function isSet(obj, prop) {
+      var value = obj[prop];
+      if (value != null && obj.hasOwnProperty(prop))
+        return typeof value !== "object" || (Array.isArray(value) ? value.length : Object.keys(value).length) > 0;
+      return false;
+    };
+    util.Buffer = function() {
+      try {
+        var Buffer2 = util.inquire("buffer").Buffer;
+        return Buffer2.prototype.utf8Write ? Buffer2 : null;
+      } catch (e) {
+        return null;
+      }
+    }();
+    util._Buffer_from = null;
+    util._Buffer_allocUnsafe = null;
+    util.newBuffer = function newBuffer(sizeOrArray) {
+      return typeof sizeOrArray === "number" ? util.Buffer ? util._Buffer_allocUnsafe(sizeOrArray) : new util.Array(sizeOrArray) : util.Buffer ? util._Buffer_from(sizeOrArray) : typeof Uint8Array === "undefined" ? sizeOrArray : new Uint8Array(sizeOrArray);
+    };
+    util.Array = typeof Uint8Array !== "undefined" ? Uint8Array : Array;
+    util.Long = util.global.dcodeIO && util.global.dcodeIO.Long || util.global.Long || util.inquire("long");
+    util.key2Re = /^true|false|0|1$/;
+    util.key32Re = /^-?(?:0|[1-9][0-9]*)$/;
+    util.key64Re = /^(?:[\\x00-\\xff]{8}|-?(?:0|[1-9][0-9]*))$/;
+    util.longToHash = function longToHash(value) {
+      return value ? util.LongBits.from(value).toHash() : util.LongBits.zeroHash;
+    };
+    util.longFromHash = function longFromHash(hash, unsigned) {
+      var bits = util.LongBits.fromHash(hash);
+      if (util.Long)
+        return util.Long.fromBits(bits.lo, bits.hi, unsigned);
+      return bits.toNumber(Boolean(unsigned));
+    };
+    function merge(dst, src, ifNotSet) {
+      for (var keys = Object.keys(src), i = 0; i < keys.length; ++i)
+        if (dst[keys[i]] === void 0 || !ifNotSet)
+          dst[keys[i]] = src[keys[i]];
+      return dst;
+    }
+    util.merge = merge;
+    util.lcFirst = function lcFirst(str) {
+      return str.charAt(0).toLowerCase() + str.substring(1);
+    };
+    function newError(name) {
+      function CustomError(message, properties) {
+        if (!(this instanceof CustomError))
+          return new CustomError(message, properties);
+        Object.defineProperty(this, "message", { get: function() {
+          return message;
+        } });
+        if (Error.captureStackTrace)
+          Error.captureStackTrace(this, CustomError);
+        else
+          Object.defineProperty(this, "stack", { value: new Error().stack || "" });
+        if (properties)
+          merge(this, properties);
+      }
+      (CustomError.prototype = Object.create(Error.prototype)).constructor = CustomError;
+      Object.defineProperty(CustomError.prototype, "name", { get: function() {
+        return name;
+      } });
+      CustomError.prototype.toString = function toString() {
+        return this.name + ": " + this.message;
+      };
+      return CustomError;
+    }
+    util.newError = newError;
+    util.ProtocolError = newError("ProtocolError");
+    util.oneOfGetter = function getOneOf(fieldNames) {
+      var fieldMap = {};
+      for (var i = 0; i < fieldNames.length; ++i)
+        fieldMap[fieldNames[i]] = 1;
+      return function() {
+        for (var keys = Object.keys(this), i2 = keys.length - 1; i2 > -1; --i2)
+          if (fieldMap[keys[i2]] === 1 && this[keys[i2]] !== void 0 && this[keys[i2]] !== null)
+            return keys[i2];
+      };
+    };
+    util.oneOfSetter = function setOneOf(fieldNames) {
+      return function(name) {
+        for (var i = 0; i < fieldNames.length; ++i)
+          if (fieldNames[i] !== name)
+            delete this[fieldNames[i]];
+      };
+    };
+    util.toJSONOptions = {
+      longs: String,
+      enums: String,
+      bytes: String,
+      json: true
+    };
+    util._configure = function() {
+      var Buffer2 = util.Buffer;
+      if (!Buffer2) {
+        util._Buffer_from = util._Buffer_allocUnsafe = null;
+        return;
+      }
+      util._Buffer_from = Buffer2.from !== Uint8Array.from && Buffer2.from || function Buffer_from(value, encoding) {
+        return new Buffer2(value, encoding);
+      };
+      util._Buffer_allocUnsafe = Buffer2.allocUnsafe || function Buffer_allocUnsafe(size) {
+        return new Buffer2(size);
+      };
+    };
+  }
+});
+
+// node_modules/protobufjs/src/writer.js
+var require_writer = __commonJS({
+  "node_modules/protobufjs/src/writer.js"(exports2, module2) {
+    "use strict";
+    module2.exports = Writer;
+    var util = require_minimal();
+    var BufferWriter;
+    var LongBits = util.LongBits;
+    var base64 = util.base64;
+    var utf8 = util.utf8;
+    function Op(fn, len, val) {
+      this.fn = fn;
+      this.len = len;
+      this.next = void 0;
+      this.val = val;
+    }
+    function noop() {
+    }
+    function State(writer) {
+      this.head = writer.head;
+      this.tail = writer.tail;
+      this.len = writer.len;
+      this.next = writer.states;
+    }
+    function Writer() {
+      this.len = 0;
+      this.head = new Op(noop, 0, 0);
+      this.tail = this.head;
+      this.states = null;
+    }
+    var create = function create2() {
+      return util.Buffer ? function create_buffer_setup() {
+        return (Writer.create = function create_buffer() {
+          return new BufferWriter();
+        })();
+      } : function create_array() {
+        return new Writer();
+      };
+    };
+    Writer.create = create();
+    Writer.alloc = function alloc(size) {
+      return new util.Array(size);
+    };
+    if (util.Array !== Array)
+      Writer.alloc = util.pool(Writer.alloc, util.Array.prototype.subarray);
+    Writer.prototype._push = function push(fn, len, val) {
+      this.tail = this.tail.next = new Op(fn, len, val);
+      this.len += len;
+      return this;
+    };
+    function writeByte(val, buf, pos) {
+      buf[pos] = val & 255;
+    }
+    function writeVarint32(val, buf, pos) {
+      while (val > 127) {
+        buf[pos++] = val & 127 | 128;
+        val >>>= 7;
+      }
+      buf[pos] = val;
+    }
+    function VarintOp(len, val) {
+      this.len = len;
+      this.next = void 0;
+      this.val = val;
+    }
+    VarintOp.prototype = Object.create(Op.prototype);
+    VarintOp.prototype.fn = writeVarint32;
+    Writer.prototype.uint32 = function write_uint32(value) {
+      this.len += (this.tail = this.tail.next = new VarintOp((value = value >>> 0) < 128 ? 1 : value < 16384 ? 2 : value < 2097152 ? 3 : value < 268435456 ? 4 : 5, value)).len;
+      return this;
+    };
+    Writer.prototype.int32 = function write_int32(value) {
+      return value < 0 ? this._push(writeVarint64, 10, LongBits.fromNumber(value)) : this.uint32(value);
+    };
+    Writer.prototype.sint32 = function write_sint32(value) {
+      return this.uint32((value << 1 ^ value >> 31) >>> 0);
+    };
+    function writeVarint64(val, buf, pos) {
+      while (val.hi) {
+        buf[pos++] = val.lo & 127 | 128;
+        val.lo = (val.lo >>> 7 | val.hi << 25) >>> 0;
+        val.hi >>>= 7;
+      }
+      while (val.lo > 127) {
+        buf[pos++] = val.lo & 127 | 128;
+        val.lo = val.lo >>> 7;
+      }
+      buf[pos++] = val.lo;
+    }
+    Writer.prototype.uint64 = function write_uint64(value) {
+      var bits = LongBits.from(value);
+      return this._push(writeVarint64, bits.length(), bits);
+    };
+    Writer.prototype.int64 = Writer.prototype.uint64;
+    Writer.prototype.sint64 = function write_sint64(value) {
+      var bits = LongBits.from(value).zzEncode();
+      return this._push(writeVarint64, bits.length(), bits);
+    };
+    Writer.prototype.bool = function write_bool(value) {
+      return this._push(writeByte, 1, value ? 1 : 0);
+    };
+    function writeFixed32(val, buf, pos) {
+      buf[pos] = val & 255;
+      buf[pos + 1] = val >>> 8 & 255;
+      buf[pos + 2] = val >>> 16 & 255;
+      buf[pos + 3] = val >>> 24;
+    }
+    Writer.prototype.fixed32 = function write_fixed32(value) {
+      return this._push(writeFixed32, 4, value >>> 0);
+    };
+    Writer.prototype.sfixed32 = Writer.prototype.fixed32;
+    Writer.prototype.fixed64 = function write_fixed64(value) {
+      var bits = LongBits.from(value);
+      return this._push(writeFixed32, 4, bits.lo)._push(writeFixed32, 4, bits.hi);
+    };
+    Writer.prototype.sfixed64 = Writer.prototype.fixed64;
+    Writer.prototype.float = function write_float(value) {
+      return this._push(util.float.writeFloatLE, 4, value);
+    };
+    Writer.prototype.double = function write_double(value) {
+      return this._push(util.float.writeDoubleLE, 8, value);
+    };
+    var writeBytes = util.Array.prototype.set ? function writeBytes_set(val, buf, pos) {
+      buf.set(val, pos);
+    } : function writeBytes_for(val, buf, pos) {
+      for (var i = 0; i < val.length; ++i)
+        buf[pos + i] = val[i];
+    };
+    Writer.prototype.bytes = function write_bytes(value) {
+      var len = value.length >>> 0;
+      if (!len)
+        return this._push(writeByte, 1, 0);
+      if (util.isString(value)) {
+        var buf = Writer.alloc(len = base64.length(value));
+        base64.decode(value, buf, 0);
+        value = buf;
+      }
+      return this.uint32(len)._push(writeBytes, len, value);
+    };
+    Writer.prototype.string = function write_string(value) {
+      var len = utf8.length(value);
+      return len ? this.uint32(len)._push(utf8.write, len, value) : this._push(writeByte, 1, 0);
+    };
+    Writer.prototype.fork = function fork() {
+      this.states = new State(this);
+      this.head = this.tail = new Op(noop, 0, 0);
+      this.len = 0;
+      return this;
+    };
+    Writer.prototype.reset = function reset() {
+      if (this.states) {
+        this.head = this.states.head;
+        this.tail = this.states.tail;
+        this.len = this.states.len;
+        this.states = this.states.next;
+      } else {
+        this.head = this.tail = new Op(noop, 0, 0);
+        this.len = 0;
+      }
+      return this;
+    };
+    Writer.prototype.ldelim = function ldelim() {
+      var head = this.head, tail = this.tail, len = this.len;
+      this.reset().uint32(len);
+      if (len) {
+        this.tail.next = head.next;
+        this.tail = tail;
+        this.len += len;
+      }
+      return this;
+    };
+    Writer.prototype.finish = function finish() {
+      var head = this.head.next, buf = this.constructor.alloc(this.len), pos = 0;
+      while (head) {
+        head.fn(head.val, buf, pos);
+        pos += head.len;
+        head = head.next;
+      }
+      return buf;
+    };
+    Writer._configure = function(BufferWriter_) {
+      BufferWriter = BufferWriter_;
+      Writer.create = create();
+      BufferWriter._configure();
+    };
+  }
+});
+
+// node_modules/protobufjs/src/writer_buffer.js
+var require_writer_buffer = __commonJS({
+  "node_modules/protobufjs/src/writer_buffer.js"(exports2, module2) {
+    "use strict";
+    module2.exports = BufferWriter;
+    var Writer = require_writer();
+    (BufferWriter.prototype = Object.create(Writer.prototype)).constructor = BufferWriter;
+    var util = require_minimal();
+    function BufferWriter() {
+      Writer.call(this);
+    }
+    BufferWriter._configure = function() {
+      BufferWriter.alloc = util._Buffer_allocUnsafe;
+      BufferWriter.writeBytesBuffer = util.Buffer && util.Buffer.prototype instanceof Uint8Array && util.Buffer.prototype.set.name === "set" ? function writeBytesBuffer_set(val, buf, pos) {
+        buf.set(val, pos);
+      } : function writeBytesBuffer_copy(val, buf, pos) {
+        if (val.copy)
+          val.copy(buf, pos, 0, val.length);
+        else
+          for (var i = 0; i < val.length; )
+            buf[pos++] = val[i++];
+      };
+    };
+    BufferWriter.prototype.bytes = function write_bytes_buffer(value) {
+      if (util.isString(value))
+        value = util._Buffer_from(value, "base64");
+      var len = value.length >>> 0;
+      this.uint32(len);
+      if (len)
+        this._push(BufferWriter.writeBytesBuffer, len, value);
+      return this;
+    };
+    function writeStringBuffer(val, buf, pos) {
+      if (val.length < 40)
+        util.utf8.write(val, buf, pos);
+      else if (buf.utf8Write)
+        buf.utf8Write(val, pos);
+      else
+        buf.write(val, pos);
+    }
+    BufferWriter.prototype.string = function write_string_buffer(value) {
+      var len = util.Buffer.byteLength(value);
+      this.uint32(len);
+      if (len)
+        this._push(writeStringBuffer, len, value);
+      return this;
+    };
+    BufferWriter._configure();
+  }
+});
+
+// node_modules/protobufjs/src/reader.js
+var require_reader = __commonJS({
+  "node_modules/protobufjs/src/reader.js"(exports2, module2) {
+    "use strict";
+    module2.exports = Reader;
+    var util = require_minimal();
+    var BufferReader;
+    var LongBits = util.LongBits;
+    var utf8 = util.utf8;
+    function indexOutOfRange(reader, writeLength) {
+      return RangeError("index out of range: " + reader.pos + " + " + (writeLength || 1) + " > " + reader.len);
+    }
+    function Reader(buffer) {
+      this.buf = buffer;
+      this.pos = 0;
+      this.len = buffer.length;
+    }
+    var create_array = typeof Uint8Array !== "undefined" ? function create_typed_array(buffer) {
+      if (buffer instanceof Uint8Array || Array.isArray(buffer))
+        return new Reader(buffer);
+      throw Error("illegal buffer");
+    } : function create_array2(buffer) {
+      if (Array.isArray(buffer))
+        return new Reader(buffer);
+      throw Error("illegal buffer");
+    };
+    var create = function create2() {
+      return util.Buffer ? function create_buffer_setup(buffer) {
+        return (Reader.create = function create_buffer(buffer2) {
+          return util.Buffer.isBuffer(buffer2) ? new BufferReader(buffer2) : create_array(buffer2);
+        })(buffer);
+      } : create_array;
+    };
+    Reader.create = create();
+    Reader.prototype._slice = util.Array.prototype.subarray || util.Array.prototype.slice;
+    Reader.prototype.uint32 = function read_uint32_setup() {
+      var value = 4294967295;
+      return function read_uint32() {
+        value = (this.buf[this.pos] & 127) >>> 0;
+        if (this.buf[this.pos++] < 128)
+          return value;
+        value = (value | (this.buf[this.pos] & 127) << 7) >>> 0;
+        if (this.buf[this.pos++] < 128)
+          return value;
+        value = (value | (this.buf[this.pos] & 127) << 14) >>> 0;
+        if (this.buf[this.pos++] < 128)
+          return value;
+        value = (value | (this.buf[this.pos] & 127) << 21) >>> 0;
+        if (this.buf[this.pos++] < 128)
+          return value;
+        value = (value | (this.buf[this.pos] & 15) << 28) >>> 0;
+        if (this.buf[this.pos++] < 128)
+          return value;
+        if ((this.pos += 5) > this.len) {
+          this.pos = this.len;
+          throw indexOutOfRange(this, 10);
+        }
+        return value;
+      };
+    }();
+    Reader.prototype.int32 = function read_int32() {
+      return this.uint32() | 0;
+    };
+    Reader.prototype.sint32 = function read_sint32() {
+      var value = this.uint32();
+      return value >>> 1 ^ -(value & 1) | 0;
+    };
+    function readLongVarint() {
+      var bits = new LongBits(0, 0);
+      var i = 0;
+      if (this.len - this.pos > 4) {
+        for (; i < 4; ++i) {
+          bits.lo = (bits.lo | (this.buf[this.pos] & 127) << i * 7) >>> 0;
+          if (this.buf[this.pos++] < 128)
+            return bits;
+        }
+        bits.lo = (bits.lo | (this.buf[this.pos] & 127) << 28) >>> 0;
+        bits.hi = (bits.hi | (this.buf[this.pos] & 127) >> 4) >>> 0;
+        if (this.buf[this.pos++] < 128)
+          return bits;
+        i = 0;
+      } else {
+        for (; i < 3; ++i) {
+          if (this.pos >= this.len)
+            throw indexOutOfRange(this);
+          bits.lo = (bits.lo | (this.buf[this.pos] & 127) << i * 7) >>> 0;
+          if (this.buf[this.pos++] < 128)
+            return bits;
+        }
+        bits.lo = (bits.lo | (this.buf[this.pos++] & 127) << i * 7) >>> 0;
+        return bits;
+      }
+      if (this.len - this.pos > 4) {
+        for (; i < 5; ++i) {
+          bits.hi = (bits.hi | (this.buf[this.pos] & 127) << i * 7 + 3) >>> 0;
+          if (this.buf[this.pos++] < 128)
+            return bits;
+        }
+      } else {
+        for (; i < 5; ++i) {
+          if (this.pos >= this.len)
+            throw indexOutOfRange(this);
+          bits.hi = (bits.hi | (this.buf[this.pos] & 127) << i * 7 + 3) >>> 0;
+          if (this.buf[this.pos++] < 128)
+            return bits;
+        }
+      }
+      throw Error("invalid varint encoding");
+    }
+    Reader.prototype.bool = function read_bool() {
+      return this.uint32() !== 0;
+    };
+    function readFixed32_end(buf, end) {
+      return (buf[end - 4] | buf[end - 3] << 8 | buf[end - 2] << 16 | buf[end - 1] << 24) >>> 0;
+    }
+    Reader.prototype.fixed32 = function read_fixed32() {
+      if (this.pos + 4 > this.len)
+        throw indexOutOfRange(this, 4);
+      return readFixed32_end(this.buf, this.pos += 4);
+    };
+    Reader.prototype.sfixed32 = function read_sfixed32() {
+      if (this.pos + 4 > this.len)
+        throw indexOutOfRange(this, 4);
+      return readFixed32_end(this.buf, this.pos += 4) | 0;
+    };
+    function readFixed64() {
+      if (this.pos + 8 > this.len)
+        throw indexOutOfRange(this, 8);
+      return new LongBits(readFixed32_end(this.buf, this.pos += 4), readFixed32_end(this.buf, this.pos += 4));
+    }
+    Reader.prototype.float = function read_float() {
+      if (this.pos + 4 > this.len)
+        throw indexOutOfRange(this, 4);
+      var value = util.float.readFloatLE(this.buf, this.pos);
+      this.pos += 4;
+      return value;
+    };
+    Reader.prototype.double = function read_double() {
+      if (this.pos + 8 > this.len)
+        throw indexOutOfRange(this, 4);
+      var value = util.float.readDoubleLE(this.buf, this.pos);
+      this.pos += 8;
+      return value;
+    };
+    Reader.prototype.bytes = function read_bytes() {
+      var length = this.uint32(), start = this.pos, end = this.pos + length;
+      if (end > this.len)
+        throw indexOutOfRange(this, length);
+      this.pos += length;
+      if (Array.isArray(this.buf))
+        return this.buf.slice(start, end);
+      return start === end ? new this.buf.constructor(0) : this._slice.call(this.buf, start, end);
+    };
+    Reader.prototype.string = function read_string() {
+      var bytes = this.bytes();
+      return utf8.read(bytes, 0, bytes.length);
+    };
+    Reader.prototype.skip = function skip(length) {
+      if (typeof length === "number") {
+        if (this.pos + length > this.len)
+          throw indexOutOfRange(this, length);
+        this.pos += length;
+      } else {
+        do {
+          if (this.pos >= this.len)
+            throw indexOutOfRange(this);
+        } while (this.buf[this.pos++] & 128);
+      }
+      return this;
+    };
+    Reader.prototype.skipType = function(wireType) {
+      switch (wireType) {
+        case 0:
+          this.skip();
+          break;
+        case 1:
+          this.skip(8);
+          break;
+        case 2:
+          this.skip(this.uint32());
+          break;
+        case 3:
+          while ((wireType = this.uint32() & 7) !== 4) {
+            this.skipType(wireType);
+          }
+          break;
+        case 5:
+          this.skip(4);
+          break;
+        default:
+          throw Error("invalid wire type " + wireType + " at offset " + this.pos);
+      }
+      return this;
+    };
+    Reader._configure = function(BufferReader_) {
+      BufferReader = BufferReader_;
+      Reader.create = create();
+      BufferReader._configure();
+      var fn = util.Long ? "toLong" : "toNumber";
+      util.merge(Reader.prototype, {
+        int64: function read_int64() {
+          return readLongVarint.call(this)[fn](false);
+        },
+        uint64: function read_uint64() {
+          return readLongVarint.call(this)[fn](true);
+        },
+        sint64: function read_sint64() {
+          return readLongVarint.call(this).zzDecode()[fn](false);
+        },
+        fixed64: function read_fixed64() {
+          return readFixed64.call(this)[fn](true);
+        },
+        sfixed64: function read_sfixed64() {
+          return readFixed64.call(this)[fn](false);
+        }
+      });
+    };
+  }
+});
+
+// node_modules/protobufjs/src/reader_buffer.js
+var require_reader_buffer = __commonJS({
+  "node_modules/protobufjs/src/reader_buffer.js"(exports2, module2) {
+    "use strict";
+    module2.exports = BufferReader;
+    var Reader = require_reader();
+    (BufferReader.prototype = Object.create(Reader.prototype)).constructor = BufferReader;
+    var util = require_minimal();
+    function BufferReader(buffer) {
+      Reader.call(this, buffer);
+    }
+    BufferReader._configure = function() {
+      if (util.Buffer)
+        BufferReader.prototype._slice = util.Buffer.prototype.slice;
+    };
+    BufferReader.prototype.string = function read_string_buffer() {
+      var len = this.uint32();
+      return this.buf.utf8Slice ? this.buf.utf8Slice(this.pos, this.pos = Math.min(this.pos + len, this.len)) : this.buf.toString("utf-8", this.pos, this.pos = Math.min(this.pos + len, this.len));
+    };
+    BufferReader._configure();
+  }
+});
+
+// node_modules/protobufjs/src/rpc/service.js
+var require_service = __commonJS({
+  "node_modules/protobufjs/src/rpc/service.js"(exports2, module2) {
+    "use strict";
+    module2.exports = Service;
+    var util = require_minimal();
+    (Service.prototype = Object.create(util.EventEmitter.prototype)).constructor = Service;
+    function Service(rpcImpl, requestDelimited, responseDelimited) {
+      if (typeof rpcImpl !== "function")
+        throw TypeError("rpcImpl must be a function");
+      util.EventEmitter.call(this);
+      this.rpcImpl = rpcImpl;
+      this.requestDelimited = Boolean(requestDelimited);
+      this.responseDelimited = Boolean(responseDelimited);
+    }
+    Service.prototype.rpcCall = function rpcCall(method, requestCtor, responseCtor, request, callback) {
+      if (!request)
+        throw TypeError("request must be specified");
+      var self2 = this;
+      if (!callback)
+        return util.asPromise(rpcCall, self2, method, requestCtor, responseCtor, request);
+      if (!self2.rpcImpl) {
+        setTimeout(function() {
+          callback(Error("already ended"));
+        }, 0);
+        return void 0;
+      }
+      try {
+        return self2.rpcImpl(method, requestCtor[self2.requestDelimited ? "encodeDelimited" : "encode"](request).finish(), function rpcCallback(err, response) {
+          if (err) {
+            self2.emit("error", err, method);
+            return callback(err);
+          }
+          if (response === null) {
+            self2.end(true);
+            return void 0;
+          }
+          if (!(response instanceof responseCtor)) {
+            try {
+              response = responseCtor[self2.responseDelimited ? "decodeDelimited" : "decode"](response);
+            } catch (err2) {
+              self2.emit("error", err2, method);
+              return callback(err2);
+            }
+          }
+          self2.emit("data", response, method);
+          return callback(null, response);
+        });
+      } catch (err) {
+        self2.emit("error", err, method);
+        setTimeout(function() {
+          callback(err);
+        }, 0);
+        return void 0;
+      }
+    };
+    Service.prototype.end = function end(endedByRPC) {
+      if (this.rpcImpl) {
+        if (!endedByRPC)
+          this.rpcImpl(null, null, null);
+        this.rpcImpl = null;
+        this.emit("end").off();
+      }
+      return this;
+    };
+  }
+});
+
+// node_modules/protobufjs/src/rpc.js
+var require_rpc = __commonJS({
+  "node_modules/protobufjs/src/rpc.js"(exports2) {
+    "use strict";
+    var rpc = exports2;
+    rpc.Service = require_service();
+  }
+});
+
+// node_modules/protobufjs/src/roots.js
+var require_roots = __commonJS({
+  "node_modules/protobufjs/src/roots.js"(exports2, module2) {
+    "use strict";
+    module2.exports = {};
+  }
+});
+
+// node_modules/protobufjs/src/index-minimal.js
+var require_index_minimal = __commonJS({
+  "node_modules/protobufjs/src/index-minimal.js"(exports2) {
+    "use strict";
+    var protobuf = exports2;
+    protobuf.build = "minimal";
+    protobuf.Writer = require_writer();
+    protobuf.BufferWriter = require_writer_buffer();
+    protobuf.Reader = require_reader();
+    protobuf.BufferReader = require_reader_buffer();
+    protobuf.util = require_minimal();
+    protobuf.rpc = require_rpc();
+    protobuf.roots = require_roots();
+    protobuf.configure = configure;
+    function configure() {
+      protobuf.util._configure();
+      protobuf.Writer._configure(protobuf.BufferWriter);
+      protobuf.Reader._configure(protobuf.BufferReader);
+    }
+    configure();
+  }
+});
+
+// node_modules/protobufjs/minimal.js
+var require_minimal2 = __commonJS({
+  "node_modules/protobufjs/minimal.js"(exports2, module2) {
+    "use strict";
+    module2.exports = require_index_minimal();
+  }
+});
+
+// bazel-out/k8-fastbuild/bin/bazel/protos/test_status_pb.js
+var require_test_status_pb = __commonJS({
+  "bazel-out/k8-fastbuild/bin/bazel/protos/test_status_pb.js"(exports2, module2) {
+    "use strict";
+    var $protobuf = require_minimal2();
+    var $Reader = $protobuf.Reader;
+    var $Writer = $protobuf.Writer;
+    var $util = $protobuf.util;
+    var $root = $protobuf.roots["default"] || ($protobuf.roots["default"] = {});
+    $root.blaze = function() {
+      var blaze = {};
+      blaze.FailedTestCasesStatus = function() {
+        var valuesById = {}, values = Object.create(valuesById);
+        values[valuesById[1] = "FULL"] = 1;
+        values[valuesById[2] = "PARTIAL"] = 2;
+        values[valuesById[3] = "NOT_AVAILABLE"] = 3;
+        values[valuesById[4] = "EMPTY"] = 4;
+        return values;
+      }();
+      blaze.BlazeTestStatus = function() {
+        var valuesById = {}, values = Object.create(valuesById);
+        values[valuesById[0] = "NO_STATUS"] = 0;
+        values[valuesById[1] = "PASSED"] = 1;
+        values[valuesById[2] = "FLAKY"] = 2;
+        values[valuesById[3] = "TIMEOUT"] = 3;
+        values[valuesById[4] = "FAILED"] = 4;
+        values[valuesById[5] = "INCOMPLETE"] = 5;
+        values[valuesById[6] = "REMOTE_FAILURE"] = 6;
+        values[valuesById[7] = "FAILED_TO_BUILD"] = 7;
+        values[valuesById[8] = "BLAZE_HALTED_BEFORE_TESTING"] = 8;
+        return values;
+      }();
+      blaze.TestCase = function() {
+        function TestCase(properties) {
+          this.child = [];
+          if (properties) {
+            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+              if (properties[keys[i]] != null)
+                this[keys[i]] = properties[keys[i]];
+          }
+        }
+        TestCase.prototype.child = $util.emptyArray;
+        TestCase.prototype.name = "";
+        TestCase.prototype.className = "";
+        TestCase.prototype.runDurationMillis = $util.Long ? $util.Long.fromBits(0, 0, false) : 0;
+        TestCase.prototype.result = "";
+        TestCase.prototype.type = 0;
+        TestCase.prototype.status = 0;
+        TestCase.prototype.run = true;
+        TestCase.create = function create(properties) {
+          return new TestCase(properties);
+        };
+        TestCase.encode = function encode(message, writer) {
+          if (!writer)
+            writer = $Writer.create();
+          if (message.child != null && message.child.length)
+            for (var i = 0; i < message.child.length; ++i)
+              $root.blaze.TestCase.encode(message.child[i], writer.uint32(10).fork()).ldelim();
+          if (message.name != null && Object.hasOwnProperty.call(message, "name"))
+            writer.uint32(18).string(message.name);
+          if (message.className != null && Object.hasOwnProperty.call(message, "className"))
+            writer.uint32(26).string(message.className);
+          if (message.runDurationMillis != null && Object.hasOwnProperty.call(message, "runDurationMillis"))
+            writer.uint32(32).int64(message.runDurationMillis);
+          if (message.result != null && Object.hasOwnProperty.call(message, "result"))
+            writer.uint32(42).string(message.result);
+          if (message.type != null && Object.hasOwnProperty.call(message, "type"))
+            writer.uint32(48).int32(message.type);
+          if (message.status != null && Object.hasOwnProperty.call(message, "status"))
+            writer.uint32(56).int32(message.status);
+          if (message.run != null && Object.hasOwnProperty.call(message, "run"))
+            writer.uint32(64).bool(message.run);
+          return writer;
+        };
+        TestCase.encodeDelimited = function encodeDelimited(message, writer) {
+          return this.encode(message, writer).ldelim();
+        };
+        TestCase.decode = function decode(reader, length) {
+          if (!(reader instanceof $Reader))
+            reader = $Reader.create(reader);
+          var end = length === void 0 ? reader.len : reader.pos + length, message = new $root.blaze.TestCase();
+          while (reader.pos < end) {
+            var tag = reader.uint32();
+            switch (tag >>> 3) {
+              case 1:
+                if (!(message.child && message.child.length))
+                  message.child = [];
+                message.child.push($root.blaze.TestCase.decode(reader, reader.uint32()));
+                break;
+              case 2:
+                message.name = reader.string();
+                break;
+              case 3:
+                message.className = reader.string();
+                break;
+              case 4:
+                message.runDurationMillis = reader.int64();
+                break;
+              case 5:
+                message.result = reader.string();
+                break;
+              case 6:
+                message.type = reader.int32();
+                break;
+              case 7:
+                message.status = reader.int32();
+                break;
+              case 8:
+                message.run = reader.bool();
+                break;
+              default:
+                reader.skipType(tag & 7);
+                break;
+            }
+          }
+          return message;
+        };
+        TestCase.decodeDelimited = function decodeDelimited(reader) {
+          if (!(reader instanceof $Reader))
+            reader = new $Reader(reader);
+          return this.decode(reader, reader.uint32());
+        };
+        TestCase.verify = function verify(message) {
+          if (typeof message !== "object" || message === null)
+            return "object expected";
+          if (message.child != null && message.hasOwnProperty("child")) {
+            if (!Array.isArray(message.child))
+              return "child: array expected";
+            for (var i = 0; i < message.child.length; ++i) {
+              var error = $root.blaze.TestCase.verify(message.child[i]);
+              if (error)
+                return "child." + error;
+            }
+          }
+          if (message.name != null && message.hasOwnProperty("name")) {
+            if (!$util.isString(message.name))
+              return "name: string expected";
+          }
+          if (message.className != null && message.hasOwnProperty("className")) {
+            if (!$util.isString(message.className))
+              return "className: string expected";
+          }
+          if (message.runDurationMillis != null && message.hasOwnProperty("runDurationMillis")) {
+            if (!$util.isInteger(message.runDurationMillis) && !(message.runDurationMillis && $util.isInteger(message.runDurationMillis.low) && $util.isInteger(message.runDurationMillis.high)))
+              return "runDurationMillis: integer|Long expected";
+          }
+          if (message.result != null && message.hasOwnProperty("result")) {
+            if (!$util.isString(message.result))
+              return "result: string expected";
+          }
+          if (message.type != null && message.hasOwnProperty("type"))
+            switch (message.type) {
+              default:
+                return "type: enum value expected";
+              case 0:
+              case 1:
+              case 2:
+              case 3:
+                break;
+            }
+          if (message.status != null && message.hasOwnProperty("status"))
+            switch (message.status) {
+              default:
+                return "status: enum value expected";
+              case 0:
+              case 1:
+              case 2:
+                break;
+            }
+          if (message.run != null && message.hasOwnProperty("run")) {
+            if (typeof message.run !== "boolean")
+              return "run: boolean expected";
+          }
+          return null;
+        };
+        TestCase.fromObject = function fromObject(object) {
+          if (object instanceof $root.blaze.TestCase)
+            return object;
+          var message = new $root.blaze.TestCase();
+          if (object.child) {
+            if (!Array.isArray(object.child))
+              throw TypeError(".blaze.TestCase.child: array expected");
+            message.child = [];
+            for (var i = 0; i < object.child.length; ++i) {
+              if (typeof object.child[i] !== "object")
+                throw TypeError(".blaze.TestCase.child: object expected");
+              message.child[i] = $root.blaze.TestCase.fromObject(object.child[i]);
+            }
+          }
+          if (object.name != null)
+            message.name = String(object.name);
+          if (object.className != null)
+            message.className = String(object.className);
+          if (object.runDurationMillis != null) {
+            if ($util.Long)
+              (message.runDurationMillis = $util.Long.fromValue(object.runDurationMillis)).unsigned = false;
+            else if (typeof object.runDurationMillis === "string")
+              message.runDurationMillis = parseInt(object.runDurationMillis, 10);
+            else if (typeof object.runDurationMillis === "number")
+              message.runDurationMillis = object.runDurationMillis;
+            else if (typeof object.runDurationMillis === "object")
+              message.runDurationMillis = new $util.LongBits(object.runDurationMillis.low >>> 0, object.runDurationMillis.high >>> 0).toNumber();
+          }
+          if (object.result != null)
+            message.result = String(object.result);
+          switch (object.type) {
+            case "TEST_CASE":
+            case 0:
+              message.type = 0;
+              break;
+            case "TEST_SUITE":
+            case 1:
+              message.type = 1;
+              break;
+            case "TEST_DECORATOR":
+            case 2:
+              message.type = 2;
+              break;
+            case "UNKNOWN":
+            case 3:
+              message.type = 3;
+              break;
+          }
+          switch (object.status) {
+            case "PASSED":
+            case 0:
+              message.status = 0;
+              break;
+            case "FAILED":
+            case 1:
+              message.status = 1;
+              break;
+            case "ERROR":
+            case 2:
+              message.status = 2;
+              break;
+          }
+          if (object.run != null)
+            message.run = Boolean(object.run);
+          return message;
+        };
+        TestCase.toObject = function toObject(message, options) {
+          if (!options)
+            options = {};
+          var object = {};
+          if (options.arrays || options.defaults)
+            object.child = [];
+          if (options.defaults) {
+            object.name = "";
+            object.className = "";
+            if ($util.Long) {
+              var long = new $util.Long(0, 0, false);
+              object.runDurationMillis = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+            } else
+              object.runDurationMillis = options.longs === String ? "0" : 0;
+            object.result = "";
+            object.type = options.enums === String ? "TEST_CASE" : 0;
+            object.status = options.enums === String ? "PASSED" : 0;
+            object.run = true;
+          }
+          if (message.child && message.child.length) {
+            object.child = [];
+            for (var j = 0; j < message.child.length; ++j)
+              object.child[j] = $root.blaze.TestCase.toObject(message.child[j], options);
+          }
+          if (message.name != null && message.hasOwnProperty("name"))
+            object.name = message.name;
+          if (message.className != null && message.hasOwnProperty("className"))
+            object.className = message.className;
+          if (message.runDurationMillis != null && message.hasOwnProperty("runDurationMillis"))
+            if (typeof message.runDurationMillis === "number")
+              object.runDurationMillis = options.longs === String ? String(message.runDurationMillis) : message.runDurationMillis;
+            else
+              object.runDurationMillis = options.longs === String ? $util.Long.prototype.toString.call(message.runDurationMillis) : options.longs === Number ? new $util.LongBits(message.runDurationMillis.low >>> 0, message.runDurationMillis.high >>> 0).toNumber() : message.runDurationMillis;
+          if (message.result != null && message.hasOwnProperty("result"))
+            object.result = message.result;
+          if (message.type != null && message.hasOwnProperty("type"))
+            object.type = options.enums === String ? $root.blaze.TestCase.Type[message.type] : message.type;
+          if (message.status != null && message.hasOwnProperty("status"))
+            object.status = options.enums === String ? $root.blaze.TestCase.Status[message.status] : message.status;
+          if (message.run != null && message.hasOwnProperty("run"))
+            object.run = message.run;
+          return object;
+        };
+        TestCase.prototype.toJSON = function toJSON() {
+          return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+        TestCase.Type = function() {
+          var valuesById = {}, values = Object.create(valuesById);
+          values[valuesById[0] = "TEST_CASE"] = 0;
+          values[valuesById[1] = "TEST_SUITE"] = 1;
+          values[valuesById[2] = "TEST_DECORATOR"] = 2;
+          values[valuesById[3] = "UNKNOWN"] = 3;
+          return values;
+        }();
+        TestCase.Status = function() {
+          var valuesById = {}, values = Object.create(valuesById);
+          values[valuesById[0] = "PASSED"] = 0;
+          values[valuesById[1] = "FAILED"] = 1;
+          values[valuesById[2] = "ERROR"] = 2;
+          return values;
+        }();
+        return TestCase;
+      }();
+      blaze.TestResultData = function() {
+        function TestResultData(properties) {
+          this.failedLogs = [];
+          this.warning = [];
+          this.testTimes = [];
+          this.testProcessTimes = [];
+          if (properties) {
+            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+              if (properties[keys[i]] != null)
+                this[keys[i]] = properties[keys[i]];
+          }
+        }
+        TestResultData.prototype.cachable = false;
+        TestResultData.prototype.testPassed = false;
+        TestResultData.prototype.status = 0;
+        TestResultData.prototype.statusDetails = "";
+        TestResultData.prototype.failedLogs = $util.emptyArray;
+        TestResultData.prototype.warning = $util.emptyArray;
+        TestResultData.prototype.hasCoverage = false;
+        TestResultData.prototype.remotelyCached = false;
+        TestResultData.prototype.isRemoteStrategy = false;
+        TestResultData.prototype.testTimes = $util.emptyArray;
+        TestResultData.prototype.passedLog = "";
+        TestResultData.prototype.testProcessTimes = $util.emptyArray;
+        TestResultData.prototype.runDurationMillis = $util.Long ? $util.Long.fromBits(0, 0, false) : 0;
+        TestResultData.prototype.startTimeMillisEpoch = $util.Long ? $util.Long.fromBits(0, 0, false) : 0;
+        TestResultData.prototype.testCase = null;
+        TestResultData.prototype.failedStatus = 1;
+        TestResultData.create = function create(properties) {
+          return new TestResultData(properties);
+        };
+        TestResultData.encode = function encode(message, writer) {
+          if (!writer)
+            writer = $Writer.create();
+          if (message.cachable != null && Object.hasOwnProperty.call(message, "cachable"))
+            writer.uint32(8).bool(message.cachable);
+          if (message.testPassed != null && Object.hasOwnProperty.call(message, "testPassed"))
+            writer.uint32(16).bool(message.testPassed);
+          if (message.status != null && Object.hasOwnProperty.call(message, "status"))
+            writer.uint32(24).int32(message.status);
+          if (message.failedLogs != null && message.failedLogs.length)
+            for (var i = 0; i < message.failedLogs.length; ++i)
+              writer.uint32(34).string(message.failedLogs[i]);
+          if (message.warning != null && message.warning.length)
+            for (var i = 0; i < message.warning.length; ++i)
+              writer.uint32(42).string(message.warning[i]);
+          if (message.hasCoverage != null && Object.hasOwnProperty.call(message, "hasCoverage"))
+            writer.uint32(48).bool(message.hasCoverage);
+          if (message.remotelyCached != null && Object.hasOwnProperty.call(message, "remotelyCached"))
+            writer.uint32(56).bool(message.remotelyCached);
+          if (message.isRemoteStrategy != null && Object.hasOwnProperty.call(message, "isRemoteStrategy"))
+            writer.uint32(64).bool(message.isRemoteStrategy);
+          if (message.testTimes != null && message.testTimes.length)
+            for (var i = 0; i < message.testTimes.length; ++i)
+              writer.uint32(72).int64(message.testTimes[i]);
+          if (message.passedLog != null && Object.hasOwnProperty.call(message, "passedLog"))
+            writer.uint32(82).string(message.passedLog);
+          if (message.testProcessTimes != null && message.testProcessTimes.length)
+            for (var i = 0; i < message.testProcessTimes.length; ++i)
+              writer.uint32(88).int64(message.testProcessTimes[i]);
+          if (message.runDurationMillis != null && Object.hasOwnProperty.call(message, "runDurationMillis"))
+            writer.uint32(96).int64(message.runDurationMillis);
+          if (message.testCase != null && Object.hasOwnProperty.call(message, "testCase"))
+            $root.blaze.TestCase.encode(message.testCase, writer.uint32(106).fork()).ldelim();
+          if (message.failedStatus != null && Object.hasOwnProperty.call(message, "failedStatus"))
+            writer.uint32(112).int32(message.failedStatus);
+          if (message.startTimeMillisEpoch != null && Object.hasOwnProperty.call(message, "startTimeMillisEpoch"))
+            writer.uint32(120).int64(message.startTimeMillisEpoch);
+          if (message.statusDetails != null && Object.hasOwnProperty.call(message, "statusDetails"))
+            writer.uint32(130).string(message.statusDetails);
+          return writer;
+        };
+        TestResultData.encodeDelimited = function encodeDelimited(message, writer) {
+          return this.encode(message, writer).ldelim();
+        };
+        TestResultData.decode = function decode(reader, length) {
+          if (!(reader instanceof $Reader))
+            reader = $Reader.create(reader);
+          var end = length === void 0 ? reader.len : reader.pos + length, message = new $root.blaze.TestResultData();
+          while (reader.pos < end) {
+            var tag = reader.uint32();
+            switch (tag >>> 3) {
+              case 1:
+                message.cachable = reader.bool();
+                break;
+              case 2:
+                message.testPassed = reader.bool();
+                break;
+              case 3:
+                message.status = reader.int32();
+                break;
+              case 16:
+                message.statusDetails = reader.string();
+                break;
+              case 4:
+                if (!(message.failedLogs && message.failedLogs.length))
+                  message.failedLogs = [];
+                message.failedLogs.push(reader.string());
+                break;
+              case 5:
+                if (!(message.warning && message.warning.length))
+                  message.warning = [];
+                message.warning.push(reader.string());
+                break;
+              case 6:
+                message.hasCoverage = reader.bool();
+                break;
+              case 7:
+                message.remotelyCached = reader.bool();
+                break;
+              case 8:
+                message.isRemoteStrategy = reader.bool();
+                break;
+              case 9:
+                if (!(message.testTimes && message.testTimes.length))
+                  message.testTimes = [];
+                if ((tag & 7) === 2) {
+                  var end2 = reader.uint32() + reader.pos;
+                  while (reader.pos < end2)
+                    message.testTimes.push(reader.int64());
+                } else
+                  message.testTimes.push(reader.int64());
+                break;
+              case 10:
+                message.passedLog = reader.string();
+                break;
+              case 11:
+                if (!(message.testProcessTimes && message.testProcessTimes.length))
+                  message.testProcessTimes = [];
+                if ((tag & 7) === 2) {
+                  var end2 = reader.uint32() + reader.pos;
+                  while (reader.pos < end2)
+                    message.testProcessTimes.push(reader.int64());
+                } else
+                  message.testProcessTimes.push(reader.int64());
+                break;
+              case 12:
+                message.runDurationMillis = reader.int64();
+                break;
+              case 15:
+                message.startTimeMillisEpoch = reader.int64();
+                break;
+              case 13:
+                message.testCase = $root.blaze.TestCase.decode(reader, reader.uint32());
+                break;
+              case 14:
+                message.failedStatus = reader.int32();
+                break;
+              default:
+                reader.skipType(tag & 7);
+                break;
+            }
+          }
+          return message;
+        };
+        TestResultData.decodeDelimited = function decodeDelimited(reader) {
+          if (!(reader instanceof $Reader))
+            reader = new $Reader(reader);
+          return this.decode(reader, reader.uint32());
+        };
+        TestResultData.verify = function verify(message) {
+          if (typeof message !== "object" || message === null)
+            return "object expected";
+          if (message.cachable != null && message.hasOwnProperty("cachable")) {
+            if (typeof message.cachable !== "boolean")
+              return "cachable: boolean expected";
+          }
+          if (message.testPassed != null && message.hasOwnProperty("testPassed")) {
+            if (typeof message.testPassed !== "boolean")
+              return "testPassed: boolean expected";
+          }
+          if (message.status != null && message.hasOwnProperty("status"))
+            switch (message.status) {
+              default:
+                return "status: enum value expected";
+              case 0:
+              case 1:
+              case 2:
+              case 3:
+              case 4:
+              case 5:
+              case 6:
+              case 7:
+              case 8:
+                break;
+            }
+          if (message.statusDetails != null && message.hasOwnProperty("statusDetails")) {
+            if (!$util.isString(message.statusDetails))
+              return "statusDetails: string expected";
+          }
+          if (message.failedLogs != null && message.hasOwnProperty("failedLogs")) {
+            if (!Array.isArray(message.failedLogs))
+              return "failedLogs: array expected";
+            for (var i = 0; i < message.failedLogs.length; ++i)
+              if (!$util.isString(message.failedLogs[i]))
+                return "failedLogs: string[] expected";
+          }
+          if (message.warning != null && message.hasOwnProperty("warning")) {
+            if (!Array.isArray(message.warning))
+              return "warning: array expected";
+            for (var i = 0; i < message.warning.length; ++i)
+              if (!$util.isString(message.warning[i]))
+                return "warning: string[] expected";
+          }
+          if (message.hasCoverage != null && message.hasOwnProperty("hasCoverage")) {
+            if (typeof message.hasCoverage !== "boolean")
+              return "hasCoverage: boolean expected";
+          }
+          if (message.remotelyCached != null && message.hasOwnProperty("remotelyCached")) {
+            if (typeof message.remotelyCached !== "boolean")
+              return "remotelyCached: boolean expected";
+          }
+          if (message.isRemoteStrategy != null && message.hasOwnProperty("isRemoteStrategy")) {
+            if (typeof message.isRemoteStrategy !== "boolean")
+              return "isRemoteStrategy: boolean expected";
+          }
+          if (message.testTimes != null && message.hasOwnProperty("testTimes")) {
+            if (!Array.isArray(message.testTimes))
+              return "testTimes: array expected";
+            for (var i = 0; i < message.testTimes.length; ++i)
+              if (!$util.isInteger(message.testTimes[i]) && !(message.testTimes[i] && $util.isInteger(message.testTimes[i].low) && $util.isInteger(message.testTimes[i].high)))
+                return "testTimes: integer|Long[] expected";
+          }
+          if (message.passedLog != null && message.hasOwnProperty("passedLog")) {
+            if (!$util.isString(message.passedLog))
+              return "passedLog: string expected";
+          }
+          if (message.testProcessTimes != null && message.hasOwnProperty("testProcessTimes")) {
+            if (!Array.isArray(message.testProcessTimes))
+              return "testProcessTimes: array expected";
+            for (var i = 0; i < message.testProcessTimes.length; ++i)
+              if (!$util.isInteger(message.testProcessTimes[i]) && !(message.testProcessTimes[i] && $util.isInteger(message.testProcessTimes[i].low) && $util.isInteger(message.testProcessTimes[i].high)))
+                return "testProcessTimes: integer|Long[] expected";
+          }
+          if (message.runDurationMillis != null && message.hasOwnProperty("runDurationMillis")) {
+            if (!$util.isInteger(message.runDurationMillis) && !(message.runDurationMillis && $util.isInteger(message.runDurationMillis.low) && $util.isInteger(message.runDurationMillis.high)))
+              return "runDurationMillis: integer|Long expected";
+          }
+          if (message.startTimeMillisEpoch != null && message.hasOwnProperty("startTimeMillisEpoch")) {
+            if (!$util.isInteger(message.startTimeMillisEpoch) && !(message.startTimeMillisEpoch && $util.isInteger(message.startTimeMillisEpoch.low) && $util.isInteger(message.startTimeMillisEpoch.high)))
+              return "startTimeMillisEpoch: integer|Long expected";
+          }
+          if (message.testCase != null && message.hasOwnProperty("testCase")) {
+            var error = $root.blaze.TestCase.verify(message.testCase);
+            if (error)
+              return "testCase." + error;
+          }
+          if (message.failedStatus != null && message.hasOwnProperty("failedStatus"))
+            switch (message.failedStatus) {
+              default:
+                return "failedStatus: enum value expected";
+              case 1:
+              case 2:
+              case 3:
+              case 4:
+                break;
+            }
+          return null;
+        };
+        TestResultData.fromObject = function fromObject(object) {
+          if (object instanceof $root.blaze.TestResultData)
+            return object;
+          var message = new $root.blaze.TestResultData();
+          if (object.cachable != null)
+            message.cachable = Boolean(object.cachable);
+          if (object.testPassed != null)
+            message.testPassed = Boolean(object.testPassed);
+          switch (object.status) {
+            case "NO_STATUS":
+            case 0:
+              message.status = 0;
+              break;
+            case "PASSED":
+            case 1:
+              message.status = 1;
+              break;
+            case "FLAKY":
+            case 2:
+              message.status = 2;
+              break;
+            case "TIMEOUT":
+            case 3:
+              message.status = 3;
+              break;
+            case "FAILED":
+            case 4:
+              message.status = 4;
+              break;
+            case "INCOMPLETE":
+            case 5:
+              message.status = 5;
+              break;
+            case "REMOTE_FAILURE":
+            case 6:
+              message.status = 6;
+              break;
+            case "FAILED_TO_BUILD":
+            case 7:
+              message.status = 7;
+              break;
+            case "BLAZE_HALTED_BEFORE_TESTING":
+            case 8:
+              message.status = 8;
+              break;
+          }
+          if (object.statusDetails != null)
+            message.statusDetails = String(object.statusDetails);
+          if (object.failedLogs) {
+            if (!Array.isArray(object.failedLogs))
+              throw TypeError(".blaze.TestResultData.failedLogs: array expected");
+            message.failedLogs = [];
+            for (var i = 0; i < object.failedLogs.length; ++i)
+              message.failedLogs[i] = String(object.failedLogs[i]);
+          }
+          if (object.warning) {
+            if (!Array.isArray(object.warning))
+              throw TypeError(".blaze.TestResultData.warning: array expected");
+            message.warning = [];
+            for (var i = 0; i < object.warning.length; ++i)
+              message.warning[i] = String(object.warning[i]);
+          }
+          if (object.hasCoverage != null)
+            message.hasCoverage = Boolean(object.hasCoverage);
+          if (object.remotelyCached != null)
+            message.remotelyCached = Boolean(object.remotelyCached);
+          if (object.isRemoteStrategy != null)
+            message.isRemoteStrategy = Boolean(object.isRemoteStrategy);
+          if (object.testTimes) {
+            if (!Array.isArray(object.testTimes))
+              throw TypeError(".blaze.TestResultData.testTimes: array expected");
+            message.testTimes = [];
+            for (var i = 0; i < object.testTimes.length; ++i)
+              if ($util.Long)
+                (message.testTimes[i] = $util.Long.fromValue(object.testTimes[i])).unsigned = false;
+              else if (typeof object.testTimes[i] === "string")
+                message.testTimes[i] = parseInt(object.testTimes[i], 10);
+              else if (typeof object.testTimes[i] === "number")
+                message.testTimes[i] = object.testTimes[i];
+              else if (typeof object.testTimes[i] === "object")
+                message.testTimes[i] = new $util.LongBits(object.testTimes[i].low >>> 0, object.testTimes[i].high >>> 0).toNumber();
+          }
+          if (object.passedLog != null)
+            message.passedLog = String(object.passedLog);
+          if (object.testProcessTimes) {
+            if (!Array.isArray(object.testProcessTimes))
+              throw TypeError(".blaze.TestResultData.testProcessTimes: array expected");
+            message.testProcessTimes = [];
+            for (var i = 0; i < object.testProcessTimes.length; ++i)
+              if ($util.Long)
+                (message.testProcessTimes[i] = $util.Long.fromValue(object.testProcessTimes[i])).unsigned = false;
+              else if (typeof object.testProcessTimes[i] === "string")
+                message.testProcessTimes[i] = parseInt(object.testProcessTimes[i], 10);
+              else if (typeof object.testProcessTimes[i] === "number")
+                message.testProcessTimes[i] = object.testProcessTimes[i];
+              else if (typeof object.testProcessTimes[i] === "object")
+                message.testProcessTimes[i] = new $util.LongBits(object.testProcessTimes[i].low >>> 0, object.testProcessTimes[i].high >>> 0).toNumber();
+          }
+          if (object.runDurationMillis != null) {
+            if ($util.Long)
+              (message.runDurationMillis = $util.Long.fromValue(object.runDurationMillis)).unsigned = false;
+            else if (typeof object.runDurationMillis === "string")
+              message.runDurationMillis = parseInt(object.runDurationMillis, 10);
+            else if (typeof object.runDurationMillis === "number")
+              message.runDurationMillis = object.runDurationMillis;
+            else if (typeof object.runDurationMillis === "object")
+              message.runDurationMillis = new $util.LongBits(object.runDurationMillis.low >>> 0, object.runDurationMillis.high >>> 0).toNumber();
+          }
+          if (object.startTimeMillisEpoch != null) {
+            if ($util.Long)
+              (message.startTimeMillisEpoch = $util.Long.fromValue(object.startTimeMillisEpoch)).unsigned = false;
+            else if (typeof object.startTimeMillisEpoch === "string")
+              message.startTimeMillisEpoch = parseInt(object.startTimeMillisEpoch, 10);
+            else if (typeof object.startTimeMillisEpoch === "number")
+              message.startTimeMillisEpoch = object.startTimeMillisEpoch;
+            else if (typeof object.startTimeMillisEpoch === "object")
+              message.startTimeMillisEpoch = new $util.LongBits(object.startTimeMillisEpoch.low >>> 0, object.startTimeMillisEpoch.high >>> 0).toNumber();
+          }
+          if (object.testCase != null) {
+            if (typeof object.testCase !== "object")
+              throw TypeError(".blaze.TestResultData.testCase: object expected");
+            message.testCase = $root.blaze.TestCase.fromObject(object.testCase);
+          }
+          switch (object.failedStatus) {
+            case "FULL":
+            case 1:
+              message.failedStatus = 1;
+              break;
+            case "PARTIAL":
+            case 2:
+              message.failedStatus = 2;
+              break;
+            case "NOT_AVAILABLE":
+            case 3:
+              message.failedStatus = 3;
+              break;
+            case "EMPTY":
+            case 4:
+              message.failedStatus = 4;
+              break;
+          }
+          return message;
+        };
+        TestResultData.toObject = function toObject(message, options) {
+          if (!options)
+            options = {};
+          var object = {};
+          if (options.arrays || options.defaults) {
+            object.failedLogs = [];
+            object.warning = [];
+            object.testTimes = [];
+            object.testProcessTimes = [];
+          }
+          if (options.defaults) {
+            object.cachable = false;
+            object.testPassed = false;
+            object.status = options.enums === String ? "NO_STATUS" : 0;
+            object.hasCoverage = false;
+            object.remotelyCached = false;
+            object.isRemoteStrategy = false;
+            object.passedLog = "";
+            if ($util.Long) {
+              var long = new $util.Long(0, 0, false);
+              object.runDurationMillis = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+            } else
+              object.runDurationMillis = options.longs === String ? "0" : 0;
+            object.testCase = null;
+            object.failedStatus = options.enums === String ? "FULL" : 1;
+            if ($util.Long) {
+              var long = new $util.Long(0, 0, false);
+              object.startTimeMillisEpoch = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+            } else
+              object.startTimeMillisEpoch = options.longs === String ? "0" : 0;
+            object.statusDetails = "";
+          }
+          if (message.cachable != null && message.hasOwnProperty("cachable"))
+            object.cachable = message.cachable;
+          if (message.testPassed != null && message.hasOwnProperty("testPassed"))
+            object.testPassed = message.testPassed;
+          if (message.status != null && message.hasOwnProperty("status"))
+            object.status = options.enums === String ? $root.blaze.BlazeTestStatus[message.status] : message.status;
+          if (message.failedLogs && message.failedLogs.length) {
+            object.failedLogs = [];
+            for (var j = 0; j < message.failedLogs.length; ++j)
+              object.failedLogs[j] = message.failedLogs[j];
+          }
+          if (message.warning && message.warning.length) {
+            object.warning = [];
+            for (var j = 0; j < message.warning.length; ++j)
+              object.warning[j] = message.warning[j];
+          }
+          if (message.hasCoverage != null && message.hasOwnProperty("hasCoverage"))
+            object.hasCoverage = message.hasCoverage;
+          if (message.remotelyCached != null && message.hasOwnProperty("remotelyCached"))
+            object.remotelyCached = message.remotelyCached;
+          if (message.isRemoteStrategy != null && message.hasOwnProperty("isRemoteStrategy"))
+            object.isRemoteStrategy = message.isRemoteStrategy;
+          if (message.testTimes && message.testTimes.length) {
+            object.testTimes = [];
+            for (var j = 0; j < message.testTimes.length; ++j)
+              if (typeof message.testTimes[j] === "number")
+                object.testTimes[j] = options.longs === String ? String(message.testTimes[j]) : message.testTimes[j];
+              else
+                object.testTimes[j] = options.longs === String ? $util.Long.prototype.toString.call(message.testTimes[j]) : options.longs === Number ? new $util.LongBits(message.testTimes[j].low >>> 0, message.testTimes[j].high >>> 0).toNumber() : message.testTimes[j];
+          }
+          if (message.passedLog != null && message.hasOwnProperty("passedLog"))
+            object.passedLog = message.passedLog;
+          if (message.testProcessTimes && message.testProcessTimes.length) {
+            object.testProcessTimes = [];
+            for (var j = 0; j < message.testProcessTimes.length; ++j)
+              if (typeof message.testProcessTimes[j] === "number")
+                object.testProcessTimes[j] = options.longs === String ? String(message.testProcessTimes[j]) : message.testProcessTimes[j];
+              else
+                object.testProcessTimes[j] = options.longs === String ? $util.Long.prototype.toString.call(message.testProcessTimes[j]) : options.longs === Number ? new $util.LongBits(message.testProcessTimes[j].low >>> 0, message.testProcessTimes[j].high >>> 0).toNumber() : message.testProcessTimes[j];
+          }
+          if (message.runDurationMillis != null && message.hasOwnProperty("runDurationMillis"))
+            if (typeof message.runDurationMillis === "number")
+              object.runDurationMillis = options.longs === String ? String(message.runDurationMillis) : message.runDurationMillis;
+            else
+              object.runDurationMillis = options.longs === String ? $util.Long.prototype.toString.call(message.runDurationMillis) : options.longs === Number ? new $util.LongBits(message.runDurationMillis.low >>> 0, message.runDurationMillis.high >>> 0).toNumber() : message.runDurationMillis;
+          if (message.testCase != null && message.hasOwnProperty("testCase"))
+            object.testCase = $root.blaze.TestCase.toObject(message.testCase, options);
+          if (message.failedStatus != null && message.hasOwnProperty("failedStatus"))
+            object.failedStatus = options.enums === String ? $root.blaze.FailedTestCasesStatus[message.failedStatus] : message.failedStatus;
+          if (message.startTimeMillisEpoch != null && message.hasOwnProperty("startTimeMillisEpoch"))
+            if (typeof message.startTimeMillisEpoch === "number")
+              object.startTimeMillisEpoch = options.longs === String ? String(message.startTimeMillisEpoch) : message.startTimeMillisEpoch;
+            else
+              object.startTimeMillisEpoch = options.longs === String ? $util.Long.prototype.toString.call(message.startTimeMillisEpoch) : options.longs === Number ? new $util.LongBits(message.startTimeMillisEpoch.low >>> 0, message.startTimeMillisEpoch.high >>> 0).toNumber() : message.startTimeMillisEpoch;
+          if (message.statusDetails != null && message.hasOwnProperty("statusDetails"))
+            object.statusDetails = message.statusDetails;
+          return object;
+        };
+        TestResultData.prototype.toJSON = function toJSON() {
+          return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+        return TestResultData;
+      }();
+      return blaze;
+    }();
+    module2.exports = $root;
+  }
+});
+
+// bazel-out/k8-fastbuild/bin/ng-dev/ci/gather-test-results/index.js
+var require_gather_test_results = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/ci/gather-test-results/index.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.copyTestResultFiles = void 0;
+    var test_status_pb_1 = require_test_status_pb();
+    var child_process_1 = require_child_process();
+    var path_1 = require("path");
+    var fs_1 = require("fs");
+    var console_12 = require_console();
+    var git_client_1 = require_git_client();
+    var TestResultData = test_status_pb_1.blaze.TestResultData;
+    var baseTestReport = `
+ <?xml version="1.0" encoding="UTF-8" ?>
+ <testsuites disabled="0" errors="0" failures="0" tests="0" time="0">
+   <testsuite name="">
+     <testcase name=""/>
+   </testsuite>
+ </testsuites>
+ `.trim();
+    function getTestLogsDirectoryPath() {
+      const { stdout, status } = (0, child_process_1.spawnSync)("yarn", ["-s", "bazel", "info", "bazel-testlogs"]);
+      if (status === 0) {
+        return stdout.trim();
+      }
+      throw Error(`Unable to determine the path to the directory containing Bazel's testlog.`);
+    }
+    function findAllTestResultFiles(dirPath, files) {
+      for (const file of (0, fs_1.readdirSync)(dirPath)) {
+        const filePath = (0, path_1.join)(dirPath, file);
+        if ((0, fs_1.statSync)(filePath).isDirectory()) {
+          files = findAllTestResultFiles(filePath, files);
+        } else {
+          if ((0, path_1.extname)(file) === ".xml") {
+            files.push([filePath, (0, path_1.join)(dirPath, "test.cache_status")]);
+          }
+        }
+      }
+      return files;
+    }
+    function copyTestResultFiles() {
+      let copiedFileCount = 0;
+      const testLogsDir = getTestLogsDirectoryPath();
+      const testResultPaths = findAllTestResultFiles(testLogsDir, []);
+      const projectBaseDir = git_client_1.GitClient.get().baseDir;
+      const destDirPath = (0, path_1.join)(projectBaseDir, "test-results/_");
+      (0, fs_1.rmSync)(destDirPath, { recursive: true, force: true });
+      (0, fs_1.mkdirSync)(destDirPath, { recursive: true });
+      (0, fs_1.writeFileSync)((0, path_1.join)(destDirPath, `results.xml`), baseTestReport);
+      (0, console_12.debug)("Added base test report to test-results directory.");
+      testResultPaths.forEach(([xmlFilePath, cacheStatusFilePath]) => {
+        const shortFilePath = xmlFilePath.substr(testLogsDir.length + 1);
+        const testResultData = TestResultData.decode((0, fs_1.readFileSync)(cacheStatusFilePath));
+        if (testResultData.remotelyCached && testResultData.testPassed) {
+          (0, console_12.debug)(`Skipping copy of ${shortFilePath} as it was a passing remote cache hit`);
+        } else {
+          const destFilePath = (0, path_1.join)(destDirPath, `results-${copiedFileCount++}.xml`);
+          (0, fs_1.copyFileSync)(xmlFilePath, destFilePath);
+          (0, console_12.debug)(`Copying ${shortFilePath}`);
+        }
+      });
+      (0, console_12.info)(`Copied ${copiedFileCount} test result file(s) for upload.`);
+    }
+    exports2.copyTestResultFiles = copyTestResultFiles;
+  }
+});
+
+// bazel-out/k8-fastbuild/bin/ng-dev/ci/gather-test-results/cli.js
+var require_cli26 = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/ci/gather-test-results/cli.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.GatherTestResultsModule = void 0;
+    var _1 = require_gather_test_results();
+    var console_12 = require_console();
+    function builder(argv) {
+      return argv.option("force", {
+        type: "boolean",
+        default: false,
+        description: "Whether to force the command to run, ignoring the CI environment check"
+      });
+    }
+    async function handler({ force }) {
+      if (force === false && process.env["CI"] === void 0) {
+        (0, console_12.error)((0, console_12.red)("Aborting, `gather-test-results` is only meant to be run on CI."));
+        process.exit(1);
+      }
+      (0, _1.copyTestResultFiles)();
+    }
+    exports2.GatherTestResultsModule = {
+      builder,
+      handler,
+      command: "gather-test-results",
+      describe: "Gather test result files into single directory for consumption by CircleCI"
+    };
+  }
+});
+
+// bazel-out/k8-fastbuild/bin/ng-dev/ci/cli.js
+var require_cli27 = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/ci/cli.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.buildCiParser = void 0;
+    var cli_12 = require_cli26();
+    function buildCiParser(yargs2) {
+      return yargs2.help().strict().command(cli_12.GatherTestResultsModule);
+    }
+    exports2.buildCiParser = buildCiParser;
+  }
+});
+
 // bazel-out/k8-fastbuild/bin/ng-dev/cli.mjs
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -65379,7 +67608,8 @@ var cli_7 = require_cli23();
 var index_1 = require_ts_circular_dependencies();
 var console_1 = require_console();
 var cli_8 = require_cli25();
-yargs.scriptName("ng-dev").middleware(console_1.captureLogOutputForCommand).demandCommand().recommendCommands().command("commit-message <command>", "", cli_2.buildCommitMessageParser).command("format <command>", "", cli_3.buildFormatParser).command("pr <command>", "", cli_5.buildPrParser).command("pullapprove <command>", "", cli_6.buildPullapproveParser).command("release <command>", "", cli_7.buildReleaseParser).command("ts-circular-deps <command>", "", index_1.tsCircularDependenciesBuilder).command("caretaker <command>", "", cli_1.buildCaretakerParser).command("misc <command>", "", cli_8.buildMiscParser).command("ngbot <command>", false, cli_4.buildNgbotParser).wrap(120).strict().parse();
+var cli_9 = require_cli27();
+yargs.scriptName("ng-dev").middleware(console_1.captureLogOutputForCommand).demandCommand().recommendCommands().command("commit-message <command>", "", cli_2.buildCommitMessageParser).command("format <command>", "", cli_3.buildFormatParser).command("pr <command>", "", cli_5.buildPrParser).command("pullapprove <command>", "", cli_6.buildPullapproveParser).command("release <command>", "", cli_7.buildReleaseParser).command("ts-circular-deps <command>", "", index_1.tsCircularDependenciesBuilder).command("caretaker <command>", "", cli_1.buildCaretakerParser).command("misc <command>", "", cli_8.buildMiscParser).command("ngbot <command>", false, cli_4.buildNgbotParser).command("ci <command>", false, cli_9.buildCiParser).wrap(120).strict().parse();
 /*!
  * Tmp
  *
