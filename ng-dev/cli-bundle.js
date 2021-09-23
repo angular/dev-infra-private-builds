@@ -63822,6 +63822,7 @@ var require_common = __commonJS({
     function ownProp(obj, field) {
       return Object.prototype.hasOwnProperty.call(obj, field);
     }
+    var fs = require("fs");
     var path = require("path");
     var minimatch = require_minimatch();
     var isAbsolute = require_path_is_absolute();
@@ -63876,6 +63877,7 @@ var require_common = __commonJS({
       self2.stat = !!options.stat;
       self2.noprocess = !!options.noprocess;
       self2.absolute = !!options.absolute;
+      self2.fs = options.fs || fs;
       self2.maxLength = options.maxLength || Infinity;
       self2.cache = options.cache || Object.create(null);
       self2.statCache = options.statCache || Object.create(null);
@@ -64005,7 +64007,6 @@ var require_sync2 = __commonJS({
   "node_modules/glob/sync.js"(exports2, module2) {
     module2.exports = globSync;
     globSync.GlobSync = GlobSync;
-    var fs = require("fs");
     var rp = require_fs();
     var minimatch = require_minimatch();
     var Minimatch = minimatch.Minimatch;
@@ -64181,7 +64182,7 @@ var require_sync2 = __commonJS({
       var lstat;
       var stat;
       try {
-        lstat = fs.lstatSync(abs);
+        lstat = this.fs.lstatSync(abs);
       } catch (er) {
         if (er.code === "ENOENT") {
           return null;
@@ -64207,7 +64208,7 @@ var require_sync2 = __commonJS({
           return c;
       }
       try {
-        return this._readdirEntries(abs, fs.readdirSync(abs));
+        return this._readdirEntries(abs, this.fs.readdirSync(abs));
       } catch (er) {
         this._readdirError(abs, er);
         return null;
@@ -64316,7 +64317,7 @@ var require_sync2 = __commonJS({
       if (!stat) {
         var lstat;
         try {
-          lstat = fs.lstatSync(abs);
+          lstat = this.fs.lstatSync(abs);
         } catch (er) {
           if (er && (er.code === "ENOENT" || er.code === "ENOTDIR")) {
             this.statCache[abs] = false;
@@ -64325,7 +64326,7 @@ var require_sync2 = __commonJS({
         }
         if (lstat && lstat.isSymbolicLink()) {
           try {
-            stat = fs.statSync(abs);
+            stat = this.fs.statSync(abs);
           } catch (er) {
             stat = lstat;
           }
@@ -64402,7 +64403,6 @@ var require_inflight = __commonJS({
 var require_glob = __commonJS({
   "node_modules/glob/glob.js"(exports2, module2) {
     module2.exports = glob;
-    var fs = require("fs");
     var rp = require_fs();
     var minimatch = require_minimatch();
     var Minimatch = minimatch.Minimatch;
@@ -64745,7 +64745,7 @@ var require_glob = __commonJS({
       var self2 = this;
       var lstatcb = inflight(lstatkey, lstatcb_);
       if (lstatcb)
-        fs.lstat(abs, lstatcb);
+        self2.fs.lstat(abs, lstatcb);
       function lstatcb_(er, lstat) {
         if (er && er.code === "ENOENT")
           return cb();
@@ -64774,7 +64774,7 @@ var require_glob = __commonJS({
           return cb(null, c);
       }
       var self2 = this;
-      fs.readdir(abs, readdirCb(this, abs, cb));
+      self2.fs.readdir(abs, readdirCb(this, abs, cb));
     };
     function readdirCb(self2, abs, cb) {
       return function(er, entries) {
@@ -64918,10 +64918,10 @@ var require_glob = __commonJS({
       var self2 = this;
       var statcb = inflight("stat\0" + abs, lstatcb_);
       if (statcb)
-        fs.lstat(abs, statcb);
+        self2.fs.lstat(abs, statcb);
       function lstatcb_(er, lstat) {
         if (lstat && lstat.isSymbolicLink()) {
-          return fs.stat(abs, function(er2, stat2) {
+          return self2.fs.stat(abs, function(er2, stat2) {
             if (er2)
               self2._stat2(f, abs, null, lstat, cb);
             else
