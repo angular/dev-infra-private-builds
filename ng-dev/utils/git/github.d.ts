@@ -5372,10 +5372,6 @@ export declare class GithubClient {
                 pull_number: number;
             } & {
                 expected_head_sha?: string | undefined;
-            } & {
-                mediaType: {
-                    previews: ["lydian", ...string[]];
-                };
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 message?: string | undefined;
                 url?: string | undefined;
@@ -6157,10 +6153,6 @@ export declare class GithubClient {
             (params?: (RequestParameters & Omit<{
                 owner: string;
                 repo: string;
-            } & {
-                mediaType: {
-                    previews: ["dorian", ...string[]];
-                };
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<never, 204>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
@@ -9006,6 +8998,8 @@ export declare class GithubClient {
                 url: string;
                 status: "built" | "building" | "errored" | null;
                 cname: string | null;
+                protected_domain_state?: "pending" | "verified" | "unverified" | null | undefined;
+                pending_domain_unverified_at?: string | null | undefined;
                 custom_404: boolean;
                 html_url?: string | undefined;
                 source?: {
@@ -9730,10 +9724,16 @@ export declare class GithubClient {
             (params?: (RequestParameters & Omit<{
                 owner: string;
                 repo: string;
-            } & {
-                mediaType: {
-                    previews: ["london", ...string[]];
-                };
+            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<never, 204>>;
+            defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
+            endpoint: import("@octokit/types").EndpointInterface<{
+                url: string;
+            }>;
+        };
+        disableLfsForRepo: {
+            (params?: (RequestParameters & Omit<{
+                owner: string;
+                repo: string;
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<never, 204>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
@@ -9744,10 +9744,6 @@ export declare class GithubClient {
             (params?: (RequestParameters & Omit<{
                 owner: string;
                 repo: string;
-            } & {
-                mediaType: {
-                    previews: ["dorian", ...string[]];
-                };
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<never, 204>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
@@ -9791,11 +9787,19 @@ export declare class GithubClient {
             (params?: (RequestParameters & Omit<{
                 owner: string;
                 repo: string;
-            } & {
-                mediaType: {
-                    previews: ["london", ...string[]];
-                };
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<never, 204>>;
+            defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
+            endpoint: import("@octokit/types").EndpointInterface<{
+                url: string;
+            }>;
+        };
+        enableLfsForRepo: {
+            (params?: (RequestParameters & Omit<{
+                owner: string;
+                repo: string;
+            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
+                [key: string]: unknown;
+            }, 202>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
                 url: string;
@@ -9805,10 +9809,6 @@ export declare class GithubClient {
             (params?: (RequestParameters & Omit<{
                 owner: string;
                 repo: string;
-            } & {
-                mediaType: {
-                    previews: ["dorian", ...string[]];
-                };
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<never, 204>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
@@ -11587,9 +11587,9 @@ export declare class GithubClient {
             (params?: (RequestParameters & Omit<{
                 owner: string;
                 repo: string;
-            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<number[][], 200> | import("@octokit/types").OctokitResponse<{
+            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 [key: string]: unknown;
-            }, 202>>;
+            }, 202> | import("@octokit/types").OctokitResponse<number[][], 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
                 url: string;
@@ -12896,6 +12896,8 @@ export declare class GithubClient {
                 url: string;
                 status: "built" | "building" | "errored" | null;
                 cname: string | null;
+                protected_domain_state?: "pending" | "verified" | "unverified" | null | undefined;
+                pending_domain_unverified_at?: string | null | undefined;
                 custom_404: boolean;
                 html_url?: string | undefined;
                 source?: {
@@ -13916,10 +13918,6 @@ export declare class GithubClient {
                 owner: string;
                 repo: string;
                 commit_sha: string;
-            } & {
-                mediaType: {
-                    previews: ["groot", ...string[]];
-                };
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 name: string;
                 commit: {
@@ -17333,10 +17331,6 @@ export declare class GithubClient {
             } & {
                 per_page?: number | undefined;
                 page?: number | undefined;
-            } & {
-                mediaType: {
-                    previews: ["groot", ...string[]];
-                };
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 url: string;
                 id: number;
@@ -27423,10 +27417,6 @@ export declare class GithubClient {
             } & {
                 per_page?: number | undefined;
                 page?: number | undefined;
-            } & {
-                mediaType: {
-                    previews: ["mockingbird", ...string[]];
-                };
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<(Partial<{
                 id: number;
                 node_id: string;
