@@ -34,8 +34,6 @@ export interface PullRequestConfig {
     requiredBaseCommits?: {
         [branchName: string]: string;
     };
-    /** Pattern that matches labels which imply a signed CLA. */
-    claSignedLabel: string | RegExp;
     /** Pattern that matches labels which imply a merge ready pull request. */
     mergeReadyLabel: string | RegExp;
     /** Label that is applied when special attention from the caretaker is required. */

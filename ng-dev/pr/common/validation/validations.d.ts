@@ -8,7 +8,7 @@
 import { Commit } from '../../../commit-message/parse';
 import { TargetLabel } from '../targeting/target-label';
 import { PullRequestConfig } from '../../config';
-import { RawPullRequest } from '../fetch-pull-request';
+import { PullRequestFromGithub } from '../fetch-pull-request';
 /**
  * Assert the commits provided are allowed to merge to the provided target label,
  * throwing an error otherwise.
@@ -25,4 +25,21 @@ export declare function assertCorrectBreakingChangeLabeling(commits: Commit[], p
  * Assert the pull request is pending, not closed, merged or in draft.
  * @throws {PullRequestFailure} if the pull request is not pending.
  */
-export declare function assertPendingState(pullRequest: RawPullRequest): void;
+export declare function assertPendingState(pullRequest: PullRequestFromGithub): void;
+/**
+ * Assert the pull request has all necessary CLAs signed.
+ * @throws {PullRequestFailure} if the pull request is missing a necessary CLA signature.
+ */
+export declare function assertSignedCla(pullRequest: PullRequestFromGithub): void;
+/**
+ * Assert the pull request has been marked ready for merge by the author.
+ * @throws {PullRequestFailure} if the pull request is missing the merge ready label.
+ */
+export declare function assertMergeReady(pullRequest: PullRequestFromGithub, config: PullRequestConfig): boolean;
+/**
+ * Assert the pull request has been marked ready for merge by the author.
+ * @throws {PullRequestFailure} if the pull request is missing the merge ready label.
+ */
+export declare function assertPassingCi(pullRequest: PullRequestFromGithub): void;
+/** Checks whether the specified value matches the given pattern. */
+export declare function matchesPattern(value: string, pattern: RegExp | string): boolean;

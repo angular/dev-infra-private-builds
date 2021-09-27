@@ -58801,9 +58801,6 @@ var require_config6 = __commonJS({
       if (config.pullRequest === void 0) {
         throw new config_1.ConfigValidationError("No pullRequest configuration found. Set the `pullRequest` configuration.");
       }
-      if (!config.pullRequest.claSignedLabel) {
-        errors.push("No CLA signed label configured.");
-      }
       if (!config.pullRequest.mergeReadyLabel) {
         errors.push("No merge ready label configured.");
       }
@@ -59060,16 +59057,242 @@ var require_failures = __commonJS({
   }
 });
 
+// bazel-out/k8-fastbuild/bin/ng-dev/utils/github.js
+var require_github3 = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/utils/github.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.getPendingPrs = exports2.getPr = void 0;
+    var typed_graphqlify_1 = require_dist();
+    var graphql_1 = require_dist_node6();
+    async function getPr(prSchema, prNumber, git) {
+      var _a;
+      const { owner, name } = git.remoteConfig;
+      const PR_QUERY = (0, typed_graphqlify_1.params)({
+        $number: "Int!",
+        $owner: "String!",
+        $name: "String!"
+      }, {
+        repository: (0, typed_graphqlify_1.params)({ owner: "$owner", name: "$name" }, {
+          pullRequest: (0, typed_graphqlify_1.params)({ number: "$number" }, prSchema)
+        })
+      });
+      try {
+        const result = await git.github.graphql(PR_QUERY, { number: prNumber, owner, name });
+        return result.repository.pullRequest;
+      } catch (e) {
+        if (e instanceof graphql_1.GraphqlResponseError && ((_a = e.errors) == null ? void 0 : _a.every((e2) => e2.type === "NOT_FOUND"))) {
+          return null;
+        }
+        throw e;
+      }
+    }
+    exports2.getPr = getPr;
+    async function getPendingPrs(prSchema, git) {
+      const { owner, name } = git.remoteConfig;
+      const PRS_QUERY = (0, typed_graphqlify_1.params)({
+        $first: "Int",
+        $after: "String",
+        $owner: "String!",
+        $name: "String!"
+      }, {
+        repository: (0, typed_graphqlify_1.params)({ owner: "$owner", name: "$name" }, {
+          pullRequests: (0, typed_graphqlify_1.params)({
+            first: "$first",
+            after: "$after",
+            states: `OPEN`
+          }, {
+            nodes: [prSchema],
+            pageInfo: {
+              hasNextPage: typed_graphqlify_1.types.boolean,
+              endCursor: typed_graphqlify_1.types.string
+            }
+          })
+        })
+      });
+      let cursor;
+      let hasNextPage = true;
+      const prs = [];
+      while (hasNextPage) {
+        const params = {
+          after: cursor || null,
+          first: 100,
+          owner,
+          name
+        };
+        const results = await git.github.graphql(PRS_QUERY, params);
+        prs.push(...results.repository.pullRequests.nodes);
+        hasNextPage = results.repository.pullRequests.pageInfo.hasNextPage;
+        cursor = results.repository.pullRequests.pageInfo.endCursor;
+      }
+      return prs;
+    }
+    exports2.getPendingPrs = getPendingPrs;
+  }
+});
+
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/common/fetch-pull-request.js
+var require_fetch_pull_request = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/pr/common/fetch-pull-request.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.getStatusesForPullRequest = exports2.fetchPendingPullRequestsFromGithub = exports2.fetchPullRequestFromGithub = exports2.PR_SCHEMA = exports2.PullRequestStatus = void 0;
+    var github_1 = require_github3();
+    var typed_graphqlify_1 = require_dist();
+    var PullRequestStatus;
+    (function(PullRequestStatus2) {
+      PullRequestStatus2[PullRequestStatus2["PASSING"] = 0] = "PASSING";
+      PullRequestStatus2[PullRequestStatus2["FAILING"] = 1] = "FAILING";
+      PullRequestStatus2[PullRequestStatus2["PENDING"] = 2] = "PENDING";
+    })(PullRequestStatus = exports2.PullRequestStatus || (exports2.PullRequestStatus = {}));
+    exports2.PR_SCHEMA = {
+      url: typed_graphqlify_1.types.string,
+      isDraft: typed_graphqlify_1.types.boolean,
+      state: typed_graphqlify_1.types.custom(),
+      number: typed_graphqlify_1.types.number,
+      mergeable: typed_graphqlify_1.types.custom(),
+      updatedAt: typed_graphqlify_1.types.string,
+      commits: (0, typed_graphqlify_1.params)({ last: 100 }, {
+        totalCount: typed_graphqlify_1.types.number,
+        nodes: [
+          {
+            commit: {
+              statusCheckRollup: {
+                state: typed_graphqlify_1.types.custom(),
+                contexts: (0, typed_graphqlify_1.params)({ last: 100 }, {
+                  nodes: [
+                    (0, typed_graphqlify_1.onUnion)({
+                      CheckRun: {
+                        __typename: typed_graphqlify_1.types.constant("CheckRun"),
+                        status: typed_graphqlify_1.types.custom(),
+                        conclusion: typed_graphqlify_1.types.custom(),
+                        name: typed_graphqlify_1.types.string
+                      },
+                      StatusContext: {
+                        __typename: typed_graphqlify_1.types.constant("StatusContext"),
+                        state: typed_graphqlify_1.types.custom(),
+                        context: typed_graphqlify_1.types.string
+                      }
+                    })
+                  ]
+                })
+              },
+              message: typed_graphqlify_1.types.string
+            }
+          }
+        ]
+      }),
+      maintainerCanModify: typed_graphqlify_1.types.boolean,
+      viewerDidAuthor: typed_graphqlify_1.types.boolean,
+      headRefOid: typed_graphqlify_1.types.string,
+      headRef: {
+        name: typed_graphqlify_1.types.string,
+        repository: {
+          url: typed_graphqlify_1.types.string,
+          nameWithOwner: typed_graphqlify_1.types.string
+        }
+      },
+      baseRef: {
+        name: typed_graphqlify_1.types.string,
+        repository: {
+          url: typed_graphqlify_1.types.string,
+          nameWithOwner: typed_graphqlify_1.types.string
+        }
+      },
+      baseRefName: typed_graphqlify_1.types.string,
+      title: typed_graphqlify_1.types.string,
+      labels: (0, typed_graphqlify_1.params)({ first: 100 }, {
+        nodes: [
+          {
+            name: typed_graphqlify_1.types.string
+          }
+        ]
+      })
+    };
+    async function fetchPullRequestFromGithub(git, prNumber) {
+      return await (0, github_1.getPr)(exports2.PR_SCHEMA, prNumber, git);
+    }
+    exports2.fetchPullRequestFromGithub = fetchPullRequestFromGithub;
+    async function fetchPendingPullRequestsFromGithub(git) {
+      return await (0, github_1.getPendingPrs)(exports2.PR_SCHEMA, git);
+    }
+    exports2.fetchPendingPullRequestsFromGithub = fetchPendingPullRequestsFromGithub;
+    function getStatusesForPullRequest(pullRequest) {
+      const nodes = pullRequest.commits.nodes;
+      const { statusCheckRollup } = nodes[nodes.length - 1].commit;
+      const statuses = statusCheckRollup.contexts.nodes.map((context) => {
+        switch (context.__typename) {
+          case "CheckRun":
+            return {
+              type: "check",
+              name: context.name,
+              status: normalizeGithubCheckState(context.conclusion, context.status)
+            };
+          case "StatusContext":
+            return {
+              type: "status",
+              name: context.context,
+              status: normalizeGithubStatusState(context.state)
+            };
+        }
+      });
+      return {
+        combinedStatus: normalizeGithubStatusState(statusCheckRollup.state),
+        statuses
+      };
+    }
+    exports2.getStatusesForPullRequest = getStatusesForPullRequest;
+    function normalizeGithubStatusState(state) {
+      switch (state) {
+        case "FAILURE":
+        case "ERROR":
+          return PullRequestStatus.FAILING;
+        case "PENDING":
+          return PullRequestStatus.PENDING;
+        case "SUCCESS":
+        case "EXPECTED":
+          return PullRequestStatus.PASSING;
+      }
+    }
+    function normalizeGithubCheckState(conclusion, status) {
+      switch (status) {
+        case "COMPLETED":
+          break;
+        case "QUEUED":
+        case "IN_PROGRESS":
+        case "WAITING":
+        case "PENDING":
+        case "REQUESTED":
+          return PullRequestStatus.PENDING;
+      }
+      switch (conclusion) {
+        case "ACTION_REQUIRED":
+        case "TIMED_OUT":
+        case "CANCELLED":
+        case "FAILURE":
+        case "SKIPPED":
+        case "STALE":
+        case "STARTUP_FAILURE":
+          return PullRequestStatus.FAILING;
+        case "SUCCESS":
+        case "NEUTRAL":
+          return PullRequestStatus.PASSING;
+      }
+    }
+  }
+});
+
 // bazel-out/k8-fastbuild/bin/ng-dev/pr/common/validation/validations.js
 var require_validations = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/pr/common/validation/validations.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.assertPendingState = exports2.assertCorrectBreakingChangeLabeling = exports2.assertChangesAllowForTargetLabel = void 0;
+    exports2.matchesPattern = exports2.assertPassingCi = exports2.assertMergeReady = exports2.assertSignedCla = exports2.assertPendingState = exports2.assertCorrectBreakingChangeLabeling = exports2.assertChangesAllowForTargetLabel = void 0;
     var target_label_1 = require_target_label();
     var config_1 = require_config6();
     var failures_1 = require_failures();
     var console_12 = require_console();
+    var fetch_pull_request_1 = require_fetch_pull_request();
     function assertChangesAllowForTargetLabel(commits, label, config) {
       const exemptedScopes = config.targetLabelExemptScopes || [];
       commits = commits.filter((commit) => !exemptedScopes.includes(commit.scope));
@@ -59127,6 +59350,37 @@ var require_validations = __commonJS({
       }
     }
     exports2.assertPendingState = assertPendingState;
+    function assertSignedCla(pullRequest) {
+      const passing = (0, fetch_pull_request_1.getStatusesForPullRequest)(pullRequest).statuses.some(({ name, status }) => {
+        return name === "cla/google" && status === fetch_pull_request_1.PullRequestStatus.PASSING;
+      });
+      if (passing) {
+        return;
+      }
+      throw failures_1.PullRequestFailure.claUnsigned();
+    }
+    exports2.assertSignedCla = assertSignedCla;
+    function assertMergeReady(pullRequest, config) {
+      if (pullRequest.labels.nodes.some(({ name }) => matchesPattern(name, config.mergeReadyLabel))) {
+        return true;
+      }
+      throw failures_1.PullRequestFailure.notMergeReady();
+    }
+    exports2.assertMergeReady = assertMergeReady;
+    function assertPassingCi(pullRequest) {
+      const { combinedStatus } = (0, fetch_pull_request_1.getStatusesForPullRequest)(pullRequest);
+      if (combinedStatus === fetch_pull_request_1.PullRequestStatus.PENDING) {
+        throw failures_1.PullRequestFailure.pendingCiJobs();
+      }
+      if (combinedStatus === fetch_pull_request_1.PullRequestStatus.FAILING) {
+        throw failures_1.PullRequestFailure.failingCiJobs();
+      }
+    }
+    exports2.assertPassingCi = assertPassingCi;
+    function matchesPattern(value, pattern) {
+      return typeof pattern === "string" ? value === pattern : pattern.test(value);
+    }
+    exports2.matchesPattern = matchesPattern;
   }
 });
 
@@ -59266,80 +59520,6 @@ var require_cli10 = __commonJS({
   }
 });
 
-// bazel-out/k8-fastbuild/bin/ng-dev/utils/github.js
-var require_github3 = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/utils/github.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.getPendingPrs = exports2.getPr = void 0;
-    var typed_graphqlify_1 = require_dist();
-    var graphql_1 = require_dist_node6();
-    async function getPr(prSchema, prNumber, git) {
-      var _a;
-      const { owner, name } = git.remoteConfig;
-      const PR_QUERY = (0, typed_graphqlify_1.params)({
-        $number: "Int!",
-        $owner: "String!",
-        $name: "String!"
-      }, {
-        repository: (0, typed_graphqlify_1.params)({ owner: "$owner", name: "$name" }, {
-          pullRequest: (0, typed_graphqlify_1.params)({ number: "$number" }, prSchema)
-        })
-      });
-      try {
-        const result = await git.github.graphql(PR_QUERY, { number: prNumber, owner, name });
-        return result.repository.pullRequest;
-      } catch (e) {
-        if (e instanceof graphql_1.GraphqlResponseError && ((_a = e.errors) == null ? void 0 : _a.every((e2) => e2.type === "NOT_FOUND"))) {
-          return null;
-        }
-        throw e;
-      }
-    }
-    exports2.getPr = getPr;
-    async function getPendingPrs(prSchema, git) {
-      const { owner, name } = git.remoteConfig;
-      const PRS_QUERY = (0, typed_graphqlify_1.params)({
-        $first: "Int",
-        $after: "String",
-        $owner: "String!",
-        $name: "String!"
-      }, {
-        repository: (0, typed_graphqlify_1.params)({ owner: "$owner", name: "$name" }, {
-          pullRequests: (0, typed_graphqlify_1.params)({
-            first: "$first",
-            after: "$after",
-            states: `OPEN`
-          }, {
-            nodes: [prSchema],
-            pageInfo: {
-              hasNextPage: typed_graphqlify_1.types.boolean,
-              endCursor: typed_graphqlify_1.types.string
-            }
-          })
-        })
-      });
-      let cursor;
-      let hasNextPage = true;
-      const prs = [];
-      while (hasNextPage) {
-        const params = {
-          after: cursor || null,
-          first: 100,
-          owner,
-          name
-        };
-        const results = await git.github.graphql(PRS_QUERY, params);
-        prs.push(...results.repository.pullRequests.nodes);
-        hasNextPage = results.repository.pullRequests.pageInfo.hasNextPage;
-        cursor = results.repository.pullRequests.pageInfo.endCursor;
-      }
-      return prs;
-    }
-    exports2.getPendingPrs = getPendingPrs;
-  }
-});
-
 // bazel-out/k8-fastbuild/bin/ng-dev/pr/common/checkout-pr.js
 var require_checkout_pr = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/pr/common/checkout-pr.js"(exports2) {
@@ -59450,34 +59630,10 @@ var require_discover_new_conflicts = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.discoverNewConflictsForPr = void 0;
     var cli_progress_1 = require_cli_progress();
-    var typed_graphqlify_1 = require_dist();
     var console_12 = require_console();
     var authenticated_git_client_1 = require_authenticated_git_client();
     var git_client_1 = require_git_client();
-    var github_1 = require_github3();
-    var PR_SCHEMA = {
-      headRef: {
-        name: typed_graphqlify_1.types.string,
-        repository: {
-          url: typed_graphqlify_1.types.string,
-          nameWithOwner: typed_graphqlify_1.types.string
-        }
-      },
-      baseRef: {
-        name: typed_graphqlify_1.types.string,
-        repository: {
-          url: typed_graphqlify_1.types.string,
-          nameWithOwner: typed_graphqlify_1.types.string
-        }
-      },
-      updatedAt: typed_graphqlify_1.types.string,
-      number: typed_graphqlify_1.types.number,
-      mergeable: typed_graphqlify_1.types.string,
-      title: typed_graphqlify_1.types.string
-    };
-    function processPr(pr) {
-      return __spreadProps(__spreadValues({}, pr), { updatedAt: new Date(pr.updatedAt).getTime() });
-    }
+    var fetch_pull_request_1 = require_fetch_pull_request();
     var tempWorkingBranch = "__NgDevRepoBaseAfterChange__";
     async function discoverNewConflictsForPr(newPrNumber, updatedAfter) {
       const git = authenticated_git_client_1.AuthenticatedGitClient.get();
@@ -59489,7 +59645,11 @@ var require_discover_new_conflicts = __commonJS({
       const progressBar = new cli_progress_1.Bar({ format: `[{bar}] ETA: {eta}s | {value}/{total}` });
       const conflicts = [];
       (0, console_12.info)(`Requesting pending PRs from Github`);
-      const allPendingPRs = (await (0, github_1.getPendingPrs)(PR_SCHEMA, git)).map(processPr);
+      const allPendingPRs = await (0, fetch_pull_request_1.fetchPendingPullRequestsFromGithub)(git);
+      if (allPendingPRs === null) {
+        (0, console_12.error)("Unable to find any pending PRs in the repository");
+        process.exit(1);
+      }
       const requestedPr = allPendingPRs.find((pr) => pr.number === newPrNumber);
       if (requestedPr === void 0) {
         (0, console_12.error)(`The request PR, #${newPrNumber} was not found as a pending PR on github, please confirm`);
@@ -59497,7 +59657,7 @@ var require_discover_new_conflicts = __commonJS({
         process.exit(1);
       }
       const pendingPrs = allPendingPRs.filter((pr) => {
-        return pr.baseRef.name === requestedPr.baseRef.name && pr.mergeable !== "CONFLICTING" && pr.updatedAt >= updatedAfter;
+        return pr.baseRef.name === requestedPr.baseRef.name && pr.mergeable !== "CONFLICTING" && new Date(pr.updatedAt).getTime() >= updatedAfter;
       });
       (0, console_12.info)(`Retrieved ${allPendingPRs.length} total pending PRs`);
       (0, console_12.info)(`Checking ${pendingPrs.length} PRs for conflicts after a merge of #${newPrNumber}`);
@@ -59608,79 +59768,6 @@ Do you want to proceed merging?`;
   }
 });
 
-// bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/string-pattern.js
-var require_string_pattern = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/string-pattern.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.matchesPattern = void 0;
-    function matchesPattern(value, pattern) {
-      return typeof pattern === "string" ? value === pattern : pattern.test(value);
-    }
-    exports2.matchesPattern = matchesPattern;
-  }
-});
-
-// bazel-out/k8-fastbuild/bin/ng-dev/pr/common/fetch-pull-request.js
-var require_fetch_pull_request = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/pr/common/fetch-pull-request.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.fetchPullRequestFromGithub = void 0;
-    var typed_graphqlify_1 = require_dist();
-    var github_1 = require_github3();
-    var PR_SCHEMA = {
-      url: typed_graphqlify_1.types.string,
-      isDraft: typed_graphqlify_1.types.boolean,
-      state: typed_graphqlify_1.types.oneOf(["OPEN", "MERGED", "CLOSED"]),
-      number: typed_graphqlify_1.types.number,
-      commits: (0, typed_graphqlify_1.params)({ last: 100 }, {
-        totalCount: typed_graphqlify_1.types.number,
-        nodes: [
-          {
-            commit: {
-              status: {
-                state: typed_graphqlify_1.types.oneOf(["FAILURE", "PENDING", "SUCCESS"])
-              },
-              message: typed_graphqlify_1.types.string
-            }
-          }
-        ]
-      }),
-      maintainerCanModify: typed_graphqlify_1.types.boolean,
-      viewerDidAuthor: typed_graphqlify_1.types.boolean,
-      headRefOid: typed_graphqlify_1.types.string,
-      headRef: {
-        name: typed_graphqlify_1.types.string,
-        repository: {
-          url: typed_graphqlify_1.types.string,
-          nameWithOwner: typed_graphqlify_1.types.string
-        }
-      },
-      baseRef: {
-        name: typed_graphqlify_1.types.string,
-        repository: {
-          url: typed_graphqlify_1.types.string,
-          nameWithOwner: typed_graphqlify_1.types.string
-        }
-      },
-      baseRefName: typed_graphqlify_1.types.string,
-      title: typed_graphqlify_1.types.string,
-      labels: (0, typed_graphqlify_1.params)({ first: 100 }, {
-        nodes: [
-          {
-            name: typed_graphqlify_1.types.string
-          }
-        ]
-      })
-    };
-    async function fetchPullRequestFromGithub(git, prNumber) {
-      return await (0, github_1.getPr)(PR_SCHEMA, prNumber, git);
-    }
-    exports2.fetchPullRequestFromGithub = fetchPullRequestFromGithub;
-  }
-});
-
 // bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/pull-request.js
 var require_pull_request = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/pull-request.js"(exports2) {
@@ -59689,7 +59776,6 @@ var require_pull_request = __commonJS({
     exports2.isPullRequest = exports2.loadAndValidatePullRequest = void 0;
     var parse_1 = require_parse2();
     var failures_1 = require_failures();
-    var string_pattern_1 = require_string_pattern();
     var target_label_1 = require_target_label();
     var validations_1 = require_validations();
     var fetch_pull_request_1 = require_fetch_pull_request();
@@ -59699,34 +59785,26 @@ var require_pull_request = __commonJS({
         return failures_1.PullRequestFailure.notFound();
       }
       const labels = prData.labels.nodes.map((l) => l.name);
-      if (!labels.some((name) => (0, string_pattern_1.matchesPattern)(name, config.pullRequest.mergeReadyLabel))) {
-        return failures_1.PullRequestFailure.notMergeReady();
-      }
-      if (!labels.some((name) => (0, string_pattern_1.matchesPattern)(name, config.pullRequest.claSignedLabel))) {
-        return failures_1.PullRequestFailure.claUnsigned();
-      }
       const commitsInPr = prData.commits.nodes.map((n) => (0, parse_1.parseCommitMessage)(n.commit.message));
       const githubTargetBranch = prData.baseRefName;
       const targetBranches = await (0, target_label_1.getTargetBranchesForPullRequest)(git.github, config, labels, githubTargetBranch, commitsInPr);
       try {
+        (0, validations_1.assertMergeReady)(prData, config.pullRequest);
+        (0, validations_1.assertSignedCla)(prData);
         (0, validations_1.assertPendingState)(prData);
         (0, validations_1.assertCorrectBreakingChangeLabeling)(commitsInPr, labels);
+        if (!ignoreNonFatalFailures) {
+          (0, validations_1.assertPassingCi)(prData);
+        }
       } catch (error) {
         if (error instanceof failures_1.PullRequestFailure) {
           return error;
         }
         throw error;
       }
-      const state = prData.commits.nodes.slice(-1)[0].commit.status.state;
-      if (state === "FAILURE" && !ignoreNonFatalFailures) {
-        return failures_1.PullRequestFailure.failingCiJobs();
-      }
-      if (state === "PENDING" && !ignoreNonFatalFailures) {
-        return failures_1.PullRequestFailure.pendingCiJobs();
-      }
       const requiredBaseSha = config.pullRequest.requiredBaseCommits && config.pullRequest.requiredBaseCommits[githubTargetBranch];
-      const needsCommitMessageFixup = !!config.pullRequest.commitMessageFixupLabel && labels.some((name) => (0, string_pattern_1.matchesPattern)(name, config.pullRequest.commitMessageFixupLabel));
-      const hasCaretakerNote = !!config.pullRequest.caretakerNoteLabel && labels.some((name) => (0, string_pattern_1.matchesPattern)(name, config.pullRequest.caretakerNoteLabel));
+      const needsCommitMessageFixup = !!config.pullRequest.commitMessageFixupLabel && labels.some((name) => (0, validations_1.matchesPattern)(name, config.pullRequest.commitMessageFixupLabel));
+      const hasCaretakerNote = !!config.pullRequest.caretakerNoteLabel && labels.some((name) => (0, validations_1.matchesPattern)(name, config.pullRequest.caretakerNoteLabel));
       return {
         url: prData.url,
         prNumber,
@@ -59832,9 +59910,9 @@ var require_api_merge = __commonJS({
     var inquirer_1 = require_inquirer();
     var parse_1 = require_parse2();
     var failures_1 = require_failures();
-    var string_pattern_1 = require_string_pattern();
     var strategy_1 = require_strategy();
     var github_1 = require_github();
+    var validations_1 = require_validations();
     var COMMIT_HEADER_SEPARATOR = "\n\n";
     var GithubApiMergeStrategy = class extends strategy_1.MergeStrategy {
       constructor(git, _config) {
@@ -59939,7 +60017,7 @@ var require_api_merge = __commonJS({
       }
       _getMergeActionFromPullRequest({ labels }) {
         if (this._config.labels) {
-          const matchingLabel = this._config.labels.find(({ pattern }) => labels.some((l) => (0, string_pattern_1.matchesPattern)(l, pattern)));
+          const matchingLabel = this._config.labels.find(({ pattern }) => labels.some((l) => (0, validations_1.matchesPattern)(l, pattern)));
           if (matchingLabel !== void 0) {
             return matchingLabel.method;
           }
