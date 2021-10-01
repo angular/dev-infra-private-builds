@@ -64879,6 +64879,7 @@ var require_publish2 = __commonJS({
         if (!await this._verifyNpmLoginState()) {
           return CompletionState.MANUALLY_ABORTED;
         }
+        process.env["HUSKY"] = "0";
         const repo = { owner, name, api: this._git.github, nextBranchName };
         const releaseTrains = await (0, active_release_trains_1.fetchActiveReleaseTrains)(repo);
         await (0, print_active_trains_1.printActiveReleaseTrains)(releaseTrains, this._config);
