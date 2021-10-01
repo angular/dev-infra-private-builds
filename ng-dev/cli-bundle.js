@@ -60528,8 +60528,8 @@ var require_labels = __commonJS({
     var config_1 = require_config2();
     var target_label_1 = require_target_label();
     var lts_branch_1 = require_lts_branch();
+    var console_12 = require_console();
     async function getTargetLabelsForActiveReleaseTrains(api, config) {
-      (0, index_12.assertValidReleaseConfig)(config);
       (0, config_1.assertValidGithubConfig)(config);
       const nextBranchName = (0, versioning_1.getNextBranchName)(config.github);
       const repo = {
@@ -60539,7 +60539,7 @@ var require_labels = __commonJS({
         api
       };
       const { latest, releaseCandidate, next } = await (0, versioning_1.fetchActiveReleaseTrains)(repo);
-      return [
+      const targetLabels = [
         {
           name: target_label_1.TargetLabelName.MAJOR,
           branches: () => {
@@ -60577,8 +60577,11 @@ var require_labels = __commonJS({
             }
             return [nextBranchName, releaseCandidate.branchName];
           }
-        },
-        {
+        }
+      ];
+      try {
+        (0, index_12.assertValidReleaseConfig)(config);
+        targetLabels.push({
           name: target_label_1.TargetLabelName.LONG_TERM_SUPPORT,
           branches: async (githubTargetBranch) => {
             if (!(0, versioning_1.isVersionBranch)(githubTargetBranch)) {
@@ -60590,11 +60593,20 @@ var require_labels = __commonJS({
             if (releaseCandidate !== null && githubTargetBranch === releaseCandidate.branchName) {
               throw new target_label_1.InvalidTargetBranchError(`PR cannot be merged with "target: lts" into feature-freeze/release-candidate branch. Consider changing the label to "target: rc" if this is intentional.`);
             }
+            (0, index_12.assertValidReleaseConfig)(config);
             await (0, lts_branch_1.assertActiveLtsBranch)(repo, config.release, githubTargetBranch);
             return [githubTargetBranch];
           }
+        });
+      } catch (err) {
+        if (err instanceof config_1.ConfigValidationError) {
+          (0, console_12.debug)("LTS target label not included in target labels as no valid release configuration was");
+          (0, console_12.debug)("found to allow the LTS branches to be determined.");
+        } else {
+          throw err;
         }
-      ];
+      }
+      return targetLabels;
     }
     exports2.getTargetLabelsForActiveReleaseTrains = getTargetLabelsForActiveReleaseTrains;
   }
