@@ -57622,7 +57622,7 @@ var require_validate = __commonJS({
     var parse_1 = require_parse2();
     var COMMIT_BODY_URL_LINE_RE = /^https?:\/\/.*$/;
     var INCORRECT_BREAKING_CHANGE_BODY_RE = /^(BREAKING CHANGE[^:]|BREAKING-CHANGE|BREAKING[ -]CHANGES)/m;
-    var INCORRECT_DEPRECATION_BODY_RE = /^(DEPRECATED[^:]|DEPRECATIONS|DEPRECATE:|DEPRECATES)/m;
+    var INCORRECT_DEPRECATION_BODY_RE = /^(DEPRECATED[^:]|DEPRECATIONS?|DEPRECATE:|DEPRECATES)/m;
     function validateCommitMessage(commitMsg, options = {}) {
       const _config = (0, config_1.getConfig)();
       (0, config_2.assertValidCommitMessageConfig)(_config);
