@@ -44223,10 +44223,22 @@ var require_active_release_trains = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/release/versioning/active-release-trains.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.findActiveReleaseTrainsFromVersionBranches = exports2.fetchActiveReleaseTrains = void 0;
+    exports2.findActiveReleaseTrainsFromVersionBranches = exports2.fetchActiveReleaseTrains = exports2.ActiveReleaseTrains = void 0;
     var semver = require_semver2();
     var release_trains_1 = require_release_trains();
     var version_branches_1 = require_version_branches();
+    var ActiveReleaseTrains = class {
+      constructor(trains) {
+        this.trains = trains;
+        this.releaseCandidate = this.trains.releaseCandidate || null;
+        this.next = this.trains.next;
+        this.latest = this.trains.latest;
+      }
+      isFeatureFreeze() {
+        return this.releaseCandidate !== null && this.releaseCandidate.version.prerelease[0] === "next";
+      }
+    };
+    exports2.ActiveReleaseTrains = ActiveReleaseTrains;
     async function fetchActiveReleaseTrains(repo) {
       const nextBranchName = repo.nextBranchName;
       const nextVersion = await (0, version_branches_1.getVersionOfBranch)(repo, nextBranchName);
@@ -44248,7 +44260,7 @@ var require_active_release_trains = __commonJS({
       if (latest === null) {
         throw Error(`Unable to determine the latest release-train. The following branches have been considered: [${branches.map((b) => b.name).join(", ")}]`);
       }
-      return { releaseCandidate, latest, next };
+      return new ActiveReleaseTrains({ releaseCandidate, next, latest });
     }
     exports2.fetchActiveReleaseTrains = fetchActiveReleaseTrains;
     async function findActiveReleaseTrainsFromVersionBranches(repo, nextVersion, branches, expectedReleaseCandidateMajor) {
@@ -44428,8 +44440,8 @@ var require_ci = __commonJS({
         }, this.git.remoteConfig), {
           nextBranchName
         });
-        const releaseTrains = await (0, index_12.fetchActiveReleaseTrains)(repo);
-        const ciResultPromises = Object.entries(releaseTrains).map(async ([trainName, train]) => {
+        const { latest, next, releaseCandidate } = await (0, index_12.fetchActiveReleaseTrains)(repo);
+        const ciResultPromises = Object.entries({ releaseCandidate, latest, next }).map(async ([trainName, train]) => {
           if (train === null) {
             return {
               active: false,
@@ -60463,7 +60475,7 @@ var require_labels = __commonJS({
     var target_label_1 = require_target_label();
     var lts_branch_1 = require_lts_branch();
     var console_12 = require_console();
-    async function getTargetLabelsForActiveReleaseTrains(api, config) {
+    async function getTargetLabelsForActiveReleaseTrains({ latest, releaseCandidate, next }, api, config) {
       (0, config_1.assertValidGithubConfig)(config);
       const nextBranchName = (0, versioning_1.getNextBranchName)(config.github);
       const repo = {
@@ -60472,7 +60484,6 @@ var require_labels = __commonJS({
         nextBranchName,
         api
       };
-      const { latest, releaseCandidate, next } = await (0, versioning_1.fetchActiveReleaseTrains)(repo);
       const targetLabels = [
         {
           name: target_label_1.TargetLabelName.MAJOR,
@@ -60861,7 +60872,7 @@ var require_validations = __commonJS({
     var failures_1 = require_failures();
     var console_12 = require_console();
     var fetch_pull_request_1 = require_fetch_pull_request();
-    function assertChangesAllowForTargetLabel(commits, label, config) {
+    function assertChangesAllowForTargetLabel(commits, label, config, releaseTrains) {
       const exemptedScopes = config.targetLabelExemptScopes || [];
       commits = commits.filter((commit) => !exemptedScopes.includes(commit.scope));
       const hasBreakingChanges = commits.some((commit) => commit.breakingChanges.length !== 0);
@@ -60884,7 +60895,7 @@ var require_validations = __commonJS({
           if (hasFeatureCommits) {
             throw failures_1.PullRequestFailure.hasFeatureCommits(label);
           }
-          if (hasDeprecations) {
+          if (hasDeprecations && !releaseTrains.isFeatureFreeze()) {
             throw failures_1.PullRequestFailure.hasDeprecations(label);
           }
           break;
@@ -60961,6 +60972,7 @@ var require_target_label = __commonJS({
     var labels_1 = require_labels();
     var validations_1 = require_validations();
     var failures_1 = require_failures();
+    var versioning_1 = require_versioning();
     var TargetLabelName;
     (function(TargetLabelName2) {
       TargetLabelName2["MAJOR"] = "target: major";
@@ -61006,10 +61018,17 @@ var require_target_label = __commonJS({
         return [config.github.mainBranchName];
       }
       try {
-        const targetLabels = await (0, labels_1.getTargetLabelsForActiveReleaseTrains)(api, config);
+        const { mainBranchName, name, owner } = config.github;
+        const releaseTrains = await (0, versioning_1.fetchActiveReleaseTrains)({
+          name,
+          nextBranchName: mainBranchName,
+          owner,
+          api
+        });
+        const targetLabels = await (0, labels_1.getTargetLabelsForActiveReleaseTrains)(releaseTrains, api, config);
         const matchingLabel = await getMatchingTargetLabelForPullRequest(config.pullRequest, labelsOnPullRequest, targetLabels);
         const targetBranches = await getBranchesFromTargetLabel(matchingLabel, githubTargetBranch);
-        (0, validations_1.assertChangesAllowForTargetLabel)(commits, matchingLabel, config.pullRequest);
+        (0, validations_1.assertChangesAllowForTargetLabel)(commits, matchingLabel, config.pullRequest, releaseTrains);
         return targetBranches;
       } catch (error) {
         if (error instanceof InvalidTargetBranchError || error instanceof InvalidTargetLabelError) {

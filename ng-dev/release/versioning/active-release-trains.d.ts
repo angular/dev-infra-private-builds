@@ -8,14 +8,22 @@
 import * as semver from 'semver';
 import { ReleaseTrain } from './release-trains';
 import { ReleaseRepoWithApi, VersionBranch } from './version-branches';
-/** Interface describing determined active release trains for a project. */
-export interface ActiveReleaseTrains {
+/** The active release trains for a project. */
+export declare class ActiveReleaseTrains {
+    private trains;
     /** Release-train currently in the "release-candidate" or "feature-freeze" phase. */
-    releaseCandidate: ReleaseTrain | null;
-    /** Release-train currently in the "latest" phase. */
-    latest: ReleaseTrain;
+    readonly releaseCandidate: ReleaseTrain | null;
     /** Release-train in the `next` phase. */
-    next: ReleaseTrain;
+    readonly next: ReleaseTrain;
+    /** Release-train currently in the "latest" phase. */
+    readonly latest: ReleaseTrain;
+    constructor(trains: {
+        releaseCandidate: ReleaseTrain | null;
+        next: ReleaseTrain;
+        latest: ReleaseTrain;
+    });
+    /** Whether the active release trains indicate the repository is in a feature freeze state. */
+    isFeatureFreeze(): boolean;
 }
 /** Fetches the active release trains for the configured project. */
 export declare function fetchActiveReleaseTrains(repo: ReleaseRepoWithApi): Promise<ActiveReleaseTrains>;
