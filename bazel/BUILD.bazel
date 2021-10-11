@@ -8,6 +8,7 @@ filegroup(
         "@npm//@angular/dev-infra-private/bazel/benchmark:files",
         "@npm//@angular/dev-infra-private/bazel/browsers:files",
         "@npm//@angular/dev-infra-private/bazel/constraints:files",
+        "@npm//@angular/dev-infra-private/bazel/integration:files",
         "@npm//@angular/dev-infra-private/bazel/remote-execution:files",
     ],
     visibility = ["//:npm"],
