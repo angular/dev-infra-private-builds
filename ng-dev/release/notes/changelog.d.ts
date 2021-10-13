@@ -16,6 +16,13 @@ export declare class Changelog {
      * main changelog when a version moves out of support.
      */
     static moveEntriesPriorToVersionToArchive(git: GitClient, version: semver.SemVer): void;
+    /**
+     * Remove all changelog entries from the CHANGELOG.md file for versions which are prereleases
+     * for the provided version. This is expected to be done on each major and minor release to remove
+     * the changelog entries which will be made redundant by the first major/minor changelog for a
+     * version.
+     */
+    static removePrereleaseEntriesForVersion(git: GitClient, version: semver.SemVer): void;
     /** Retrieve the file paths for the changelog files. */
     static getChangelogFilePaths(git: GitClient): Changelog;
     /** The absolute path to the changelog file. */
@@ -37,6 +44,13 @@ export declare class Changelog {
     private constructor();
     /** Prepend a changelog entry to the changelog. */
     private prependEntryToChangelogFile;
+    /**
+     * Remove all changelog entries from the CHANGELOG.md file for versions which are prereleases
+     * for the provided version. This is expected to be done on each major and minor release to remove
+     * the changelog entries which will be made redundant by the first major/minor changelog for a
+     * version.
+     */
+    private removePrereleaseEntriesForVersion;
     /**
      * Move all changelog entries from the CHANGELOG.md file for versions prior to the provided
      * version to the changelog archive.

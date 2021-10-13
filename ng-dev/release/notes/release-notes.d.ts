@@ -24,7 +24,7 @@ export declare class ReleaseNotes {
     getChangelogEntry(): Promise<string>;
     /**
      * Prepend generated release note to the CHANGELOG.md file in the base directory of the repository
-     * provided by the GitClient.
+     * provided by the GitClient. Removes entries for related prerelease entries as appropriate.
      */
     prependEntryToChangelogFile(): Promise<void>;
     /** Retrieve the number of commits included in the release notes after filtering and deduping. */

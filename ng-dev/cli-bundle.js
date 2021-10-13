@@ -63529,6 +63529,10 @@ ${exports2.splitMarker}
         const changelog = new this(git);
         changelog.moveEntriesPriorToVersionToArchive(version);
       }
+      static removePrereleaseEntriesForVersion(git, version) {
+        const changelog = new this(git);
+        changelog.removePrereleaseEntriesForVersion(version);
+      }
       static getChangelogFilePaths(git) {
         return new this(git);
       }
@@ -63546,6 +63550,12 @@ ${exports2.splitMarker}
       }
       prependEntryToChangelogFile(entry) {
         this.entries.unshift(parseChangelogEntry(entry));
+        this.writeToChangelogFile();
+      }
+      removePrereleaseEntriesForVersion(version) {
+        this._entries = this.entries.filter((entry) => {
+          return semver.diff(entry.version, version) !== "prerelease";
+        });
         this.writeToChangelogFile();
       }
       moveEntriesPriorToVersionToArchive(version) {
@@ -63600,6 +63610,7 @@ var require_release_notes = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ReleaseNotes = exports2.changelogPath = void 0;
     var ejs_1 = require_ejs();
+    var semver = require_semver2();
     var console_12 = require_console();
     var format_1 = require_format();
     var index_12 = require_config7();
@@ -63635,6 +63646,9 @@ var require_release_notes = __commonJS({
         return (0, ejs_1.render)(changelog_1.default, await this.generateRenderContext(), { rmWhitespace: true });
       }
       async prependEntryToChangelogFile() {
+        if (semver.prerelease(this.version) === null) {
+          changelog_2.Changelog.removePrereleaseEntriesForVersion(this.git, this.version);
+        }
         changelog_2.Changelog.prependEntryToChangelogFile(this.git, await this.getChangelogEntry());
         try {
           (0, config_2.assertValidFormatConfig)(this.config);
