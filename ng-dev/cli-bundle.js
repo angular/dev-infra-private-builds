@@ -63925,7 +63925,7 @@ var require_external_commands = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/external-commands.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.invokeYarnInstallCommand = exports2.invokeReleaseBuildCommand = exports2.invokeSetNpmDistCommand = void 0;
+    exports2.invokeYarnVerifyTreeCheck = exports2.invokeYarnIntegryCheck = exports2.invokeYarnInstallCommand = exports2.invokeReleaseBuildCommand = exports2.invokeSetNpmDistCommand = void 0;
     var child_process_1 = require_child_process();
     var console_12 = require_console();
     var spinner_1 = require_spinner();
@@ -63976,6 +63976,28 @@ var require_external_commands = __commonJS({
       }
     }
     exports2.invokeYarnInstallCommand = invokeYarnInstallCommand;
+    async function invokeYarnIntegryCheck(projectDir) {
+      try {
+        await (0, child_process_1.spawn)("yarn", ["check", "--integrity"], { cwd: projectDir, mode: "silent" });
+        (0, console_12.info)((0, console_12.green)("  \u2713   Confirmed dependencies from package.json match those in yarn.lock."));
+      } catch (e) {
+        (0, console_12.error)((0, console_12.red)("  \u2718   Failed yarn integrity check, your installed dependencies are likely out of"));
+        (0, console_12.error)((0, console_12.red)("      date. Please run `yarn install` to update your installed dependencies."));
+        throw new actions_error_1.FatalReleaseActionError();
+      }
+    }
+    exports2.invokeYarnIntegryCheck = invokeYarnIntegryCheck;
+    async function invokeYarnVerifyTreeCheck(projectDir) {
+      try {
+        await (0, child_process_1.spawn)("yarn", ["check", "--verify-tree"], { cwd: projectDir, mode: "silent" });
+        (0, console_12.info)((0, console_12.green)("  \u2713   Confirmed installed dependencies match those defined in package.json."));
+      } catch (e) {
+        (0, console_12.error)((0, console_12.red)("  \u2718   Failed yarn verify tree check, your installed dependencies are likely out"));
+        (0, console_12.error)((0, console_12.red)("      of date. Please run `yarn install` to update your installed dependencies."));
+        throw new actions_error_1.FatalReleaseActionError();
+      }
+    }
+    exports2.invokeYarnVerifyTreeCheck = invokeYarnVerifyTreeCheck;
   }
 });
 
@@ -64830,6 +64852,7 @@ var require_publish2 = __commonJS({
     var version_branches_1 = require_version_branches();
     var actions_error_1 = require_actions_error();
     var index_12 = require_actions2();
+    var external_commands_1 = require_external_commands();
     var CompletionState;
     (function(CompletionState2) {
       CompletionState2[CompletionState2["SUCCESS"] = 0] = "SUCCESS";
@@ -64852,7 +64875,7 @@ var require_publish2 = __commonJS({
         (0, console_12.log)();
         const { owner, name } = this._github;
         const nextBranchName = (0, version_branches_1.getNextBranchName)(this._github);
-        if (!await this._verifyNoUncommittedChanges() || !await this._verifyRunningFromNextBranch(nextBranchName) || !await this._verifyNoShallowRepository()) {
+        if (!await this._verifyNoUncommittedChanges() || !await this._verifyRunningFromNextBranch(nextBranchName) || !await this._verifyNoShallowRepository() || !await this._verifyInstalledDependenciesAreUpToDate()) {
           return CompletionState.FATAL_ERROR;
         }
         if (!await this._verifyNpmLoginState()) {
@@ -64905,6 +64928,15 @@ var require_publish2 = __commonJS({
           return false;
         }
         return true;
+      }
+      async _verifyInstalledDependenciesAreUpToDate() {
+        try {
+          await (0, external_commands_1.invokeYarnVerifyTreeCheck)(this._projectRoot);
+          await (0, external_commands_1.invokeYarnIntegryCheck)(this._projectRoot);
+          return true;
+        } catch {
+          return false;
+        }
       }
       async _verifyNoShallowRepository() {
         if (this._git.isShallowRepo()) {

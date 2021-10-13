@@ -23,3 +23,11 @@ export declare function invokeReleaseBuildCommand(): Promise<BuiltPackage[]>;
  * the configured project with the currently checked out revision.
  */
 export declare function invokeYarnInstallCommand(projectDir: string): Promise<void>;
+/**
+ * Invokes the `yarn check --integrity` command in order to verify up to date dependencies.
+ */
+export declare function invokeYarnIntegryCheck(projectDir: string): Promise<void>;
+/**
+ * Invokes the `yarn check --verify-tree` command in order to verify up to date dependencies.
+ */
+export declare function invokeYarnVerifyTreeCheck(projectDir: string): Promise<void>;
