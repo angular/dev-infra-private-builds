@@ -61,3 +61,5 @@ export declare function assertValidPullRequestConfig<T>(config: T & Partial<{
 };
 /** Label for pull requests containing a breaking change. */
 export declare const breakingChangeLabel = "flag: breaking change";
+/** Label for pull requests containing a deprecation. */
+export declare const deprecationLabel = "flag: deprecation";

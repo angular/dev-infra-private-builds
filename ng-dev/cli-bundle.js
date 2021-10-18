@@ -60362,7 +60362,7 @@ var require_config6 = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/pr/config/index.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.breakingChangeLabel = exports2.assertValidPullRequestConfig = void 0;
+    exports2.deprecationLabel = exports2.breakingChangeLabel = exports2.assertValidPullRequestConfig = void 0;
     var config_1 = require_config2();
     function assertValidPullRequestConfig(config) {
       const errors = [];
@@ -60381,6 +60381,7 @@ var require_config6 = __commonJS({
     }
     exports2.assertValidPullRequestConfig = assertValidPullRequestConfig;
     exports2.breakingChangeLabel = "flag: breaking change";
+    exports2.deprecationLabel = "flag: deprecation";
   }
 });
 
