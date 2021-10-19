@@ -63926,7 +63926,7 @@ var require_external_commands = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/external-commands.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.invokeYarnVerifyTreeCheck = exports2.invokeYarnIntegryCheck = exports2.invokeYarnInstallCommand = exports2.invokeReleaseBuildCommand = exports2.invokeSetNpmDistCommand = void 0;
+    exports2.invokeYarnVerifyTreeCheck = exports2.invokeYarnIntegrityCheck = exports2.invokeYarnInstallCommand = exports2.invokeReleaseBuildCommand = exports2.invokeSetNpmDistCommand = void 0;
     var child_process_1 = require_child_process();
     var console_12 = require_console();
     var spinner_1 = require_spinner();
@@ -63977,7 +63977,7 @@ var require_external_commands = __commonJS({
       }
     }
     exports2.invokeYarnInstallCommand = invokeYarnInstallCommand;
-    async function invokeYarnIntegryCheck(projectDir) {
+    async function invokeYarnIntegrityCheck(projectDir) {
       try {
         await (0, child_process_1.spawn)("yarn", ["check", "--integrity"], { cwd: projectDir, mode: "silent" });
         (0, console_12.info)((0, console_12.green)("  \u2713   Confirmed dependencies from package.json match those in yarn.lock."));
@@ -63987,7 +63987,7 @@ var require_external_commands = __commonJS({
         throw new actions_error_1.FatalReleaseActionError();
       }
     }
-    exports2.invokeYarnIntegryCheck = invokeYarnIntegryCheck;
+    exports2.invokeYarnIntegrityCheck = invokeYarnIntegrityCheck;
     async function invokeYarnVerifyTreeCheck(projectDir) {
       try {
         await (0, child_process_1.spawn)("yarn", ["check", "--verify-tree"], { cwd: projectDir, mode: "silent" });
@@ -64274,6 +64274,11 @@ var require_actions = __commonJS({
         this.git.run(["fetch", "-q", this.git.getRepoGitUrl(), branchName]);
         this.git.run(["checkout", "-q", "FETCH_HEAD", "--detach"]);
       }
+      async installDependenciesForCurrentBranch() {
+        const nodeModulesDir = (0, path_1.join)(this.projectDir, "node_modules");
+        await fs_1.promises.rm(nodeModulesDir, { force: true, recursive: true, maxRetries: 3 });
+        await (0, external_commands_1.invokeYarnInstallCommand)(this.projectDir);
+      }
       async createCommit(message, files) {
         this.git.run(["add", ...files]);
         this.git.run(["commit", "-q", "--no-verify", "-m", message, ...files]);
@@ -64346,7 +64351,7 @@ var require_actions = __commonJS({
           throw new actions_error_1.FatalReleaseActionError();
         }
         await this.checkoutUpstreamBranch(publishBranch);
-        await (0, external_commands_1.invokeYarnInstallCommand)(this.projectDir);
+        await this.installDependenciesForCurrentBranch();
         const builtPackages = await (0, external_commands_1.invokeReleaseBuildCommand)();
         await this._verifyPackageVersions(releaseNotes.version, builtPackages);
         await this._createGithubReleaseForVersion(releaseNotes, versionBumpCommitSha, npmDistTag === "next");
@@ -64644,7 +64649,7 @@ var require_cut_stable = __commonJS({
           const previousPatch = this.active.latest;
           const ltsTagForPatch = (0, long_term_support_1.getLtsNpmDistTagOfMajor)(previousPatch.version.major);
           await this.checkoutUpstreamBranch(previousPatch.branchName);
-          await (0, external_commands_1.invokeYarnInstallCommand)(this.projectDir);
+          await this.installDependenciesForCurrentBranch();
           await (0, external_commands_1.invokeSetNpmDistCommand)(ltsTagForPatch, previousPatch.version);
         }
         await this.cherryPickChangelogIntoNextBranch(releaseNotes, branchName);
@@ -64786,7 +64791,7 @@ var require_tag_recent_major_as_latest = __commonJS({
       async perform() {
         await this.updateGithubReleaseEntryToStable(this.active.latest.version);
         await this.checkoutUpstreamBranch(this.active.latest.branchName);
-        await (0, external_commands_1.invokeYarnInstallCommand)(this.projectDir);
+        await this.installDependenciesForCurrentBranch();
         await (0, external_commands_1.invokeSetNpmDistCommand)("latest", this.active.latest.version);
       }
       async updateGithubReleaseEntryToStable(version) {
@@ -64933,7 +64938,7 @@ var require_publish2 = __commonJS({
       async _verifyInstalledDependenciesAreUpToDate() {
         try {
           await (0, external_commands_1.invokeYarnVerifyTreeCheck)(this._projectRoot);
-          await (0, external_commands_1.invokeYarnIntegryCheck)(this._projectRoot);
+          await (0, external_commands_1.invokeYarnIntegrityCheck)(this._projectRoot);
           return true;
         } catch {
           return false;

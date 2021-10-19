@@ -118,6 +118,8 @@ export declare abstract class ReleaseAction {
     protected prependReleaseNotesToChangelog(releaseNotes: ReleaseNotes): Promise<void>;
     /** Checks out an upstream branch with a detached head. */
     protected checkoutUpstreamBranch(branchName: string): Promise<void>;
+    /** Installs all Yarn dependencies in the current branch. */
+    protected installDependenciesForCurrentBranch(): Promise<void>;
     /**
      * Creates a commit for the specified files with the given message.
      * @param message Message for the created commit

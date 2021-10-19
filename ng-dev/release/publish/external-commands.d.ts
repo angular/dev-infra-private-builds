@@ -26,7 +26,7 @@ export declare function invokeYarnInstallCommand(projectDir: string): Promise<vo
 /**
  * Invokes the `yarn check --integrity` command in order to verify up to date dependencies.
  */
-export declare function invokeYarnIntegryCheck(projectDir: string): Promise<void>;
+export declare function invokeYarnIntegrityCheck(projectDir: string): Promise<void>;
 /**
  * Invokes the `yarn check --verify-tree` command in order to verify up to date dependencies.
  */
