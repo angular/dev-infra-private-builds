@@ -65114,7 +65114,7 @@ var require_tag_recent_major_as_latest = __commonJS({
     var version_tags_1 = require_version_tags();
     var TagRecentMajorAsLatest = class extends actions_1.ReleaseAction {
       async getDescription() {
-        return `Tag recently published major v${this.active.latest.version} as "next" in NPM.`;
+        return `Retag recently published major v${this.active.latest.version} as "latest" in NPM.`;
       }
       async perform() {
         await this.updateGithubReleaseEntryToStable(this.active.latest.version);
