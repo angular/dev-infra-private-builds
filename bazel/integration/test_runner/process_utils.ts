@@ -22,13 +22,16 @@ const environmentVariableSubstitutionRegex = /\${(\w+)}/g;
  *
  * @throws An error if a substituted environment variable does not exist.
  */
-export function expandEnvironmentVariableSubstitutions(args: string[]): string[] {
+export function expandEnvironmentVariableSubstitutions(
+  args: string[],
+  env: NodeJS.ProcessEnv,
+): string[] {
   return args.map((content) => {
     return content.replace(environmentVariableSubstitutionRegex, (_, variableName) => {
-      if (process.env[variableName] === undefined) {
+      if (env[variableName] === undefined) {
         throw new Error(`Could not find substituted environment variable: ${variableName}`);
       }
-      return process.env[variableName]!;
+      return env[variableName]!;
     });
   });
 }
@@ -44,7 +47,7 @@ export function runCommandInChildProcess(
   workingDir: string,
   env: NodeJS.ProcessEnv,
 ): Promise<boolean> {
-  const humanReadableCommand = `${binary} ${args.join(' ')}`;
+  const humanReadableCommand = `${binary}${args.length ? ` ${args.join(' ')}` : ''}`;
 
   debug(`Executing command: ${humanReadableCommand} in ${workingDir}`);
 
