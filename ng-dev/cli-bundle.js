@@ -72863,7 +72863,7 @@ var require_publish2 = __commonJS({
       }
       async _verifyInstalledDependenciesAreUpToDate() {
         var _a, _b, _c, _d, _e;
-        const expectedVersion = `e17187d273212d0bfbfd846ca3a17f56debdf595`;
+        const expectedVersion = `0.0.0-8ac0a8fe87552a393d29f51cee3de8aef322d0d2`;
         const projectPackageJsonFile = path.join(this._projectRoot, constants_2.packageJsonPath);
         const projectDirLockFile = path.join(this._projectRoot, constants_2.yarnLockFilePath);
         try {
@@ -72881,6 +72881,9 @@ var require_publish2 = __commonJS({
           return lockFileObject[`${constants_1.ngDevNpmPackageName}@${devInfraPkgVersion}`].version === expectedVersion;
         } catch (e) {
           (0, console_12.debug)("_verifyInstalledDependenciesAreUpToDate failed:", e);
+          (0, console_12.error)((0, console_12.red)("  \u2718   Your locally installed version of the `ng-dev` tool is outdated and not"));
+          (0, console_12.error)((0, console_12.red)("      matching with the version in the `package.json` file."));
+          (0, console_12.error)((0, console_12.red)("      Please re-run `yarn install` to ensure you are using the latest version."));
           return false;
         }
       }
