@@ -72863,7 +72863,7 @@ var require_publish2 = __commonJS({
       }
       async _verifyInstalledDependenciesAreUpToDate() {
         var _a, _b, _c, _d, _e;
-        const localVersion = `0.0.0-0474a28f6c7dbc47b8075e78223b2eeb8cd37c2e`;
+        const localVersion = `0.0.0-a42b88d761070a0921c4198d7977b214160b4e05`;
         const projectPackageJsonFile = path.join(this._projectRoot, constants_2.packageJsonPath);
         const projectDirLockFile = path.join(this._projectRoot, constants_2.yarnLockFilePath);
         try {
