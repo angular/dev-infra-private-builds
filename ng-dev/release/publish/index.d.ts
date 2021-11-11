@@ -33,12 +33,6 @@ export declare class ReleaseTool {
      */
     private _verifyNoUncommittedChanges;
     /**
-     * Verifiy that the install dependencies match the the versions defined in the package.json and
-     * yarn.lock files.
-     * @returns a boolean indicating success or failure.
-     */
-    private _verifyInstalledDependenciesAreUpToDate;
-    /**
      * Verifies that the local repository is not configured as shallow.
      * @returns a boolean indicating success or failure.
      */
