@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-0ef299c25bd5eba94535beedafc3be13e873dca0",
+  "version": "0.0.0-81183ec0d56e091f784ca77feafbf5f0a8467d0a",
   "bin": {
     "ng-dev": "./ng-dev/cli-bundle.js"
   },
@@ -55,6 +55,7 @@
     "selenium-webdriver": "3.5.0",
     "semver": "^7.3.5",
     "tmp": "^0.2.1",
+    "true-case-path": "^2.2.1",
     "ts-node": "^10.2.1",
     "tslib": "^2.3.0",
     "tslint": "^6.1.3",
