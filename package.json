@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-81183ec0d56e091f784ca77feafbf5f0a8467d0a",
+  "version": "0.0.0-ece6111f766f618c0b54c47b8b3a59e13cffb852",
   "bin": {
     "ng-dev": "./ng-dev/cli-bundle.js"
   },
@@ -16,11 +16,11 @@
     "@angular/benchpress": "0.2.1",
     "@bazel/bazelisk": "^1.10.1",
     "@bazel/buildifier": "^4.0.1",
-    "@bazel/esbuild": "4.4.2",
-    "@bazel/jasmine": "4.4.2",
-    "@bazel/protractor": "4.4.2",
-    "@bazel/runfiles": "4.4.2",
-    "@bazel/typescript": "4.4.2",
+    "@bazel/esbuild": "4.4.5",
+    "@bazel/jasmine": "4.4.5",
+    "@bazel/protractor": "4.4.5",
+    "@bazel/runfiles": "4.4.5",
+    "@bazel/typescript": "4.4.5",
     "@microsoft/api-extractor": "7.18.19",
     "@octokit/auth-app": "^3.6.0",
     "@octokit/core": "^3.5.1",
@@ -50,7 +50,7 @@
     "node-fetch": "^2.6.1",
     "prettier": "^2.3.2",
     "protractor": "^7.0.0",
-    "rollup": "2.59.0",
+    "rollup": "2.60.0",
     "rollup-plugin-sourcemaps": "^0.6.3",
     "selenium-webdriver": "3.5.0",
     "semver": "^7.3.5",
