@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-912311af713004c92ddc3ac73eb0f43ceb55867f",
+  "version": "0.0.0-79e9918c9982bc6bac14b3d767d5ae07b7501289",
   "bin": {
     "ng-dev": "./ng-dev/cli-bundle.js"
   },
@@ -14,6 +14,7 @@
     "@actions/github": "^5.0.0",
     "@angular-devkit/build-optimizer": "^0.1300.0",
     "@angular/benchpress": "0.2.1",
+    "@babel/core": "^7.16.0",
     "@bazel/bazelisk": "^1.10.1",
     "@bazel/buildifier": "^4.0.1",
     "@bazel/esbuild": "4.4.5",
@@ -66,6 +67,9 @@
     "yargs": "^17.0.0"
   },
   "devDependencies": {
+    "@angular/compiler": "^13.0.1",
+    "@angular/compiler-cli": "^13.0.1",
+    "@angular/core": "^13.0.1",
     "@octokit/graphql-schema": "^10.72.0",
     "@types/cli-progress": "^3.9.1",
     "@types/conventional-commits-parser": "^3.0.1",
@@ -85,6 +89,7 @@
     "jsdoc": "^3.6.7",
     "minimist": "^1.2.5",
     "protobufjs": "^6.11.2",
+    "rxjs": "^7.4.0",
     "uglify-js": "^3.14.2"
   }
 }
