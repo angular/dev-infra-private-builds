@@ -6962,7 +6962,7 @@ export declare class GithubClient {
                 repo: string;
                 sha: string;
             } & {
-                state: "error" | "failure" | "pending" | "success";
+                state: "error" | "success" | "failure" | "pending";
                 target_url?: string | undefined;
                 description?: string | undefined;
                 context?: string | undefined;
@@ -7149,7 +7149,7 @@ export declare class GithubClient {
                 repo: string;
                 deployment_id: number;
             } & {
-                state: "error" | "failure" | "pending" | "success" | "inactive" | "in_progress" | "queued";
+                state: "error" | "success" | "failure" | "pending" | "inactive" | "in_progress" | "queued";
                 target_url?: string | undefined;
                 log_url?: string | undefined;
                 description?: string | undefined;
@@ -7160,7 +7160,7 @@ export declare class GithubClient {
                 url: string;
                 id: number;
                 node_id: string;
-                state: "error" | "failure" | "pending" | "success" | "inactive" | "in_progress" | "queued";
+                state: "error" | "success" | "failure" | "pending" | "inactive" | "in_progress" | "queued";
                 creator: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
@@ -12583,7 +12583,7 @@ export declare class GithubClient {
                 url: string;
                 id: number;
                 node_id: string;
-                state: "error" | "failure" | "pending" | "success" | "inactive" | "in_progress" | "queued";
+                state: "error" | "success" | "failure" | "pending" | "inactive" | "in_progress" | "queued";
                 creator: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
@@ -14356,7 +14356,7 @@ export declare class GithubClient {
                 url: string;
                 id: number;
                 node_id: string;
-                state: "error" | "failure" | "pending" | "success" | "inactive" | "in_progress" | "queued";
+                state: "error" | "success" | "failure" | "pending" | "inactive" | "in_progress" | "queued";
                 creator: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;

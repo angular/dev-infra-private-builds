@@ -1,8 +1,8 @@
 import * as semver from 'semver';
 import { CommitFromGitLog } from '../../commit-message/parse';
 import { GitClient } from '../../utils/git/git-client';
-/** Project-relative path for the changelog file. */
-export declare const changelogPath = "CHANGELOG.md";
+/** Workspace-relative path for the changelog file. */
+export declare const workspaceRelativeChangelogPath = "CHANGELOG.md";
 /** Release note generation. */
 export declare class ReleaseNotes {
     version: semver.SemVer;
