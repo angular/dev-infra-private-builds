@@ -42,7 +42,6 @@ export class TestRunner {
   constructor(
     private readonly testFiles: BazelFileInfo[],
     private readonly testPackage: string,
-    private readonly testPackageRelativeWorkingDir: string,
     private readonly toolMappings: Record<string, BazelFileInfo>,
     private readonly npmPackageMappings: Record<string, BazelFileInfo>,
     private readonly commands: [[binary: BazelExpandedValue, ...args: string[]]],
@@ -50,17 +49,15 @@ export class TestRunner {
   ) {}
 
   async run() {
-    const testTmpDir = await this._getTestTmpDirectoryPath();
-    const testWorkingDir = path.join(testTmpDir, this.testPackageRelativeWorkingDir);
-    const toolMappings = await this._setupToolMappingsForTest(testTmpDir);
-    const testEnv = await this._buildTestProcessEnvironment(testTmpDir, toolMappings.binDir);
+    const testDir = await this._getTestTmpDirectoryPath();
+    const toolMappings = await this._setupToolMappingsForTest(testDir);
+    const testEnv = await this._buildTestProcessEnvironment(testDir, toolMappings.binDir);
 
-    debug(`Copying test fixtures into: ${path.normalize(testTmpDir)}`);
-    console.info(`Running test in directory: ${path.normalize(testWorkingDir)}`);
+    console.info(`Running test in: ${path.normalize(testDir)}`);
 
-    await this._copyTestFilesToDirectory(testTmpDir);
-    await this._patchPackageJsonIfNeeded(testWorkingDir);
-    await this._runTestCommands(testWorkingDir, testEnv);
+    await this._copyTestFilesToDirectory(testDir);
+    await this._patchPackageJsonIfNeeded(testDir);
+    await this._runTestCommands(testDir, testEnv);
   }
 
   /**
@@ -150,12 +147,12 @@ export class TestRunner {
   }
 
   /**
-   * Patches the top-level `package.json` in the given test working directory by
-   * updating all dependency entries with their mapped files. This allows users to
-   * override first-party built packages with their locally-built NPM package output.
+   * Patches the top-level `package.json` in the given test directory by updating
+   * all dependency entries with their mapped files. This allows users to override
+   * first-party built packages with their locally-built NPM package output.
    */
-  private async _patchPackageJsonIfNeeded(testWorkingDir: string) {
-    const pkgJsonPath = path.join(testWorkingDir, 'package.json');
+  private async _patchPackageJsonIfNeeded(testDir: string) {
+    const pkgJsonPath = path.join(testDir, 'package.json');
     const pkgJson = await readPackageJsonContents(pkgJsonPath);
     const mappedPackages = Object.keys(this.npmPackageMappings);
 
@@ -185,7 +182,7 @@ export class TestRunner {
    * as a special placeholder for acquiring a temporary directory for the test.
    */
   private async _buildTestProcessEnvironment(
-    testTmpDir: string,
+    testDir: string,
     toolsBinDir: string,
   ): Promise<NodeJS.ProcessEnv> {
     const testEnv: NodeJS.ProcessEnv = {...process.env};
@@ -197,7 +194,7 @@ export class TestRunner {
       if (value.containsExpansion) {
         envValue = await resolveBinaryWithRunfilesGracefully(envValue);
       } else if (envValue === ENVIRONMENT_TMP_PLACEHOLDER) {
-        envValue = path.join(testTmpDir, `.tmp-env-${i++}`);
+        envValue = path.join(testDir, `.tmp-env-${i++}`);
         await fs.promises.mkdir(envValue);
       }
 

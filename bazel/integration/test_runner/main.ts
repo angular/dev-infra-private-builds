@@ -17,7 +17,6 @@ import {debug} from './debug';
  */
 interface TestConfig {
   testPackage: string;
-  testPackageRelativeWorkingDir: string;
   testFiles: BazelFileInfo[];
   npmPackageMappings: Record<string, BazelFileInfo>;
   toolMappings: Record<string, BazelFileInfo>;
@@ -39,7 +38,6 @@ async function main(): Promise<void> {
   const runner = new TestRunner(
     config.testFiles,
     config.testPackage,
-    config.testPackageRelativeWorkingDir,
     config.toolMappings,
     config.npmPackageMappings,
     config.commands,
