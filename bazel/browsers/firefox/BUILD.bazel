@@ -1,7 +1,7 @@
 load("@io_bazel_rules_webtesting//web:web.bzl", "browser")
 load("@npm//@angular/dev-infra-private/bazel/browsers:browser_toolchain_alias.bzl", "browser_toolchain_alias")
 
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = ["@npm//@angular/dev-infra-private/visibility:public"])
 
 PLATFORM_METADATA = select({
     "@npm//@angular/dev-infra-private/bazel/constraints:linux_x64": [
@@ -18,7 +18,7 @@ PLATFORM_METADATA = select({
         "@org_mozilla_firefox_macos//:metadata",
         "@org_mozilla_geckodriver_macos_arm64//:metadata",
     ],
-    "//conditions:default": [],
+    "@npm//@angular/dev-infra-private/conditions:default": [],
 })
 
 browser(
@@ -29,7 +29,7 @@ browser(
         "@npm//@angular/dev-infra-private/bazel/constraints:windows_x64": "Firefox is not disabled on Windows but always passing",
         # Note: We keep always keep others enabled. This will result in proper errors if e.g. a
         # linux arm64 machine intends to run tests with Firefox but we miss binaries for the platform.
-        "//conditions:default": None,
+        "@npm//@angular/dev-infra-private/conditions:default": None,
     }),
     metadata = "firefox.json",
     deps = PLATFORM_METADATA + [

@@ -1,4 +1,4 @@
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = ["@npm//@angular/dev-infra-private/visibility:public"])
 
 exports_files([
     "rollup.config-tmpl.js",

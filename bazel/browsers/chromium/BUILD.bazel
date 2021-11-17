@@ -1,7 +1,7 @@
 load("@io_bazel_rules_webtesting//web:web.bzl", "browser")
 load("@npm//@angular/dev-infra-private/bazel/browsers:browser_toolchain_alias.bzl", "browser_toolchain_alias")
 
-package(default_visibility = ["//visibility:public"])
+package(default_visibility = ["@npm//@angular/dev-infra-private/visibility:public"])
 
 PLATFORM_METADATA = select({
     "@npm//@angular/dev-infra-private/bazel/constraints:linux_x64": [

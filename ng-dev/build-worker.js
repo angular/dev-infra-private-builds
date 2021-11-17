@@ -34518,7 +34518,7 @@ var require_url_state_machine = __commonJS({
     function serializeURL(url, excludeFragment) {
       let output = url.scheme + ":";
       if (url.host !== null) {
-        output += "//";
+        output += "@npm//@angular/dev-infra-private/";
         if (url.username !== "" || url.password !== "") {
           output += url.username;
           if (url.password !== "") {
@@ -34531,7 +34531,7 @@ var require_url_state_machine = __commonJS({
           output += ":" + url.port;
         }
       } else if (url.host === null && url.scheme === "file") {
-        output += "//";
+        output += "@npm//@angular/dev-infra-private/";
       }
       if (url.cannotBeABaseURL) {
         output += url.path[0];

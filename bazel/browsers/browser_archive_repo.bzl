@@ -35,7 +35,7 @@ browser_configure(
   name = "metadata",
   files = glob(["**/*"]),
   named_files = %s,
-  visibility = ["//visibility:public"],
+  visibility = ["@npm//@angular/dev-infra-private/visibility:public"],
 )
 """ % (str(ctx.attr.licenses), str(ctx.attr.named_files)))
 

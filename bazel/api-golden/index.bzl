@@ -64,11 +64,13 @@ def api_golden_test(
         name = "%s_data_typings" % name,
         deps = data,
         provider = "JSModuleInfo",
+        forward_linker_mappings = False,
+        include_external_npm_packages = False,
         include_declarations = True,
         include_default_files = False,
     )
 
-    test_data = ["@npm//@angular/dev-infra-private/bazel/api-golden", "//:package.json", ":%s_data_typings" % name] + \
+    test_data = ["@npm//@angular/dev-infra-private/bazel/api-golden", "@npm//@angular/dev-infra-private:package.json", ":%s_data_typings" % name] + \
                 data + types
 
     nodejs_test(

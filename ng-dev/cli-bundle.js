@@ -37917,7 +37917,7 @@ var require_url_state_machine = __commonJS({
     function serializeURL(url, excludeFragment) {
       let output = url.scheme + ":";
       if (url.host !== null) {
-        output += "//";
+        output += "@npm//@angular/dev-infra-private/";
         if (url.username !== "" || url.password !== "") {
           output += url.username;
           if (url.password !== "") {
@@ -37930,7 +37930,7 @@ var require_url_state_machine = __commonJS({
           output += ":" + url.port;
         }
       } else if (url.host === null && url.scheme === "file") {
-        output += "//";
+        output += "@npm//@angular/dev-infra-private/";
       }
       if (url.cannotBeABaseURL) {
         output += url.path[0];
@@ -56525,7 +56525,7 @@ var require_lodash = __commonJS({
           var imports = assignInWith({}, options.imports, settings.imports, customDefaultsAssignIn), importsKeys = keys(imports), importsValues = baseValues(imports, importsKeys);
           var isEscaping, isEvaluating, index = 0, interpolate = options.interpolate || reNoMatch, source = "__p += '";
           var reDelimiters = RegExp2((options.escape || reNoMatch).source + "|" + interpolate.source + "|" + (interpolate === reInterpolate ? reEsTemplate : reNoMatch).source + "|" + (options.evaluate || reNoMatch).source + "|$", "g");
-          var sourceURL = "//# sourceURL=" + (hasOwnProperty.call(options, "sourceURL") ? (options.sourceURL + "").replace(/\s/g, " ") : "lodash.templateSources[" + ++templateCounter + "]") + "\n";
+          var sourceURL = "@npm//@angular/dev-infra-private/# sourceURL=" + (hasOwnProperty.call(options, "sourceURL") ? (options.sourceURL + "").replace(/\s/g, " ") : "lodash.templateSources[" + ++templateCounter + "]") + "\n";
           string.replace(reDelimiters, function(match, escapeValue, interpolateValue, esTemplateValue, evaluateValue, offset) {
             interpolateValue || (interpolateValue = esTemplateValue);
             source += string.slice(index, offset).replace(reUnescapedString, escapeStringChar);
@@ -58489,7 +58489,7 @@ var require_template = __commonJS({
       var imports = assignInWith({}, options.imports, settings.imports, customDefaultsAssignIn), importsKeys = keys(imports), importsValues = baseValues(imports, importsKeys);
       var isEscaping, isEvaluating, index = 0, interpolate = options.interpolate || reNoMatch, source = "__p += '";
       var reDelimiters = RegExp((options.escape || reNoMatch).source + "|" + interpolate.source + "|" + (interpolate === reInterpolate ? reEsTemplate : reNoMatch).source + "|" + (options.evaluate || reNoMatch).source + "|$", "g");
-      var sourceURL = hasOwnProperty.call(options, "sourceURL") ? "//# sourceURL=" + (options.sourceURL + "").replace(/\s/g, " ") + "\n" : "";
+      var sourceURL = hasOwnProperty.call(options, "sourceURL") ? "@npm//@angular/dev-infra-private/# sourceURL=" + (options.sourceURL + "").replace(/\s/g, " ") + "\n" : "";
       string.replace(reDelimiters, function(match, escapeValue, interpolateValue, esTemplateValue, evaluateValue, offset) {
         interpolateValue || (interpolateValue = esTemplateValue);
         source += string.slice(index, offset).replace(reUnescapedString, escapeStringChar);
@@ -63440,7 +63440,7 @@ var require_ejs = __commonJS({
                 case Template.modes.EVAL:
                 case Template.modes.ESCAPED:
                 case Template.modes.RAW:
-                  if (line.lastIndexOf("//") > line.lastIndexOf("\n")) {
+                  if (line.lastIndexOf("@npm//@angular/dev-infra-private/") > line.lastIndexOf("\n")) {
                     line += "\n";
                   }
               }
@@ -72783,7 +72783,7 @@ var require_version_check = __commonJS({
     var console_12 = require_console();
     async function verifyNgDevToolIsUpToDate(workspacePath) {
       var _a, _b, _c, _d, _e;
-      const localVersion = `0.0.0-9b9f65a5342def92959a74348b172392d21194bd`;
+      const localVersion = `0.0.0-22e3081422b5fd7f07b7accc0114348232e6df81`;
       const workspacePackageJsonFile = path.join(workspacePath, constants_1.workspaceRelativePackageJsonPath);
       const workspaceDirLockFile = path.join(workspacePath, constants_1.workspaceRelativeYarnLockFilePath);
       try {

@@ -50,7 +50,10 @@ def _extract_js_module_output_impl(ctx):
 
     sources = depset(transitive = depsets)
 
-    return [DefaultInfo(files = sources)]
+    return [
+        DefaultInfo(files = sources),
+        LinkerPackageMappingInfo(mappings = mappings),
+    ]
 
 """
   Rule that collects declared JavaScript module output files from a list of dependencies

@@ -11,7 +11,8 @@ if (userConfigExecPath !== '') {
   const userConfigPath = path.join(process.cwd(), userConfigExecPath);
   const userConfigUrl = url.pathToFileURL(userConfigPath);
 
-  // Load the user config, assuming it is set as `default` export.
+  // Load the user config, assuming it is set as `default` export. This is
+  // usually an `export default` statement or a named export named `default`.
   userConfig = (await import(userConfigUrl)).default;
 }
 

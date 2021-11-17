@@ -50,7 +50,7 @@ def spec_bundle(
         name = "%s_config" % name,
         config_file = ":%s_config_file" % name,
         testonly = True,
-        deps = ["@npm//@angular/dev-infra-private"],
+        deps = ["@npm//@angular/dev-infra-private/shared-scripts/angular-linker:js_lib"],
     )
 
     if is_browser_test and not workspace_name:
