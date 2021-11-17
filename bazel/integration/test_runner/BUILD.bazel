@@ -1,6 +1,6 @@
 load("@npm//@bazel/typescript:index.bzl", "ts_library")
 
-package(default_visibility = ["@npm//@angular/dev-infra-private/visibility:public"])
+package(default_visibility = ["//visibility:public"])
 
 ts_library(
     name = "test_runner",

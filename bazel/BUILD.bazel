@@ -13,5 +13,5 @@ filegroup(
         "@npm//@angular/dev-infra-private/bazel/remote-execution:files",
         "@npm//@angular/dev-infra-private/bazel/spec-bundling:files",
     ],
-    visibility = ["@npm//@angular/dev-infra-private:npm"],
+    visibility = ["//:npm"],
 )

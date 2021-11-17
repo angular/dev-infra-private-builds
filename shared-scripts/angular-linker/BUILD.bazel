@@ -1,6 +1,6 @@
 load("@build_bazel_rules_nodejs//:index.bzl", "js_library")
 
-package(default_visibility = ["@npm//@angular/dev-infra-private/visibility:public"])
+package(default_visibility = ["//visibility:public"])
 
 filegroup(
     name = "static_files",

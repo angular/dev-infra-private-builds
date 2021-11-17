@@ -1,4 +1,4 @@
-package(default_visibility = ["@npm//@angular/dev-infra-private/visibility:public"])
+package(default_visibility = ["//visibility:public"])
 
 # Make source files available for distribution via pkg_npm
 filegroup(
