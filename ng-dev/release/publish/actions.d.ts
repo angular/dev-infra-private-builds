@@ -72,8 +72,7 @@ export declare abstract class ReleaseAction {
     protected waitForEditsAndCreateReleaseCommit(newVersion: semver.SemVer): Promise<void>;
     /**
      * Gets an owned fork for the configured project of the authenticated user. Aborts the
-     * process with an error if no fork could be found. Also caches the determined fork
-     * repository as the authenticated user cannot change during action execution.
+     * process with an error if no fork could be found.
      */
     private _getForkOfAuthenticatedUser;
     /** Checks whether a given branch name is reserved in the specified repository. */

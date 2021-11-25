@@ -541,7 +541,7 @@ export declare class GithubClient {
                         href: string;
                     };
                 };
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 auto_merge: {
                     enabled_by: {
                         name?: string | null | undefined;
@@ -659,7 +659,7 @@ export declare class GithubClient {
                 updated_at: string;
                 html_url: string;
                 pull_request_url: string;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 _links: {
                     self: {
                         href: string;
@@ -757,7 +757,7 @@ export declare class GithubClient {
                 commit_id: string;
                 body_html?: string | undefined;
                 body_text?: string | undefined;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
             }, 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
@@ -819,7 +819,7 @@ export declare class GithubClient {
                 updated_at: string;
                 html_url: string;
                 pull_request_url: string;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 _links: {
                     self: {
                         href: string;
@@ -905,7 +905,7 @@ export declare class GithubClient {
                 commit_id: string;
                 body_html?: string | undefined;
                 body_text?: string | undefined;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
             }, 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
@@ -974,7 +974,7 @@ export declare class GithubClient {
                 commit_id: string;
                 body_html?: string | undefined;
                 body_text?: string | undefined;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
             }, 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
@@ -1474,7 +1474,7 @@ export declare class GithubClient {
                         href: string;
                     };
                 };
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 auto_merge: {
                     enabled_by: {
                         name?: string | null | undefined;
@@ -1592,7 +1592,7 @@ export declare class GithubClient {
                 commit_id: string;
                 body_html?: string | undefined;
                 body_text?: string | undefined;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
             }, 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
@@ -1644,7 +1644,7 @@ export declare class GithubClient {
                 updated_at: string;
                 html_url: string;
                 pull_request_url: string;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 _links: {
                     self: {
                         href: string;
@@ -2487,7 +2487,7 @@ export declare class GithubClient {
                         href: string;
                     };
                 };
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 auto_merge: {
                     enabled_by: {
                         name?: string | null | undefined;
@@ -2572,7 +2572,7 @@ export declare class GithubClient {
                 updated_at: string;
                 html_url: string;
                 pull_request_url: string;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 _links: {
                     self: {
                         href: string;
@@ -2873,7 +2873,7 @@ export declare class GithubClient {
                 updated_at: string;
                 html_url: string;
                 pull_request_url: string;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 _links: {
                     self: {
                         href: string;
@@ -2961,7 +2961,7 @@ export declare class GithubClient {
                 updated_at: string;
                 html_url: string;
                 pull_request_url: string;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 _links: {
                     self: {
                         href: string;
@@ -3049,7 +3049,7 @@ export declare class GithubClient {
                 commit_id: string;
                 body_html?: string | undefined;
                 body_text?: string | undefined;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
             }[], 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
@@ -3877,7 +3877,7 @@ export declare class GithubClient {
                         href: string;
                     };
                 };
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 auto_merge: {
                     enabled_by: {
                         name?: string | null | undefined;
@@ -4714,7 +4714,7 @@ export declare class GithubClient {
                         href: string;
                     };
                 };
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 auto_merge: {
                     enabled_by: {
                         name?: string | null | undefined;
@@ -4801,7 +4801,7 @@ export declare class GithubClient {
                 commit_id: string;
                 body_html?: string | undefined;
                 body_text?: string | undefined;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
             }, 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
@@ -5307,7 +5307,7 @@ export declare class GithubClient {
                         href: string;
                     };
                 };
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 auto_merge: {
                     enabled_by: {
                         name?: string | null | undefined;
@@ -5443,7 +5443,7 @@ export declare class GithubClient {
                 commit_id: string;
                 body_html?: string | undefined;
                 body_text?: string | undefined;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
             }, 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
@@ -5497,7 +5497,7 @@ export declare class GithubClient {
                 updated_at: string;
                 html_url: string;
                 pull_request_url: string;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 _links: {
                     self: {
                         href: string;
@@ -6923,7 +6923,7 @@ export declare class GithubClient {
                 } | null;
                 created_at: string;
                 updated_at: string;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 reactions?: {
                     url: string;
                     total_count: number;
@@ -12244,7 +12244,7 @@ export declare class GithubClient {
                 } | null;
                 created_at: string;
                 updated_at: string;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 reactions?: {
                     url: string;
                     total_count: number;
@@ -14041,7 +14041,7 @@ export declare class GithubClient {
                 } | null;
                 created_at: string;
                 updated_at: string;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 reactions?: {
                     url: string;
                     total_count: number;
@@ -14102,7 +14102,7 @@ export declare class GithubClient {
                 } | null;
                 created_at: string;
                 updated_at: string;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 reactions?: {
                     url: string;
                     total_count: number;
@@ -18149,7 +18149,7 @@ export declare class GithubClient {
                         href: string;
                     };
                 };
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 auto_merge: {
                     enabled_by: {
                         name?: string | null | undefined;
@@ -20942,7 +20942,7 @@ export declare class GithubClient {
                 } | null;
                 created_at: string;
                 updated_at: string;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 reactions?: {
                     url: string;
                     total_count: number;
@@ -22324,7 +22324,7 @@ export declare class GithubClient {
                     webhook_secret?: string | null | undefined;
                     pem?: string | undefined;
                 } | null | undefined;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 reactions?: {
                     url: string;
                     total_count: number;
@@ -22870,7 +22870,7 @@ export declare class GithubClient {
                     webhook_secret?: string | null | undefined;
                     pem?: string | undefined;
                 } | null | undefined;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 reactions?: {
                     url: string;
                     total_count: number;
@@ -22930,7 +22930,7 @@ export declare class GithubClient {
                 created_at: string;
                 updated_at: string;
                 issue_url: string;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 performed_via_github_app?: {
                     id: number;
                     slug?: string | undefined;
@@ -23587,7 +23587,7 @@ export declare class GithubClient {
                     webhook_secret?: string | null | undefined;
                     pem?: string | undefined;
                 } | null | undefined;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 reactions?: {
                     url: string;
                     total_count: number;
@@ -23645,7 +23645,7 @@ export declare class GithubClient {
                 created_at: string;
                 updated_at: string;
                 issue_url: string;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 performed_via_github_app?: {
                     id: number;
                     slug?: string | undefined;
@@ -24224,7 +24224,7 @@ export declare class GithubClient {
                         webhook_secret?: string | null | undefined;
                         pem?: string | undefined;
                     } | null | undefined;
-                    author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                    author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                     reactions?: {
                         url: string;
                         total_count: number;
@@ -24389,7 +24389,7 @@ export declare class GithubClient {
                     from: string;
                     to: string;
                 } | undefined;
-                author_association?: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER" | undefined;
+                author_association?: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | undefined;
                 lock_reason?: string | null | undefined;
                 performed_via_github_app?: {
                     id: number;
@@ -25004,7 +25004,7 @@ export declare class GithubClient {
                     webhook_secret?: string | null | undefined;
                     pem?: string | undefined;
                 } | null | undefined;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 reactions?: {
                     url: string;
                     total_count: number;
@@ -25101,7 +25101,7 @@ export declare class GithubClient {
                 created_at: string;
                 updated_at: string;
                 issue_url: string;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 performed_via_github_app?: {
                     id: number;
                     slug?: string | undefined;
@@ -25213,7 +25213,7 @@ export declare class GithubClient {
                 created_at: string;
                 updated_at: string;
                 issue_url: string;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 performed_via_github_app?: {
                     id: number;
                     slug?: string | undefined;
@@ -27317,7 +27317,7 @@ export declare class GithubClient {
                         webhook_secret?: string | null | undefined;
                         pem?: string | undefined;
                     } | null | undefined;
-                    author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                    author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                     reactions?: {
                         url: string;
                         total_count: number;
@@ -27482,7 +27482,7 @@ export declare class GithubClient {
                     from: string;
                     to: string;
                 } | undefined;
-                author_association?: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER" | undefined;
+                author_association?: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | undefined;
                 lock_reason?: string | null | undefined;
                 performed_via_github_app?: {
                     id: number;
@@ -28862,7 +28862,7 @@ export declare class GithubClient {
                 created_at: string;
                 updated_at: string;
                 issue_url: string;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 performed_via_github_app?: {
                     id: number;
                     slug?: string | undefined;
@@ -29428,7 +29428,7 @@ export declare class GithubClient {
                             webhook_secret?: string | null | undefined;
                             pem?: string | undefined;
                         } | null | undefined;
-                        author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                        author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                         reactions?: {
                             url: string;
                             total_count: number;
@@ -29518,7 +29518,7 @@ export declare class GithubClient {
                 commit_id: string;
                 body_html?: string | undefined;
                 body_text?: string | undefined;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
             }> & Partial<{
                 event?: string | undefined;
                 node_id?: string | undefined;
@@ -29562,7 +29562,7 @@ export declare class GithubClient {
                     updated_at: string;
                     html_url: string;
                     pull_request_url: string;
-                    author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                    author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                     _links: {
                         self: {
                             href: string;
@@ -29634,7 +29634,7 @@ export declare class GithubClient {
                     } | null;
                     created_at: string;
                     updated_at: string;
-                    author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                    author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                     reactions?: {
                         url: string;
                         total_count: number;
@@ -30345,7 +30345,7 @@ export declare class GithubClient {
                     webhook_secret?: string | null | undefined;
                     pem?: string | undefined;
                 } | null | undefined;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 reactions?: {
                     url: string;
                     total_count: number;
@@ -30851,7 +30851,7 @@ export declare class GithubClient {
                     webhook_secret?: string | null | undefined;
                     pem?: string | undefined;
                 } | null | undefined;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 reactions?: {
                     url: string;
                     total_count: number;
@@ -31361,7 +31361,7 @@ export declare class GithubClient {
                     webhook_secret?: string | null | undefined;
                     pem?: string | undefined;
                 } | null | undefined;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 reactions?: {
                     url: string;
                     total_count: number;
@@ -32006,7 +32006,7 @@ export declare class GithubClient {
                     webhook_secret?: string | null | undefined;
                     pem?: string | undefined;
                 } | null | undefined;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 reactions?: {
                     url: string;
                     total_count: number;
@@ -32574,7 +32574,7 @@ export declare class GithubClient {
                     webhook_secret?: string | null | undefined;
                     pem?: string | undefined;
                 } | null | undefined;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 reactions?: {
                     url: string;
                     total_count: number;
@@ -32634,7 +32634,7 @@ export declare class GithubClient {
                 created_at: string;
                 updated_at: string;
                 issue_url: string;
-                author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+                author_association: "OWNER" | "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE";
                 performed_via_github_app?: {
                     id: number;
                     slug?: string | undefined;

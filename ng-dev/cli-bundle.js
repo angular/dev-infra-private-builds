@@ -42073,12 +42073,40 @@ var require_config2 = __commonJS({
   }
 });
 
+// bazel-out/k8-fastbuild/bin/ng-dev/utils/git/graphql-queries.js
+var require_graphql_queries = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/utils/git/graphql-queries.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.findOwnedForksOfRepoQuery = void 0;
+    var typed_graphqlify_1 = require_dist();
+    exports2.findOwnedForksOfRepoQuery = (0, typed_graphqlify_1.params)({
+      $owner: "String!",
+      $name: "String!"
+    }, {
+      repository: (0, typed_graphqlify_1.params)({ owner: "$owner", name: "$name" }, {
+        forks: (0, typed_graphqlify_1.params)({ affiliations: "OWNER", first: 1 }, {
+          nodes: [
+            {
+              owner: {
+                login: typed_graphqlify_1.types.string
+              },
+              name: typed_graphqlify_1.types.string
+            }
+          ]
+        })
+      })
+    });
+  }
+});
+
 // bazel-out/k8-fastbuild/bin/ng-dev/utils/git/authenticated-git-client.js
 var require_authenticated_git_client = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/utils/git/authenticated-git-client.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.AuthenticatedGitClient = void 0;
+    var graphql_queries_1 = require_graphql_queries();
     var console_12 = require_console();
     var git_client_1 = require_git_client();
     var github_1 = require_github();
@@ -42089,6 +42117,7 @@ var require_authenticated_git_client = __commonJS({
         this.githubToken = githubToken;
         this._githubTokenRegex = new RegExp(this.githubToken, "g");
         this._cachedOauthScopes = null;
+        this._cachedForkRepo = null;
         this.github = new github_1.AuthenticatedGithubClient(this.githubToken);
       }
       sanitizeConsoleOutput(value) {
@@ -42112,6 +42141,19 @@ Update the token in use at:
 Alternatively, a new token can be created at: ${github_urls_1.GITHUB_TOKEN_GENERATE_URL}
 `;
         return { error };
+      }
+      async getForkOfAuthenticatedUser() {
+        if (this._cachedForkRepo !== null) {
+          return this._cachedForkRepo;
+        }
+        const { owner, name } = this.remoteConfig;
+        const result = await this.github.graphql(graphql_queries_1.findOwnedForksOfRepoQuery, { owner, name });
+        const forks = result.repository.forks.nodes;
+        if (forks.length === 0) {
+          throw Error(`Unable to find fork for currently authenticated user. Please ensure you created a fork  of: ${owner}/${name}.`);
+        }
+        const fork = forks[0];
+        return this._cachedForkRepo = { owner: fork.owner.login, name: fork.name };
       }
       _fetchAuthScopesForToken() {
         if (this._cachedOauthScopes !== null) {
@@ -64310,33 +64352,6 @@ var require_external_commands = __commonJS({
   }
 });
 
-// bazel-out/k8-fastbuild/bin/ng-dev/release/publish/graphql-queries.js
-var require_graphql_queries = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/graphql-queries.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.findOwnedForksOfRepoQuery = void 0;
-    var typed_graphqlify_1 = require_dist();
-    exports2.findOwnedForksOfRepoQuery = (0, typed_graphqlify_1.params)({
-      $owner: "String!",
-      $name: "String!"
-    }, {
-      repository: (0, typed_graphqlify_1.params)({ owner: "$owner", name: "$name" }, {
-        forks: (0, typed_graphqlify_1.params)({ affiliations: "OWNER", first: 1 }, {
-          nodes: [
-            {
-              owner: {
-                login: typed_graphqlify_1.types.string
-              },
-              name: typed_graphqlify_1.types.string
-            }
-          ]
-        })
-      })
-    });
-  }
-});
-
 // bazel-out/k8-fastbuild/bin/ng-dev/release/publish/pull-request-state.js
 var require_pull_request_state = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/pull-request-state.js"(exports2) {
@@ -64424,7 +64439,6 @@ var require_actions = __commonJS({
     var commit_message_1 = require_commit_message();
     var constants_1 = require_constants2();
     var external_commands_1 = require_external_commands();
-    var graphql_queries_1 = require_graphql_queries();
     var pull_request_state_1 = require_pull_request_state();
     var version_tags_1 = require_version_tags();
     var github_1 = require_github();
@@ -64495,19 +64509,14 @@ var require_actions = __commonJS({
         (0, console_12.info)((0, console_12.green)(`  \u2713   Created release commit for: "${newVersion}".`));
       }
       async _getForkOfAuthenticatedUser() {
-        if (this._cachedForkRepo !== null) {
-          return this._cachedForkRepo;
-        }
-        const { owner, name } = this.git.remoteConfig;
-        const result = await this.git.github.graphql(graphql_queries_1.findOwnedForksOfRepoQuery, { owner, name });
-        const forks = result.repository.forks.nodes;
-        if (forks.length === 0) {
+        try {
+          return this.git.getForkOfAuthenticatedUser();
+        } catch {
+          const { owner, name } = this.git.remoteConfig;
           (0, console_12.error)((0, console_12.red)("  \u2718   Unable to find fork for currently authenticated user."));
           (0, console_12.error)((0, console_12.red)(`      Please ensure you created a fork of: ${owner}/${name}.`));
           throw new actions_error_1.FatalReleaseActionError();
         }
-        const fork = forks[0];
-        return this._cachedForkRepo = { owner: fork.owner.login, name: fork.name };
       }
       async _isBranchNameReservedInRepo(repo, name) {
         try {
@@ -72786,7 +72795,7 @@ var require_version_check = __commonJS({
     var console_12 = require_console();
     async function verifyNgDevToolIsUpToDate(workspacePath) {
       var _a, _b, _c, _d, _e;
-      const localVersion = `0.0.0-c1a99942e08818419157121154b43ae4173e6d28`;
+      const localVersion = `0.0.0-30c518dd8396e860f25ca4295dc6f4cd4a09b1da`;
       const workspacePackageJsonFile = path.join(workspacePath, constants_1.workspaceRelativePackageJsonPath);
       const workspaceDirLockFile = path.join(workspacePath, constants_1.workspaceRelativeYarnLockFilePath);
       try {
@@ -75042,15 +75051,107 @@ var require_cli24 = __commonJS({
   }
 });
 
-// bazel-out/k8-fastbuild/bin/ng-dev/misc/cli.js
+// bazel-out/k8-fastbuild/bin/ng-dev/misc/update-yarn/cli.js
 var require_cli25 = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/misc/update-yarn/cli.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.UpdateYarnCommandModule = void 0;
+    var fs_1 = require("fs");
+    var path_1 = require("path");
+    var child_process_1 = require_child_process();
+    var console_12 = require_console();
+    var spinner_1 = require_spinner();
+    var authenticated_git_client_1 = require_authenticated_git_client();
+    var github_yargs_1 = require_github_yargs();
+    async function builder(yargs2) {
+      return (0, github_yargs_1.addGithubTokenOption)(yargs2);
+    }
+    var useYarnPathEnv = __spreadProps(__spreadValues({}, process.env), {
+      YARN_IGNORE_PATH: "0"
+    });
+    var skipHuskyEnv = __spreadProps(__spreadValues({}, process.env), {
+      HUSKY: "0"
+    });
+    async function handler() {
+      const npmBinDir = (0, child_process_1.spawnSync)("npm", ["bin", "--global", "yarn"]).stdout.trim();
+      const yarnBin = `${npmBinDir}/yarn`;
+      const git = authenticated_git_client_1.AuthenticatedGitClient.get();
+      const mainBranchName = git.mainBranchName;
+      const originalBranchOrRef = git.getCurrentBranchOrRevision();
+      if (git.hasUncommittedChanges()) {
+        (0, console_12.error)((0, console_12.red)("Found changes in the local repository. Make sure there are no uncommitted files."));
+        process.exitCode = 1;
+        return;
+      }
+      const spinner = new spinner_1.Spinner("");
+      try {
+        spinner.update(`Fetching the latest primary branch from upstream: "${mainBranchName}"`);
+        git.run(["fetch", "-q", git.getRepoGitUrl(), mainBranchName]);
+        git.checkout("FETCH_HEAD", false);
+        spinner.update("Removing previous yarn version.");
+        const yarnReleasesDir = (0, path_1.join)(git.baseDir, ".yarn/releases");
+        (0, fs_1.readdirSync)(yarnReleasesDir).forEach((file) => (0, fs_1.unlinkSync)((0, path_1.join)(yarnReleasesDir, file)));
+        spinner.update("Updating yarn version.");
+        (0, child_process_1.spawnSync)(yarnBin, ["policies", "set-version", "latest"]);
+        spinner.update("Confirming the version of yarn was updated.");
+        const newYarnVersion = (0, child_process_1.spawnSync)(yarnBin, ["-v"], { env: useYarnPathEnv }).stdout.trim();
+        if (git.run(["status", "--porcelain"]).stdout.length === 0) {
+          spinner.complete();
+          (0, console_12.error)((0, console_12.red)("Yarn already up to date"));
+          process.exitCode = 0;
+          return;
+        }
+        const title = `build: update to yarn v${newYarnVersion}`;
+        const body = `Update to the latest version of yarn, ${newYarnVersion}.`;
+        const commitMessage = `${title}
+
+${body}`;
+        const branchName = `yarn-update-v${newYarnVersion}`;
+        const { owner: localOwner } = await git.getForkOfAuthenticatedUser();
+        spinner.update("Staging yarn vendoring files and creating commit");
+        git.run(["add", ".yarn/releases/**", ".yarnrc"]);
+        git.run(["commit", "-q", "--no-verify", "-m", commitMessage], { env: skipHuskyEnv });
+        spinner.update("Pushing commit changes to github.");
+        git.run(["push", "-q", "origin", "--force-with-lease", `HEAD:refs/heads/${branchName}`]);
+        spinner.update("Creating a PR for the changes.");
+        const { number } = (await git.github.pulls.create(__spreadProps(__spreadValues({}, git.remoteParams), {
+          title,
+          body,
+          base: mainBranchName,
+          head: `${localOwner}:${branchName}`
+        }))).data;
+        spinner.complete();
+        (0, console_12.info)(`Created PR #${number} to update to yarn v${newYarnVersion}`);
+      } catch (e) {
+        spinner.complete();
+        (0, console_12.error)((0, console_12.red)("Aborted yarn update do to errors:"));
+        (0, console_12.error)(e);
+        process.exitCode = 1;
+        git.checkout(originalBranchOrRef, true);
+      } finally {
+        git.checkout(originalBranchOrRef, true);
+      }
+    }
+    exports2.UpdateYarnCommandModule = {
+      builder,
+      handler,
+      command: "update-yarn",
+      describe: "Automatically update the vendored yarn version in the repository and create a PR"
+    };
+  }
+});
+
+// bazel-out/k8-fastbuild/bin/ng-dev/misc/cli.js
+var require_cli26 = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/misc/cli.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.buildMiscParser = void 0;
     var cli_12 = require_cli24();
+    var cli_22 = require_cli25();
     function buildMiscParser(localYargs) {
-      return localYargs.help().strict().command(cli_12.BuildAndLinkCommandModule);
+      return localYargs.help().strict().command(cli_12.BuildAndLinkCommandModule).command(cli_22.UpdateYarnCommandModule);
     }
     exports2.buildMiscParser = buildMiscParser;
   }
@@ -77241,7 +77342,7 @@ var require_gather_test_results = __commonJS({
 });
 
 // bazel-out/k8-fastbuild/bin/ng-dev/ci/gather-test-results/cli.js
-var require_cli26 = __commonJS({
+var require_cli27 = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/ci/gather-test-results/cli.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
@@ -77272,12 +77373,12 @@ var require_cli26 = __commonJS({
 });
 
 // bazel-out/k8-fastbuild/bin/ng-dev/ci/cli.js
-var require_cli27 = __commonJS({
+var require_cli28 = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/ci/cli.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.buildCiParser = void 0;
-    var cli_12 = require_cli26();
+    var cli_12 = require_cli27();
     function buildCiParser(yargs2) {
       return yargs2.help().strict().command(cli_12.GatherTestResultsModule);
     }
@@ -77298,8 +77399,8 @@ var cli_6 = require_cli16();
 var cli_7 = require_cli23();
 var index_1 = require_ts_circular_dependencies();
 var console_1 = require_console();
-var cli_8 = require_cli25();
-var cli_9 = require_cli27();
+var cli_8 = require_cli26();
+var cli_9 = require_cli28();
 yargs.scriptName("ng-dev").middleware(console_1.captureLogOutputForCommand).demandCommand().recommendCommands().command("commit-message <command>", "", cli_2.buildCommitMessageParser).command("format <command>", "", cli_3.buildFormatParser).command("pr <command>", "", cli_5.buildPrParser).command("pullapprove <command>", "", cli_6.buildPullapproveParser).command("release <command>", "", cli_7.buildReleaseParser).command("ts-circular-deps <command>", "", index_1.tsCircularDependenciesBuilder).command("caretaker <command>", "", cli_1.buildCaretakerParser).command("misc <command>", "", cli_8.buildMiscParser).command("ngbot <command>", false, cli_4.buildNgbotParser).command("ci <command>", false, cli_9.buildCiParser).wrap(120).strict().parse();
 /*!
  * Tmp
