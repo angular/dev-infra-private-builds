@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-885008c8215ce0254ba191ae0cfa01b43c815405",
+  "version": "0.0.0-8d971668ff4da84baf14c9d0115c8f243fe83a32",
   "bin": {
     "ng-dev": "./ng-dev/cli-bundle.js"
   },
@@ -90,7 +90,7 @@
     "@types/yargs": "^17.0.0",
     "@types/yarnpkg__lockfile": "^1.1.5",
     "jsdoc": "^3.6.7",
-    "jsdom": "^18.1.1",
+    "jsdom": "^19.0.0",
     "minimist": "^1.2.5",
     "protobufjs": "^6.11.2",
     "rxjs": "^7.4.0",
