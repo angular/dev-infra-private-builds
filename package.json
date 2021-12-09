@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-6237a64bd4d56cdcea6979945866f01fff248e0c",
+  "version": "0.0.0-a480a99a0d757e3b6fe9dec8ce6d3a60149efc13",
   "bin": {
     "ng-dev": "./ng-dev/cli-bundle.js"
   },
@@ -24,7 +24,7 @@
     "@bazel/runfiles": "4.4.6",
     "@bazel/terser": "^4.4.6",
     "@bazel/typescript": "4.4.6",
-    "@microsoft/api-extractor": "7.19.1",
+    "@microsoft/api-extractor": "7.19.2",
     "@octokit/auth-app": "^3.6.0",
     "@octokit/core": "^3.5.1",
     "@octokit/graphql": "^4.8.0",
