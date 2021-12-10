@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-a480a99a0d757e3b6fe9dec8ce6d3a60149efc13",
+  "version": "0.0.0-1516a4ef6d42bdcf008a7984409468183ab67808",
   "bin": {
     "ng-dev": "./ng-dev/cli-bundle.js"
   },
@@ -61,6 +61,7 @@
     "typed-graphqlify": "^3.1.1",
     "typescript": "~4.5.0",
     "uuid": "^8.3.2",
+    "which": "^2.0.2",
     "yaml": "^1.10.0",
     "yargs": "^17.0.0"
   },
@@ -87,6 +88,7 @@
     "@types/semver": "^7.3.6",
     "@types/shelljs": "^0.8.8",
     "@types/uuid": "^8.3.1",
+    "@types/which": "^2.0.1",
     "@types/yargs": "^17.0.0",
     "@types/yarnpkg__lockfile": "^1.1.5",
     "jsdoc": "^3.6.7",

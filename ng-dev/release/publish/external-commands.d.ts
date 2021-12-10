@@ -12,12 +12,12 @@ import { NpmDistTag } from '../versioning';
  * Invokes the `ng-dev release set-dist-tag` command in order to set the specified
  * NPM dist tag for all packages in the checked out branch to the given version.
  */
-export declare function invokeSetNpmDistCommand(npmDistTag: NpmDistTag, version: semver.SemVer): Promise<void>;
+export declare function invokeSetNpmDistCommand(projectDir: string, npmDistTag: NpmDistTag, version: semver.SemVer): Promise<void>;
 /**
  * Invokes the `ng-dev release build` command in order to build the release
  * packages for the currently checked out branch.
  */
-export declare function invokeReleaseBuildCommand(): Promise<BuiltPackage[]>;
+export declare function invokeReleaseBuildCommand(projectDir: string): Promise<BuiltPackage[]>;
 /**
  * Invokes the `yarn install` command in order to install dependencies for
  * the configured project with the currently checked out revision.

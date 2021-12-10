@@ -64293,887 +64293,238 @@ var require_constants2 = __commonJS({
   }
 });
 
-// bazel-out/k8-fastbuild/bin/ng-dev/release/publish/external-commands.js
-var require_external_commands = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/external-commands.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.invokeYarnInstallCommand = exports2.invokeReleaseBuildCommand = exports2.invokeSetNpmDistCommand = void 0;
-    var child_process_1 = require_child_process();
-    var console_12 = require_console();
-    var spinner_1 = require_spinner();
-    var actions_error_1 = require_actions_error();
-    async function invokeSetNpmDistCommand(npmDistTag, version) {
-      try {
-        await (0, child_process_1.spawn)("yarn", [
-          "--silent",
-          "ng-dev",
-          "release",
-          "set-dist-tag",
-          npmDistTag,
-          version.format()
-        ]);
-        (0, console_12.info)((0, console_12.green)(`  \u2713   Set "${npmDistTag}" NPM dist tag for all packages to v${version}.`));
-      } catch (e) {
-        (0, console_12.error)(e);
-        (0, console_12.error)((0, console_12.red)(`  \u2718   An error occurred while setting the NPM dist tag for "${npmDistTag}".`));
-        throw new actions_error_1.FatalReleaseActionError();
+// node_modules/isexe/windows.js
+var require_windows = __commonJS({
+  "node_modules/isexe/windows.js"(exports2, module2) {
+    module2.exports = isexe;
+    isexe.sync = sync;
+    var fs = require("fs");
+    function checkPathExt(path, options) {
+      var pathext = options.pathExt !== void 0 ? options.pathExt : process.env.PATHEXT;
+      if (!pathext) {
+        return true;
       }
-    }
-    exports2.invokeSetNpmDistCommand = invokeSetNpmDistCommand;
-    async function invokeReleaseBuildCommand() {
-      const spinner = new spinner_1.Spinner("Building release output.");
-      try {
-        const { stdout } = await (0, child_process_1.spawn)("yarn", ["--silent", "ng-dev", "release", "build", "--json"], {
-          mode: "silent"
-        });
-        spinner.complete();
-        (0, console_12.info)((0, console_12.green)("  \u2713   Built release output for all packages."));
-        return JSON.parse(stdout.trim());
-      } catch (e) {
-        spinner.complete();
-        (0, console_12.error)(e);
-        (0, console_12.error)((0, console_12.red)("  \u2718   An error occurred while building the release packages."));
-        throw new actions_error_1.FatalReleaseActionError();
+      pathext = pathext.split(";");
+      if (pathext.indexOf("") !== -1) {
+        return true;
       }
-    }
-    exports2.invokeReleaseBuildCommand = invokeReleaseBuildCommand;
-    async function invokeYarnInstallCommand(projectDir) {
-      try {
-        await (0, child_process_1.spawn)("yarn", ["install", "--frozen-lockfile", "--non-interactive"], { cwd: projectDir });
-        (0, console_12.info)((0, console_12.green)("  \u2713   Installed project dependencies."));
-      } catch (e) {
-        (0, console_12.error)(e);
-        (0, console_12.error)((0, console_12.red)("  \u2718   An error occurred while installing dependencies."));
-        throw new actions_error_1.FatalReleaseActionError();
-      }
-    }
-    exports2.invokeYarnInstallCommand = invokeYarnInstallCommand;
-  }
-});
-
-// bazel-out/k8-fastbuild/bin/ng-dev/release/publish/pull-request-state.js
-var require_pull_request_state = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/pull-request-state.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.getPullRequestState = void 0;
-    var THIRTY_SECONDS_IN_MS = 3e4;
-    async function getPullRequestState(api, id) {
-      const { data } = await api.github.pulls.get(__spreadProps(__spreadValues({}, api.remoteParams), { pull_number: id }));
-      if (data.merged) {
-        return "merged";
-      }
-      if (data.closed_at !== null && new Date(data.closed_at).getTime() < Date.now() - THIRTY_SECONDS_IN_MS) {
-        return await isPullRequestClosedWithAssociatedCommit(api, id) ? "merged" : "closed";
-      }
-      return "open";
-    }
-    exports2.getPullRequestState = getPullRequestState;
-    async function isPullRequestClosedWithAssociatedCommit(api, id) {
-      const events = await api.github.paginate(api.github.issues.listEvents, __spreadProps(__spreadValues({}, api.remoteParams), {
-        issue_number: id
-      }));
-      for (let i = events.length - 1; i >= 0; i--) {
-        const { event, commit_id } = events[i];
-        if (event === "reopened") {
-          return false;
-        }
-        if (event === "closed" && commit_id) {
-          return true;
-        }
-        if (event === "referenced" && commit_id && await isCommitClosingPullRequest(api, commit_id, id)) {
+      for (var i = 0; i < pathext.length; i++) {
+        var p = pathext[i].toLowerCase();
+        if (p && path.substr(-p.length).toLowerCase() === p) {
           return true;
         }
       }
       return false;
     }
-    async function isCommitClosingPullRequest(api, sha, id) {
-      const { data } = await api.github.repos.getCommit(__spreadProps(__spreadValues({}, api.remoteParams), { ref: sha }));
-      return data.commit.message.match(new RegExp(`(?:close[sd]?|fix(?:e[sd]?)|resolve[sd]?):? #${id}(?!\\d)`, "i"));
+    function checkStat(stat, path, options) {
+      if (!stat.isSymbolicLink() && !stat.isFile()) {
+        return false;
+      }
+      return checkPathExt(path, options);
+    }
+    function isexe(path, options, cb) {
+      fs.stat(path, function(er, stat) {
+        cb(er, er ? false : checkStat(stat, path, options));
+      });
+    }
+    function sync(path, options) {
+      return checkStat(fs.statSync(path), path, options);
     }
   }
 });
 
-// bazel-out/k8-fastbuild/bin/ng-dev/release/versioning/version-tags.js
-var require_version_tags = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/release/versioning/version-tags.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.getReleaseTagForVersion = void 0;
-    function getReleaseTagForVersion(version) {
-      return version.format();
+// node_modules/isexe/mode.js
+var require_mode = __commonJS({
+  "node_modules/isexe/mode.js"(exports2, module2) {
+    module2.exports = isexe;
+    isexe.sync = sync;
+    var fs = require("fs");
+    function isexe(path, options, cb) {
+      fs.stat(path, function(er, stat) {
+        cb(er, er ? false : checkStat(stat, options));
+      });
     }
-    exports2.getReleaseTagForVersion = getReleaseTagForVersion;
+    function sync(path, options) {
+      return checkStat(fs.statSync(path), options);
+    }
+    function checkStat(stat, options) {
+      return stat.isFile() && checkMode(stat, options);
+    }
+    function checkMode(stat, options) {
+      var mod2 = stat.mode;
+      var uid = stat.uid;
+      var gid = stat.gid;
+      var myUid = options.uid !== void 0 ? options.uid : process.getuid && process.getuid();
+      var myGid = options.gid !== void 0 ? options.gid : process.getgid && process.getgid();
+      var u = parseInt("100", 8);
+      var g = parseInt("010", 8);
+      var o = parseInt("001", 8);
+      var ug = u | g;
+      var ret = mod2 & o || mod2 & g && gid === myGid || mod2 & u && uid === myUid || mod2 & ug && myUid === 0;
+      return ret;
+    }
   }
 });
 
-// bazel-out/k8-fastbuild/bin/ng-dev/utils/constants.js
-var require_constants3 = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/utils/constants.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.workspaceRelativeYarnLockFilePath = exports2.workspaceRelativePackageJsonPath = exports2.ngDevNpmPackageName = void 0;
-    exports2.ngDevNpmPackageName = "@angular/dev-infra-private";
-    exports2.workspaceRelativePackageJsonPath = "package.json";
-    exports2.workspaceRelativeYarnLockFilePath = "yarn.lock";
-  }
-});
-
-// bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions.js
-var require_actions = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.ReleaseAction = void 0;
-    var fs_1 = require("fs");
-    var path_1 = require("path");
-    var semver = require_semver2();
-    var console_12 = require_console();
-    var spinner_1 = require_spinner();
-    var github_urls_1 = require_github_urls();
-    var semver_1 = require_semver3();
-    var release_notes_1 = require_release_notes();
-    var npm_publish_1 = require_npm_publish();
-    var actions_error_1 = require_actions_error();
-    var commit_message_1 = require_commit_message();
-    var constants_1 = require_constants2();
-    var external_commands_1 = require_external_commands();
-    var pull_request_state_1 = require_pull_request_state();
-    var version_tags_1 = require_version_tags();
-    var github_1 = require_github();
-    var constants_2 = require_constants3();
-    var ReleaseAction = class {
-      constructor(active, git, config, projectDir) {
-        this.active = active;
-        this.git = git;
-        this.config = config;
-        this.projectDir = projectDir;
-        this._cachedForkRepo = null;
+// node_modules/isexe/index.js
+var require_isexe = __commonJS({
+  "node_modules/isexe/index.js"(exports2, module2) {
+    var fs = require("fs");
+    var core;
+    if (process.platform === "win32" || global.TESTING_WINDOWS) {
+      core = require_windows();
+    } else {
+      core = require_mode();
+    }
+    module2.exports = isexe;
+    isexe.sync = sync;
+    function isexe(path, options, cb) {
+      if (typeof options === "function") {
+        cb = options;
+        options = {};
       }
-      static isActive(_trains, _config) {
-        throw Error("Not implemented.");
-      }
-      async getProjectVersion() {
-        const pkgJsonPath = (0, path_1.join)(this.projectDir, constants_2.workspaceRelativePackageJsonPath);
-        const pkgJson = JSON.parse(await fs_1.promises.readFile(pkgJsonPath, "utf8"));
-        return new semver.SemVer(pkgJson.version);
-      }
-      async updateProjectVersion(newVersion) {
-        const pkgJsonPath = (0, path_1.join)(this.projectDir, constants_2.workspaceRelativePackageJsonPath);
-        const pkgJson = JSON.parse(await fs_1.promises.readFile(pkgJsonPath, "utf8"));
-        pkgJson.version = newVersion.format();
-        await fs_1.promises.writeFile(pkgJsonPath, `${JSON.stringify(pkgJson, null, 2)}
-`);
-        (0, console_12.info)((0, console_12.green)(`  \u2713   Updated project version to ${pkgJson.version}`));
-      }
-      async _getCommitOfBranch(branchName) {
-        const { data: { commit } } = await this.git.github.repos.getBranch(__spreadProps(__spreadValues({}, this.git.remoteParams), { branch: branchName }));
-        return commit.sha;
-      }
-      async verifyPassingGithubStatus(branchName) {
-        const commitSha = await this._getCommitOfBranch(branchName);
-        const { data: { state } } = await this.git.github.repos.getCombinedStatusForRef(__spreadProps(__spreadValues({}, this.git.remoteParams), {
-          ref: commitSha
-        }));
-        const branchCommitsUrl = (0, github_urls_1.getListCommitsInBranchUrl)(this.git, branchName);
-        if (state === "failure") {
-          (0, console_12.error)((0, console_12.red)(`  \u2718   Cannot stage release. Commit "${commitSha}" does not pass all github status checks. Please make sure this commit passes all checks before re-running.`));
-          (0, console_12.error)(`      Please have a look at: ${branchCommitsUrl}`);
-          if (await (0, console_12.promptConfirm)("Do you want to ignore the Github status and proceed?")) {
-            (0, console_12.info)((0, console_12.yellow)("  \u26A0   Upstream commit is failing CI checks, but status has been forcibly ignored."));
-            return;
-          }
-          throw new actions_error_1.UserAbortedReleaseActionError();
-        } else if (state === "pending") {
-          (0, console_12.error)((0, console_12.red)(`  \u2718   Commit "${commitSha}" still has pending github statuses that need to succeed before staging a release.`));
-          (0, console_12.error)((0, console_12.red)(`      Please have a look at: ${branchCommitsUrl}`));
-          if (await (0, console_12.promptConfirm)("Do you want to ignore the Github status and proceed?")) {
-            (0, console_12.info)((0, console_12.yellow)("  \u26A0   Upstream commit is pending CI, but status has been forcibly ignored."));
-            return;
-          }
-          throw new actions_error_1.UserAbortedReleaseActionError();
+      if (!cb) {
+        if (typeof Promise !== "function") {
+          throw new TypeError("callback not provided");
         }
-        (0, console_12.info)((0, console_12.green)("  \u2713   Upstream commit is passing all github status checks."));
-      }
-      async waitForEditsAndCreateReleaseCommit(newVersion) {
-        (0, console_12.info)((0, console_12.yellow)("  \u26A0   Please review the changelog and ensure that the log contains only changes that apply to the public API surface. Manual changes can be made. When done, please proceed with the prompt below."));
-        if (!await (0, console_12.promptConfirm)("Do you want to proceed and commit the changes?")) {
-          throw new actions_error_1.UserAbortedReleaseActionError();
-        }
-        const commitMessage = (0, commit_message_1.getCommitMessageForRelease)(newVersion);
-        await this.createCommit(commitMessage, [
-          constants_2.workspaceRelativePackageJsonPath,
-          release_notes_1.workspaceRelativeChangelogPath
-        ]);
-        (0, console_12.info)((0, console_12.green)(`  \u2713   Created release commit for: "${newVersion}".`));
-      }
-      async _getForkOfAuthenticatedUser() {
-        try {
-          return this.git.getForkOfAuthenticatedUser();
-        } catch {
-          const { owner, name } = this.git.remoteConfig;
-          (0, console_12.error)((0, console_12.red)("  \u2718   Unable to find fork for currently authenticated user."));
-          (0, console_12.error)((0, console_12.red)(`      Please ensure you created a fork of: ${owner}/${name}.`));
-          throw new actions_error_1.FatalReleaseActionError();
-        }
-      }
-      async _isBranchNameReservedInRepo(repo, name) {
-        try {
-          await this.git.github.repos.getBranch({ owner: repo.owner, repo: repo.name, branch: name });
-          return true;
-        } catch (e) {
-          if (e instanceof github_1.GithubApiRequestError && e.status === 404) {
-            return false;
-          }
-          throw e;
-        }
-      }
-      async _findAvailableBranchName(repo, baseName) {
-        let currentName = baseName;
-        let suffixNum = 0;
-        while (await this._isBranchNameReservedInRepo(repo, currentName)) {
-          suffixNum++;
-          currentName = `${baseName}_${suffixNum}`;
-        }
-        return currentName;
-      }
-      async createLocalBranchFromHead(branchName) {
-        this.git.run(["checkout", "-q", "-B", branchName]);
-      }
-      async pushHeadToRemoteBranch(branchName) {
-        this.git.run(["push", "-q", this.git.getRepoGitUrl(), `HEAD:refs/heads/${branchName}`]);
-      }
-      async _pushHeadToFork(proposedBranchName, trackLocalBranch) {
-        const fork = await this._getForkOfAuthenticatedUser();
-        const repoGitUrl = (0, github_urls_1.getRepositoryGitUrl)(__spreadProps(__spreadValues({}, fork), { useSsh: this.git.remoteConfig.useSsh }), this.git.githubToken);
-        const branchName = await this._findAvailableBranchName(fork, proposedBranchName);
-        const pushArgs = [];
-        if (trackLocalBranch) {
-          await this.createLocalBranchFromHead(branchName);
-          pushArgs.push("--set-upstream");
-        }
-        this.git.run(["push", "-q", repoGitUrl, `HEAD:refs/heads/${branchName}`, ...pushArgs]);
-        return { fork, branchName };
-      }
-      async pushChangesToForkAndCreatePullRequest(targetBranch, proposedForkBranchName, title, body) {
-        const repoSlug = `${this.git.remoteParams.owner}/${this.git.remoteParams.repo}`;
-        const { fork, branchName } = await this._pushHeadToFork(proposedForkBranchName, true);
-        const { data } = await this.git.github.pulls.create(__spreadProps(__spreadValues({}, this.git.remoteParams), {
-          head: `${fork.owner}:${branchName}`,
-          base: targetBranch,
-          body,
-          title
-        }));
-        if (this.config.releasePrLabels !== void 0) {
-          await this.git.github.issues.addLabels(__spreadProps(__spreadValues({}, this.git.remoteParams), {
-            issue_number: data.number,
-            labels: this.config.releasePrLabels
-          }));
-        }
-        (0, console_12.info)((0, console_12.green)(`  \u2713   Created pull request #${data.number} in ${repoSlug}.`));
-        return {
-          id: data.number,
-          url: data.html_url,
-          fork,
-          forkBranch: branchName
-        };
-      }
-      async waitForPullRequestToBeMerged({ id }, interval = constants_1.waitForPullRequestInterval) {
-        return new Promise((resolve, reject) => {
-          (0, console_12.debug)(`Waiting for pull request #${id} to be merged.`);
-          const spinner = new spinner_1.Spinner(`Waiting for pull request #${id} to be merged.`);
-          const intervalId = setInterval(async () => {
-            const prState = await (0, pull_request_state_1.getPullRequestState)(this.git, id);
-            if (prState === "merged") {
-              spinner.complete();
-              (0, console_12.info)((0, console_12.green)(`  \u2713   Pull request #${id} has been merged.`));
-              clearInterval(intervalId);
-              resolve();
-            } else if (prState === "closed") {
-              spinner.complete();
-              (0, console_12.warn)((0, console_12.yellow)(`  \u2718   Pull request #${id} has been closed.`));
-              clearInterval(intervalId);
-              reject(new actions_error_1.UserAbortedReleaseActionError());
+        return new Promise(function(resolve, reject) {
+          isexe(path, options || {}, function(er, is) {
+            if (er) {
+              reject(er);
+            } else {
+              resolve(is);
             }
-          }, interval);
+          });
         });
       }
-      async prependReleaseNotesToChangelog(releaseNotes) {
-        await releaseNotes.prependEntryToChangelogFile();
-        (0, console_12.info)((0, console_12.green)(`  \u2713   Updated the changelog to capture changes for "${releaseNotes.version}".`));
-      }
-      async checkoutUpstreamBranch(branchName) {
-        this.git.run(["fetch", "-q", this.git.getRepoGitUrl(), branchName]);
-        this.git.run(["checkout", "-q", "FETCH_HEAD", "--detach"]);
-      }
-      async installDependenciesForCurrentBranch() {
-        const nodeModulesDir = (0, path_1.join)(this.projectDir, "node_modules");
-        await fs_1.promises.rm(nodeModulesDir, { force: true, recursive: true, maxRetries: 3 });
-        await (0, external_commands_1.invokeYarnInstallCommand)(this.projectDir);
-      }
-      async createCommit(message, files) {
-        this.git.run(["add", ...files]);
-        this.git.run(["commit", "-q", "--no-verify", "-m", message, ...files]);
-      }
-      async stageVersionForBranchAndCreatePullRequest(newVersion, compareVersionForReleaseNotes, pullRequestTargetBranch) {
-        const releaseNotesCompareTag = (0, version_tags_1.getReleaseTagForVersion)(compareVersionForReleaseNotes);
-        this.git.run([
-          "fetch",
-          "--force",
-          this.git.getRepoGitUrl(),
-          `refs/tags/${releaseNotesCompareTag}:refs/tags/${releaseNotesCompareTag}`
-        ]);
-        const releaseNotes = await release_notes_1.ReleaseNotes.forRange(this.git, newVersion, releaseNotesCompareTag, "HEAD");
-        await this.updateProjectVersion(newVersion);
-        await this.prependReleaseNotesToChangelog(releaseNotes);
-        await this.waitForEditsAndCreateReleaseCommit(newVersion);
-        const pullRequest = await this.pushChangesToForkAndCreatePullRequest(pullRequestTargetBranch, `release-stage-${newVersion}`, `Bump version to "v${newVersion}" with changelog.`);
-        (0, console_12.info)((0, console_12.green)("  \u2713   Release staging pull request has been created."));
-        (0, console_12.info)((0, console_12.yellow)(`      Please ask team members to review: ${pullRequest.url}.`));
-        return { releaseNotes, pullRequest };
-      }
-      async checkoutBranchAndStageVersion(newVersion, compareVersionForReleaseNotes, stagingBranch) {
-        await this.verifyPassingGithubStatus(stagingBranch);
-        await this.checkoutUpstreamBranch(stagingBranch);
-        return await this.stageVersionForBranchAndCreatePullRequest(newVersion, compareVersionForReleaseNotes, stagingBranch);
-      }
-      async cherryPickChangelogIntoNextBranch(releaseNotes, stagingBranch) {
-        const nextBranch = this.active.next.branchName;
-        const commitMessage = (0, commit_message_1.getReleaseNoteCherryPickCommitMessage)(releaseNotes.version);
-        await this.checkoutUpstreamBranch(nextBranch);
-        await this.prependReleaseNotesToChangelog(releaseNotes);
-        await this.createCommit(commitMessage, [release_notes_1.workspaceRelativeChangelogPath]);
-        (0, console_12.info)((0, console_12.green)(`  \u2713   Created changelog cherry-pick commit for: "${releaseNotes.version}".`));
-        const pullRequest = await this.pushChangesToForkAndCreatePullRequest(nextBranch, `changelog-cherry-pick-${releaseNotes.version}`, commitMessage, `Cherry-picks the changelog from the "${stagingBranch}" branch to the next branch (${nextBranch}).`);
-        (0, console_12.info)((0, console_12.green)(`  \u2713   Pull request for cherry-picking the changelog into "${nextBranch}" has been created.`));
-        (0, console_12.info)((0, console_12.yellow)(`      Please ask team members to review: ${pullRequest.url}.`));
-        await this.waitForPullRequestToBeMerged(pullRequest);
-        return true;
-      }
-      async _createGithubReleaseForVersion(releaseNotes, versionBumpCommitSha, isPrerelease) {
-        const tagName = (0, version_tags_1.getReleaseTagForVersion)(releaseNotes.version);
-        await this.git.github.git.createRef(__spreadProps(__spreadValues({}, this.git.remoteParams), {
-          ref: `refs/tags/${tagName}`,
-          sha: versionBumpCommitSha
-        }));
-        (0, console_12.info)((0, console_12.green)(`  \u2713   Tagged v${releaseNotes.version} release upstream.`));
-        let releaseBody = await releaseNotes.getGithubReleaseEntry();
-        if (releaseBody.length > constants_1.githubReleaseBodyLimit) {
-          const releaseNotesUrl = await this._getGithubChangelogUrlForRef(releaseNotes, tagName);
-          releaseBody = `Release notes are too large to be captured here. [View all changes here](${releaseNotesUrl}).`;
-        }
-        await this.git.github.repos.createRelease(__spreadProps(__spreadValues({}, this.git.remoteParams), {
-          name: `v${releaseNotes.version}`,
-          tag_name: tagName,
-          prerelease: isPrerelease,
-          body: releaseBody
-        }));
-        (0, console_12.info)((0, console_12.green)(`  \u2713   Created v${releaseNotes.version} release in Github.`));
-      }
-      async _getGithubChangelogUrlForRef(releaseNotes, ref) {
-        const baseUrl = (0, github_urls_1.getFileContentsUrl)(this.git, ref, release_notes_1.workspaceRelativeChangelogPath);
-        const urlFragment = await releaseNotes.getUrlFragmentForRelease();
-        return `${baseUrl}#${urlFragment}`;
-      }
-      async buildAndPublish(releaseNotes, publishBranch, npmDistTag) {
-        const versionBumpCommitSha = await this._getCommitOfBranch(publishBranch);
-        if (!await this._isCommitForVersionStaging(releaseNotes.version, versionBumpCommitSha)) {
-          (0, console_12.error)((0, console_12.red)(`  \u2718   Latest commit in "${publishBranch}" branch is not a staging commit.`));
-          (0, console_12.error)((0, console_12.red)("      Please make sure the staging pull request has been merged."));
-          throw new actions_error_1.FatalReleaseActionError();
-        }
-        await this.checkoutUpstreamBranch(publishBranch);
-        await this.installDependenciesForCurrentBranch();
-        const builtPackages = await (0, external_commands_1.invokeReleaseBuildCommand)();
-        await this._verifyPackageVersions(releaseNotes.version, builtPackages);
-        await this._createGithubReleaseForVersion(releaseNotes, versionBumpCommitSha, npmDistTag === "next");
-        for (const builtPackage of builtPackages) {
-          await this._publishBuiltPackageToNpm(builtPackage, npmDistTag);
-        }
-        (0, console_12.info)((0, console_12.green)("  \u2713   Published all packages successfully"));
-      }
-      async _publishBuiltPackageToNpm(pkg, npmDistTag) {
-        (0, console_12.debug)(`Starting publish of "${pkg.name}".`);
-        const spinner = new spinner_1.Spinner(`Publishing "${pkg.name}"`);
-        try {
-          await (0, npm_publish_1.runNpmPublish)(pkg.outputPath, npmDistTag, this.config.publishRegistry);
-          spinner.complete();
-          (0, console_12.info)((0, console_12.green)(`  \u2713   Successfully published "${pkg.name}.`));
-        } catch (e) {
-          spinner.complete();
-          (0, console_12.error)(e);
-          (0, console_12.error)((0, console_12.red)(`  \u2718   An error occurred while publishing "${pkg.name}".`));
-          throw new actions_error_1.FatalReleaseActionError();
-        }
-      }
-      async _isCommitForVersionStaging(version, commitSha) {
-        const { data } = await this.git.github.repos.getCommit(__spreadProps(__spreadValues({}, this.git.remoteParams), {
-          ref: commitSha
-        }));
-        return data.commit.message.startsWith((0, commit_message_1.getCommitMessageForRelease)(version));
-      }
-      async _verifyPackageVersions(version, packages) {
-        const experimentalVersion = (0, semver_1.createExperimentalSemver)(version);
-        for (const pkg of packages) {
-          const { version: packageJsonVersion } = JSON.parse(await fs_1.promises.readFile((0, path_1.join)(pkg.outputPath, "package.json"), "utf8"));
-          const mismatchesVersion = version.compare(packageJsonVersion) !== 0;
-          const mismatchesExperimental = experimentalVersion.compare(packageJsonVersion) !== 0;
-          if (mismatchesExperimental && mismatchesVersion) {
-            (0, console_12.error)((0, console_12.red)("The built package version does not match the version being released."));
-            (0, console_12.error)(`  Release Version:   ${version.version} (${experimentalVersion.version})`);
-            (0, console_12.error)(`  Generated Version: ${packageJsonVersion}`);
-            throw new actions_error_1.FatalReleaseActionError();
+      core(path, options || {}, function(er, is) {
+        if (er) {
+          if (er.code === "EACCES" || options && options.ignoreErrors) {
+            er = null;
+            is = false;
           }
         }
-      }
-    };
-    exports2.ReleaseAction = ReleaseAction;
-  }
-});
-
-// bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/cut-lts-patch.js
-var require_cut_lts_patch = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/cut-lts-patch.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.CutLongTermSupportPatchAction = void 0;
-    var inquirer_1 = require_inquirer();
-    var semver_1 = require_semver3();
-    var long_term_support_1 = require_long_term_support();
-    var actions_1 = require_actions();
-    var CutLongTermSupportPatchAction = class extends actions_1.ReleaseAction {
-      constructor() {
-        super(...arguments);
-        this.ltsBranches = (0, long_term_support_1.fetchLongTermSupportBranchesFromNpm)(this.config);
-      }
-      async getDescription() {
-        const { active } = await this.ltsBranches;
-        return `Cut a new release for an active LTS branch (${active.length} active).`;
-      }
-      async perform() {
-        const ltsBranch = await this._promptForTargetLtsBranch();
-        const newVersion = (0, semver_1.semverInc)(ltsBranch.version, "patch");
-        const compareVersionForReleaseNotes = ltsBranch.version;
-        const { pullRequest, releaseNotes } = await this.checkoutBranchAndStageVersion(newVersion, compareVersionForReleaseNotes, ltsBranch.name);
-        await this.waitForPullRequestToBeMerged(pullRequest);
-        await this.buildAndPublish(releaseNotes, ltsBranch.name, ltsBranch.npmDistTag);
-        await this.cherryPickChangelogIntoNextBranch(releaseNotes, ltsBranch.name);
-      }
-      async _promptForTargetLtsBranch() {
-        const { active, inactive } = await this.ltsBranches;
-        const activeBranchChoices = active.map((branch) => this._getChoiceForLtsBranch(branch));
-        if (inactive.length !== 0) {
-          activeBranchChoices.push({ name: "Inactive LTS versions (not recommended)", value: null });
-        }
-        const { activeLtsBranch, inactiveLtsBranch } = await (0, inquirer_1.prompt)([
-          {
-            name: "activeLtsBranch",
-            type: "list",
-            message: "Please select a version for which you want to cut an LTS patch",
-            choices: activeBranchChoices
-          },
-          {
-            name: "inactiveLtsBranch",
-            type: "list",
-            when: (o) => o.activeLtsBranch === null,
-            message: "Please select an inactive LTS version for which you want to cut an LTS patch",
-            choices: inactive.map((branch) => this._getChoiceForLtsBranch(branch))
-          }
-        ]);
-        return activeLtsBranch != null ? activeLtsBranch : inactiveLtsBranch;
-      }
-      _getChoiceForLtsBranch(branch) {
-        return { name: `v${branch.version.major} (from ${branch.name})`, value: branch };
-      }
-      static async isActive(active) {
-        return true;
-      }
-    };
-    exports2.CutLongTermSupportPatchAction = CutLongTermSupportPatchAction;
-  }
-});
-
-// bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/cut-new-patch.js
-var require_cut_new_patch = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/cut-new-patch.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.CutNewPatchAction = void 0;
-    var semver_1 = require_semver3();
-    var actions_1 = require_actions();
-    var CutNewPatchAction = class extends actions_1.ReleaseAction {
-      constructor() {
-        super(...arguments);
-        this._previousVersion = this.active.latest.version;
-        this._newVersion = (0, semver_1.semverInc)(this._previousVersion, "patch");
-      }
-      async getDescription() {
-        const { branchName } = this.active.latest;
-        const newVersion = this._newVersion;
-        return `Cut a new patch release for the "${branchName}" branch (v${newVersion}).`;
-      }
-      async perform() {
-        const { branchName } = this.active.latest;
-        const newVersion = this._newVersion;
-        const compareVersionForReleaseNotes = this._previousVersion;
-        const { pullRequest, releaseNotes } = await this.checkoutBranchAndStageVersion(newVersion, compareVersionForReleaseNotes, branchName);
-        await this.waitForPullRequestToBeMerged(pullRequest);
-        await this.buildAndPublish(releaseNotes, branchName, "latest");
-        await this.cherryPickChangelogIntoNextBranch(releaseNotes, branchName);
-      }
-      static async isActive(active) {
-        return true;
-      }
-    };
-    exports2.CutNewPatchAction = CutNewPatchAction;
-  }
-});
-
-// bazel-out/k8-fastbuild/bin/ng-dev/release/versioning/next-prerelease-version.js
-var require_next_prerelease_version = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/release/versioning/next-prerelease-version.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.computeNewPrereleaseVersionForNext = exports2.getReleaseNotesCompareVersionForNext = void 0;
-    var semver_1 = require_semver3();
-    var npm_registry_1 = require_npm_registry();
-    async function getReleaseNotesCompareVersionForNext(active, config) {
-      const { version: nextVersion } = active.next;
-      const isNextPublishedToNpm = await (0, npm_registry_1.isVersionPublishedToNpm)(nextVersion, config);
-      return isNextPublishedToNpm ? nextVersion : active.latest.version;
+        cb(er, is);
+      });
     }
-    exports2.getReleaseNotesCompareVersionForNext = getReleaseNotesCompareVersionForNext;
-    async function computeNewPrereleaseVersionForNext(active, config) {
-      const { version: nextVersion } = active.next;
-      const isNextPublishedToNpm = await (0, npm_registry_1.isVersionPublishedToNpm)(nextVersion, config);
-      if (isNextPublishedToNpm) {
-        return (0, semver_1.semverInc)(nextVersion, "prerelease");
-      } else {
-        return nextVersion;
-      }
-    }
-    exports2.computeNewPrereleaseVersionForNext = computeNewPrereleaseVersionForNext;
-  }
-});
-
-// bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/cut-next-prerelease.js
-var require_cut_next_prerelease = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/cut-next-prerelease.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.CutNextPrereleaseAction = void 0;
-    var semver_1 = require_semver3();
-    var next_prerelease_version_1 = require_next_prerelease_version();
-    var actions_1 = require_actions();
-    var CutNextPrereleaseAction = class extends actions_1.ReleaseAction {
-      constructor() {
-        super(...arguments);
-        this._newVersion = this._computeNewVersion();
-      }
-      async getDescription() {
-        const { branchName } = this._getActivePrereleaseTrain();
-        const newVersion = await this._newVersion;
-        return `Cut a new next pre-release for the "${branchName}" branch (v${newVersion}).`;
-      }
-      async perform() {
-        const releaseTrain = this._getActivePrereleaseTrain();
-        const { branchName } = releaseTrain;
-        const newVersion = await this._newVersion;
-        const compareVersionForReleaseNotes = await this._getCompareVersionForReleaseNotes();
-        const { pullRequest, releaseNotes } = await this.checkoutBranchAndStageVersion(newVersion, compareVersionForReleaseNotes, branchName);
-        await this.waitForPullRequestToBeMerged(pullRequest);
-        await this.buildAndPublish(releaseNotes, branchName, "next");
-        if (releaseTrain !== this.active.next) {
-          await this.cherryPickChangelogIntoNextBranch(releaseNotes, branchName);
-        }
-      }
-      _getActivePrereleaseTrain() {
-        var _a;
-        return (_a = this.active.releaseCandidate) != null ? _a : this.active.next;
-      }
-      async _computeNewVersion() {
-        const releaseTrain = this._getActivePrereleaseTrain();
-        if (releaseTrain === this.active.next) {
-          return await (0, next_prerelease_version_1.computeNewPrereleaseVersionForNext)(this.active, this.config);
-        } else {
-          return (0, semver_1.semverInc)(releaseTrain.version, "prerelease");
-        }
-      }
-      async _getCompareVersionForReleaseNotes() {
-        const releaseTrain = this._getActivePrereleaseTrain();
-        if (releaseTrain === this.active.next) {
-          return await (0, next_prerelease_version_1.getReleaseNotesCompareVersionForNext)(this.active, this.config);
-        } else {
-          return releaseTrain.version;
-        }
-      }
-      static async isActive() {
-        return true;
-      }
-    };
-    exports2.CutNextPrereleaseAction = CutNextPrereleaseAction;
-  }
-});
-
-// bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/cut-release-candidate-for-feature-freeze.js
-var require_cut_release_candidate_for_feature_freeze = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/cut-release-candidate-for-feature-freeze.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.CutReleaseCandidateForFeatureFreezeAction = void 0;
-    var semver_1 = require_semver3();
-    var actions_1 = require_actions();
-    var CutReleaseCandidateForFeatureFreezeAction = class extends actions_1.ReleaseAction {
-      constructor() {
-        super(...arguments);
-        this._newVersion = (0, semver_1.semverInc)(this.active.releaseCandidate.version, "prerelease", "rc");
-      }
-      async getDescription() {
-        const newVersion = this._newVersion;
-        return `Cut a first release-candidate for the feature-freeze branch (v${newVersion}).`;
-      }
-      async perform() {
-        const { branchName } = this.active.releaseCandidate;
-        const newVersion = this._newVersion;
-        const compareVersionForReleaseNotes = this.active.releaseCandidate.version;
-        const { pullRequest, releaseNotes } = await this.checkoutBranchAndStageVersion(newVersion, compareVersionForReleaseNotes, branchName);
-        await this.waitForPullRequestToBeMerged(pullRequest);
-        await this.buildAndPublish(releaseNotes, branchName, "next");
-        await this.cherryPickChangelogIntoNextBranch(releaseNotes, branchName);
-      }
-      static async isActive(active) {
-        return active.releaseCandidate !== null && active.releaseCandidate.version.prerelease[0] === "next";
-      }
-    };
-    exports2.CutReleaseCandidateForFeatureFreezeAction = CutReleaseCandidateForFeatureFreezeAction;
-  }
-});
-
-// bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/cut-stable.js
-var require_cut_stable = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/cut-stable.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.CutStableAction = void 0;
-    var semver = require_semver2();
-    var long_term_support_1 = require_long_term_support();
-    var actions_1 = require_actions();
-    var external_commands_1 = require_external_commands();
-    var CutStableAction = class extends actions_1.ReleaseAction {
-      constructor() {
-        super(...arguments);
-        this._newVersion = this._computeNewVersion();
-      }
-      async getDescription() {
-        const newVersion = this._newVersion;
-        return `Cut a stable release for the release-candidate branch (v${newVersion}).`;
-      }
-      async perform() {
-        var _a;
-        const { branchName } = this.active.releaseCandidate;
-        const newVersion = this._newVersion;
-        const isNewMajor = (_a = this.active.releaseCandidate) == null ? void 0 : _a.isMajor;
-        const compareVersionForReleaseNotes = this.active.latest.version;
-        const { pullRequest, releaseNotes } = await this.checkoutBranchAndStageVersion(newVersion, compareVersionForReleaseNotes, branchName);
-        await this.waitForPullRequestToBeMerged(pullRequest);
-        await this.buildAndPublish(releaseNotes, branchName, isNewMajor ? "next" : "latest");
-        if (isNewMajor) {
-          const previousPatch = this.active.latest;
-          const ltsTagForPatch = (0, long_term_support_1.getLtsNpmDistTagOfMajor)(previousPatch.version.major);
-          await this.checkoutUpstreamBranch(previousPatch.branchName);
-          await this.installDependenciesForCurrentBranch();
-          await (0, external_commands_1.invokeSetNpmDistCommand)(ltsTagForPatch, previousPatch.version);
-        }
-        await this.cherryPickChangelogIntoNextBranch(releaseNotes, branchName);
-      }
-      _computeNewVersion() {
-        const { version } = this.active.releaseCandidate;
-        return semver.parse(`${version.major}.${version.minor}.${version.patch}`);
-      }
-      static async isActive(active) {
-        return active.releaseCandidate !== null && active.releaseCandidate.version.prerelease[0] === "rc";
-      }
-    };
-    exports2.CutStableAction = CutStableAction;
-  }
-});
-
-// bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/branch-off-next-branch.js
-var require_branch_off_next_branch = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/branch-off-next-branch.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.BranchOffNextBranchBaseAction = void 0;
-    var semver = require_semver2();
-    var console_12 = require_console();
-    var semver_1 = require_semver3();
-    var release_notes_1 = require_release_notes();
-    var next_prerelease_version_1 = require_next_prerelease_version();
-    var actions_1 = require_actions();
-    var commit_message_1 = require_commit_message();
-    var constants_1 = require_constants3();
-    var BranchOffNextBranchBaseAction = class extends actions_1.ReleaseAction {
-      async getDescription() {
-        const { branchName } = this.active.next;
-        const newVersion = await this._computeNewVersion();
-        return `Move the "${branchName}" branch into ${this.newPhaseName} phase (v${newVersion}).`;
-      }
-      async perform() {
-        const compareVersionForReleaseNotes = await (0, next_prerelease_version_1.getReleaseNotesCompareVersionForNext)(this.active, this.config);
-        const newVersion = await this._computeNewVersion();
-        const newBranch = `${newVersion.major}.${newVersion.minor}.x`;
-        await this._createNewVersionBranchFromNext(newBranch);
-        const { pullRequest, releaseNotes } = await this.stageVersionForBranchAndCreatePullRequest(newVersion, compareVersionForReleaseNotes, newBranch);
-        await this.waitForPullRequestToBeMerged(pullRequest);
-        await this.buildAndPublish(releaseNotes, newBranch, "next");
-        await this._createNextBranchUpdatePullRequest(releaseNotes, newVersion);
-      }
-      async _computeNewVersion() {
-        if (this.newPhaseName === "feature-freeze") {
-          return (0, next_prerelease_version_1.computeNewPrereleaseVersionForNext)(this.active, this.config);
-        } else {
-          return (0, semver_1.semverInc)(this.active.next.version, "prerelease", "rc");
-        }
-      }
-      async _createNewVersionBranchFromNext(newBranch) {
-        const { branchName: nextBranch } = this.active.next;
-        await this.verifyPassingGithubStatus(nextBranch);
-        await this.checkoutUpstreamBranch(nextBranch);
-        await this.createLocalBranchFromHead(newBranch);
-        await this.pushHeadToRemoteBranch(newBranch);
-        (0, console_12.info)((0, console_12.green)(`  \u2713   Version branch "${newBranch}" created.`));
-      }
-      async _createNextBranchUpdatePullRequest(releaseNotes, newVersion) {
-        const { branchName: nextBranch, version } = this.active.next;
-        const newNextVersion = semver.parse(`${version.major}.${version.minor + 1}.0-next.0`);
-        const bumpCommitMessage = (0, commit_message_1.getCommitMessageForExceptionalNextVersionBump)(newNextVersion);
-        await this.checkoutUpstreamBranch(nextBranch);
-        await this.updateProjectVersion(newNextVersion);
-        await this.createCommit(bumpCommitMessage, [constants_1.workspaceRelativePackageJsonPath]);
-        await this.prependReleaseNotesToChangelog(releaseNotes);
-        const commitMessage = (0, commit_message_1.getReleaseNoteCherryPickCommitMessage)(releaseNotes.version);
-        await this.createCommit(commitMessage, [release_notes_1.workspaceRelativeChangelogPath]);
-        let nextPullRequestMessage = `The previous "next" release-train has moved into the ${this.newPhaseName} phase. This PR updates the next branch to the subsequent release-train.
-
-Also this PR cherry-picks the changelog for v${newVersion} into the ${nextBranch} branch so that the changelog is up to date.`;
-        const nextUpdatePullRequest = await this.pushChangesToForkAndCreatePullRequest(nextBranch, `next-release-train-${newNextVersion}`, `Update next branch to reflect new release-train "v${newNextVersion}".`, nextPullRequestMessage);
-        (0, console_12.info)((0, console_12.green)(`  \u2713   Pull request for updating the "${nextBranch}" branch has been created.`));
-        (0, console_12.info)((0, console_12.yellow)(`      Please ask team members to review: ${nextUpdatePullRequest.url}.`));
-      }
-    };
-    exports2.BranchOffNextBranchBaseAction = BranchOffNextBranchBaseAction;
-  }
-});
-
-// bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/move-next-into-feature-freeze.js
-var require_move_next_into_feature_freeze = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/move-next-into-feature-freeze.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.MoveNextIntoFeatureFreezeAction = void 0;
-    var branch_off_next_branch_1 = require_branch_off_next_branch();
-    var MoveNextIntoFeatureFreezeAction = class extends branch_off_next_branch_1.BranchOffNextBranchBaseAction {
-      constructor() {
-        super(...arguments);
-        this.newPhaseName = "feature-freeze";
-      }
-      static async isActive(active) {
-        return active.releaseCandidate === null && active.next.isMajor;
-      }
-    };
-    exports2.MoveNextIntoFeatureFreezeAction = MoveNextIntoFeatureFreezeAction;
-  }
-});
-
-// bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/move-next-into-release-candidate.js
-var require_move_next_into_release_candidate = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/move-next-into-release-candidate.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.MoveNextIntoReleaseCandidateAction = void 0;
-    var branch_off_next_branch_1 = require_branch_off_next_branch();
-    var MoveNextIntoReleaseCandidateAction = class extends branch_off_next_branch_1.BranchOffNextBranchBaseAction {
-      constructor() {
-        super(...arguments);
-        this.newPhaseName = "release-candidate";
-      }
-      static async isActive(active) {
-        return active.releaseCandidate === null && !active.next.isMajor;
-      }
-    };
-    exports2.MoveNextIntoReleaseCandidateAction = MoveNextIntoReleaseCandidateAction;
-  }
-});
-
-// bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/tag-recent-major-as-latest.js
-var require_tag_recent_major_as_latest = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/tag-recent-major-as-latest.js"(exports2) {
-    "use strict";
-    Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.TagRecentMajorAsLatest = void 0;
-    var semver = require_semver2();
-    var npm_registry_1 = require_npm_registry();
-    var actions_1 = require_actions();
-    var external_commands_1 = require_external_commands();
-    var version_tags_1 = require_version_tags();
-    var TagRecentMajorAsLatest = class extends actions_1.ReleaseAction {
-      async getDescription() {
-        return `Retag recently published major v${this.active.latest.version} as "latest" in NPM.`;
-      }
-      async perform() {
-        await this.updateGithubReleaseEntryToStable(this.active.latest.version);
-        await this.checkoutUpstreamBranch(this.active.latest.branchName);
-        await this.installDependenciesForCurrentBranch();
-        await (0, external_commands_1.invokeSetNpmDistCommand)("latest", this.active.latest.version);
-      }
-      async updateGithubReleaseEntryToStable(version) {
-        const releaseTagName = (0, version_tags_1.getReleaseTagForVersion)(version);
-        const { data: releaseInfo } = await this.git.github.repos.getReleaseByTag(__spreadProps(__spreadValues({}, this.git.remoteParams), {
-          tag: releaseTagName
-        }));
-        await this.git.github.repos.updateRelease(__spreadProps(__spreadValues({}, this.git.remoteParams), {
-          release_id: releaseInfo.id,
-          prerelease: false
-        }));
-      }
-      static async isActive({ latest }, config) {
-        if (latest.version.minor !== 0 || latest.version.patch !== 0) {
+    function sync(path, options) {
+      try {
+        return core.sync(path, options || {});
+      } catch (er) {
+        if (options && options.ignoreErrors || er.code === "EACCES") {
           return false;
+        } else {
+          throw er;
         }
-        const packageInfo = await (0, npm_registry_1.fetchProjectNpmPackageInfo)(config);
-        const npmLatestVersion = semver.parse(packageInfo["dist-tags"]["latest"]);
-        return npmLatestVersion !== null && npmLatestVersion.major === latest.version.major - 1;
       }
-    };
-    exports2.TagRecentMajorAsLatest = TagRecentMajorAsLatest;
+    }
   }
 });
 
-// bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/index.js
-var require_actions2 = __commonJS({
-  "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/index.js"(exports2) {
+// node_modules/which/which.js
+var require_which = __commonJS({
+  "node_modules/which/which.js"(exports2, module2) {
+    var isWindows = process.platform === "win32" || process.env.OSTYPE === "cygwin" || process.env.OSTYPE === "msys";
+    var path = require("path");
+    var COLON = isWindows ? ";" : ":";
+    var isexe = require_isexe();
+    var getNotFoundError = (cmd) => Object.assign(new Error(`not found: ${cmd}`), { code: "ENOENT" });
+    var getPathInfo = (cmd, opt) => {
+      const colon = opt.colon || COLON;
+      const pathEnv = cmd.match(/\//) || isWindows && cmd.match(/\\/) ? [""] : [
+        ...isWindows ? [process.cwd()] : [],
+        ...(opt.path || process.env.PATH || "").split(colon)
+      ];
+      const pathExtExe = isWindows ? opt.pathExt || process.env.PATHEXT || ".EXE;.CMD;.BAT;.COM" : "";
+      const pathExt = isWindows ? pathExtExe.split(colon) : [""];
+      if (isWindows) {
+        if (cmd.indexOf(".") !== -1 && pathExt[0] !== "")
+          pathExt.unshift("");
+      }
+      return {
+        pathEnv,
+        pathExt,
+        pathExtExe
+      };
+    };
+    var which = (cmd, opt, cb) => {
+      if (typeof opt === "function") {
+        cb = opt;
+        opt = {};
+      }
+      if (!opt)
+        opt = {};
+      const { pathEnv, pathExt, pathExtExe } = getPathInfo(cmd, opt);
+      const found = [];
+      const step = (i) => new Promise((resolve, reject) => {
+        if (i === pathEnv.length)
+          return opt.all && found.length ? resolve(found) : reject(getNotFoundError(cmd));
+        const ppRaw = pathEnv[i];
+        const pathPart = /^".*"$/.test(ppRaw) ? ppRaw.slice(1, -1) : ppRaw;
+        const pCmd = path.join(pathPart, cmd);
+        const p = !pathPart && /^\.[\\\/]/.test(cmd) ? cmd.slice(0, 2) + pCmd : pCmd;
+        resolve(subStep(p, i, 0));
+      });
+      const subStep = (p, i, ii) => new Promise((resolve, reject) => {
+        if (ii === pathExt.length)
+          return resolve(step(i + 1));
+        const ext = pathExt[ii];
+        isexe(p + ext, { pathExt: pathExtExe }, (er, is) => {
+          if (!er && is) {
+            if (opt.all)
+              found.push(p + ext);
+            else
+              return resolve(p + ext);
+          }
+          return resolve(subStep(p, i, ii + 1));
+        });
+      });
+      return cb ? step(0).then((res) => cb(null, res), cb) : step(0);
+    };
+    var whichSync = (cmd, opt) => {
+      opt = opt || {};
+      const { pathEnv, pathExt, pathExtExe } = getPathInfo(cmd, opt);
+      const found = [];
+      for (let i = 0; i < pathEnv.length; i++) {
+        const ppRaw = pathEnv[i];
+        const pathPart = /^".*"$/.test(ppRaw) ? ppRaw.slice(1, -1) : ppRaw;
+        const pCmd = path.join(pathPart, cmd);
+        const p = !pathPart && /^\.[\\\/]/.test(cmd) ? cmd.slice(0, 2) + pCmd : pCmd;
+        for (let j = 0; j < pathExt.length; j++) {
+          const cur = p + pathExt[j];
+          try {
+            const is = isexe.sync(cur, { pathExt: pathExtExe });
+            if (is) {
+              if (opt.all)
+                found.push(cur);
+              else
+                return cur;
+            }
+          } catch (ex) {
+          }
+        }
+      }
+      if (opt.all && found.length)
+        return found;
+      if (opt.nothrow)
+        return null;
+      throw getNotFoundError(cmd);
+    };
+    module2.exports = which;
+    which.sync = whichSync;
+  }
+});
+
+// bazel-out/k8-fastbuild/bin/ng-dev/utils/nodejs-errors.js
+var require_nodejs_errors = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/utils/nodejs-errors.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.actions = void 0;
-    var cut_lts_patch_1 = require_cut_lts_patch();
-    var cut_new_patch_1 = require_cut_new_patch();
-    var cut_next_prerelease_1 = require_cut_next_prerelease();
-    var cut_release_candidate_for_feature_freeze_1 = require_cut_release_candidate_for_feature_freeze();
-    var cut_stable_1 = require_cut_stable();
-    var move_next_into_feature_freeze_1 = require_move_next_into_feature_freeze();
-    var move_next_into_release_candidate_1 = require_move_next_into_release_candidate();
-    var tag_recent_major_as_latest_1 = require_tag_recent_major_as_latest();
-    exports2.actions = [
-      tag_recent_major_as_latest_1.TagRecentMajorAsLatest,
-      cut_stable_1.CutStableAction,
-      cut_release_candidate_for_feature_freeze_1.CutReleaseCandidateForFeatureFreezeAction,
-      cut_new_patch_1.CutNewPatchAction,
-      cut_next_prerelease_1.CutNextPrereleaseAction,
-      move_next_into_feature_freeze_1.MoveNextIntoFeatureFreezeAction,
-      move_next_into_release_candidate_1.MoveNextIntoReleaseCandidateAction,
-      cut_lts_patch_1.CutLongTermSupportPatchAction
-    ];
+    exports2.isNodeJSWrappedError = void 0;
+    function isNodeJSWrappedError(value, errorType) {
+      return value instanceof errorType;
+    }
+    exports2.isNodeJSWrappedError = isNodeJSWrappedError;
   }
 });
 
@@ -72782,6 +72133,982 @@ ${indent}`);
   }
 });
 
+// bazel-out/k8-fastbuild/bin/ng-dev/utils/resolve-yarn-bin.js
+var require_resolve_yarn_bin = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/utils/resolve-yarn-bin.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.getYarnPathFromNpmGlobalBinaries = exports2.resolveYarnScriptForProject = exports2.yarnConfigFiles = void 0;
+    var fs = require("fs");
+    var path = require("path");
+    var which = require_which();
+    var nodejs_errors_1 = require_nodejs_errors();
+    var lockfile_1 = require_lockfile();
+    var yaml_1 = require_yaml();
+    var child_process_1 = require_child_process();
+    var console_12 = require_console();
+    exports2.yarnConfigFiles = [
+      { fileName: ".yarnrc", parse: (c) => (0, lockfile_1.parse)(c).object },
+      { fileName: ".yarnrc.yml", parse: (c) => (0, yaml_1.parse)(c) }
+    ];
+    async function resolveYarnScriptForProject(projectDir) {
+      const yarnPathFromConfig = await getYarnPathFromConfigurationIfPresent(projectDir);
+      if (yarnPathFromConfig !== null) {
+        return { binary: "node", args: [yarnPathFromConfig] };
+      }
+      const yarnPathFromNpmBin = await getYarnPathFromNpmGlobalBinaries();
+      if (yarnPathFromNpmBin !== null) {
+        return { binary: yarnPathFromNpmBin, args: [] };
+      }
+      return { binary: "yarn", args: [] };
+    }
+    exports2.resolveYarnScriptForProject = resolveYarnScriptForProject;
+    async function getYarnPathFromNpmGlobalBinaries() {
+      const npmGlobalBinPath = await getNpmGlobalBinPath();
+      if (npmGlobalBinPath === null) {
+        return null;
+      }
+      try {
+        return await which("yarn", { path: npmGlobalBinPath });
+      } catch (e) {
+        (0, console_12.debug)("Could not find Yarn within NPM global binary directory. Error:", e);
+        return null;
+      }
+    }
+    exports2.getYarnPathFromNpmGlobalBinaries = getYarnPathFromNpmGlobalBinaries;
+    async function getNpmGlobalBinPath() {
+      try {
+        return (await (0, child_process_1.spawn)("npm", ["bin", "--global"], { mode: "silent" })).stdout.trim();
+      } catch (e) {
+        (0, console_12.debug)("Could not determine NPM global binary directory. Error:", e);
+        return null;
+      }
+    }
+    async function getYarnPathFromConfigurationIfPresent(projectDir) {
+      var _a;
+      const yarnRc = await findAndParseYarnConfiguration(projectDir);
+      if (yarnRc === null) {
+        return null;
+      }
+      const yarnPath = (_a = yarnRc["yarn-path"]) != null ? _a : yarnRc["yarnPath"];
+      if (yarnPath === void 0) {
+        return null;
+      }
+      return path.resolve(projectDir, yarnPath);
+    }
+    async function findAndParseYarnConfiguration(projectDir) {
+      const files = await Promise.all(exports2.yarnConfigFiles.map(async (entry) => ({
+        entry,
+        content: await readFileGracefully(path.join(projectDir, entry.fileName))
+      })));
+      const config = files.find((entry) => entry.content !== null);
+      if (config === void 0) {
+        return null;
+      }
+      try {
+        return config.entry.parse(config.content);
+      } catch (e) {
+        (0, console_12.debug)(`Could not parse determined Yarn configuration file (${config.entry.fileName}).`);
+        (0, console_12.debug)(`Error:`, e);
+        return null;
+      }
+    }
+    async function readFileGracefully(filePath) {
+      try {
+        return await fs.promises.readFile(filePath, "utf8");
+      } catch (error) {
+        if ((0, nodejs_errors_1.isNodeJSWrappedError)(error, Error) && error.code === "ENOENT") {
+          return null;
+        }
+        throw error;
+      }
+    }
+  }
+});
+
+// bazel-out/k8-fastbuild/bin/ng-dev/release/publish/external-commands.js
+var require_external_commands = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/external-commands.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.invokeYarnInstallCommand = exports2.invokeReleaseBuildCommand = exports2.invokeSetNpmDistCommand = void 0;
+    var child_process_1 = require_child_process();
+    var console_12 = require_console();
+    var spinner_1 = require_spinner();
+    var actions_error_1 = require_actions_error();
+    var resolve_yarn_bin_1 = require_resolve_yarn_bin();
+    async function invokeSetNpmDistCommand(projectDir, npmDistTag, version) {
+      const yarnCommand = await (0, resolve_yarn_bin_1.resolveYarnScriptForProject)(projectDir);
+      try {
+        await (0, child_process_1.spawn)(yarnCommand.binary, [
+          ...yarnCommand.args,
+          "--silent",
+          "ng-dev",
+          "release",
+          "set-dist-tag",
+          npmDistTag,
+          version.format()
+        ], { cwd: projectDir });
+        (0, console_12.info)((0, console_12.green)(`  \u2713   Set "${npmDistTag}" NPM dist tag for all packages to v${version}.`));
+      } catch (e) {
+        (0, console_12.error)(e);
+        (0, console_12.error)((0, console_12.red)(`  \u2718   An error occurred while setting the NPM dist tag for "${npmDistTag}".`));
+        throw new actions_error_1.FatalReleaseActionError();
+      }
+    }
+    exports2.invokeSetNpmDistCommand = invokeSetNpmDistCommand;
+    async function invokeReleaseBuildCommand(projectDir) {
+      const yarnCommand = await (0, resolve_yarn_bin_1.resolveYarnScriptForProject)(projectDir);
+      const spinner = new spinner_1.Spinner("Building release output.");
+      try {
+        const { stdout } = await (0, child_process_1.spawn)(yarnCommand.binary, [...yarnCommand.args, "--silent", "ng-dev", "release", "build", "--json"], {
+          cwd: projectDir,
+          mode: "silent"
+        });
+        spinner.complete();
+        (0, console_12.info)((0, console_12.green)("  \u2713   Built release output for all packages."));
+        return JSON.parse(stdout.trim());
+      } catch (e) {
+        spinner.complete();
+        (0, console_12.error)(e);
+        (0, console_12.error)((0, console_12.red)("  \u2718   An error occurred while building the release packages."));
+        throw new actions_error_1.FatalReleaseActionError();
+      }
+    }
+    exports2.invokeReleaseBuildCommand = invokeReleaseBuildCommand;
+    async function invokeYarnInstallCommand(projectDir) {
+      const yarnCommand = await (0, resolve_yarn_bin_1.resolveYarnScriptForProject)(projectDir);
+      try {
+        await (0, child_process_1.spawn)(yarnCommand.binary, [...yarnCommand.args, "install", "--frozen-lockfile", "--non-interactive"], { cwd: projectDir });
+        (0, console_12.info)((0, console_12.green)("  \u2713   Installed project dependencies."));
+      } catch (e) {
+        (0, console_12.error)(e);
+        (0, console_12.error)((0, console_12.red)("  \u2718   An error occurred while installing dependencies."));
+        throw new actions_error_1.FatalReleaseActionError();
+      }
+    }
+    exports2.invokeYarnInstallCommand = invokeYarnInstallCommand;
+  }
+});
+
+// bazel-out/k8-fastbuild/bin/ng-dev/release/publish/pull-request-state.js
+var require_pull_request_state = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/pull-request-state.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.getPullRequestState = void 0;
+    var THIRTY_SECONDS_IN_MS = 3e4;
+    async function getPullRequestState(api, id) {
+      const { data } = await api.github.pulls.get(__spreadProps(__spreadValues({}, api.remoteParams), { pull_number: id }));
+      if (data.merged) {
+        return "merged";
+      }
+      if (data.closed_at !== null && new Date(data.closed_at).getTime() < Date.now() - THIRTY_SECONDS_IN_MS) {
+        return await isPullRequestClosedWithAssociatedCommit(api, id) ? "merged" : "closed";
+      }
+      return "open";
+    }
+    exports2.getPullRequestState = getPullRequestState;
+    async function isPullRequestClosedWithAssociatedCommit(api, id) {
+      const events = await api.github.paginate(api.github.issues.listEvents, __spreadProps(__spreadValues({}, api.remoteParams), {
+        issue_number: id
+      }));
+      for (let i = events.length - 1; i >= 0; i--) {
+        const { event, commit_id } = events[i];
+        if (event === "reopened") {
+          return false;
+        }
+        if (event === "closed" && commit_id) {
+          return true;
+        }
+        if (event === "referenced" && commit_id && await isCommitClosingPullRequest(api, commit_id, id)) {
+          return true;
+        }
+      }
+      return false;
+    }
+    async function isCommitClosingPullRequest(api, sha, id) {
+      const { data } = await api.github.repos.getCommit(__spreadProps(__spreadValues({}, api.remoteParams), { ref: sha }));
+      return data.commit.message.match(new RegExp(`(?:close[sd]?|fix(?:e[sd]?)|resolve[sd]?):? #${id}(?!\\d)`, "i"));
+    }
+  }
+});
+
+// bazel-out/k8-fastbuild/bin/ng-dev/release/versioning/version-tags.js
+var require_version_tags = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/release/versioning/version-tags.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.getReleaseTagForVersion = void 0;
+    function getReleaseTagForVersion(version) {
+      return version.format();
+    }
+    exports2.getReleaseTagForVersion = getReleaseTagForVersion;
+  }
+});
+
+// bazel-out/k8-fastbuild/bin/ng-dev/utils/constants.js
+var require_constants3 = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/utils/constants.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.workspaceRelativeYarnLockFilePath = exports2.workspaceRelativePackageJsonPath = exports2.ngDevNpmPackageName = void 0;
+    exports2.ngDevNpmPackageName = "@angular/dev-infra-private";
+    exports2.workspaceRelativePackageJsonPath = "package.json";
+    exports2.workspaceRelativeYarnLockFilePath = "yarn.lock";
+  }
+});
+
+// bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions.js
+var require_actions = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.ReleaseAction = void 0;
+    var fs_1 = require("fs");
+    var path_1 = require("path");
+    var console_12 = require_console();
+    var spinner_1 = require_spinner();
+    var github_urls_1 = require_github_urls();
+    var semver_1 = require_semver3();
+    var release_notes_1 = require_release_notes();
+    var npm_publish_1 = require_npm_publish();
+    var actions_error_1 = require_actions_error();
+    var commit_message_1 = require_commit_message();
+    var constants_1 = require_constants2();
+    var external_commands_1 = require_external_commands();
+    var pull_request_state_1 = require_pull_request_state();
+    var version_tags_1 = require_version_tags();
+    var github_1 = require_github();
+    var constants_2 = require_constants3();
+    var ReleaseAction = class {
+      constructor(active, git, config, projectDir) {
+        this.active = active;
+        this.git = git;
+        this.config = config;
+        this.projectDir = projectDir;
+      }
+      static isActive(_trains, _config) {
+        throw Error("Not implemented.");
+      }
+      async updateProjectVersion(newVersion) {
+        const pkgJsonPath = (0, path_1.join)(this.projectDir, constants_2.workspaceRelativePackageJsonPath);
+        const pkgJson = JSON.parse(await fs_1.promises.readFile(pkgJsonPath, "utf8"));
+        pkgJson.version = newVersion.format();
+        await fs_1.promises.writeFile(pkgJsonPath, `${JSON.stringify(pkgJson, null, 2)}
+`);
+        (0, console_12.info)((0, console_12.green)(`  \u2713   Updated project version to ${pkgJson.version}`));
+      }
+      async _getCommitOfBranch(branchName) {
+        const { data: { commit } } = await this.git.github.repos.getBranch(__spreadProps(__spreadValues({}, this.git.remoteParams), { branch: branchName }));
+        return commit.sha;
+      }
+      async verifyPassingGithubStatus(branchName) {
+        const commitSha = await this._getCommitOfBranch(branchName);
+        const { data: { state } } = await this.git.github.repos.getCombinedStatusForRef(__spreadProps(__spreadValues({}, this.git.remoteParams), {
+          ref: commitSha
+        }));
+        const branchCommitsUrl = (0, github_urls_1.getListCommitsInBranchUrl)(this.git, branchName);
+        if (state === "failure") {
+          (0, console_12.error)((0, console_12.red)(`  \u2718   Cannot stage release. Commit "${commitSha}" does not pass all github status checks. Please make sure this commit passes all checks before re-running.`));
+          (0, console_12.error)(`      Please have a look at: ${branchCommitsUrl}`);
+          if (await (0, console_12.promptConfirm)("Do you want to ignore the Github status and proceed?")) {
+            (0, console_12.info)((0, console_12.yellow)("  \u26A0   Upstream commit is failing CI checks, but status has been forcibly ignored."));
+            return;
+          }
+          throw new actions_error_1.UserAbortedReleaseActionError();
+        } else if (state === "pending") {
+          (0, console_12.error)((0, console_12.red)(`  \u2718   Commit "${commitSha}" still has pending github statuses that need to succeed before staging a release.`));
+          (0, console_12.error)((0, console_12.red)(`      Please have a look at: ${branchCommitsUrl}`));
+          if (await (0, console_12.promptConfirm)("Do you want to ignore the Github status and proceed?")) {
+            (0, console_12.info)((0, console_12.yellow)("  \u26A0   Upstream commit is pending CI, but status has been forcibly ignored."));
+            return;
+          }
+          throw new actions_error_1.UserAbortedReleaseActionError();
+        }
+        (0, console_12.info)((0, console_12.green)("  \u2713   Upstream commit is passing all github status checks."));
+      }
+      async waitForEditsAndCreateReleaseCommit(newVersion) {
+        (0, console_12.info)((0, console_12.yellow)("  \u26A0   Please review the changelog and ensure that the log contains only changes that apply to the public API surface. Manual changes can be made. When done, please proceed with the prompt below."));
+        if (!await (0, console_12.promptConfirm)("Do you want to proceed and commit the changes?")) {
+          throw new actions_error_1.UserAbortedReleaseActionError();
+        }
+        const commitMessage = (0, commit_message_1.getCommitMessageForRelease)(newVersion);
+        await this.createCommit(commitMessage, [
+          constants_2.workspaceRelativePackageJsonPath,
+          release_notes_1.workspaceRelativeChangelogPath
+        ]);
+        (0, console_12.info)((0, console_12.green)(`  \u2713   Created release commit for: "${newVersion}".`));
+      }
+      async _getForkOfAuthenticatedUser() {
+        try {
+          return this.git.getForkOfAuthenticatedUser();
+        } catch {
+          const { owner, name } = this.git.remoteConfig;
+          (0, console_12.error)((0, console_12.red)("  \u2718   Unable to find fork for currently authenticated user."));
+          (0, console_12.error)((0, console_12.red)(`      Please ensure you created a fork of: ${owner}/${name}.`));
+          throw new actions_error_1.FatalReleaseActionError();
+        }
+      }
+      async _isBranchNameReservedInRepo(repo, name) {
+        try {
+          await this.git.github.repos.getBranch({ owner: repo.owner, repo: repo.name, branch: name });
+          return true;
+        } catch (e) {
+          if (e instanceof github_1.GithubApiRequestError && e.status === 404) {
+            return false;
+          }
+          throw e;
+        }
+      }
+      async _findAvailableBranchName(repo, baseName) {
+        let currentName = baseName;
+        let suffixNum = 0;
+        while (await this._isBranchNameReservedInRepo(repo, currentName)) {
+          suffixNum++;
+          currentName = `${baseName}_${suffixNum}`;
+        }
+        return currentName;
+      }
+      async createLocalBranchFromHead(branchName) {
+        this.git.run(["checkout", "-q", "-B", branchName]);
+      }
+      async pushHeadToRemoteBranch(branchName) {
+        this.git.run(["push", "-q", this.git.getRepoGitUrl(), `HEAD:refs/heads/${branchName}`]);
+      }
+      async _pushHeadToFork(proposedBranchName, trackLocalBranch) {
+        const fork = await this._getForkOfAuthenticatedUser();
+        const repoGitUrl = (0, github_urls_1.getRepositoryGitUrl)(__spreadProps(__spreadValues({}, fork), { useSsh: this.git.remoteConfig.useSsh }), this.git.githubToken);
+        const branchName = await this._findAvailableBranchName(fork, proposedBranchName);
+        const pushArgs = [];
+        if (trackLocalBranch) {
+          await this.createLocalBranchFromHead(branchName);
+          pushArgs.push("--set-upstream");
+        }
+        this.git.run(["push", "-q", repoGitUrl, `HEAD:refs/heads/${branchName}`, ...pushArgs]);
+        return { fork, branchName };
+      }
+      async pushChangesToForkAndCreatePullRequest(targetBranch, proposedForkBranchName, title, body) {
+        const repoSlug = `${this.git.remoteParams.owner}/${this.git.remoteParams.repo}`;
+        const { fork, branchName } = await this._pushHeadToFork(proposedForkBranchName, true);
+        const { data } = await this.git.github.pulls.create(__spreadProps(__spreadValues({}, this.git.remoteParams), {
+          head: `${fork.owner}:${branchName}`,
+          base: targetBranch,
+          body,
+          title
+        }));
+        if (this.config.releasePrLabels !== void 0) {
+          await this.git.github.issues.addLabels(__spreadProps(__spreadValues({}, this.git.remoteParams), {
+            issue_number: data.number,
+            labels: this.config.releasePrLabels
+          }));
+        }
+        (0, console_12.info)((0, console_12.green)(`  \u2713   Created pull request #${data.number} in ${repoSlug}.`));
+        return {
+          id: data.number,
+          url: data.html_url,
+          fork,
+          forkBranch: branchName
+        };
+      }
+      async waitForPullRequestToBeMerged({ id }, interval = constants_1.waitForPullRequestInterval) {
+        return new Promise((resolve, reject) => {
+          (0, console_12.debug)(`Waiting for pull request #${id} to be merged.`);
+          const spinner = new spinner_1.Spinner(`Waiting for pull request #${id} to be merged.`);
+          const intervalId = setInterval(async () => {
+            const prState = await (0, pull_request_state_1.getPullRequestState)(this.git, id);
+            if (prState === "merged") {
+              spinner.complete();
+              (0, console_12.info)((0, console_12.green)(`  \u2713   Pull request #${id} has been merged.`));
+              clearInterval(intervalId);
+              resolve();
+            } else if (prState === "closed") {
+              spinner.complete();
+              (0, console_12.warn)((0, console_12.yellow)(`  \u2718   Pull request #${id} has been closed.`));
+              clearInterval(intervalId);
+              reject(new actions_error_1.UserAbortedReleaseActionError());
+            }
+          }, interval);
+        });
+      }
+      async prependReleaseNotesToChangelog(releaseNotes) {
+        await releaseNotes.prependEntryToChangelogFile();
+        (0, console_12.info)((0, console_12.green)(`  \u2713   Updated the changelog to capture changes for "${releaseNotes.version}".`));
+      }
+      async checkoutUpstreamBranch(branchName) {
+        this.git.run(["fetch", "-q", this.git.getRepoGitUrl(), branchName]);
+        this.git.run(["checkout", "-q", "FETCH_HEAD", "--detach"]);
+      }
+      async installDependenciesForCurrentBranch() {
+        const nodeModulesDir = (0, path_1.join)(this.projectDir, "node_modules");
+        await fs_1.promises.rm(nodeModulesDir, { force: true, recursive: true, maxRetries: 3 });
+        await (0, external_commands_1.invokeYarnInstallCommand)(this.projectDir);
+      }
+      async createCommit(message, files) {
+        this.git.run(["add", ...files]);
+        this.git.run(["commit", "-q", "--no-verify", "-m", message, ...files]);
+      }
+      async stageVersionForBranchAndCreatePullRequest(newVersion, compareVersionForReleaseNotes, pullRequestTargetBranch) {
+        const releaseNotesCompareTag = (0, version_tags_1.getReleaseTagForVersion)(compareVersionForReleaseNotes);
+        this.git.run([
+          "fetch",
+          "--force",
+          this.git.getRepoGitUrl(),
+          `refs/tags/${releaseNotesCompareTag}:refs/tags/${releaseNotesCompareTag}`
+        ]);
+        const releaseNotes = await release_notes_1.ReleaseNotes.forRange(this.git, newVersion, releaseNotesCompareTag, "HEAD");
+        await this.updateProjectVersion(newVersion);
+        await this.prependReleaseNotesToChangelog(releaseNotes);
+        await this.waitForEditsAndCreateReleaseCommit(newVersion);
+        const pullRequest = await this.pushChangesToForkAndCreatePullRequest(pullRequestTargetBranch, `release-stage-${newVersion}`, `Bump version to "v${newVersion}" with changelog.`);
+        (0, console_12.info)((0, console_12.green)("  \u2713   Release staging pull request has been created."));
+        (0, console_12.info)((0, console_12.yellow)(`      Please ask team members to review: ${pullRequest.url}.`));
+        return { releaseNotes, pullRequest };
+      }
+      async checkoutBranchAndStageVersion(newVersion, compareVersionForReleaseNotes, stagingBranch) {
+        await this.verifyPassingGithubStatus(stagingBranch);
+        await this.checkoutUpstreamBranch(stagingBranch);
+        return await this.stageVersionForBranchAndCreatePullRequest(newVersion, compareVersionForReleaseNotes, stagingBranch);
+      }
+      async cherryPickChangelogIntoNextBranch(releaseNotes, stagingBranch) {
+        const nextBranch = this.active.next.branchName;
+        const commitMessage = (0, commit_message_1.getReleaseNoteCherryPickCommitMessage)(releaseNotes.version);
+        await this.checkoutUpstreamBranch(nextBranch);
+        await this.prependReleaseNotesToChangelog(releaseNotes);
+        await this.createCommit(commitMessage, [release_notes_1.workspaceRelativeChangelogPath]);
+        (0, console_12.info)((0, console_12.green)(`  \u2713   Created changelog cherry-pick commit for: "${releaseNotes.version}".`));
+        const pullRequest = await this.pushChangesToForkAndCreatePullRequest(nextBranch, `changelog-cherry-pick-${releaseNotes.version}`, commitMessage, `Cherry-picks the changelog from the "${stagingBranch}" branch to the next branch (${nextBranch}).`);
+        (0, console_12.info)((0, console_12.green)(`  \u2713   Pull request for cherry-picking the changelog into "${nextBranch}" has been created.`));
+        (0, console_12.info)((0, console_12.yellow)(`      Please ask team members to review: ${pullRequest.url}.`));
+        await this.waitForPullRequestToBeMerged(pullRequest);
+        return true;
+      }
+      async _createGithubReleaseForVersion(releaseNotes, versionBumpCommitSha, isPrerelease) {
+        const tagName = (0, version_tags_1.getReleaseTagForVersion)(releaseNotes.version);
+        await this.git.github.git.createRef(__spreadProps(__spreadValues({}, this.git.remoteParams), {
+          ref: `refs/tags/${tagName}`,
+          sha: versionBumpCommitSha
+        }));
+        (0, console_12.info)((0, console_12.green)(`  \u2713   Tagged v${releaseNotes.version} release upstream.`));
+        let releaseBody = await releaseNotes.getGithubReleaseEntry();
+        if (releaseBody.length > constants_1.githubReleaseBodyLimit) {
+          const releaseNotesUrl = await this._getGithubChangelogUrlForRef(releaseNotes, tagName);
+          releaseBody = `Release notes are too large to be captured here. [View all changes here](${releaseNotesUrl}).`;
+        }
+        await this.git.github.repos.createRelease(__spreadProps(__spreadValues({}, this.git.remoteParams), {
+          name: `v${releaseNotes.version}`,
+          tag_name: tagName,
+          prerelease: isPrerelease,
+          body: releaseBody
+        }));
+        (0, console_12.info)((0, console_12.green)(`  \u2713   Created v${releaseNotes.version} release in Github.`));
+      }
+      async _getGithubChangelogUrlForRef(releaseNotes, ref) {
+        const baseUrl = (0, github_urls_1.getFileContentsUrl)(this.git, ref, release_notes_1.workspaceRelativeChangelogPath);
+        const urlFragment = await releaseNotes.getUrlFragmentForRelease();
+        return `${baseUrl}#${urlFragment}`;
+      }
+      async buildAndPublish(releaseNotes, publishBranch, npmDistTag) {
+        const versionBumpCommitSha = await this._getCommitOfBranch(publishBranch);
+        if (!await this._isCommitForVersionStaging(releaseNotes.version, versionBumpCommitSha)) {
+          (0, console_12.error)((0, console_12.red)(`  \u2718   Latest commit in "${publishBranch}" branch is not a staging commit.`));
+          (0, console_12.error)((0, console_12.red)("      Please make sure the staging pull request has been merged."));
+          throw new actions_error_1.FatalReleaseActionError();
+        }
+        await this.checkoutUpstreamBranch(publishBranch);
+        await this.installDependenciesForCurrentBranch();
+        const builtPackages = await (0, external_commands_1.invokeReleaseBuildCommand)(this.projectDir);
+        await this._verifyPackageVersions(releaseNotes.version, builtPackages);
+        await this._createGithubReleaseForVersion(releaseNotes, versionBumpCommitSha, npmDistTag === "next");
+        for (const builtPackage of builtPackages) {
+          await this._publishBuiltPackageToNpm(builtPackage, npmDistTag);
+        }
+        (0, console_12.info)((0, console_12.green)("  \u2713   Published all packages successfully"));
+      }
+      async _publishBuiltPackageToNpm(pkg, npmDistTag) {
+        (0, console_12.debug)(`Starting publish of "${pkg.name}".`);
+        const spinner = new spinner_1.Spinner(`Publishing "${pkg.name}"`);
+        try {
+          await (0, npm_publish_1.runNpmPublish)(pkg.outputPath, npmDistTag, this.config.publishRegistry);
+          spinner.complete();
+          (0, console_12.info)((0, console_12.green)(`  \u2713   Successfully published "${pkg.name}.`));
+        } catch (e) {
+          spinner.complete();
+          (0, console_12.error)(e);
+          (0, console_12.error)((0, console_12.red)(`  \u2718   An error occurred while publishing "${pkg.name}".`));
+          throw new actions_error_1.FatalReleaseActionError();
+        }
+      }
+      async _isCommitForVersionStaging(version, commitSha) {
+        const { data } = await this.git.github.repos.getCommit(__spreadProps(__spreadValues({}, this.git.remoteParams), {
+          ref: commitSha
+        }));
+        return data.commit.message.startsWith((0, commit_message_1.getCommitMessageForRelease)(version));
+      }
+      async _verifyPackageVersions(version, packages) {
+        const experimentalVersion = (0, semver_1.createExperimentalSemver)(version);
+        for (const pkg of packages) {
+          const { version: packageJsonVersion } = JSON.parse(await fs_1.promises.readFile((0, path_1.join)(pkg.outputPath, "package.json"), "utf8"));
+          const mismatchesVersion = version.compare(packageJsonVersion) !== 0;
+          const mismatchesExperimental = experimentalVersion.compare(packageJsonVersion) !== 0;
+          if (mismatchesExperimental && mismatchesVersion) {
+            (0, console_12.error)((0, console_12.red)("The built package version does not match the version being released."));
+            (0, console_12.error)(`  Release Version:   ${version.version} (${experimentalVersion.version})`);
+            (0, console_12.error)(`  Generated Version: ${packageJsonVersion}`);
+            throw new actions_error_1.FatalReleaseActionError();
+          }
+        }
+      }
+    };
+    exports2.ReleaseAction = ReleaseAction;
+  }
+});
+
+// bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/cut-lts-patch.js
+var require_cut_lts_patch = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/cut-lts-patch.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.CutLongTermSupportPatchAction = void 0;
+    var inquirer_1 = require_inquirer();
+    var semver_1 = require_semver3();
+    var long_term_support_1 = require_long_term_support();
+    var actions_1 = require_actions();
+    var CutLongTermSupportPatchAction = class extends actions_1.ReleaseAction {
+      constructor() {
+        super(...arguments);
+        this.ltsBranches = (0, long_term_support_1.fetchLongTermSupportBranchesFromNpm)(this.config);
+      }
+      async getDescription() {
+        const { active } = await this.ltsBranches;
+        return `Cut a new release for an active LTS branch (${active.length} active).`;
+      }
+      async perform() {
+        const ltsBranch = await this._promptForTargetLtsBranch();
+        const newVersion = (0, semver_1.semverInc)(ltsBranch.version, "patch");
+        const compareVersionForReleaseNotes = ltsBranch.version;
+        const { pullRequest, releaseNotes } = await this.checkoutBranchAndStageVersion(newVersion, compareVersionForReleaseNotes, ltsBranch.name);
+        await this.waitForPullRequestToBeMerged(pullRequest);
+        await this.buildAndPublish(releaseNotes, ltsBranch.name, ltsBranch.npmDistTag);
+        await this.cherryPickChangelogIntoNextBranch(releaseNotes, ltsBranch.name);
+      }
+      async _promptForTargetLtsBranch() {
+        const { active, inactive } = await this.ltsBranches;
+        const activeBranchChoices = active.map((branch) => this._getChoiceForLtsBranch(branch));
+        if (inactive.length !== 0) {
+          activeBranchChoices.push({ name: "Inactive LTS versions (not recommended)", value: null });
+        }
+        const { activeLtsBranch, inactiveLtsBranch } = await (0, inquirer_1.prompt)([
+          {
+            name: "activeLtsBranch",
+            type: "list",
+            message: "Please select a version for which you want to cut an LTS patch",
+            choices: activeBranchChoices
+          },
+          {
+            name: "inactiveLtsBranch",
+            type: "list",
+            when: (o) => o.activeLtsBranch === null,
+            message: "Please select an inactive LTS version for which you want to cut an LTS patch",
+            choices: inactive.map((branch) => this._getChoiceForLtsBranch(branch))
+          }
+        ]);
+        return activeLtsBranch != null ? activeLtsBranch : inactiveLtsBranch;
+      }
+      _getChoiceForLtsBranch(branch) {
+        return { name: `v${branch.version.major} (from ${branch.name})`, value: branch };
+      }
+      static async isActive(active) {
+        return true;
+      }
+    };
+    exports2.CutLongTermSupportPatchAction = CutLongTermSupportPatchAction;
+  }
+});
+
+// bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/cut-new-patch.js
+var require_cut_new_patch = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/cut-new-patch.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.CutNewPatchAction = void 0;
+    var semver_1 = require_semver3();
+    var actions_1 = require_actions();
+    var CutNewPatchAction = class extends actions_1.ReleaseAction {
+      constructor() {
+        super(...arguments);
+        this._previousVersion = this.active.latest.version;
+        this._newVersion = (0, semver_1.semverInc)(this._previousVersion, "patch");
+      }
+      async getDescription() {
+        const { branchName } = this.active.latest;
+        const newVersion = this._newVersion;
+        return `Cut a new patch release for the "${branchName}" branch (v${newVersion}).`;
+      }
+      async perform() {
+        const { branchName } = this.active.latest;
+        const newVersion = this._newVersion;
+        const compareVersionForReleaseNotes = this._previousVersion;
+        const { pullRequest, releaseNotes } = await this.checkoutBranchAndStageVersion(newVersion, compareVersionForReleaseNotes, branchName);
+        await this.waitForPullRequestToBeMerged(pullRequest);
+        await this.buildAndPublish(releaseNotes, branchName, "latest");
+        await this.cherryPickChangelogIntoNextBranch(releaseNotes, branchName);
+      }
+      static async isActive(active) {
+        return true;
+      }
+    };
+    exports2.CutNewPatchAction = CutNewPatchAction;
+  }
+});
+
+// bazel-out/k8-fastbuild/bin/ng-dev/release/versioning/next-prerelease-version.js
+var require_next_prerelease_version = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/release/versioning/next-prerelease-version.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.computeNewPrereleaseVersionForNext = exports2.getReleaseNotesCompareVersionForNext = void 0;
+    var semver_1 = require_semver3();
+    var npm_registry_1 = require_npm_registry();
+    async function getReleaseNotesCompareVersionForNext(active, config) {
+      const { version: nextVersion } = active.next;
+      const isNextPublishedToNpm = await (0, npm_registry_1.isVersionPublishedToNpm)(nextVersion, config);
+      return isNextPublishedToNpm ? nextVersion : active.latest.version;
+    }
+    exports2.getReleaseNotesCompareVersionForNext = getReleaseNotesCompareVersionForNext;
+    async function computeNewPrereleaseVersionForNext(active, config) {
+      const { version: nextVersion } = active.next;
+      const isNextPublishedToNpm = await (0, npm_registry_1.isVersionPublishedToNpm)(nextVersion, config);
+      if (isNextPublishedToNpm) {
+        return (0, semver_1.semverInc)(nextVersion, "prerelease");
+      } else {
+        return nextVersion;
+      }
+    }
+    exports2.computeNewPrereleaseVersionForNext = computeNewPrereleaseVersionForNext;
+  }
+});
+
+// bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/cut-next-prerelease.js
+var require_cut_next_prerelease = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/cut-next-prerelease.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.CutNextPrereleaseAction = void 0;
+    var semver_1 = require_semver3();
+    var next_prerelease_version_1 = require_next_prerelease_version();
+    var actions_1 = require_actions();
+    var CutNextPrereleaseAction = class extends actions_1.ReleaseAction {
+      constructor() {
+        super(...arguments);
+        this._newVersion = this._computeNewVersion();
+      }
+      async getDescription() {
+        const { branchName } = this._getActivePrereleaseTrain();
+        const newVersion = await this._newVersion;
+        return `Cut a new next pre-release for the "${branchName}" branch (v${newVersion}).`;
+      }
+      async perform() {
+        const releaseTrain = this._getActivePrereleaseTrain();
+        const { branchName } = releaseTrain;
+        const newVersion = await this._newVersion;
+        const compareVersionForReleaseNotes = await this._getCompareVersionForReleaseNotes();
+        const { pullRequest, releaseNotes } = await this.checkoutBranchAndStageVersion(newVersion, compareVersionForReleaseNotes, branchName);
+        await this.waitForPullRequestToBeMerged(pullRequest);
+        await this.buildAndPublish(releaseNotes, branchName, "next");
+        if (releaseTrain !== this.active.next) {
+          await this.cherryPickChangelogIntoNextBranch(releaseNotes, branchName);
+        }
+      }
+      _getActivePrereleaseTrain() {
+        var _a;
+        return (_a = this.active.releaseCandidate) != null ? _a : this.active.next;
+      }
+      async _computeNewVersion() {
+        const releaseTrain = this._getActivePrereleaseTrain();
+        if (releaseTrain === this.active.next) {
+          return await (0, next_prerelease_version_1.computeNewPrereleaseVersionForNext)(this.active, this.config);
+        } else {
+          return (0, semver_1.semverInc)(releaseTrain.version, "prerelease");
+        }
+      }
+      async _getCompareVersionForReleaseNotes() {
+        const releaseTrain = this._getActivePrereleaseTrain();
+        if (releaseTrain === this.active.next) {
+          return await (0, next_prerelease_version_1.getReleaseNotesCompareVersionForNext)(this.active, this.config);
+        } else {
+          return releaseTrain.version;
+        }
+      }
+      static async isActive() {
+        return true;
+      }
+    };
+    exports2.CutNextPrereleaseAction = CutNextPrereleaseAction;
+  }
+});
+
+// bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/cut-release-candidate-for-feature-freeze.js
+var require_cut_release_candidate_for_feature_freeze = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/cut-release-candidate-for-feature-freeze.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.CutReleaseCandidateForFeatureFreezeAction = void 0;
+    var semver_1 = require_semver3();
+    var actions_1 = require_actions();
+    var CutReleaseCandidateForFeatureFreezeAction = class extends actions_1.ReleaseAction {
+      constructor() {
+        super(...arguments);
+        this._newVersion = (0, semver_1.semverInc)(this.active.releaseCandidate.version, "prerelease", "rc");
+      }
+      async getDescription() {
+        const newVersion = this._newVersion;
+        return `Cut a first release-candidate for the feature-freeze branch (v${newVersion}).`;
+      }
+      async perform() {
+        const { branchName } = this.active.releaseCandidate;
+        const newVersion = this._newVersion;
+        const compareVersionForReleaseNotes = this.active.releaseCandidate.version;
+        const { pullRequest, releaseNotes } = await this.checkoutBranchAndStageVersion(newVersion, compareVersionForReleaseNotes, branchName);
+        await this.waitForPullRequestToBeMerged(pullRequest);
+        await this.buildAndPublish(releaseNotes, branchName, "next");
+        await this.cherryPickChangelogIntoNextBranch(releaseNotes, branchName);
+      }
+      static async isActive(active) {
+        return active.releaseCandidate !== null && active.releaseCandidate.version.prerelease[0] === "next";
+      }
+    };
+    exports2.CutReleaseCandidateForFeatureFreezeAction = CutReleaseCandidateForFeatureFreezeAction;
+  }
+});
+
+// bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/cut-stable.js
+var require_cut_stable = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/cut-stable.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.CutStableAction = void 0;
+    var semver = require_semver2();
+    var long_term_support_1 = require_long_term_support();
+    var actions_1 = require_actions();
+    var external_commands_1 = require_external_commands();
+    var CutStableAction = class extends actions_1.ReleaseAction {
+      constructor() {
+        super(...arguments);
+        this._newVersion = this._computeNewVersion();
+      }
+      async getDescription() {
+        const newVersion = this._newVersion;
+        return `Cut a stable release for the release-candidate branch (v${newVersion}).`;
+      }
+      async perform() {
+        var _a;
+        const { branchName } = this.active.releaseCandidate;
+        const newVersion = this._newVersion;
+        const isNewMajor = (_a = this.active.releaseCandidate) == null ? void 0 : _a.isMajor;
+        const compareVersionForReleaseNotes = this.active.latest.version;
+        const { pullRequest, releaseNotes } = await this.checkoutBranchAndStageVersion(newVersion, compareVersionForReleaseNotes, branchName);
+        await this.waitForPullRequestToBeMerged(pullRequest);
+        await this.buildAndPublish(releaseNotes, branchName, isNewMajor ? "next" : "latest");
+        if (isNewMajor) {
+          const previousPatch = this.active.latest;
+          const ltsTagForPatch = (0, long_term_support_1.getLtsNpmDistTagOfMajor)(previousPatch.version.major);
+          await this.checkoutUpstreamBranch(previousPatch.branchName);
+          await this.installDependenciesForCurrentBranch();
+          await (0, external_commands_1.invokeSetNpmDistCommand)(this.projectDir, ltsTagForPatch, previousPatch.version);
+        }
+        await this.cherryPickChangelogIntoNextBranch(releaseNotes, branchName);
+      }
+      _computeNewVersion() {
+        const { version } = this.active.releaseCandidate;
+        return semver.parse(`${version.major}.${version.minor}.${version.patch}`);
+      }
+      static async isActive(active) {
+        return active.releaseCandidate !== null && active.releaseCandidate.version.prerelease[0] === "rc";
+      }
+    };
+    exports2.CutStableAction = CutStableAction;
+  }
+});
+
+// bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/branch-off-next-branch.js
+var require_branch_off_next_branch = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/branch-off-next-branch.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.BranchOffNextBranchBaseAction = void 0;
+    var semver = require_semver2();
+    var console_12 = require_console();
+    var semver_1 = require_semver3();
+    var release_notes_1 = require_release_notes();
+    var next_prerelease_version_1 = require_next_prerelease_version();
+    var actions_1 = require_actions();
+    var commit_message_1 = require_commit_message();
+    var constants_1 = require_constants3();
+    var BranchOffNextBranchBaseAction = class extends actions_1.ReleaseAction {
+      async getDescription() {
+        const { branchName } = this.active.next;
+        const newVersion = await this._computeNewVersion();
+        return `Move the "${branchName}" branch into ${this.newPhaseName} phase (v${newVersion}).`;
+      }
+      async perform() {
+        const compareVersionForReleaseNotes = await (0, next_prerelease_version_1.getReleaseNotesCompareVersionForNext)(this.active, this.config);
+        const newVersion = await this._computeNewVersion();
+        const newBranch = `${newVersion.major}.${newVersion.minor}.x`;
+        await this._createNewVersionBranchFromNext(newBranch);
+        const { pullRequest, releaseNotes } = await this.stageVersionForBranchAndCreatePullRequest(newVersion, compareVersionForReleaseNotes, newBranch);
+        await this.waitForPullRequestToBeMerged(pullRequest);
+        await this.buildAndPublish(releaseNotes, newBranch, "next");
+        await this._createNextBranchUpdatePullRequest(releaseNotes, newVersion);
+      }
+      async _computeNewVersion() {
+        if (this.newPhaseName === "feature-freeze") {
+          return (0, next_prerelease_version_1.computeNewPrereleaseVersionForNext)(this.active, this.config);
+        } else {
+          return (0, semver_1.semverInc)(this.active.next.version, "prerelease", "rc");
+        }
+      }
+      async _createNewVersionBranchFromNext(newBranch) {
+        const { branchName: nextBranch } = this.active.next;
+        await this.verifyPassingGithubStatus(nextBranch);
+        await this.checkoutUpstreamBranch(nextBranch);
+        await this.createLocalBranchFromHead(newBranch);
+        await this.pushHeadToRemoteBranch(newBranch);
+        (0, console_12.info)((0, console_12.green)(`  \u2713   Version branch "${newBranch}" created.`));
+      }
+      async _createNextBranchUpdatePullRequest(releaseNotes, newVersion) {
+        const { branchName: nextBranch, version } = this.active.next;
+        const newNextVersion = semver.parse(`${version.major}.${version.minor + 1}.0-next.0`);
+        const bumpCommitMessage = (0, commit_message_1.getCommitMessageForExceptionalNextVersionBump)(newNextVersion);
+        await this.checkoutUpstreamBranch(nextBranch);
+        await this.updateProjectVersion(newNextVersion);
+        await this.createCommit(bumpCommitMessage, [constants_1.workspaceRelativePackageJsonPath]);
+        await this.prependReleaseNotesToChangelog(releaseNotes);
+        const commitMessage = (0, commit_message_1.getReleaseNoteCherryPickCommitMessage)(releaseNotes.version);
+        await this.createCommit(commitMessage, [release_notes_1.workspaceRelativeChangelogPath]);
+        let nextPullRequestMessage = `The previous "next" release-train has moved into the ${this.newPhaseName} phase. This PR updates the next branch to the subsequent release-train.
+
+Also this PR cherry-picks the changelog for v${newVersion} into the ${nextBranch} branch so that the changelog is up to date.`;
+        const nextUpdatePullRequest = await this.pushChangesToForkAndCreatePullRequest(nextBranch, `next-release-train-${newNextVersion}`, `Update next branch to reflect new release-train "v${newNextVersion}".`, nextPullRequestMessage);
+        (0, console_12.info)((0, console_12.green)(`  \u2713   Pull request for updating the "${nextBranch}" branch has been created.`));
+        (0, console_12.info)((0, console_12.yellow)(`      Please ask team members to review: ${nextUpdatePullRequest.url}.`));
+      }
+    };
+    exports2.BranchOffNextBranchBaseAction = BranchOffNextBranchBaseAction;
+  }
+});
+
+// bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/move-next-into-feature-freeze.js
+var require_move_next_into_feature_freeze = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/move-next-into-feature-freeze.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.MoveNextIntoFeatureFreezeAction = void 0;
+    var branch_off_next_branch_1 = require_branch_off_next_branch();
+    var MoveNextIntoFeatureFreezeAction = class extends branch_off_next_branch_1.BranchOffNextBranchBaseAction {
+      constructor() {
+        super(...arguments);
+        this.newPhaseName = "feature-freeze";
+      }
+      static async isActive(active) {
+        return active.releaseCandidate === null && active.next.isMajor;
+      }
+    };
+    exports2.MoveNextIntoFeatureFreezeAction = MoveNextIntoFeatureFreezeAction;
+  }
+});
+
+// bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/move-next-into-release-candidate.js
+var require_move_next_into_release_candidate = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/move-next-into-release-candidate.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.MoveNextIntoReleaseCandidateAction = void 0;
+    var branch_off_next_branch_1 = require_branch_off_next_branch();
+    var MoveNextIntoReleaseCandidateAction = class extends branch_off_next_branch_1.BranchOffNextBranchBaseAction {
+      constructor() {
+        super(...arguments);
+        this.newPhaseName = "release-candidate";
+      }
+      static async isActive(active) {
+        return active.releaseCandidate === null && !active.next.isMajor;
+      }
+    };
+    exports2.MoveNextIntoReleaseCandidateAction = MoveNextIntoReleaseCandidateAction;
+  }
+});
+
+// bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/tag-recent-major-as-latest.js
+var require_tag_recent_major_as_latest = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/tag-recent-major-as-latest.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.TagRecentMajorAsLatest = void 0;
+    var semver = require_semver2();
+    var npm_registry_1 = require_npm_registry();
+    var actions_1 = require_actions();
+    var external_commands_1 = require_external_commands();
+    var version_tags_1 = require_version_tags();
+    var TagRecentMajorAsLatest = class extends actions_1.ReleaseAction {
+      async getDescription() {
+        return `Retag recently published major v${this.active.latest.version} as "latest" in NPM.`;
+      }
+      async perform() {
+        await this.updateGithubReleaseEntryToStable(this.active.latest.version);
+        await this.checkoutUpstreamBranch(this.active.latest.branchName);
+        await this.installDependenciesForCurrentBranch();
+        await (0, external_commands_1.invokeSetNpmDistCommand)(this.projectDir, "latest", this.active.latest.version);
+      }
+      async updateGithubReleaseEntryToStable(version) {
+        const releaseTagName = (0, version_tags_1.getReleaseTagForVersion)(version);
+        const { data: releaseInfo } = await this.git.github.repos.getReleaseByTag(__spreadProps(__spreadValues({}, this.git.remoteParams), {
+          tag: releaseTagName
+        }));
+        await this.git.github.repos.updateRelease(__spreadProps(__spreadValues({}, this.git.remoteParams), {
+          release_id: releaseInfo.id,
+          prerelease: false
+        }));
+      }
+      static async isActive({ latest }, config) {
+        if (latest.version.minor !== 0 || latest.version.patch !== 0) {
+          return false;
+        }
+        const packageInfo = await (0, npm_registry_1.fetchProjectNpmPackageInfo)(config);
+        const npmLatestVersion = semver.parse(packageInfo["dist-tags"]["latest"]);
+        return npmLatestVersion !== null && npmLatestVersion.major === latest.version.major - 1;
+      }
+    };
+    exports2.TagRecentMajorAsLatest = TagRecentMajorAsLatest;
+  }
+});
+
+// bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/index.js
+var require_actions2 = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions/index.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.actions = void 0;
+    var cut_lts_patch_1 = require_cut_lts_patch();
+    var cut_new_patch_1 = require_cut_new_patch();
+    var cut_next_prerelease_1 = require_cut_next_prerelease();
+    var cut_release_candidate_for_feature_freeze_1 = require_cut_release_candidate_for_feature_freeze();
+    var cut_stable_1 = require_cut_stable();
+    var move_next_into_feature_freeze_1 = require_move_next_into_feature_freeze();
+    var move_next_into_release_candidate_1 = require_move_next_into_release_candidate();
+    var tag_recent_major_as_latest_1 = require_tag_recent_major_as_latest();
+    exports2.actions = [
+      tag_recent_major_as_latest_1.TagRecentMajorAsLatest,
+      cut_stable_1.CutStableAction,
+      cut_release_candidate_for_feature_freeze_1.CutReleaseCandidateForFeatureFreezeAction,
+      cut_new_patch_1.CutNewPatchAction,
+      cut_next_prerelease_1.CutNextPrereleaseAction,
+      move_next_into_feature_freeze_1.MoveNextIntoFeatureFreezeAction,
+      move_next_into_release_candidate_1.MoveNextIntoReleaseCandidateAction,
+      cut_lts_patch_1.CutLongTermSupportPatchAction
+    ];
+  }
+});
+
 // bazel-out/k8-fastbuild/bin/ng-dev/utils/version-check.js
 var require_version_check = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/utils/version-check.js"(exports2) {
@@ -72795,7 +73122,7 @@ var require_version_check = __commonJS({
     var console_12 = require_console();
     async function verifyNgDevToolIsUpToDate(workspacePath) {
       var _a, _b, _c, _d, _e;
-      const localVersion = `0.0.0-a480a99a0d757e3b6fe9dec8ce6d3a60149efc13`;
+      const localVersion = `0.0.0-1516a4ef6d42bdcf008a7984409468183ab67808`;
       const workspacePackageJsonFile = path.join(workspacePath, constants_1.workspaceRelativePackageJsonPath);
       const workspaceDirLockFile = path.join(workspacePath, constants_1.workspaceRelativeYarnLockFilePath);
       try {
@@ -75064,6 +75391,7 @@ var require_cli25 = __commonJS({
     var spinner_1 = require_spinner();
     var authenticated_git_client_1 = require_authenticated_git_client();
     var github_yargs_1 = require_github_yargs();
+    var resolve_yarn_bin_1 = require_resolve_yarn_bin();
     async function builder(yargs2) {
       return (0, github_yargs_1.addGithubTokenOption)(yargs2);
     }
@@ -75074,8 +75402,8 @@ var require_cli25 = __commonJS({
       HUSKY: "0"
     });
     async function handler() {
-      const npmBinDir = (0, child_process_1.spawnSync)("npm", ["bin", "--global", "yarn"]).stdout.trim();
-      const yarnBin = `${npmBinDir}/yarn`;
+      var _a;
+      const yarnGlobalBin = (_a = await (0, resolve_yarn_bin_1.getYarnPathFromNpmGlobalBinaries)()) != null ? _a : "yarn";
       const git = authenticated_git_client_1.AuthenticatedGitClient.get();
       const mainBranchName = git.mainBranchName;
       const originalBranchOrRef = git.getCurrentBranchOrRevision();
@@ -75093,9 +75421,9 @@ var require_cli25 = __commonJS({
         const yarnReleasesDir = (0, path_1.join)(git.baseDir, ".yarn/releases");
         (0, fs_1.readdirSync)(yarnReleasesDir).forEach((file) => (0, fs_1.unlinkSync)((0, path_1.join)(yarnReleasesDir, file)));
         spinner.update("Updating yarn version.");
-        (0, child_process_1.spawnSync)(yarnBin, ["policies", "set-version", "latest"]);
+        (0, child_process_1.spawnSync)(yarnGlobalBin, ["policies", "set-version", "latest"]);
         spinner.update("Confirming the version of yarn was updated.");
-        const newYarnVersion = (0, child_process_1.spawnSync)(yarnBin, ["-v"], { env: useYarnPathEnv }).stdout.trim();
+        const newYarnVersion = (0, child_process_1.spawnSync)(yarnGlobalBin, ["-v"], { env: useYarnPathEnv }).stdout.trim();
         if (git.run(["status", "--porcelain"]).stdout.length === 0) {
           spinner.complete();
           (0, console_12.error)((0, console_12.red)("Yarn already up to date"));
