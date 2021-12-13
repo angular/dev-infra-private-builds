@@ -226,13 +226,13 @@ var require_build = __commonJS({
   }
 });
 
-// node_modules/yargs-parser/build/index.cjs
+// node_modules/yargs/node_modules/yargs-parser/build/index.cjs
 var require_build2 = __commonJS({
-  "node_modules/yargs-parser/build/index.cjs"(exports2, module2) {
+  "node_modules/yargs/node_modules/yargs-parser/build/index.cjs"(exports2, module2) {
     "use strict";
     var util = require("util");
-    var fs = require("fs");
     var path = require("path");
+    var fs = require("fs");
     function camelCase(str) {
       const isCamelCase = str !== str.toLowerCase() && str !== str.toUpperCase();
       if (!isCamelCase) {
@@ -347,6 +347,7 @@ var require_build2 = __commonJS({
           key: void 0
         }, options);
         const args = tokenizeArgString(argsInput);
+        const inputIsString = typeof argsInput === "string";
         const aliases = combineAliases(Object.assign(Object.create(null), opts.alias));
         const configuration = Object.assign({
           "boolean-negation": true,
@@ -489,7 +490,7 @@ var require_build2 = __commonJS({
               } else if (checkAllAliases(m[1], flags.nargs) !== false) {
                 i = eatNargs(i, m[1], args, m[2]);
               } else {
-                setArg(m[1], m[2]);
+                setArg(m[1], m[2], true);
               }
             }
           } else if (arg.match(negatedBoolean) && configuration["boolean-negation"]) {
@@ -689,7 +690,7 @@ var require_build2 = __commonJS({
             }
           } else {
             if (!isUndefined(argAfterEqualSign)) {
-              argsToSet.push(processValue(key, argAfterEqualSign));
+              argsToSet.push(processValue(key, argAfterEqualSign, true));
             }
             for (let ii = i + 1; ii < args2.length; ii++) {
               if (!configuration["greedy-arrays"] && argsToSet.length > 0 || nargsCount && typeof nargsCount === "number" && argsToSet.length >= nargsCount)
@@ -698,7 +699,7 @@ var require_build2 = __commonJS({
               if (/^-/.test(next) && !negative.test(next) && !isUnknownOptionAsArg(next))
                 break;
               i = ii;
-              argsToSet.push(processValue(key, next));
+              argsToSet.push(processValue(key, next, inputIsString));
             }
           }
           if (typeof nargsCount === "number" && (nargsCount && argsToSet.length < nargsCount || isNaN(nargsCount) && argsToSet.length === 0)) {
@@ -707,14 +708,14 @@ var require_build2 = __commonJS({
           setArg(key, argsToSet);
           return i;
         }
-        function setArg(key, val) {
+        function setArg(key, val, shouldStripQuotes = inputIsString) {
           if (/-/.test(key) && configuration["camel-case-expansion"]) {
             const alias = key.split(".").map(function(prop) {
               return camelCase(prop);
             }).join(".");
             addNewAlias(key, alias);
           }
-          const value = processValue(key, val);
+          const value = processValue(key, val, shouldStripQuotes);
           const splitKey = key.split(".");
           setKey(argv, splitKey, value);
           if (flags.aliases[key]) {
@@ -758,9 +759,9 @@ var require_build2 = __commonJS({
             addNewAlias(alias, key);
           }
         }
-        function processValue(key, val) {
-          if (typeof val === "string" && (val[0] === "'" || val[0] === '"') && val[val.length - 1] === val[0]) {
-            val = val.substring(1, val.length - 1);
+        function processValue(key, val, shouldStripQuotes) {
+          if (shouldStripQuotes) {
+            val = stripQuotes(val);
           }
           if (checkAllAliases(key, flags.bools) || checkAllAliases(key, flags.counts)) {
             if (typeof val === "string")
@@ -1153,7 +1154,10 @@ var require_build2 = __commonJS({
         return "___proto___";
       return key;
     }
-    var minNodeVersion = process && process.env && process.env.YARGS_MIN_NODE_VERSION ? Number(process.env.YARGS_MIN_NODE_VERSION) : 10;
+    function stripQuotes(val) {
+      return typeof val === "string" && (val[0] === "'" || val[0] === '"') && val[val.length - 1] === val[0] ? val.substring(1, val.length - 1) : val;
+    }
+    var minNodeVersion = process && process.env && process.env.YARGS_MIN_NODE_VERSION ? Number(process.env.YARGS_MIN_NODE_VERSION) : 12;
     if (process && process.version) {
       const major = Number(process.version.match(/v([^.]+)/)[1]);
       if (major < minNodeVersion) {
@@ -1173,7 +1177,7 @@ var require_build2 = __commonJS({
         if (typeof require !== "undefined") {
           return require(path2);
         } else if (path2.match(/\.json$/)) {
-          return fs.readFileSync(path2, "utf8");
+          return JSON.parse(fs.readFileSync(path2, "utf8"));
         } else {
           throw Error("only .json config files are supported in ESM");
         }
@@ -3693,7 +3697,7 @@ _{{app_name}}_yargs_completions()
 }
 compdef _{{app_name}}_yargs_completions {{app_name}}
 ###-end-{{app_name}}-completions-###
-` : '###-begin-{{app_name}}-completions-###\n#\n# yargs command completion script\n#\n# Installation: {{app_path}} {{completion_command}} >> ~/.bashrc\n#    or {{app_path}} {{completion_command}} >> ~/.bash_profile on OSX.\n#\n_{{app_name}}_yargs_completions()\n{\n    local cur_word args type_list\n\n    cur_word="${COMP_WORDS[COMP_CWORD]}"\n    args=("${COMP_WORDS[@]}")\n\n    # ask yargs to generate completions.\n    type_list=$({{app_path}} --get-yargs-completions "${args[@]}")\n\n    COMPREPLY=( $(compgen -W "${type_list}" -- ${cur_word}) )\n\n    # if no match was found, fall back to filename completion\n    if [ ${#COMPREPLY[@]} -eq 0 ]; then\n      COMPREPLY=()\n    fi\n\n    return 0\n}\ncomplete -o default -F _{{app_name}}_yargs_completions {{app_name}}\n###-end-{{app_name}}-completions-###\n';
+` : '###-begin-{{app_name}}-completions-###\n#\n# yargs command completion script\n#\n# Installation: {{app_path}} {{completion_command}} >> ~/.bashrc\n#    or {{app_path}} {{completion_command}} >> ~/.bash_profile on OSX.\n#\n_{{app_name}}_yargs_completions()\n{\n    local cur_word args type_list\n\n    cur_word="${COMP_WORDS[COMP_CWORD]}"\n    args=("${COMP_WORDS[@]}")\n\n    # ask yargs to generate completions.\n    type_list=$({{app_path}} --get-yargs-completions "${args[@]}")\n\n    COMPREPLY=( $(compgen -W "${type_list}" -- ${cur_word}) )\n\n    # if no match was found, fall back to filename completion\n    if [ ${#COMPREPLY[@]} -eq 0 ]; then\n      COMPREPLY=()\n    fi\n\n    return 0\n}\ncomplete -o bashdefault -o default -F _{{app_name}}_yargs_completions {{app_name}}\n###-end-{{app_name}}-completions-###\n';
         const i2 = this.shim.path.basename(t2);
         return t2.match(/\.js$/) && (t2 = `./${t2}`), s2 = s2.replace(/{{app_name}}/g, i2), s2 = s2.replace(/{{completion_command}}/g, e2), s2.replace(/{{app_path}}/g, t2);
       }
@@ -3817,7 +3821,7 @@ compdef _{{app_name}}_yargs_completions {{app_name}}
         return h("<array|string>", [t2], arguments.length), this[Et]("boolean", t2), this[Yt](t2), this;
       }
       check(t2, e2) {
-        return h("<function> [boolean]", [t2, e2], arguments.length), this.middleware((e3, s2) => j(() => t2(e3), (s3) => (s3 ? (typeof s3 == "string" || s3 instanceof Error) && v(this, ut, "f").fail(s3.toString(), s3) : v(this, ut, "f").fail(v(this, lt, "f").y18n.__("Argument check failed: %s", t2.toString())), e3), (t3) => (v(this, ut, "f").fail(t3.message ? t3.message : t3.toString(), t3), e3)), false, e2), this;
+        return h("<function> [boolean]", [t2, e2], arguments.length), this.middleware((e3, s2) => j(() => t2(e3, s2.getOptions()), (s3) => (s3 ? (typeof s3 == "string" || s3 instanceof Error) && v(this, ut, "f").fail(s3.toString(), s3) : v(this, ut, "f").fail(v(this, lt, "f").y18n.__("Argument check failed: %s", t2.toString())), e3), (t3) => (v(this, ut, "f").fail(t3.message ? t3.message : t3.toString(), t3), e3)), false, e2), this;
       }
       choices(t2, e2) {
         return h("<object|string|array> [string|array]", [t2, e2], arguments.length), this[At](this.choices.bind(this), "choices", t2, e2), this;
@@ -4598,22 +4602,31 @@ var require_yargs = __commonJS({
       singletonify(argv);
       return argv;
     }
+    function defineGetter(obj, key, getter) {
+      Object.defineProperty(obj, key, {
+        configurable: true,
+        enumerable: true,
+        get: getter
+      });
+    }
+    function lookupGetter(obj, key) {
+      const desc = Object.getOwnPropertyDescriptor(obj, key);
+      if (typeof desc !== "undefined") {
+        return desc.get;
+      }
+    }
     function singletonify(inst) {
       [
         ...Object.keys(inst),
         ...Object.getOwnPropertyNames(inst.constructor.prototype)
       ].forEach((key) => {
         if (key === "argv") {
-          Argv.__defineGetter__(key, inst.__lookupGetter__(key));
+          defineGetter(Argv, key, lookupGetter(inst, key));
         } else if (typeof inst[key] === "function") {
           Argv[key] = inst[key].bind(inst);
         } else {
-          Argv.__defineGetter__("$0", () => {
-            return inst.$0;
-          });
-          Argv.__defineGetter__("parsed", () => {
-            return inst.parsed;
-          });
+          defineGetter(Argv, "$0", () => inst.$0);
+          defineGetter(Argv, "parsed", () => inst.parsed);
         }
       });
     }
@@ -73122,7 +73135,7 @@ var require_version_check = __commonJS({
     var console_12 = require_console();
     async function verifyNgDevToolIsUpToDate(workspacePath) {
       var _a, _b, _c, _d, _e;
-      const localVersion = `0.0.0-8e4fab15a1ec0130edd15a4aec632c62a353c478`;
+      const localVersion = `0.0.0-31d2265e034fb4208d57de565995a3027a6cf416`;
       const workspacePackageJsonFile = path.join(workspacePath, constants_1.workspaceRelativePackageJsonPath);
       const workspaceDirLockFile = path.join(workspacePath, constants_1.workspaceRelativeYarnLockFilePath);
       try {
