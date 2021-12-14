@@ -172,11 +172,15 @@ export declare abstract class ReleaseAction {
     private _getGithubChangelogUrlForRef;
     /**
      * Builds and publishes the given version in the specified branch.
+     *
      * @param releaseNotes The release notes for the version being published.
      * @param publishBranch Name of the branch that contains the new version.
      * @param npmDistTag NPM dist tag where the version should be published to.
+     * @param additionalOptions Additional options for building and publishing.
      */
-    protected buildAndPublish(releaseNotes: ReleaseNotes, publishBranch: string, npmDistTag: NpmDistTag): Promise<void>;
+    protected buildAndPublish(releaseNotes: ReleaseNotes, publishBranch: string, npmDistTag: NpmDistTag, additionalOptions?: {
+        skipExperimentalPackages?: boolean;
+    }): Promise<void>;
     /** Publishes the given built package to NPM with the specified NPM dist tag. */
     private _publishBuiltPackageToNpm;
     /** Checks whether the given commit represents a staging commit for the specified version. */

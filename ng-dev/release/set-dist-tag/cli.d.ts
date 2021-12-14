@@ -10,6 +10,7 @@ import { CommandModule } from 'yargs';
 export interface ReleaseSetDistTagOptions {
     tagName: string;
     targetVersion: string;
+    skipExperimentalPackages: boolean;
 }
 /** CLI command module for setting an NPM dist tag. */
 export declare const ReleaseSetDistTagCommand: CommandModule<{}, ReleaseSetDistTagOptions>;

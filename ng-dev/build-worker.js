@@ -38686,11 +38686,25 @@ var require_config3 = __commonJS({
       if (config.release === void 0) {
         throw new config_12.ConfigValidationError("No configuration provided for `release`");
       }
+      if (config.release.representativeNpmPackage === void 0) {
+        errors.push(`No "representativeNpmPackage" configured for releasing.`);
+      }
       if (config.release.npmPackages === void 0) {
         errors.push(`No "npmPackages" configured for releasing.`);
       }
       if (config.release.buildPackages === void 0) {
         errors.push(`No "buildPackages" function configured for releasing.`);
+      }
+      if (config.release.representativeNpmPackage && config.release.npmPackages) {
+        const representativePkgEntry = config.release.npmPackages.find((pkg) => {
+          var _a;
+          return pkg.name === ((_a = config.release) == null ? void 0 : _a.representativeNpmPackage);
+        });
+        if (representativePkgEntry === void 0) {
+          errors.push(`Configured "representativeNpmPackage" (${representativePkgEntry}) does not match a package in "npmPackages".`);
+        } else if (representativePkgEntry.experimental) {
+          errors.push(`Configured "representativeNpmPackage" (${representativePkgEntry}) corresponds to an experimental package. The representative NPM package is expected to be a long-standing and non-experimental package of the project.`);
+        }
       }
       if (errors.length) {
         throw new config_12.ConfigValidationError("Invalid `release` configuration", errors);

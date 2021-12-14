@@ -6,6 +6,14 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { CommandModule } from 'yargs';
+import { BuiltPackage } from '../config/index';
+/**
+ * Type describing the JSON output of this command.
+ *
+ * @important When changing this, make sure the release action
+ *   invocation is updated as well.
+ */
+export declare type ReleaseBuildJsonStdout = BuiltPackage[];
 /** Command line options for building a release. */
 export interface ReleaseBuildOptions {
     json: boolean;

@@ -44681,8 +44681,7 @@ var require_npm_registry = __commonJS({
     var node_fetch_1 = require_lib3();
     exports2._npmPackageInfoCache = {};
     async function fetchProjectNpmPackageInfo(config) {
-      const pkgName = getRepresentativeNpmPackage(config);
-      return await fetchPackageInfoFromNpmRegistry(pkgName);
+      return await fetchPackageInfoFromNpmRegistry(config.representativeNpmPackage);
     }
     exports2.fetchProjectNpmPackageInfo = fetchProjectNpmPackageInfo;
     async function isVersionPublishedToNpm(version, config) {
@@ -44690,9 +44689,6 @@ var require_npm_registry = __commonJS({
       return versions[version.format()] !== void 0;
     }
     exports2.isVersionPublishedToNpm = isVersionPublishedToNpm;
-    function getRepresentativeNpmPackage(config) {
-      return config.npmPackages[0];
-    }
     async function fetchPackageInfoFromNpmRegistry(pkgName) {
       if (exports2._npmPackageInfoCache[pkgName] === void 0) {
         exports2._npmPackageInfoCache[pkgName] = (0, node_fetch_1.default)(`https://registry.npmjs.org/${pkgName}`).then((r) => r.json());
@@ -60783,11 +60779,25 @@ var require_config7 = __commonJS({
       if (config.release === void 0) {
         throw new config_1.ConfigValidationError("No configuration provided for `release`");
       }
+      if (config.release.representativeNpmPackage === void 0) {
+        errors.push(`No "representativeNpmPackage" configured for releasing.`);
+      }
       if (config.release.npmPackages === void 0) {
         errors.push(`No "npmPackages" configured for releasing.`);
       }
       if (config.release.buildPackages === void 0) {
         errors.push(`No "buildPackages" function configured for releasing.`);
+      }
+      if (config.release.representativeNpmPackage && config.release.npmPackages) {
+        const representativePkgEntry = config.release.npmPackages.find((pkg) => {
+          var _a;
+          return pkg.name === ((_a = config.release) == null ? void 0 : _a.representativeNpmPackage);
+        });
+        if (representativePkgEntry === void 0) {
+          errors.push(`Configured "representativeNpmPackage" (${representativePkgEntry}) does not match a package in "npmPackages".`);
+        } else if (representativePkgEntry.experimental) {
+          errors.push(`Configured "representativeNpmPackage" (${representativePkgEntry}) corresponds to an experimental package. The representative NPM package is expected to be a long-standing and non-experimental package of the project.`);
+        }
       }
       if (errors.length) {
         throw new config_1.ConfigValidationError("Invalid `release` configuration", errors);
@@ -62779,10 +62789,10 @@ var require_cli17 = __commonJS({
         (0, console_12.error)((0, console_12.red)(`      build script is configured correctly in ".ng-dev".`));
         process.exit(1);
       }
-      const missingPackages = npmPackages.filter((pkgName) => !builtPackages.find((b) => b.name === pkgName));
+      const missingPackages = npmPackages.filter((pkg) => !builtPackages.find((b) => b.name === pkg.name));
       if (missingPackages.length > 0) {
         (0, console_12.error)((0, console_12.red)(`  \u2718   Release output missing for the following packages:`));
-        missingPackages.forEach((pkgName) => (0, console_12.error)((0, console_12.red)(`      - ${pkgName}`)));
+        missingPackages.forEach((pkg) => (0, console_12.error)((0, console_12.red)(`      - ${pkg.name}`)));
         process.exit(1);
       }
       if (args.json) {
@@ -62861,19 +62871,31 @@ var require_cli18 = __commonJS({
     var print_active_trains_1 = require_print_active_trains();
     var versioning_1 = require_versioning();
     var config_1 = require_config2();
-    async function handler() {
+    function builder(argv) {
+      return argv.option("json", {
+        type: "boolean",
+        description: "Whether information should be written as JSON to stdout.",
+        default: false
+      });
+    }
+    async function handler(argv) {
+      const config = (0, config_1.getConfig)();
+      (0, index_12.assertValidReleaseConfig)(config);
+      if (argv.json) {
+        process.stdout.write(JSON.stringify(config.release, null, 2));
+        return;
+      }
       const git = git_client_1.GitClient.get();
       const nextBranchName = (0, versioning_1.getNextBranchName)(git.config.github);
       const repo = __spreadProps(__spreadValues({ api: git.github }, git.remoteConfig), { nextBranchName });
       const releaseTrains = await (0, active_release_trains_1.fetchActiveReleaseTrains)(repo);
-      const config = (0, config_1.getConfig)();
-      (0, index_12.assertValidReleaseConfig)(config);
       await (0, print_active_trains_1.printActiveReleaseTrains)(releaseTrains, config.release);
     }
     exports2.ReleaseInfoCommandModule = {
+      builder,
       handler,
       command: "info",
-      describe: "Prints active release trains to the console."
+      describe: "Prints information for the current release state."
     };
   }
 });
@@ -64212,21 +64234,13 @@ var require_semver3 = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/utils/semver.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.createExperimentalSemver = exports2.semverInc = void 0;
+    exports2.semverInc = void 0;
     var semver = require_semver2();
     function semverInc(version, release, identifier) {
       const clone = new semver.SemVer(version.version);
       return clone.inc(release, identifier);
     }
     exports2.semverInc = semverInc;
-    function createExperimentalSemver(version) {
-      version = new semver.SemVer(version);
-      const experimentalVersion = new semver.SemVer(version.format());
-      experimentalVersion.major = 0;
-      experimentalVersion.minor = version.major * 100 + version.minor;
-      return new semver.SemVer(experimentalVersion.format());
-    }
-    exports2.createExperimentalSemver = createExperimentalSemver;
   }
 });
 
@@ -64267,6 +64281,28 @@ var require_spinner = __commonJS({
       }
     };
     exports2.Spinner = Spinner;
+  }
+});
+
+// bazel-out/k8-fastbuild/bin/ng-dev/release/versioning/experimental-versions.js
+var require_experimental_versions = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/release/versioning/experimental-versions.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.createExperimentalSemver = exports2.isExperimentalSemver = void 0;
+    var semver = require_semver2();
+    function isExperimentalSemver(semver2) {
+      return semver2.major === 0 && semver2.minor >= 100;
+    }
+    exports2.isExperimentalSemver = isExperimentalSemver;
+    function createExperimentalSemver(version) {
+      version = new semver.SemVer(version);
+      const experimentalVersion = new semver.SemVer(version.format());
+      experimentalVersion.major = 0;
+      experimentalVersion.minor = version.major * 100 + version.minor;
+      return new semver.SemVer(experimentalVersion.format());
+    }
+    exports2.createExperimentalSemver = createExperimentalSemver;
   }
 });
 
@@ -72244,13 +72280,13 @@ var require_external_commands = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/external-commands.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.invokeYarnInstallCommand = exports2.invokeReleaseBuildCommand = exports2.invokeSetNpmDistCommand = void 0;
+    exports2.invokeYarnInstallCommand = exports2.invokeReleaseInfoCommand = exports2.invokeReleaseBuildCommand = exports2.invokeSetNpmDistCommand = void 0;
     var child_process_1 = require_child_process();
     var console_12 = require_console();
     var spinner_1 = require_spinner();
     var actions_error_1 = require_actions_error();
     var resolve_yarn_bin_1 = require_resolve_yarn_bin();
-    async function invokeSetNpmDistCommand(projectDir, npmDistTag, version) {
+    async function invokeSetNpmDistCommand(projectDir, npmDistTag, version, options = { skipExperimentalPackages: false }) {
       const yarnCommand = await (0, resolve_yarn_bin_1.resolveYarnScriptForProject)(projectDir);
       try {
         await (0, child_process_1.spawn)(yarnCommand.binary, [
@@ -72260,7 +72296,8 @@ var require_external_commands = __commonJS({
           "release",
           "set-dist-tag",
           npmDistTag,
-          version.format()
+          version.format(),
+          `--skip-experimental-packages=${options.skipExperimentalPackages}`
         ], { cwd: projectDir });
         (0, console_12.info)((0, console_12.green)(`  \u2713   Set "${npmDistTag}" NPM dist tag for all packages to v${version}.`));
       } catch (e) {
@@ -72289,6 +72326,21 @@ var require_external_commands = __commonJS({
       }
     }
     exports2.invokeReleaseBuildCommand = invokeReleaseBuildCommand;
+    async function invokeReleaseInfoCommand(projectDir) {
+      const yarnCommand = await (0, resolve_yarn_bin_1.resolveYarnScriptForProject)(projectDir);
+      try {
+        const { stdout } = await (0, child_process_1.spawn)("yarn", ["--silent", "ng-dev", "release", "info", "--json"], {
+          cwd: projectDir,
+          mode: "silent"
+        });
+        return JSON.parse(stdout.trim());
+      } catch (e) {
+        (0, console_12.error)(e);
+        (0, console_12.error)((0, console_12.red)(`  \u2718   An error occurred while retrieving the release information for the currently checked-out branch.`));
+        throw new actions_error_1.FatalReleaseActionError();
+      }
+    }
+    exports2.invokeReleaseInfoCommand = invokeReleaseInfoCommand;
     async function invokeYarnInstallCommand(projectDir) {
       const yarnCommand = await (0, resolve_yarn_bin_1.resolveYarnScriptForProject)(projectDir);
       try {
@@ -72372,6 +72424,29 @@ var require_constants3 = __commonJS({
   }
 });
 
+// bazel-out/k8-fastbuild/bin/ng-dev/release/publish/merge-built-packages-info.js
+var require_merge_built_packages_info = __commonJS({
+  "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/merge-built-packages-info.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.mergeBuiltPackagesWithInfo = void 0;
+    var console_12 = require_console();
+    var actions_error_1 = require_actions_error();
+    function mergeBuiltPackagesWithInfo(builtPackages, npmPackages) {
+      return builtPackages.map((pkg) => {
+        const info = npmPackages.find((i) => i.name === pkg.name);
+        if (info === void 0) {
+          (0, console_12.debug)(`Retrieved package information:`, npmPackages);
+          (0, console_12.error)((0, console_12.red)(`  \u2718   Could not find package information for built package: "${pkg.name}".`));
+          throw new actions_error_1.FatalReleaseActionError();
+        }
+        return __spreadValues(__spreadValues({}, pkg), info);
+      });
+    }
+    exports2.mergeBuiltPackagesWithInfo = mergeBuiltPackagesWithInfo;
+  }
+});
+
 // bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions.js
 var require_actions = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions.js"(exports2) {
@@ -72383,7 +72458,7 @@ var require_actions = __commonJS({
     var console_12 = require_console();
     var spinner_1 = require_spinner();
     var github_urls_1 = require_github_urls();
-    var semver_1 = require_semver3();
+    var experimental_versions_1 = require_experimental_versions();
     var release_notes_1 = require_release_notes();
     var npm_publish_1 = require_npm_publish();
     var actions_error_1 = require_actions_error();
@@ -72394,6 +72469,7 @@ var require_actions = __commonJS({
     var version_tags_1 = require_version_tags();
     var github_1 = require_github();
     var constants_2 = require_constants3();
+    var merge_built_packages_info_1 = require_merge_built_packages_info();
     var ReleaseAction = class {
       constructor(active, git, config, projectDir) {
         this.active = active;
@@ -72621,7 +72697,8 @@ var require_actions = __commonJS({
         const urlFragment = await releaseNotes.getUrlFragmentForRelease();
         return `${baseUrl}#${urlFragment}`;
       }
-      async buildAndPublish(releaseNotes, publishBranch, npmDistTag) {
+      async buildAndPublish(releaseNotes, publishBranch, npmDistTag, additionalOptions = {}) {
+        const { skipExperimentalPackages } = additionalOptions;
         const versionBumpCommitSha = await this._getCommitOfBranch(publishBranch);
         if (!await this._isCommitForVersionStaging(releaseNotes.version, versionBumpCommitSha)) {
           (0, console_12.error)((0, console_12.red)(`  \u2718   Latest commit in "${publishBranch}" branch is not a staging commit.`));
@@ -72631,10 +72708,16 @@ var require_actions = __commonJS({
         await this.checkoutUpstreamBranch(publishBranch);
         await this.installDependenciesForCurrentBranch();
         const builtPackages = await (0, external_commands_1.invokeReleaseBuildCommand)(this.projectDir);
-        await this._verifyPackageVersions(releaseNotes.version, builtPackages);
+        const releaseInfo = await (0, external_commands_1.invokeReleaseInfoCommand)(this.projectDir);
+        const builtPackagesWithInfo = (0, merge_built_packages_info_1.mergeBuiltPackagesWithInfo)(builtPackages, releaseInfo.npmPackages);
+        await this._verifyPackageVersions(releaseNotes.version, builtPackagesWithInfo);
         await this._createGithubReleaseForVersion(releaseNotes, versionBumpCommitSha, npmDistTag === "next");
-        for (const builtPackage of builtPackages) {
-          await this._publishBuiltPackageToNpm(builtPackage, npmDistTag);
+        for (const pkg of builtPackagesWithInfo) {
+          if (skipExperimentalPackages && pkg.experimental) {
+            (0, console_12.debug)(`Skipping "${pkg.name}" as it is experimental.`);
+            continue;
+          }
+          await this._publishBuiltPackageToNpm(pkg, npmDistTag);
         }
         (0, console_12.info)((0, console_12.green)("  \u2713   Published all packages successfully"));
       }
@@ -72659,15 +72742,15 @@ var require_actions = __commonJS({
         return data.commit.message.startsWith((0, commit_message_1.getCommitMessageForRelease)(version));
       }
       async _verifyPackageVersions(version, packages) {
-        const experimentalVersion = (0, semver_1.createExperimentalSemver)(version);
+        const experimentalVersion = (0, experimental_versions_1.createExperimentalSemver)(version);
         for (const pkg of packages) {
           const { version: packageJsonVersion } = JSON.parse(await fs_1.promises.readFile((0, path_1.join)(pkg.outputPath, "package.json"), "utf8"));
-          const mismatchesVersion = version.compare(packageJsonVersion) !== 0;
-          const mismatchesExperimental = experimentalVersion.compare(packageJsonVersion) !== 0;
-          if (mismatchesExperimental && mismatchesVersion) {
-            (0, console_12.error)((0, console_12.red)("The built package version does not match the version being released."));
-            (0, console_12.error)(`  Release Version:   ${version.version} (${experimentalVersion.version})`);
-            (0, console_12.error)(`  Generated Version: ${packageJsonVersion}`);
+          const expectedVersion = pkg.experimental ? experimentalVersion : version;
+          const mismatchesVersion = expectedVersion.compare(packageJsonVersion) !== 0;
+          if (mismatchesVersion) {
+            (0, console_12.error)((0, console_12.red)(`The built package version does not match for: ${pkg.name}.`));
+            (0, console_12.error)(`  Actual version:   ${packageJsonVersion}`);
+            (0, console_12.error)(`  Expected version: ${expectedVersion}`);
             throw new actions_error_1.FatalReleaseActionError();
           }
         }
@@ -72702,7 +72785,9 @@ var require_cut_lts_patch = __commonJS({
         const compareVersionForReleaseNotes = ltsBranch.version;
         const { pullRequest, releaseNotes } = await this.checkoutBranchAndStageVersion(newVersion, compareVersionForReleaseNotes, ltsBranch.name);
         await this.waitForPullRequestToBeMerged(pullRequest);
-        await this.buildAndPublish(releaseNotes, ltsBranch.name, ltsBranch.npmDistTag);
+        await this.buildAndPublish(releaseNotes, ltsBranch.name, ltsBranch.npmDistTag, {
+          skipExperimentalPackages: true
+        });
         await this.cherryPickChangelogIntoNextBranch(releaseNotes, ltsBranch.name);
       }
       async _promptForTargetLtsBranch() {
@@ -72928,7 +73013,9 @@ var require_cut_stable = __commonJS({
           const ltsTagForPatch = (0, long_term_support_1.getLtsNpmDistTagOfMajor)(previousPatch.version.major);
           await this.checkoutUpstreamBranch(previousPatch.branchName);
           await this.installDependenciesForCurrentBranch();
-          await (0, external_commands_1.invokeSetNpmDistCommand)(this.projectDir, ltsTagForPatch, previousPatch.version);
+          await (0, external_commands_1.invokeSetNpmDistCommand)(this.projectDir, ltsTagForPatch, previousPatch.version, {
+            skipExperimentalPackages: true
+          });
         }
         await this.cherryPickChangelogIntoNextBranch(releaseNotes, branchName);
       }
@@ -73135,7 +73222,7 @@ var require_version_check = __commonJS({
     var console_12 = require_console();
     async function verifyNgDevToolIsUpToDate(workspacePath) {
       var _a, _b, _c, _d, _e;
-      const localVersion = `0.0.0-8f9c5606d6cc867b90a6b1dff2d4c099034b0fc5`;
+      const localVersion = `0.0.0-0b4cae4acd9d42f33af92951947a30d6aa165070`;
       const workspacePackageJsonFile = path.join(workspacePath, constants_1.workspaceRelativePackageJsonPath);
       const workspaceDirLockFile = path.join(workspacePath, constants_1.workspaceRelativeYarnLockFilePath);
       try {
@@ -73370,6 +73457,7 @@ var require_cli21 = __commonJS({
     var spinner_1 = require_spinner();
     var index_12 = require_config7();
     var npm_publish_1 = require_npm_publish();
+    var experimental_versions_1 = require_experimental_versions();
     function builder(args) {
       return args.positional("tagName", {
         type: "string",
@@ -73378,11 +73466,15 @@ var require_cli21 = __commonJS({
       }).positional("targetVersion", {
         type: "string",
         demandOption: true,
-        description: "Version to which the dist tag should be set."
+        description: "Version to which the NPM dist tag should be set.\nThis version will be converted to an experimental version for experimental packages."
+      }).option("skipExperimentalPackages", {
+        type: "boolean",
+        description: "Whether the dist tag should not be set for experimental NPM packages.",
+        default: false
       });
     }
     async function handler(args) {
-      const { targetVersion: rawVersion, tagName } = args;
+      const { targetVersion: rawVersion, tagName, skipExperimentalPackages } = args;
       const config = (0, config_1.getConfig)();
       (0, index_12.assertValidReleaseConfig)(config);
       const { npmPackages, publishRegistry } = config.release;
@@ -73390,18 +73482,26 @@ var require_cli21 = __commonJS({
       if (version === null) {
         (0, console_12.error)((0, console_12.red)(`Invalid version specified (${rawVersion}). Unable to set NPM dist tag.`));
         process.exit(1);
+      } else if ((0, experimental_versions_1.isExperimentalSemver)(version)) {
+        (0, console_12.error)((0, console_12.red)(`Unexpected experimental SemVer version specified. This command expects a non-experimental project SemVer version.`));
+        process.exit(1);
       }
       (0, console_12.debug)(`Setting "${tagName}" NPM dist tag for release packages to v${version}.`);
       const spinner = new spinner_1.Spinner("");
-      for (const pkgName of npmPackages) {
-        spinner.update(`Setting NPM dist tag for "${pkgName}"`);
+      for (const pkg of npmPackages) {
+        if (pkg.experimental && skipExperimentalPackages) {
+          spinner.update(`Skipping "${pkg.name}" due to it being experimental.`);
+          continue;
+        }
+        spinner.update(`Setting NPM dist tag for "${pkg.name}"`);
+        const distTagVersion = pkg.experimental ? (0, experimental_versions_1.createExperimentalSemver)(version) : version;
         try {
-          await (0, npm_publish_1.setNpmTagForPackage)(pkgName, tagName, version, publishRegistry);
-          (0, console_12.debug)(`Successfully set "${tagName}" NPM dist tag for "${pkgName}".`);
+          await (0, npm_publish_1.setNpmTagForPackage)(pkg.name, tagName, distTagVersion, publishRegistry);
+          (0, console_12.debug)(`Successfully set "${tagName}" NPM dist tag for "${pkg.name}".`);
         } catch (e) {
           spinner.complete();
           (0, console_12.error)(e);
-          (0, console_12.error)((0, console_12.red)(`  \u2718   An error occurred while setting the NPM dist tag for "${pkgName}".`));
+          (0, console_12.error)((0, console_12.red)(`  \u2718   An error occurred while setting the NPM dist tag for "${pkg.name}".`));
           process.exit(1);
         }
       }
@@ -73427,7 +73527,7 @@ var require_env_stamp = __commonJS({
     var path_1 = require("path");
     var semver_1 = require_semver2();
     var git_client_1 = require_git_client();
-    var semver_2 = require_semver3();
+    var experimental_versions_1 = require_experimental_versions();
     function buildEnvStamp(mode) {
       const git = git_client_1.GitClient.get();
       console.info(`BUILD_SCM_BRANCH ${getCurrentBranch(git)}`);
@@ -73462,7 +73562,7 @@ var require_env_stamp = __commonJS({
             "HEAD"
           ]);
           const { version } = new semver_1.SemVer(rawVersion);
-          const { version: experimentalVersion } = (0, semver_2.createExperimentalSemver)(version);
+          const { version: experimentalVersion } = (0, experimental_versions_1.createExperimentalSemver)(version);
           return {
             version: `${version.replace(/-([0-9]+)-g/, "+$1.sha-")}${localChanges}`,
             experimentalVersion: `${experimentalVersion.replace(/-([0-9]+)-g/, "+$1.sha-")}${localChanges}`
@@ -73470,7 +73570,7 @@ var require_env_stamp = __commonJS({
         } else {
           const packageJsonPath = (0, path_1.join)(git.baseDir, "package.json");
           const { version } = new semver_1.SemVer(require(packageJsonPath).version);
-          const { version: experimentalVersion } = (0, semver_2.createExperimentalSemver)(new semver_1.SemVer(version));
+          const { version: experimentalVersion } = (0, experimental_versions_1.createExperimentalSemver)(new semver_1.SemVer(version));
           return { version, experimentalVersion };
         }
       } catch {
