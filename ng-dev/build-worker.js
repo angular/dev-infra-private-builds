@@ -38328,9 +38328,8 @@ var require_git_client = __commonJS({
     var github_1 = require_github();
     var github_urls_1 = require_github_urls();
     var GitCommandError = class extends Error {
-      constructor(client, args) {
-        super(`Command failed: git ${client.sanitizeConsoleOutput(args.join(" "))}`);
-        this.args = args;
+      constructor(client, unsanitizedArgs) {
+        super(`Command failed: git ${client.sanitizeConsoleOutput(unsanitizedArgs.join(" "))}`);
       }
     };
     exports2.GitCommandError = GitCommandError;

@@ -41740,9 +41740,8 @@ var require_git_client = __commonJS({
     var github_1 = require_github();
     var github_urls_1 = require_github_urls();
     var GitCommandError = class extends Error {
-      constructor(client, args) {
-        super(`Command failed: git ${client.sanitizeConsoleOutput(args.join(" "))}`);
-        this.args = args;
+      constructor(client, unsanitizedArgs) {
+        super(`Command failed: git ${client.sanitizeConsoleOutput(unsanitizedArgs.join(" "))}`);
       }
     };
     exports2.GitCommandError = GitCommandError;
@@ -73222,7 +73221,7 @@ var require_version_check = __commonJS({
     var console_12 = require_console();
     async function verifyNgDevToolIsUpToDate(workspacePath) {
       var _a, _b, _c, _d, _e;
-      const localVersion = `0.0.0-0b4cae4acd9d42f33af92951947a30d6aa165070`;
+      const localVersion = `0.0.0-c24f7bfcd036159d7dcf4df74e6248f9e37c99d9`;
       const workspacePackageJsonFile = path.join(workspacePath, constants_1.workspaceRelativePackageJsonPath);
       const workspaceDirLockFile = path.join(workspacePath, constants_1.workspaceRelativeYarnLockFilePath);
       try {
