@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+"use strict";
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;
@@ -24,18 +25,18 @@ var __spreadValues = (a, b) => {
 var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
 var __markAsModule = (target) => __defProp(target, "__esModule", { value: true });
 var __commonJS = (cb, mod2) => function __require() {
-  return mod2 || (0, cb[Object.keys(cb)[0]])((mod2 = { exports: {} }).exports, mod2), mod2.exports;
+  return mod2 || (0, cb[__getOwnPropNames(cb)[0]])((mod2 = { exports: {} }).exports, mod2), mod2.exports;
 };
-var __reExport = (target, module2, desc) => {
+var __reExport = (target, module2, copyDefault, desc) => {
   if (module2 && typeof module2 === "object" || typeof module2 === "function") {
     for (let key of __getOwnPropNames(module2))
-      if (!__hasOwnProp.call(target, key) && key !== "default")
+      if (!__hasOwnProp.call(target, key) && (copyDefault || key !== "default"))
         __defProp(target, key, { get: () => module2[key], enumerable: !(desc = __getOwnPropDesc(module2, key)) || desc.enumerable });
   }
   return target;
 };
-var __toModule = (module2) => {
-  return __reExport(__markAsModule(__defProp(module2 != null ? __create(__getProtoOf(module2)) : {}, "default", module2 && module2.__esModule && "default" in module2 ? { get: () => module2.default, enumerable: true } : { value: module2, enumerable: true })), module2);
+var __toESM = (module2, isNodeMode) => {
+  return __reExport(__markAsModule(__defProp(module2 != null ? __create(__getProtoOf(module2)) : {}, "default", !isNodeMode && module2 && module2.__esModule ? { get: () => module2.default, enumerable: true } : { value: module2, enumerable: true })), module2);
 };
 
 // node_modules/y18n/build/index.cjs
@@ -868,7 +869,7 @@ var require_build2 = __commonJS({
         }
         function applyCoercions(argv2) {
           let coerce;
-          const applied = new Set();
+          const applied = /* @__PURE__ */ new Set();
           Object.keys(argv2).forEach(function(key) {
             if (!applied.has(key)) {
               coerce = checkAllAliases(key, flags.coercions);
@@ -2293,7 +2294,7 @@ var require_ansi_styles = __commonJS({
       return styles;
     };
     function assembleStyles() {
-      const codes = new Map();
+      const codes = /* @__PURE__ */ new Map();
       const styles = {
         modifier: {
           reset: [0, 0],
@@ -2388,7 +2389,7 @@ var require_wrap_ansi = __commonJS({
     var stringWidth = require_string_width();
     var stripAnsi = require_strip_ansi();
     var ansiStyles = require_ansi_styles();
-    var ESCAPES = new Set([
+    var ESCAPES = /* @__PURE__ */ new Set([
       "",
       "\x9B"
     ]);
@@ -3115,7 +3116,7 @@ var require_build4 = __commonJS({
     var _ = /(^\*)|(^\$0)/;
     var M = class {
       constructor(t2, e2, s2, i2) {
-        this.requireCache = new Set(), this.handlers = {}, this.aliasMap = {}, this.frozens = [], this.shim = i2, this.usage = t2, this.globalMiddleware = s2, this.validation = e2;
+        this.requireCache = /* @__PURE__ */ new Set(), this.handlers = {}, this.aliasMap = {}, this.frozens = [], this.shim = i2, this.usage = t2, this.globalMiddleware = s2, this.validation = e2;
       }
       addDirectory(t2, e2, s2, i2) {
         typeof (i2 = i2 || {}).recurse != "boolean" && (i2.recurse = false), Array.isArray(i2.extensions) || (i2.extensions = ["js"]);
@@ -3334,7 +3335,7 @@ var require_build4 = __commonJS({
         d(t2, void 0, this.shim), { handlers: this.handlers, aliasMap: this.aliasMap, defaultCommand: this.defaultCommand } = t2;
       }
       reset() {
-        return this.handlers = {}, this.aliasMap = {}, this.defaultCommand = void 0, this.requireCache = new Set(), this;
+        return this.handlers = {}, this.aliasMap = {}, this.defaultCommand = void 0, this.requireCache = /* @__PURE__ */ new Set(), this;
       }
     };
     function k(t2) {
@@ -4160,7 +4161,7 @@ compdef _{{app_name}}_yargs_completions {{app_name}}
       wrap(t2) {
         return h("<number|null|undefined>", [t2], arguments.length), v(this, ut, "f").wrap(t2), this;
       }
-      [(z = new WeakMap(), q = new WeakMap(), W = new WeakMap(), U = new WeakMap(), F = new WeakMap(), L = new WeakMap(), V = new WeakMap(), T = new WeakMap(), R = new WeakMap(), G = new WeakMap(), K = new WeakMap(), B = new WeakMap(), Y = new WeakMap(), J = new WeakMap(), Z = new WeakMap(), X = new WeakMap(), Q = new WeakMap(), tt = new WeakMap(), et = new WeakMap(), st = new WeakMap(), it = new WeakMap(), nt = new WeakMap(), rt = new WeakMap(), ot = new WeakMap(), at = new WeakMap(), ht = new WeakMap(), lt = new WeakMap(), ct = new WeakMap(), ft = new WeakMap(), dt = new WeakMap(), ut = new WeakMap(), pt = new WeakMap(), gt = new WeakMap(), mt)](t2) {
+      [(z = /* @__PURE__ */ new WeakMap(), q = /* @__PURE__ */ new WeakMap(), W = /* @__PURE__ */ new WeakMap(), U = /* @__PURE__ */ new WeakMap(), F = /* @__PURE__ */ new WeakMap(), L = /* @__PURE__ */ new WeakMap(), V = /* @__PURE__ */ new WeakMap(), T = /* @__PURE__ */ new WeakMap(), R = /* @__PURE__ */ new WeakMap(), G = /* @__PURE__ */ new WeakMap(), K = /* @__PURE__ */ new WeakMap(), B = /* @__PURE__ */ new WeakMap(), Y = /* @__PURE__ */ new WeakMap(), J = /* @__PURE__ */ new WeakMap(), Z = /* @__PURE__ */ new WeakMap(), X = /* @__PURE__ */ new WeakMap(), Q = /* @__PURE__ */ new WeakMap(), tt = /* @__PURE__ */ new WeakMap(), et = /* @__PURE__ */ new WeakMap(), st = /* @__PURE__ */ new WeakMap(), it = /* @__PURE__ */ new WeakMap(), nt = /* @__PURE__ */ new WeakMap(), rt = /* @__PURE__ */ new WeakMap(), ot = /* @__PURE__ */ new WeakMap(), at = /* @__PURE__ */ new WeakMap(), ht = /* @__PURE__ */ new WeakMap(), lt = /* @__PURE__ */ new WeakMap(), ct = /* @__PURE__ */ new WeakMap(), ft = /* @__PURE__ */ new WeakMap(), dt = /* @__PURE__ */ new WeakMap(), ut = /* @__PURE__ */ new WeakMap(), pt = /* @__PURE__ */ new WeakMap(), gt = /* @__PURE__ */ new WeakMap(), mt)](t2) {
         if (!t2._ || !t2["--"])
           return t2;
         t2._.push.apply(t2._, t2["--"]);
@@ -4795,7 +4796,7 @@ var require_templates = __commonJS({
     var STYLE_REGEX = /(?:^|\.)(\w+)(?:\(([^)]*)\))?/g;
     var STRING_REGEX = /^(['"])((?:\\.|(?!\1)[^\\])*)\1$/;
     var ESCAPE_REGEX = /\\(u(?:[a-f\d]{4}|{[a-f\d]{1,6}})|x[a-f\d]{2}|.)|([^\\])/gi;
-    var ESCAPES = new Map([
+    var ESCAPES = /* @__PURE__ */ new Map([
       ["n", "\n"],
       ["r", "\r"],
       ["t", "	"],
@@ -14473,7 +14474,7 @@ var require_distinct = __commonJS({
     var noop_1 = require_noop();
     function distinct(keySelector, flushes) {
       return lift_1.operate(function(source, subscriber) {
-        var distinctKeys = new Set();
+        var distinctKeys = /* @__PURE__ */ new Set();
         source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
           var key = keySelector ? keySelector(value) : value;
           if (!distinctKeys.has(key)) {
@@ -14908,7 +14909,7 @@ var require_groupBy = __commonJS({
         } else {
           duration = elementOrOptions.duration, element = elementOrOptions.element, connector = elementOrOptions.connector;
         }
-        var groups = new Map();
+        var groups = /* @__PURE__ */ new Map();
         var notify = function(cb) {
           groups.forEach(cb);
           cb(subscriber);
@@ -19263,7 +19264,7 @@ var require_onetime = __commonJS({
   "node_modules/onetime/index.js"(exports2, module2) {
     "use strict";
     var mimicFn = require_mimic_fn();
-    var calledFunctions = new WeakMap();
+    var calledFunctions = /* @__PURE__ */ new WeakMap();
     var onetime = (function_, options = {}) => {
       if (typeof function_ !== "function") {
         throw new TypeError("Expected a function");
@@ -21824,7 +21825,7 @@ var require_buffer_list = __commonJS({
     function copyBuffer(src, target, offset) {
       Buffer2.prototype.copy.call(src, target, offset);
     }
-    module2.exports = function() {
+    module2.exports = /* @__PURE__ */ function() {
       function BufferList() {
         _classCallCheck(this, BufferList);
         this.head = null;
@@ -37064,11 +37065,11 @@ var require_url_state_machine = __commonJS({
     function isC0ControlPercentEncode(c) {
       return c <= 31 || c > 126;
     }
-    var extraPathPercentEncodeSet = new Set([32, 34, 35, 60, 62, 63, 96, 123, 125]);
+    var extraPathPercentEncodeSet = /* @__PURE__ */ new Set([32, 34, 35, 60, 62, 63, 96, 123, 125]);
     function isPathPercentEncode(c) {
       return isC0ControlPercentEncode(c) || extraPathPercentEncodeSet.has(c);
     }
-    var extraUserinfoPercentEncodeSet = new Set([47, 58, 59, 61, 64, 91, 92, 93, 94, 124]);
+    var extraUserinfoPercentEncodeSet = /* @__PURE__ */ new Set([47, 58, 59, 61, 64, 91, 92, 93, 94, 124]);
     function isUserinfoPercentEncode(c) {
       return isPathPercentEncode(c) || extraUserinfoPercentEncodeSet.has(c);
     }
@@ -37712,7 +37713,7 @@ var require_url_state_machine = __commonJS({
       }
       return true;
     };
-    var fileOtherwiseCodePoints = new Set([47, 92, 63, 35]);
+    var fileOtherwiseCodePoints = /* @__PURE__ */ new Set([47, 92, 63, 35]);
     URLStateMachine.prototype["parse file"] = function parseFile(c) {
       this.url.scheme = "file";
       if (c === 47 || c === 92) {
@@ -41480,13 +41481,13 @@ var require_dist = __commonJS({
     }
     function render(value) {
       var context = {
-        fragments: new Map()
+        fragments: /* @__PURE__ */ new Map()
       };
       var rend = renderObject(void 0, value, context);
-      var rendered = new Map();
+      var rendered = /* @__PURE__ */ new Map();
       var executingContext = context;
       var currentContext = {
-        fragments: new Map()
+        fragments: /* @__PURE__ */ new Map()
       };
       while (executingContext.fragments.size > 0) {
         for (var _i = 0, _a = Array.from(executingContext.fragments.entries()); _i < _a.length; _i++) {
@@ -41497,18 +41498,18 @@ var require_dist = __commonJS({
         }
         executingContext = currentContext;
         currentContext = {
-          fragments: new Map()
+          fragments: /* @__PURE__ */ new Map()
         };
       }
       return rend + Array.from(rendered.values()).join("");
     }
     function fragmentToString(value) {
       var context = {
-        fragments: new Map()
+        fragments: /* @__PURE__ */ new Map()
       };
       renderObject(void 0, value, context);
       var currentContext = {
-        fragments: new Map()
+        fragments: /* @__PURE__ */ new Map()
       };
       var output = "";
       for (var _i = 0, _a = Array.from(context.fragments.entries()); _i < _a.length; _i++) {
@@ -41814,7 +41815,7 @@ var require_git_client = __commonJS({
         return this.runGraceful(["checkout", branchOrRevision], { stdio: "ignore" }).status === 0;
       }
       allChangesFilesSince(shaOrRef = "HEAD") {
-        return Array.from(new Set([
+        return Array.from(/* @__PURE__ */ new Set([
           ...gitOutputAsArray(this.runGraceful(["diff", "--name-only", "--diff-filter=d", shaOrRef])),
           ...gitOutputAsArray(this.runGraceful(["ls-files", "--others", "--exclude-standard"]))
         ]));
@@ -43419,7 +43420,7 @@ var require_lru_cache = __commonJS({
         if (this[DISPOSE] && this[LRU_LIST] && this[LRU_LIST].length) {
           this[LRU_LIST].forEach((hit) => this[DISPOSE](hit.key, hit.value));
         }
-        this[CACHE] = new Map();
+        this[CACHE] = /* @__PURE__ */ new Map();
         this[LRU_LIST] = new Yallist();
         this[LENGTH] = 0;
       }
@@ -43650,7 +43651,7 @@ var require_range2 = __commonJS({
         const compRe = loose ? re[t.COMPARATORLOOSE] : re[t.COMPARATOR];
         const rangeList = range.split(" ").map((comp) => parseComparator(comp, this.options)).join(" ").split(/\s+/).map((comp) => replaceGTE0(comp, this.options)).filter(this.options.loose ? (comp) => !!comp.match(compRe) : () => true).map((comp) => new Comparator(comp, this.options));
         const l = rangeList.length;
-        const rangeMap = new Map();
+        const rangeMap = /* @__PURE__ */ new Map();
         for (const comp of rangeList) {
           if (isNullSet(comp))
             return [comp];
@@ -44369,7 +44370,7 @@ var require_subset = __commonJS({
         else
           dom = [new Comparator(">=0.0.0")];
       }
-      const eqSet = new Set();
+      const eqSet = /* @__PURE__ */ new Set();
       let gt, lt;
       for (const c of sub) {
         if (c.operator === ">" || c.operator === ">=")
@@ -48183,7 +48184,7 @@ ${indent}${s}` : "\n";
         return map;
       }
       toJSON(_, ctx) {
-        const pair = ctx && ctx.mapAsMap ? new Map() : {};
+        const pair = ctx && ctx.mapAsMap ? /* @__PURE__ */ new Map() : {};
         return this.addToJSMap(ctx, pair);
       }
       toString(ctx, onComment, onChompKeep) {
@@ -48418,7 +48419,7 @@ ${ctx.indent}`;
         this.add(new Pair(key, value), true);
       }
       toJSON(_, ctx, Type) {
-        const map = Type ? new Type() : ctx && ctx.mapAsMap ? new Map() : {};
+        const map = Type ? new Type() : ctx && ctx.mapAsMap ? /* @__PURE__ */ new Map() : {};
         if (ctx && ctx.onCreate)
           ctx.onCreate(map);
         for (const item of this.items)
@@ -49921,7 +49922,7 @@ ${pair.comment}` : item.comment;
         this.tag = YAMLOMap.tag;
       }
       toJSON(_, ctx) {
-        const map = new Map();
+        const map = /* @__PURE__ */ new Map();
         if (ctx && ctx.onCreate)
           ctx.onCreate(map);
         for (const pair of this.items) {
@@ -50772,7 +50773,7 @@ var require_Document_9b4560a1 = __commonJS({
         const createCtx = {
           aliasNodes: [],
           onTagObj: (o) => tagObj = o,
-          prevObjects: new Map()
+          prevObjects: /* @__PURE__ */ new Map()
         };
         item = schema.createNode(item, true, null, createCtx);
         for (const alias of createCtx.aliasNodes) {
@@ -62444,7 +62445,7 @@ var require_utils4 = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.getOrCreateGlob = void 0;
     var minimatch_1 = require_minimatch();
-    var patternCache = new Map();
+    var patternCache = /* @__PURE__ */ new Map();
     function getOrCreateGlob(pattern) {
       if (patternCache.has(pattern)) {
         return patternCache.get(pattern);
@@ -62566,7 +62567,7 @@ var require_group = __commonJS({
               this.conditions.push({
                 expression,
                 checkFn: (0, condition_evaluator_1.convertConditionToFunction)(expression),
-                matchedFiles: new Set(),
+                matchedFiles: /* @__PURE__ */ new Set(),
                 unverifiable: false
               });
             } catch (e) {
@@ -63598,7 +63599,7 @@ var require_context = __commonJS({
         });
       }
       asCommitGroups(commits) {
-        const groups = new Map();
+        const groups = /* @__PURE__ */ new Map();
         commits.forEach((commit) => {
           const key = commit.groupName;
           const groupCommits = groups.get(key) || [];
@@ -63638,7 +63639,7 @@ var require_context = __commonJS({
         };
       }
       unique(field) {
-        const set = new Set();
+        const set = /* @__PURE__ */ new Set();
         return (commit) => {
           const include = !set.has(commit[field]);
           set.add(commit[field]);
@@ -63872,7 +63873,7 @@ var require_get_commits_in_range = __commonJS({
       const commits = [];
       const commitsForHead = fetchCommitsForRevisionRange(client, `${baseRef}..${headRef}`);
       const commitsForBase = fetchCommitsForRevisionRange(client, `${headRef}..${baseRef}`);
-      const knownCommitsOnlyInBase = new Map();
+      const knownCommitsOnlyInBase = /* @__PURE__ */ new Map();
       for (const commit of commitsForBase) {
         const id = (0, unique_commit_id_1.computeUniqueIdFromCommitMessage)(commit);
         const numSimilarCommits = (_a = knownCommitsOnlyInBase.get(id)) != null ? _a : 0;
@@ -64888,7 +64889,7 @@ var require_lockfile = __commonJS({
               };
             })();
             const artifactFiles = new Set(events.artifactFiles || []);
-            const files = new Set();
+            const files = /* @__PURE__ */ new Set();
             for (var _iterator = queue, _isArray = Array.isArray(_iterator), _i = 0, _iterator = _isArray ? _iterator : _iterator[Symbol.iterator](); ; ) {
               var _ref2;
               if (_isArray) {
@@ -65122,7 +65123,7 @@ var require_lockfile = __commonJS({
               };
             })();
             const artifactFiles = new Set(events.artifactFiles || []);
-            const files = new Set();
+            const files = /* @__PURE__ */ new Set();
             for (var _iterator7 = queue, _isArray7 = Array.isArray(_iterator7), _i7 = 0, _iterator7 = _isArray7 ? _iterator7 : _iterator7[Symbol.iterator](); ; ) {
               var _ref10;
               if (_isArray7) {
@@ -65198,14 +65199,14 @@ var require_lockfile = __commonJS({
             const events = {
               onStart: _events && _events.onStart || noop,
               onProgress: _events && _events.onProgress || noop,
-              possibleExtraneous: _events ? _events.possibleExtraneous : new Set(),
+              possibleExtraneous: _events ? _events.possibleExtraneous : /* @__PURE__ */ new Set(),
               ignoreBasenames: _events && _events.ignoreBasenames || [],
               artifactFiles: _events && _events.artifactFiles || []
             };
             const actions = yield buildActionsForCopy(queue, events, events.possibleExtraneous, reporter);
             events.onStart(actions.file.length + actions.symlink.length + actions.link.length);
             const fileActions = actions.file;
-            const currentlyWriting = new Map();
+            const currentlyWriting = /* @__PURE__ */ new Map();
             yield (_promise || _load_promise()).queue(fileActions, (() => {
               var _ref18 = (0, (_asyncToGenerator2 || _load_asyncToGenerator()).default)(function* (data) {
                 let writePromise;
@@ -65240,7 +65241,7 @@ var require_lockfile = __commonJS({
             const events = {
               onStart: _events && _events.onStart || noop,
               onProgress: _events && _events.onProgress || noop,
-              possibleExtraneous: _events ? _events.possibleExtraneous : new Set(),
+              possibleExtraneous: _events ? _events.possibleExtraneous : /* @__PURE__ */ new Set(),
               artifactFiles: _events && _events.artifactFiles || [],
               ignoreBasenames: []
             };
@@ -65373,7 +65374,7 @@ var require_lockfile = __commonJS({
           };
         })();
         let walk = exports3.walk = (() => {
-          var _ref27 = (0, (_asyncToGenerator2 || _load_asyncToGenerator()).default)(function* (dir, relativeDir, ignoreBasenames = new Set()) {
+          var _ref27 = (0, (_asyncToGenerator2 || _load_asyncToGenerator()).default)(function* (dir, relativeDir, ignoreBasenames = /* @__PURE__ */ new Set()) {
             let files = [];
             let filenames = yield readdir(dir);
             if (ignoreBasenames.size) {
@@ -66060,7 +66061,7 @@ var require_lockfile = __commonJS({
           }
           getLockfile(patterns) {
             const lockfile = {};
-            const seen = new Map();
+            const seen = /* @__PURE__ */ new Map();
             const sortedPatternsKeys = Object.keys(patterns).sort((_misc || _load_misc()).sortAlpha);
             for (var _iterator = sortedPatternsKeys, _isArray = Array.isArray(_iterator), _i = 0, _iterator = _isArray ? _iterator : _iterator[Symbol.iterator](); ; ) {
               var _ref;
@@ -73221,7 +73222,7 @@ var require_version_check = __commonJS({
     var console_12 = require_console();
     async function verifyNgDevToolIsUpToDate(workspacePath) {
       var _a, _b, _c, _d, _e;
-      const localVersion = `0.0.0-dbba62b87b3430bb642726f82c5d29f8fcbaf33f`;
+      const localVersion = `0.0.0-42dec99344edf1dd5884aff547826cbe8ac30a45`;
       const workspacePackageJsonFile = path.join(workspacePath, constants_1.workspaceRelativePackageJsonPath);
       const workspaceDirLockFile = path.join(workspacePath, constants_1.workspaceRelativeYarnLockFilePath);
       try {
@@ -75151,11 +75152,11 @@ var require_analyzer = __commonJS({
       constructor(resolveModuleFn, extensions = DEFAULT_EXTENSIONS) {
         this.resolveModuleFn = resolveModuleFn;
         this.extensions = extensions;
-        this._sourceFileCache = new Map();
-        this.unresolvedModules = new Set();
-        this.unresolvedFiles = new Map();
+        this._sourceFileCache = /* @__PURE__ */ new Map();
+        this.unresolvedModules = /* @__PURE__ */ new Set();
+        this.unresolvedFiles = /* @__PURE__ */ new Map();
       }
-      findCycles(sf, visited = new WeakSet(), path = []) {
+      findCycles(sf, visited = /* @__PURE__ */ new WeakSet(), path = []) {
         const previousIndex = path.indexOf(sf);
         if (previousIndex !== -1) {
           return [path.slice(previousIndex)];
@@ -75371,7 +75372,7 @@ var require_ts_circular_dependencies = __commonJS({
       const { baseDir, goldenFile, glob, resolveModule, approveCommand } = config;
       const analyzer = new analyzer_1.Analyzer(resolveModule);
       const cycles = [];
-      const checkedNodes = new WeakSet();
+      const checkedNodes = /* @__PURE__ */ new WeakSet();
       (0, glob_1.sync)(glob, { absolute: true, ignore: ["**/node_modules/**"] }).forEach((filePath) => {
         const sourceFile = analyzer.getSourceFile(filePath);
         cycles.push(...analyzer.findCycles(sourceFile, checkedNodes));
@@ -77827,7 +77828,6 @@ var require_cli28 = __commonJS({
 });
 
 // bazel-out/k8-fastbuild/bin/ng-dev/cli.mjs
-"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var yargs = require_yargs();
 var cli_1 = require_cli3();
