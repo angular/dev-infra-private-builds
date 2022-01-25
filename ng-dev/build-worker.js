@@ -9931,7 +9931,7 @@ var require_auditTime = __commonJS({
     var timer_1 = require_timer();
     function auditTime(duration, scheduler) {
       if (scheduler === void 0) {
-        scheduler = async_1.async;
+        scheduler = async_1.asyncScheduler;
       }
       return audit_1.audit(function() {
         return timer_1.timer(duration, scheduler);
@@ -12982,7 +12982,7 @@ var require_timeInterval = __commonJS({
     var map_1 = require_map();
     function timeInterval(scheduler) {
       if (scheduler === void 0) {
-        scheduler = async_1.async;
+        scheduler = async_1.asyncScheduler;
       }
       return function(source) {
         return defer_1.defer(function() {
@@ -36241,7 +36241,7 @@ var require_dist_node5 = __commonJS({
     var isPlainObject = require_is_plain_object();
     var nodeFetch = _interopDefault(require_lib3());
     var requestError = require_dist_node4();
-    var VERSION = "5.6.2";
+    var VERSION = "5.6.3";
     function getBufferResponse(response) {
       return response.arrayBuffer();
     }
