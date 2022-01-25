@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-0c7fddfb60bdb656cfd64f6fb203bf1b0fcff765",
+  "version": "0.0.0-306f8cd732f17827ea26e3ebc4d46a9836624d99",
   "bin": {
     "ng-dev": "./ng-dev/cli-bundle.js"
   },
