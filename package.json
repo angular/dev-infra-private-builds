@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-19bdffcfc0664cd8631d0fc10b6cdb1ba311a149",
+  "version": "0.0.0-354871956801929457d9f08482fb81f7012ed7c8",
   "bin": {
     "ng-dev": "./ng-dev/cli-bundle.js"
   },
@@ -33,8 +33,11 @@
     "@octokit/request-error": "^2.1.0",
     "@octokit/rest": "^18.7.0",
     "@octokit/types": "^6.16.6",
+    "@types/browser-sync": "^2.26.3",
+    "@types/send": "^0.17.1",
     "@types/tmp": "^0.2.1",
     "@yarnpkg/lockfile": "^1.1.0",
+    "browser-sync": "^2.27.7",
     "chalk": "^4.1.0",
     "clang-format": "^1.4.0",
     "cli-progress": "^3.7.0",
@@ -53,6 +56,7 @@
     "protractor": "^7.0.0",
     "selenium-webdriver": "4.1.1",
     "semver": "^7.3.5",
+    "send": "^0.17.2",
     "tmp": "^0.2.1",
     "true-case-path": "^2.2.1",
     "ts-node": "^10.2.1",
@@ -88,6 +92,7 @@
     "@types/semver": "^7.3.6",
     "@types/shelljs": "^0.8.8",
     "@types/uuid": "^8.3.1",
+    "@types/wait-on": "^5.3.1",
     "@types/which": "^2.0.1",
     "@types/yargs": "^17.0.0",
     "@types/yarnpkg__lockfile": "^1.1.5",
@@ -97,6 +102,7 @@
     "protobufjs": "^6.11.2",
     "rxjs": "^7.4.0",
     "uglify-js": "^3.14.2",
+    "wait-on": "^6.0.0",
     "zone.js": "^0.11.4"
   }
 }
