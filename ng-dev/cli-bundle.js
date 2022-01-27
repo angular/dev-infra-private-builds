@@ -71584,7 +71584,7 @@ var require_external_commands = __commonJS({
     exports2.invokeSetNpmDistCommand = invokeSetNpmDistCommand;
     async function invokeReleaseBuildCommand(projectDir) {
       const yarnCommand = await (0, resolve_yarn_bin_1.resolveYarnScriptForProject)(projectDir);
-      const spinner = new spinner_1.Spinner("Building release output.");
+      const spinner = new spinner_1.Spinner("Building release output. This can take a few minutes.");
       try {
         const { stdout } = await (0, child_process_1.spawn)(yarnCommand.binary, [...yarnCommand.args, "--silent", "ng-dev", "release", "build", "--json"], {
           cwd: projectDir,
@@ -72497,7 +72497,7 @@ var require_version_check = __commonJS({
     var console_12 = require_console();
     async function verifyNgDevToolIsUpToDate(workspacePath) {
       var _a, _b, _c, _d, _e;
-      const localVersion = `0.0.0-8298e121c51960857ef39abc16b743775ff6be68`;
+      const localVersion = `0.0.0-5fbb98b93a3b3f60cc9d2646a6e75359e3c0ea2e`;
       const workspacePackageJsonFile = path.join(workspacePath, constants_1.workspaceRelativePackageJsonPath);
       const workspaceDirLockFile = path.join(workspacePath, constants_1.workspaceRelativeYarnLockFilePath);
       try {
