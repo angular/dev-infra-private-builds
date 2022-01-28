@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-024a043197449391c992dae47d83885785cf4f54",
+  "version": "0.0.0-4f0d7cde096defc287180813a61fc39664de5ef9",
   "bin": {
     "ng-dev": "./ng-dev/cli-bundle.js"
   },
@@ -104,5 +104,6 @@
     "uglify-js": "^3.14.2",
     "wait-on": "^6.0.0",
     "zone.js": "^0.11.4"
-  }
+  },
+  "packageManager": "yarn@3.1.1"
 }
