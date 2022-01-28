@@ -59748,7 +59748,7 @@ var require_prettier = __commonJS({
         super(...arguments);
         this.name = "prettier";
         this.binaryFilePath = (0, path_1.join)(this.git.baseDir, "node_modules/.bin/prettier");
-        this.defaultFileMatcher = ["**/*.{t,j,cj,mj}s"];
+        this.defaultFileMatcher = ["**/*.{js,cjs,mjs}", "**/*.{ts,cts,mts}", "**/*.json"];
         this.configPath = this.config["prettier"] ? (0, child_process_1.spawnSync)(this.binaryFilePath, ["--find-config-path", "."]).stdout.trim() : "";
         this.actions = {
           check: {
@@ -72497,7 +72497,7 @@ var require_version_check = __commonJS({
     var console_12 = require_console();
     async function verifyNgDevToolIsUpToDate(workspacePath) {
       var _a, _b, _c, _d, _e;
-      const localVersion = `0.0.0-f57a99a6241e527525b39fef39e067962a059a72`;
+      const localVersion = `0.0.0-74828db9bd78d604a8c9f3d199031f1ab2c948f6`;
       const workspacePackageJsonFile = path.join(workspacePath, constants_1.workspaceRelativePackageJsonPath);
       const workspaceDirLockFile = path.join(workspacePath, constants_1.workspaceRelativeYarnLockFilePath);
       try {
