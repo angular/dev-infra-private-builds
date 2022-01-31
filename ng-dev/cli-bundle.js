@@ -76056,7 +76056,7 @@ var require_version_check = __commonJS({
     var console_12 = require_console();
     async function verifyNgDevToolIsUpToDate(workspacePath) {
       var _a, _b, _c, _d, _e;
-      const localVersion = `0.0.0-2f41657901d15efb8e7fd1a4bf044357d3f51d79`;
+      const localVersion = `0.0.0-c922f5b23611024bc9d94833ae147f6048ab0275`;
       const workspacePackageJsonFile = path.join(workspacePath, constants_1.workspaceRelativePackageJsonPath);
       const workspaceDirLockFile = path.join(workspacePath, constants_1.workspaceRelativeYarnLockFilePath);
       try {
@@ -76367,6 +76367,7 @@ var require_env_stamp = __commonJS({
       console.info(`BUILD_SCM_BRANCH ${getCurrentBranch(git)}`);
       console.info(`BUILD_SCM_COMMIT_SHA ${getCurrentSha(git)}`);
       console.info(`BUILD_SCM_HASH ${getCurrentSha(git)}`);
+      console.info(`BUILD_SCM_ABBREV_HASH ${getCurrentAbbrevSha(git)}`);
       console.info(`BUILD_SCM_BRANCH ${getCurrentBranchOrRevision(git)}`);
       console.info(`BUILD_SCM_LOCAL_CHANGES ${hasLocalChanges(git)}`);
       console.info(`BUILD_SCM_USER ${getCurrentGitUser(git)}`);
@@ -76417,6 +76418,13 @@ var require_env_stamp = __commonJS({
     function getCurrentSha(git) {
       try {
         return git.run(["rev-parse", "HEAD"]).stdout.trim();
+      } catch {
+        return "";
+      }
+    }
+    function getCurrentAbbrevSha(git) {
+      try {
+        return git.run(["rev-parse", "--short", "HEAD"]).stdout.trim();
       } catch {
         return "";
       }
