@@ -49288,9 +49288,9 @@ var require_array_differ = __commonJS({
   }
 });
 
-// node_modules/multimatch/node_modules/arrify/index.js
+// node_modules/arrify/index.js
 var require_arrify = __commonJS({
-  "node_modules/multimatch/node_modules/arrify/index.js"(exports2, module2) {
+  "node_modules/arrify/index.js"(exports2, module2) {
     "use strict";
     var arrify = (value) => {
       if (value === null || value === void 0) {
@@ -76056,7 +76056,7 @@ var require_version_check = __commonJS({
     var console_12 = require_console();
     async function verifyNgDevToolIsUpToDate(workspacePath) {
       var _a, _b, _c, _d, _e;
-      const localVersion = `0.0.0-366b75358638462665784668cb763f3721ee8cc8`;
+      const localVersion = `0.0.0-7ee6505210cff833b83ce05725368f74166c42f3`;
       const workspacePackageJsonFile = path.join(workspacePath, constants_1.workspaceRelativePackageJsonPath);
       const workspaceDirLockFile = path.join(workspacePath, constants_1.workspaceRelativeYarnLockFilePath);
       try {

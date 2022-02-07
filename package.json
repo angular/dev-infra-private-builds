@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-366b75358638462665784668cb763f3721ee8cc8",
+  "version": "0.0.0-7ee6505210cff833b83ce05725368f74166c42f3",
   "bin": {
     "ng-dev": "./ng-dev/cli-bundle.js"
   },
@@ -78,6 +78,7 @@
     "@angular/compiler-cli": "14.0.0-next.1",
     "@angular/core": "14.0.0-next.1",
     "@angular/platform-browser": "14.0.0-next.1",
+    "@google-cloud/storage": "^5.18.1",
     "@octokit/graphql-schema": "^10.72.0",
     "@types/cli-progress": "^3.9.1",
     "@types/conventional-commits-parser": "^3.0.1",
