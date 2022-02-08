@@ -15,7 +15,7 @@ import { ActiveReleaseTrains } from '../../../release/versioning';
  * throwing an error otherwise.
  * @throws {PullRequestFailure}
  */
-export declare function assertChangesAllowForTargetLabel(commits: Commit[], label: TargetLabel, config: PullRequestConfig, releaseTrains: ActiveReleaseTrains): void;
+export declare function assertChangesAllowForTargetLabel(commits: Commit[], label: TargetLabel, config: PullRequestConfig, releaseTrains: ActiveReleaseTrains, labelsOnPullRequest: string[]): void;
 /**
  * Assert the pull request has the proper label for breaking changes if there are breaking change
  * commits, and only has the label if there are breaking change commits.

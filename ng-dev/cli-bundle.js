@@ -64128,7 +64128,11 @@ var require_validations = __commonJS({
     var failures_1 = require_failures();
     var console_12 = require_console();
     var fetch_pull_request_1 = require_fetch_pull_request();
-    function assertChangesAllowForTargetLabel(commits, label, config, releaseTrains) {
+    function assertChangesAllowForTargetLabel(commits, label, config, releaseTrains, labelsOnPullRequest) {
+      if (!!config.commitMessageFixupLabel && labelsOnPullRequest.some((name) => matchesPattern(name, config.commitMessageFixupLabel))) {
+        (0, console_12.debug)("Skipping commit message target label validation because the commit message fixup label is applied.");
+        return;
+      }
       const exemptedScopes = config.targetLabelExemptScopes || [];
       commits = commits.filter((commit) => !exemptedScopes.includes(commit.scope));
       const hasBreakingChanges = commits.some((commit) => commit.breakingChanges.length !== 0);
@@ -64284,7 +64288,7 @@ var require_target_label = __commonJS({
         const targetLabels = await (0, labels_1.getTargetLabelsForActiveReleaseTrains)(releaseTrains, api, config);
         const matchingLabel = await getMatchingTargetLabelForPullRequest(config.pullRequest, labelsOnPullRequest, targetLabels);
         const targetBranches = await getBranchesFromTargetLabel(matchingLabel, githubTargetBranch);
-        (0, validations_1.assertChangesAllowForTargetLabel)(commits, matchingLabel, config.pullRequest, releaseTrains);
+        (0, validations_1.assertChangesAllowForTargetLabel)(commits, matchingLabel, config.pullRequest, releaseTrains, labelsOnPullRequest);
         return targetBranches;
       } catch (error) {
         if (error instanceof InvalidTargetBranchError || error instanceof InvalidTargetLabelError) {
@@ -76081,7 +76085,7 @@ var require_version_check = __commonJS({
     var console_12 = require_console();
     async function verifyNgDevToolIsUpToDate(workspacePath) {
       var _a, _b, _c, _d, _e;
-      const localVersion = `0.0.0-ea10bc11429093f71506927aac9da864ce775b4f`;
+      const localVersion = `0.0.0-1c1d5c5d28f1c670ecdf9615c4e62a87f48151ee`;
       const workspacePackageJsonFile = path.join(workspacePath, constants_1.workspaceRelativePackageJsonPath);
       const workspaceDirLockFile = path.join(workspacePath, constants_1.workspaceRelativeYarnLockFilePath);
       try {
