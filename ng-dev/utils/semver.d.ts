@@ -11,5 +11,3 @@ import * as semver from 'semver';
  * the version is cloned to not modify the original version instance.
  */
 export declare function semverInc(version: semver.SemVer, release: semver.ReleaseType, identifier?: string): semver.SemVer;
-/** Creates the equivalent experimental version for a provided SemVer. */
-export declare function createExperimentalSemver(version: string | semver.SemVer): semver.SemVer;

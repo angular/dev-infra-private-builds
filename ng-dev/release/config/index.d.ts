@@ -13,12 +13,32 @@ export interface BuiltPackage {
     /** Path to the package output directory. */
     outputPath: string;
 }
+/** Interface describing a NPM package that will be released. */
+export interface NpmPackage {
+    /** Name of the package. */
+    name: string;
+    /**
+     * Whether the package is experimental.
+     *
+     * Packages marked as experimental will use experimental SemVer versioning
+     * and will not have any LTS dist tags configured.
+     */
+    experimental?: boolean;
+}
 /** Configuration for staging and publishing a release. */
 export interface ReleaseConfig {
     /** Registry URL used for publishing release packages. Defaults to the NPM registry. */
     publishRegistry?: string;
+    /**
+     * The representative NPM package for this project. The specified package will be used
+     * for querying the NPM registry to e.g. determine active LTS branches.
+     *
+     * A representative package is expected to be a long-standing, non-experimental package
+     * that is managed and released as part of the `ng-dev release` command.
+     */
+    representativeNpmPackage: string;
     /** List of NPM packages that are published as part of this project. */
-    npmPackages: string[];
+    npmPackages: NpmPackage[];
     /** Builds release packages and returns a list of paths pointing to the output. */
     buildPackages: () => Promise<BuiltPackage[] | null>;
     /** The list of github labels to add to the release PRs. */

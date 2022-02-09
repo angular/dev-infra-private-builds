@@ -1,8 +1,19 @@
-load("@npm//@angular/dev-infra-private/bazel/benchmark/ng_rollup_bundle:ng_rollup_bundle.bzl", "ng_rollup_bundle")
+load("@npm//@angular/dev-infra-private/bazel/benchmark/app_bundling:index.bzl", "app_bundle")
+load("@npm//@angular/dev-infra-private/bazel/http-server:index.bzl", "http_server")
+load("@npm//@angular/dev-infra-private/bazel:expand_template.bzl", "expand_template")
 load("@npm//@angular/bazel:index.bzl", "ng_module")
 load("@npm//@bazel/typescript:index.bzl", "ts_library")
-load("@npm//@bazel/concatjs:index.bzl", "concatjs_devserver")
 load(":benchmark_test.bzl", "benchmark_test")
+
+def copy_default_index_html(output_name, bundle_target_name):
+    """Copies the default `index.html` file to the current package."""
+
+    expand_template(
+        name = "copy_default_index_html_%s" % output_name,
+        output_name = output_name,
+        template = "@npm//@angular/dev-infra-private/bazel/benchmark/component_benchmark/defaults:index-template.html",
+        substitutions = {"{bundle_target_name}": bundle_target_name},
+    )
 
 def copy_default_file(origin, destination):
     """
@@ -25,15 +36,14 @@ def component_benchmark(
         driver,
         driver_deps,
         ng_srcs,
-        ng_deps,
+        ng_deps = [
+            "@npm//@angular/core",
+            "@npm//@angular/platform-browser",
+        ],
         ng_assets = [],
         assets = None,
         styles = None,
-        entry_point = None,
-        entry_point_deps = [
-            "@npm//@angular/core",
-            "@npm//@angular/platform-browser",
-        ]):
+        entry_point = None):
     """
     Runs a benchmark test against the given angular app using the given driver.
 
@@ -53,9 +63,10 @@ def component_benchmark(
     (assets): The default index.html expects that the root selector for
     the benchmark app is "app-root".
 
-    (entry_point): The default entry_point expects a file named "app.module" to export
-    the root NgModule for the benchmark application. It also expects that the
-    root NgModule is named "AppModule".
+    (entry_point): The default entry_point expects a file named "app.module" to
+    export the root NgModule for the benchmark application. It also expects that the
+    root NgModule is named "AppModule" and has a bootstrap component declared with
+    the selector `app-root`.
 
     TIP: The server is named `name + "_server"` so that you can view/debug the
     app.
@@ -70,13 +81,14 @@ def component_benchmark(
       ng_assets: The static assets for the angular app
       assets: Static files
       styles: Stylesheets
-      entry_point: Main entry point for the angular app
-      entry_point_deps: Entry point's dependencies
+      entry_point: Main entry point for the angular app. If specified, must
+        be part of the `ng_srcs`
     """
     app_lib = name + "_app_lib"
     app_main = name + "_app_main"
     benchmark_driver = name + "_driver"
     server = name + "_server"
+    ng_bundle_deps = [":%s" % app_lib]
 
     # If the user doesn't provide assets, entry_point, or styles, we use a
     # default version.
@@ -92,10 +104,17 @@ def component_benchmark(
         ng_srcs.append(entry_point)
         copy_default_file("index.ts", entry_point)
 
+        # Note: In the default entry-point index, `zone.js` is imported in a way that is not
+        # checked by TypeScript. We add the dependency only for bundling to reduce the compilation
+        # scope and to make it easier to replace this dependency inside the `angular/angular`
+        # repository with its corresponding source target that does not come with any typings.
+        ng_bundle_deps.append("@npm//zone.js")
+
     if not assets:
         html = prefix + "index.html"
         assets = [html]
-        copy_default_file("index.html", html)
+
+        copy_default_index_html(html, app_main)
 
     if not styles:
         css = prefix + "styles.css"
@@ -108,17 +127,15 @@ def component_benchmark(
         name = app_lib,
         srcs = ng_srcs,
         assets = ng_assets,
-        # Creates ngFactory and ngSummary to be imported by the app's entry point.
-        generate_ve_shims = True,
         deps = ng_deps,
         tsconfig = "@npm//@angular/dev-infra-private/bazel/benchmark/component_benchmark:tsconfig-e2e.json",
     )
 
-    # Bundle the application (needed by concatjs_devserver).
-    ng_rollup_bundle(
+    # Bundle the application (needed for the http server).
+    app_bundle(
         name = app_main,
         entry_point = entry_point,
-        deps = [":" + app_lib] + entry_point_deps,
+        deps = ng_bundle_deps,
     )
 
     # The ts_library for the driver that runs tests against the benchmark app.
@@ -131,14 +148,11 @@ def component_benchmark(
     )
 
     # The server for our application.
-    concatjs_devserver(
+    http_server(
         name = server,
-        bootstrap = ["@npm//zone.js"],
-        port = 4200,
-        static_files = assets + styles,
-        deps = [":" + app_main + ".min_debug.js"],
+        srcs = assets + styles,
+        deps = [":%s.min.js" % app_main],
         additional_root_paths = ["@npm//@angular/dev-infra-private/bazel/benchmark/component_benchmark/defaults"],
-        serving_path = "/app_bundle.js",
     )
 
     # Runs a protractor test that's set up to use @angular/benchpress.

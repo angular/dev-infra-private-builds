@@ -7,4 +7,4 @@
  */
 import * as yargs from 'yargs';
 /** Build the parser for the misc commands. */
-export declare function buildMiscParser(localYargs: yargs.Argv): yargs.Argv<import("./build-and-link/cli").BuildAndLinkOptions>;
+export declare function buildMiscParser(localYargs: yargs.Argv): yargs.Argv<{}>;

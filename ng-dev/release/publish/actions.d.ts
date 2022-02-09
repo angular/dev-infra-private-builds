@@ -54,11 +54,7 @@ export declare abstract class ReleaseAction {
      * @throws {FatalReleaseActionError} When the action has been aborted due to a fatal error.
      */
     abstract perform(): Promise<void>;
-    /** Cached found fork of the configured project. */
-    private _cachedForkRepo;
     constructor(active: ActiveReleaseTrains, git: AuthenticatedGitClient, config: ReleaseConfig, projectDir: string);
-    /** Retrieves the version in the project top-level `package.json` file. */
-    private getProjectVersion;
     /** Updates the version in the project top-level `package.json` file. */
     protected updateProjectVersion(newVersion: semver.SemVer): Promise<void>;
     /** Gets the most recent commit of a specified branch. */
@@ -72,8 +68,7 @@ export declare abstract class ReleaseAction {
     protected waitForEditsAndCreateReleaseCommit(newVersion: semver.SemVer): Promise<void>;
     /**
      * Gets an owned fork for the configured project of the authenticated user. Aborts the
-     * process with an error if no fork could be found. Also caches the determined fork
-     * repository as the authenticated user cannot change during action execution.
+     * process with an error if no fork could be found.
      */
     private _getForkOfAuthenticatedUser;
     /** Checks whether a given branch name is reserved in the specified repository. */
@@ -177,11 +172,15 @@ export declare abstract class ReleaseAction {
     private _getGithubChangelogUrlForRef;
     /**
      * Builds and publishes the given version in the specified branch.
+     *
      * @param releaseNotes The release notes for the version being published.
      * @param publishBranch Name of the branch that contains the new version.
      * @param npmDistTag NPM dist tag where the version should be published to.
+     * @param additionalOptions Additional options for building and publishing.
      */
-    protected buildAndPublish(releaseNotes: ReleaseNotes, publishBranch: string, npmDistTag: NpmDistTag): Promise<void>;
+    protected buildAndPublish(releaseNotes: ReleaseNotes, publishBranch: string, npmDistTag: NpmDistTag, additionalOptions?: {
+        skipExperimentalPackages?: boolean;
+    }): Promise<void>;
     /** Publishes the given built package to NPM with the specified NPM dist tag. */
     private _publishBuiltPackageToNpm;
     /** Checks whether the given commit represents a staging commit for the specified version. */

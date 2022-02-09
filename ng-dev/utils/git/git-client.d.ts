@@ -11,8 +11,7 @@ import { GithubConfig } from '../config';
 import { GithubClient } from './github';
 /** Error for failed Git commands. */
 export declare class GitCommandError extends Error {
-    args: string[];
-    constructor(client: GitClient, args: string[]);
+    constructor(client: GitClient, unsanitizedArgs: string[]);
 }
 /** The options available for the `GitClient``run` and `runGraceful` methods. */
 declare type GitCommandRunOptions = SpawnSyncOptions & {
