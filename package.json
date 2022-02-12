@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-fc71e037ade972136bc214df0f6c41ec04eb742a",
+  "version": "0.0.0-0e1a218a23b7f4b16a636dd221d0c04bcc7a1624",
   "bin": {
     "ng-dev": "./ng-dev/cli-bundle.js"
   },
@@ -100,8 +100,15 @@
     "@types/yarnpkg__lockfile": "^1.1.5",
     "jsdoc": "^3.6.7",
     "jsdom": "^19.0.0",
+    "karma": "^6.3.15",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-firefox-launcher": "^2.1.2",
+    "karma-jasmine": "^4.0.1",
+    "karma-requirejs": "^1.1.0",
+    "karma-sourcemap-loader": "^0.3.8",
     "minimist": "^1.2.5",
     "protobufjs": "^6.11.2",
+    "requirejs": "^2.3.6",
     "rxjs": "^7.4.0",
     "uglify-js": "^3.14.2",
     "wait-on": "^6.0.0",
