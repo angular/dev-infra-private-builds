@@ -8646,32 +8646,6 @@ var require_Subscriber = __commonJS({
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
       };
     }();
-    var __read = exports2 && exports2.__read || function(o, n) {
-      var m = typeof Symbol === "function" && o[Symbol.iterator];
-      if (!m)
-        return o;
-      var i = m.call(o), r, ar = [], e;
-      try {
-        while ((n === void 0 || n-- > 0) && !(r = i.next()).done)
-          ar.push(r.value);
-      } catch (error) {
-        e = { error };
-      } finally {
-        try {
-          if (r && !r.done && (m = i["return"]))
-            m.call(i);
-        } finally {
-          if (e)
-            throw e.error;
-        }
-      }
-      return ar;
-    };
-    var __spreadArray = exports2 && exports2.__spreadArray || function(to, from) {
-      for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
-        to[j] = from[i];
-      return to;
-    };
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.EMPTY_OBSERVER = exports2.SafeSubscriber = exports2.Subscriber = void 0;
     var isFunction_1 = require_isFunction2();
@@ -8750,54 +8724,87 @@ var require_Subscriber = __commonJS({
       return Subscriber2;
     }(Subscription_1.Subscription);
     exports2.Subscriber = Subscriber;
+    var _bind = Function.prototype.bind;
+    function bind(fn, thisArg) {
+      return _bind.call(fn, thisArg);
+    }
+    var ConsumerObserver = function() {
+      function ConsumerObserver2(partialObserver) {
+        this.partialObserver = partialObserver;
+      }
+      ConsumerObserver2.prototype.next = function(value) {
+        var partialObserver = this.partialObserver;
+        if (partialObserver.next) {
+          try {
+            partialObserver.next(value);
+          } catch (error) {
+            handleUnhandledError(error);
+          }
+        }
+      };
+      ConsumerObserver2.prototype.error = function(err) {
+        var partialObserver = this.partialObserver;
+        if (partialObserver.error) {
+          try {
+            partialObserver.error(err);
+          } catch (error) {
+            handleUnhandledError(error);
+          }
+        } else {
+          handleUnhandledError(err);
+        }
+      };
+      ConsumerObserver2.prototype.complete = function() {
+        var partialObserver = this.partialObserver;
+        if (partialObserver.complete) {
+          try {
+            partialObserver.complete();
+          } catch (error) {
+            handleUnhandledError(error);
+          }
+        }
+      };
+      return ConsumerObserver2;
+    }();
     var SafeSubscriber = function(_super) {
       __extends(SafeSubscriber2, _super);
       function SafeSubscriber2(observerOrNext, error, complete) {
         var _this = _super.call(this) || this;
-        var next;
-        if (isFunction_1.isFunction(observerOrNext)) {
-          next = observerOrNext;
-        } else if (observerOrNext) {
-          next = observerOrNext.next, error = observerOrNext.error, complete = observerOrNext.complete;
+        var partialObserver;
+        if (isFunction_1.isFunction(observerOrNext) || !observerOrNext) {
+          partialObserver = {
+            next: observerOrNext !== null && observerOrNext !== void 0 ? observerOrNext : void 0,
+            error: error !== null && error !== void 0 ? error : void 0,
+            complete: complete !== null && complete !== void 0 ? complete : void 0
+          };
+        } else {
           var context_1;
           if (_this && config_1.config.useDeprecatedNextContext) {
             context_1 = Object.create(observerOrNext);
             context_1.unsubscribe = function() {
               return _this.unsubscribe();
             };
+            partialObserver = {
+              next: observerOrNext.next && bind(observerOrNext.next, context_1),
+              error: observerOrNext.error && bind(observerOrNext.error, context_1),
+              complete: observerOrNext.complete && bind(observerOrNext.complete, context_1)
+            };
           } else {
-            context_1 = observerOrNext;
+            partialObserver = observerOrNext;
           }
-          next = next === null || next === void 0 ? void 0 : next.bind(context_1);
-          error = error === null || error === void 0 ? void 0 : error.bind(context_1);
-          complete = complete === null || complete === void 0 ? void 0 : complete.bind(context_1);
         }
-        _this.destination = {
-          next: next ? wrapForErrorHandling(next, _this) : noop_1.noop,
-          error: wrapForErrorHandling(error !== null && error !== void 0 ? error : defaultErrorHandler, _this),
-          complete: complete ? wrapForErrorHandling(complete, _this) : noop_1.noop
-        };
+        _this.destination = new ConsumerObserver(partialObserver);
         return _this;
       }
       return SafeSubscriber2;
     }(Subscriber);
     exports2.SafeSubscriber = SafeSubscriber;
-    function wrapForErrorHandling(handler, instance) {
-      return function() {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-          args[_i] = arguments[_i];
-        }
-        try {
-          handler.apply(void 0, __spreadArray([], __read(args)));
-        } catch (err) {
-          if (config_1.config.useDeprecatedSynchronousErrorHandling) {
-            errorContext_1.captureError(err);
-          } else {
-            reportUnhandledError_1.reportUnhandledError(err);
-          }
-        }
-      };
+    function handleUnhandledError(error) {
+      if (config_1.config.useDeprecatedSynchronousErrorHandling) {
+        errorContext_1.captureError(error);
+      } else {
+        reportUnhandledError_1.reportUnhandledError(error);
+      }
     }
     function defaultErrorHandler(err) {
       throw err;
@@ -9036,13 +9043,18 @@ var require_OperatorSubscriber = __commonJS({
       };
     }();
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.OperatorSubscriber = void 0;
+    exports2.OperatorSubscriber = exports2.createOperatorSubscriber = void 0;
     var Subscriber_1 = require_Subscriber();
+    function createOperatorSubscriber(destination, onNext, onComplete, onError, onFinalize) {
+      return new OperatorSubscriber(destination, onNext, onComplete, onError, onFinalize);
+    }
+    exports2.createOperatorSubscriber = createOperatorSubscriber;
     var OperatorSubscriber = function(_super) {
       __extends(OperatorSubscriber2, _super);
-      function OperatorSubscriber2(destination, onNext, onComplete, onError, onFinalize) {
+      function OperatorSubscriber2(destination, onNext, onComplete, onError, onFinalize, shouldUnsubscribe) {
         var _this = _super.call(this, destination) || this;
         _this.onFinalize = onFinalize;
+        _this.shouldUnsubscribe = shouldUnsubscribe;
         _this._next = onNext ? function(value) {
           try {
             onNext(value);
@@ -9072,9 +9084,11 @@ var require_OperatorSubscriber = __commonJS({
       }
       OperatorSubscriber2.prototype.unsubscribe = function() {
         var _a;
-        var closed = this.closed;
-        _super.prototype.unsubscribe.call(this);
-        !closed && ((_a = this.onFinalize) === null || _a === void 0 ? void 0 : _a.call(this));
+        if (!this.shouldUnsubscribe || this.shouldUnsubscribe()) {
+          var closed_1 = this.closed;
+          _super.prototype.unsubscribe.call(this);
+          !closed_1 && ((_a = this.onFinalize) === null || _a === void 0 ? void 0 : _a.call(this));
+        }
       };
       return OperatorSubscriber2;
     }(Subscriber_1.Subscriber);
@@ -9094,7 +9108,7 @@ var require_refCount = __commonJS({
       return lift_1.operate(function(source, subscriber) {
         var connection = null;
         source._refCount++;
-        var refCounter = new OperatorSubscriber_1.OperatorSubscriber(subscriber, void 0, void 0, void 0, function() {
+        var refCounter = OperatorSubscriber_1.createOperatorSubscriber(subscriber, void 0, void 0, void 0, function() {
           if (!source || source._refCount <= 0 || 0 < --source._refCount) {
             connection = null;
             return;
@@ -9185,7 +9199,7 @@ var require_ConnectableObservable = __commonJS({
         if (!connection) {
           connection = this._connection = new Subscription_1.Subscription();
           var subject_1 = this.getSubject();
-          connection.add(this.source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subject_1, void 0, function() {
+          connection.add(this.source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subject_1, void 0, function() {
             _this._teardown();
             subject_1.complete();
           }, function(err) {
@@ -11425,7 +11439,7 @@ var require_observeOn = __commonJS({
         delay = 0;
       }
       return lift_1.operate(function(source, subscriber) {
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           return executeSchedule_1.executeSchedule(subscriber, scheduler, function() {
             return subscriber.next(value);
           }, delay);
@@ -11993,7 +12007,7 @@ var require_timeout = __commonJS({
             }
           }, delay);
         };
-        originalSourceSubscription = source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        originalSourceSubscription = source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           timerSubscription === null || timerSubscription === void 0 ? void 0 : timerSubscription.unsubscribe();
           seen++;
           subscriber.next(lastValue = value);
@@ -12025,7 +12039,7 @@ var require_map = __commonJS({
     function map(project, thisArg) {
       return lift_1.operate(function(source, subscriber) {
         var index = 0;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           subscriber.next(project.call(thisArg, value, index++));
         }));
       });
@@ -12312,7 +12326,7 @@ var require_combineLatest = __commonJS({
             maybeSchedule(scheduler, function() {
               var source = from_1.from(observables[i2], scheduler);
               var hasFirstValue = false;
-              source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+              source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
                 values[i2] = value;
                 if (!hasFirstValue) {
                   hasFirstValue = true;
@@ -12371,7 +12385,7 @@ var require_mergeInternals = __commonJS({
         expand && subscriber.next(value);
         active++;
         var innerComplete = false;
-        innerFrom_1.innerFrom(project(value, index++)).subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(innerValue) {
+        innerFrom_1.innerFrom(project(value, index++)).subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(innerValue) {
           onBeforeNext === null || onBeforeNext === void 0 ? void 0 : onBeforeNext(innerValue);
           if (expand) {
             outerNext(innerValue);
@@ -12404,7 +12418,7 @@ var require_mergeInternals = __commonJS({
           }
         }));
       };
-      source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, outerNext, function() {
+      source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, outerNext, function() {
         isComplete = true;
         checkComplete();
       }));
@@ -12592,7 +12606,7 @@ var require_forkJoin = __commonJS({
         var remainingEmissions = length;
         var _loop_1 = function(sourceIndex2) {
           var hasValue = false;
-          innerFrom_1.innerFrom(sources[sourceIndex2]).subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+          innerFrom_1.innerFrom(sources[sourceIndex2]).subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
             if (!hasValue) {
               hasValue = true;
               remainingEmissions--;
@@ -13071,8 +13085,8 @@ var require_onErrorResumeNext = __commonJS({
                 subscribeNext();
                 return;
               }
-              var innerSub = new OperatorSubscriber_1.OperatorSubscriber(subscriber, void 0, noop_1.noop, noop_1.noop);
-              subscriber.add(nextSource.subscribe(innerSub));
+              var innerSub = OperatorSubscriber_1.createOperatorSubscriber(subscriber, void 0, noop_1.noop, noop_1.noop);
+              nextSource.subscribe(innerSub);
               innerSub.add(subscribeNext);
             } else {
               subscriber.complete();
@@ -13146,7 +13160,7 @@ var require_filter = __commonJS({
     function filter(predicate, thisArg) {
       return lift_1.operate(function(source, subscriber) {
         var index = 0;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           return predicate.call(thisArg, value, index++) && subscriber.next(value);
         }));
       });
@@ -13194,7 +13208,7 @@ var require_race = __commonJS({
       return function(subscriber) {
         var subscriptions = [];
         var _loop_1 = function(i2) {
-          subscriptions.push(innerFrom_1.innerFrom(sources[i2]).subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+          subscriptions.push(innerFrom_1.innerFrom(sources[i2]).subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
             if (subscriptions) {
               for (var s = 0; s < subscriptions.length; s++) {
                 s !== i2 && subscriptions[s].unsubscribe();
@@ -13334,7 +13348,7 @@ var require_zip = __commonJS({
           buffers = completed = null;
         });
         var _loop_1 = function(sourceIndex2) {
-          innerFrom_1.innerFrom(sources[sourceIndex2]).subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+          innerFrom_1.innerFrom(sources[sourceIndex2]).subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
             buffers[sourceIndex2].push(value);
             if (buffers.every(function(buffer) {
               return buffer.length;
@@ -13404,11 +13418,11 @@ var require_audit = __commonJS({
           durationSubscriber = null;
           isComplete && subscriber.complete();
         };
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           hasValue = true;
           lastValue = value;
           if (!durationSubscriber) {
-            innerFrom_1.innerFrom(durationSelector(value)).subscribe(durationSubscriber = new OperatorSubscriber_1.OperatorSubscriber(subscriber, endDuration, cleanupDuration));
+            innerFrom_1.innerFrom(durationSelector(value)).subscribe(durationSubscriber = OperatorSubscriber_1.createOperatorSubscriber(subscriber, endDuration, cleanupDuration));
           }
         }, function() {
           isComplete = true;
@@ -13453,13 +13467,13 @@ var require_buffer = __commonJS({
     function buffer(closingNotifier) {
       return lift_1.operate(function(source, subscriber) {
         var currentBuffer = [];
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           return currentBuffer.push(value);
         }, function() {
           subscriber.next(currentBuffer);
           subscriber.complete();
         }));
-        closingNotifier.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function() {
+        closingNotifier.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function() {
           var b = currentBuffer;
           currentBuffer = [];
           subscriber.next(b);
@@ -13504,7 +13518,7 @@ var require_bufferCount = __commonJS({
       return lift_1.operate(function(source, subscriber) {
         var buffers = [];
         var count = 0;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           var e_1, _a, e_2, _b;
           var toEmit = null;
           if (count++ % startBufferEvery === 0) {
@@ -13644,7 +13658,7 @@ var require_bufferTime = __commonJS({
           restartOnEmit = true;
         }
         startBuffer();
-        var bufferTimeSubscriber = new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        var bufferTimeSubscriber = OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           var e_1, _a2;
           var recordsCopy = bufferRecords.slice();
           try {
@@ -13711,7 +13725,7 @@ var require_bufferToggle = __commonJS({
     function bufferToggle(openings, closingSelector) {
       return lift_1.operate(function(source, subscriber) {
         var buffers = [];
-        innerFrom_1.innerFrom(openings).subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(openValue) {
+        innerFrom_1.innerFrom(openings).subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(openValue) {
           var buffer = [];
           buffers.push(buffer);
           var closingSubscription = new Subscription_1.Subscription();
@@ -13720,9 +13734,9 @@ var require_bufferToggle = __commonJS({
             subscriber.next(buffer);
             closingSubscription.unsubscribe();
           };
-          closingSubscription.add(innerFrom_1.innerFrom(closingSelector(openValue)).subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, emitBuffer, noop_1.noop)));
+          closingSubscription.add(innerFrom_1.innerFrom(closingSelector(openValue)).subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, emitBuffer, noop_1.noop)));
         }, noop_1.noop));
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           var e_1, _a;
           try {
             for (var buffers_1 = __values(buffers), buffers_1_1 = buffers_1.next(); !buffers_1_1.done; buffers_1_1 = buffers_1.next()) {
@@ -13771,10 +13785,10 @@ var require_bufferWhen = __commonJS({
           var b = buffer;
           buffer = [];
           b && subscriber.next(b);
-          innerFrom_1.innerFrom(closingSelector()).subscribe(closingSubscriber = new OperatorSubscriber_1.OperatorSubscriber(subscriber, openBuffer, noop_1.noop));
+          innerFrom_1.innerFrom(closingSelector()).subscribe(closingSubscriber = OperatorSubscriber_1.createOperatorSubscriber(subscriber, openBuffer, noop_1.noop));
         };
         openBuffer();
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           return buffer === null || buffer === void 0 ? void 0 : buffer.push(value);
         }, function() {
           buffer && subscriber.next(buffer);
@@ -13802,7 +13816,7 @@ var require_catchError = __commonJS({
         var innerSub = null;
         var syncUnsub = false;
         var handledResult;
-        innerSub = source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, void 0, void 0, function(err) {
+        innerSub = source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, void 0, void 0, function(err) {
           handledResult = innerFrom_1.innerFrom(selector(err, catchError(selector)(source)));
           if (innerSub) {
             innerSub.unsubscribe();
@@ -13835,7 +13849,7 @@ var require_scanInternals = __commonJS({
         var hasState = hasSeed;
         var state = seed;
         var index = 0;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           var i = index++;
           state = hasState ? accumulator(state, value, i) : (hasState = true, value);
           emitOnNext && subscriber.next(state);
@@ -14241,11 +14255,11 @@ var require_debounce = __commonJS({
             subscriber.next(value);
           }
         };
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           durationSubscriber === null || durationSubscriber === void 0 ? void 0 : durationSubscriber.unsubscribe();
           hasValue = true;
           lastValue = value;
-          durationSubscriber = new OperatorSubscriber_1.OperatorSubscriber(subscriber, emit, noop_1.noop);
+          durationSubscriber = OperatorSubscriber_1.createOperatorSubscriber(subscriber, emit, noop_1.noop);
           innerFrom_1.innerFrom(durationSelector(value)).subscribe(durationSubscriber);
         }, function() {
           emit();
@@ -14295,7 +14309,7 @@ var require_debounceTime = __commonJS({
           }
           emit();
         }
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           lastValue = value;
           lastTime = scheduler.now();
           if (!activeTask) {
@@ -14325,7 +14339,7 @@ var require_defaultIfEmpty = __commonJS({
     function defaultIfEmpty(defaultValue) {
       return lift_1.operate(function(source, subscriber) {
         var hasValue = false;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           hasValue = true;
           subscriber.next(value);
         }, function() {
@@ -14354,7 +14368,7 @@ var require_take = __commonJS({
         return empty_1.EMPTY;
       } : lift_1.operate(function(source, subscriber) {
         var seen = 0;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           if (++seen <= count) {
             subscriber.next(value);
             if (count <= seen) {
@@ -14379,7 +14393,7 @@ var require_ignoreElements = __commonJS({
     var noop_1 = require_noop();
     function ignoreElements() {
       return lift_1.operate(function(source, subscriber) {
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, noop_1.noop));
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, noop_1.noop));
       });
     }
     exports2.ignoreElements = ignoreElements;
@@ -14460,7 +14474,7 @@ var require_dematerialize = __commonJS({
     var OperatorSubscriber_1 = require_OperatorSubscriber();
     function dematerialize() {
       return lift_1.operate(function(source, subscriber) {
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(notification) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(notification) {
           return Notification_1.observeNotification(notification, subscriber);
         }));
       });
@@ -14481,14 +14495,14 @@ var require_distinct = __commonJS({
     function distinct(keySelector, flushes) {
       return lift_1.operate(function(source, subscriber) {
         var distinctKeys = /* @__PURE__ */ new Set();
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           var key = keySelector ? keySelector(value) : value;
           if (!distinctKeys.has(key)) {
             distinctKeys.add(key);
             subscriber.next(value);
           }
         }));
-        flushes === null || flushes === void 0 ? void 0 : flushes.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function() {
+        flushes === null || flushes === void 0 ? void 0 : flushes.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function() {
           return distinctKeys.clear();
         }, noop_1.noop));
       });
@@ -14514,7 +14528,7 @@ var require_distinctUntilChanged = __commonJS({
       return lift_1.operate(function(source, subscriber) {
         var previousKey;
         var first = true;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           var currentKey = keySelector(value);
           if (first || !comparator(previousKey, currentKey)) {
             first = false;
@@ -14562,7 +14576,7 @@ var require_throwIfEmpty = __commonJS({
       }
       return lift_1.operate(function(source, subscriber) {
         var hasValue = false;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           hasValue = true;
           subscriber.next(value);
         }, function() {
@@ -14663,7 +14677,7 @@ var require_every = __commonJS({
     function every(predicate, thisArg) {
       return lift_1.operate(function(source, subscriber) {
         var index = 0;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           if (!predicate.call(thisArg, value, index++, source)) {
             subscriber.next(false);
             subscriber.complete();
@@ -14691,9 +14705,9 @@ var require_exhaustAll = __commonJS({
       return lift_1.operate(function(source, subscriber) {
         var isComplete = false;
         var innerSub = null;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(inner) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(inner) {
           if (!innerSub) {
-            innerSub = innerFrom_1.innerFrom(inner).subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, void 0, function() {
+            innerSub = innerFrom_1.innerFrom(inner).subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, void 0, function() {
               innerSub = null;
               isComplete && subscriber.complete();
             }));
@@ -14743,9 +14757,9 @@ var require_exhaustMap = __commonJS({
         var index = 0;
         var innerSub = null;
         var isComplete = false;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(outerValue) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(outerValue) {
           if (!innerSub) {
-            innerSub = new OperatorSubscriber_1.OperatorSubscriber(subscriber, void 0, function() {
+            innerSub = OperatorSubscriber_1.createOperatorSubscriber(subscriber, void 0, function() {
               innerSub = null;
               isComplete && subscriber.complete();
             });
@@ -14818,7 +14832,7 @@ var require_find = __commonJS({
       var findIndex = emit === "index";
       return function(source, subscriber) {
         var index = 0;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           var i = index++;
           if (predicate.call(thisArg, value, i, source)) {
             subscriber.next(findIndex ? i : value);
@@ -14879,27 +14893,6 @@ var require_first = __commonJS({
 var require_groupBy = __commonJS({
   "node_modules/rxjs/dist/cjs/internal/operators/groupBy.js"(exports2) {
     "use strict";
-    var __extends = exports2 && exports2.__extends || function() {
-      var extendStatics = function(d, b) {
-        extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function(d2, b2) {
-          d2.__proto__ = b2;
-        } || function(d2, b2) {
-          for (var p in b2)
-            if (Object.prototype.hasOwnProperty.call(b2, p))
-              d2[p] = b2[p];
-        };
-        return extendStatics(d, b);
-      };
-      return function(d, b) {
-        if (typeof b !== "function" && b !== null)
-          throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() {
-          this.constructor = d;
-        }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-      };
-    }();
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.groupBy = void 0;
     var Observable_1 = require_Observable();
@@ -14925,7 +14918,9 @@ var require_groupBy = __commonJS({
             return consumer.error(err);
           });
         };
-        var groupBySourceSubscriber = new GroupBySubscriber(subscriber, function(value) {
+        var activeGroups = 0;
+        var teardownAttempted = false;
+        var groupBySourceSubscriber = new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
           try {
             var key_1 = keySelector(value);
             var group_1 = groups.get(key_1);
@@ -14934,7 +14929,7 @@ var require_groupBy = __commonJS({
               var grouped = createGroupedObservable(key_1, group_1);
               subscriber.next(grouped);
               if (duration) {
-                var durationSubscriber_1 = new OperatorSubscriber_1.OperatorSubscriber(group_1, function() {
+                var durationSubscriber_1 = OperatorSubscriber_1.createOperatorSubscriber(group_1, function() {
                   group_1.complete();
                   durationSubscriber_1 === null || durationSubscriber_1 === void 0 ? void 0 : durationSubscriber_1.unsubscribe();
                 }, void 0, void 0, function() {
@@ -14953,15 +14948,18 @@ var require_groupBy = __commonJS({
           });
         }, handleError, function() {
           return groups.clear();
+        }, function() {
+          teardownAttempted = true;
+          return activeGroups === 0;
         });
         source.subscribe(groupBySourceSubscriber);
         function createGroupedObservable(key, groupSubject) {
           var result = new Observable_1.Observable(function(groupSubscriber) {
-            groupBySourceSubscriber.activeGroups++;
+            activeGroups++;
             var innerSub = groupSubject.subscribe(groupSubscriber);
             return function() {
               innerSub.unsubscribe();
-              --groupBySourceSubscriber.activeGroups === 0 && groupBySourceSubscriber.teardownAttempted && groupBySourceSubscriber.unsubscribe();
+              --activeGroups === 0 && teardownAttempted && groupBySourceSubscriber.unsubscribe();
             };
           });
           result.key = key;
@@ -14970,20 +14968,6 @@ var require_groupBy = __commonJS({
       });
     }
     exports2.groupBy = groupBy;
-    var GroupBySubscriber = function(_super) {
-      __extends(GroupBySubscriber2, _super);
-      function GroupBySubscriber2() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.activeGroups = 0;
-        _this.teardownAttempted = false;
-        return _this;
-      }
-      GroupBySubscriber2.prototype.unsubscribe = function() {
-        this.teardownAttempted = true;
-        this.activeGroups === 0 && _super.prototype.unsubscribe.call(this);
-      };
-      return GroupBySubscriber2;
-    }(OperatorSubscriber_1.OperatorSubscriber);
   }
 });
 
@@ -14997,7 +14981,7 @@ var require_isEmpty = __commonJS({
     var OperatorSubscriber_1 = require_OperatorSubscriber();
     function isEmpty() {
       return lift_1.operate(function(source, subscriber) {
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function() {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function() {
           subscriber.next(false);
           subscriber.complete();
         }, function() {
@@ -15038,7 +15022,7 @@ var require_takeLast = __commonJS({
         return empty_1.EMPTY;
       } : lift_1.operate(function(source, subscriber) {
         var buffer = [];
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           buffer.push(value);
           count < buffer.length && buffer.shift();
         }, function() {
@@ -15106,7 +15090,7 @@ var require_materialize = __commonJS({
     var OperatorSubscriber_1 = require_OperatorSubscriber();
     function materialize() {
       return lift_1.operate(function(source, subscriber) {
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           subscriber.next(Notification_1.Notification.createNext(value));
         }, function() {
           subscriber.next(Notification_1.Notification.createComplete());
@@ -15360,7 +15344,7 @@ var require_pairwise = __commonJS({
       return lift_1.operate(function(source, subscriber) {
         var prev;
         var hasPrev = false;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           var p = prev;
           prev = value;
           hasPrev && subscriber.next([p, value]);
@@ -15567,7 +15551,7 @@ var require_repeat = __commonJS({
           sourceSub = null;
           if (delay != null) {
             var notifier = typeof delay === "number" ? timer_1.timer(delay) : innerFrom_1.innerFrom(delay(soFar));
-            var notifierSubscriber_1 = new OperatorSubscriber_1.OperatorSubscriber(subscriber, function() {
+            var notifierSubscriber_1 = OperatorSubscriber_1.createOperatorSubscriber(subscriber, function() {
               notifierSubscriber_1.unsubscribe();
               subscribeToSource();
             });
@@ -15578,7 +15562,7 @@ var require_repeat = __commonJS({
         };
         var subscribeToSource = function() {
           var syncUnsub = false;
-          sourceSub = source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, void 0, function() {
+          sourceSub = source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, void 0, function() {
             if (++soFar < count) {
               if (sourceSub) {
                 resubscribe();
@@ -15622,7 +15606,7 @@ var require_repeatWhen = __commonJS({
         var getCompletionSubject = function() {
           if (!completions$) {
             completions$ = new Subject_1.Subject();
-            notifier(completions$).subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function() {
+            notifier(completions$).subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function() {
               if (innerSub) {
                 subscribeForRepeatWhen();
               } else {
@@ -15637,7 +15621,7 @@ var require_repeatWhen = __commonJS({
         };
         var subscribeForRepeatWhen = function() {
           isMainComplete = false;
-          innerSub = source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, void 0, function() {
+          innerSub = source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, void 0, function() {
             isMainComplete = true;
             !checkComplete() && getCompletionSubject().next();
           }));
@@ -15684,7 +15668,7 @@ var require_retry = __commonJS({
         var innerSub;
         var subscribeForRetry = function() {
           var syncUnsub = false;
-          innerSub = source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+          innerSub = source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
             if (resetOnSuccess) {
               soFar = 0;
             }
@@ -15702,7 +15686,7 @@ var require_retry = __commonJS({
               };
               if (delay != null) {
                 var notifier = typeof delay === "number" ? timer_1.timer(delay) : innerFrom_1.innerFrom(delay(err, soFar));
-                var notifierSubscriber_1 = new OperatorSubscriber_1.OperatorSubscriber(subscriber, function() {
+                var notifierSubscriber_1 = OperatorSubscriber_1.createOperatorSubscriber(subscriber, function() {
                   notifierSubscriber_1.unsubscribe();
                   resub_1();
                 }, function() {
@@ -15744,10 +15728,10 @@ var require_retryWhen = __commonJS({
         var syncResub = false;
         var errors$;
         var subscribeForRetryWhen = function() {
-          innerSub = source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, void 0, void 0, function(err) {
+          innerSub = source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, void 0, void 0, function(err) {
             if (!errors$) {
               errors$ = new Subject_1.Subject();
-              notifier(errors$).subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function() {
+              notifier(errors$).subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function() {
                 return innerSub ? subscribeForRetryWhen() : syncResub = true;
               }));
             }
@@ -15782,19 +15766,18 @@ var require_sample = __commonJS({
       return lift_1.operate(function(source, subscriber) {
         var hasValue = false;
         var lastValue = null;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           hasValue = true;
           lastValue = value;
         }));
-        var emit = function() {
+        notifier.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function() {
           if (hasValue) {
             hasValue = false;
             var value = lastValue;
             lastValue = null;
             subscriber.next(value);
           }
-        };
-        notifier.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, emit, noop_1.noop));
+        }, noop_1.noop));
       });
     }
     exports2.sample = sample2;
@@ -15857,7 +15840,7 @@ var require_sequenceEqual = __commonJS({
           subscriber.complete();
         };
         var createSubscriber = function(selfState, otherState) {
-          var sequenceEqualSubscriber = new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(a) {
+          var sequenceEqualSubscriber = OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(a) {
             var buffer = otherState.buffer, complete = otherState.complete;
             if (buffer.length === 0) {
               complete ? emit(false) : selfState.buffer.push(a);
@@ -16057,7 +16040,7 @@ var require_single = __commonJS({
         var singleValue;
         var seenValue = false;
         var index = 0;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           seenValue = true;
           if (!predicate || predicate(value, index++, source)) {
             hasValue && subscriber.error(new SequenceError_1.SequenceError("Too many matching values"));
@@ -16107,7 +16090,7 @@ var require_skipLast = __commonJS({
       return skipCount <= 0 ? identity_1.identity : lift_1.operate(function(source, subscriber) {
         var ring = new Array(skipCount);
         var seen = 0;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           var valueIndex = seen++;
           if (valueIndex < skipCount) {
             ring[valueIndex] = value;
@@ -16140,12 +16123,12 @@ var require_skipUntil = __commonJS({
     function skipUntil(notifier) {
       return lift_1.operate(function(source, subscriber) {
         var taking = false;
-        var skipSubscriber = new OperatorSubscriber_1.OperatorSubscriber(subscriber, function() {
+        var skipSubscriber = OperatorSubscriber_1.createOperatorSubscriber(subscriber, function() {
           skipSubscriber === null || skipSubscriber === void 0 ? void 0 : skipSubscriber.unsubscribe();
           taking = true;
         }, noop_1.noop);
         innerFrom_1.innerFrom(notifier).subscribe(skipSubscriber);
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           return taking && subscriber.next(value);
         }));
       });
@@ -16166,7 +16149,7 @@ var require_skipWhile = __commonJS({
       return lift_1.operate(function(source, subscriber) {
         var taking = false;
         var index = 0;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           return (taking || (taking = !predicate(value, index++))) && subscriber.next(value);
         }));
       });
@@ -16215,11 +16198,11 @@ var require_switchMap = __commonJS({
         var checkComplete = function() {
           return isComplete && !innerSubscriber && subscriber.complete();
         };
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           innerSubscriber === null || innerSubscriber === void 0 ? void 0 : innerSubscriber.unsubscribe();
           var innerIndex = 0;
           var outerIndex = index++;
-          innerFrom_1.innerFrom(project(value, outerIndex)).subscribe(innerSubscriber = new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(innerValue) {
+          innerFrom_1.innerFrom(project(value, outerIndex)).subscribe(innerSubscriber = OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(innerValue) {
             return subscriber.next(resultSelector ? resultSelector(value, innerValue, outerIndex, innerIndex++) : innerValue);
           }, function() {
             innerSubscriber = null;
@@ -16306,7 +16289,7 @@ var require_takeUntil = __commonJS({
     var noop_1 = require_noop();
     function takeUntil(notifier) {
       return lift_1.operate(function(source, subscriber) {
-        innerFrom_1.innerFrom(notifier).subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function() {
+        innerFrom_1.innerFrom(notifier).subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function() {
           return subscriber.complete();
         }, noop_1.noop));
         !subscriber.closed && source.subscribe(subscriber);
@@ -16330,7 +16313,7 @@ var require_takeWhile = __commonJS({
       }
       return lift_1.operate(function(source, subscriber) {
         var index = 0;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           var result = predicate(value, index++);
           (result || inclusive) && subscriber.next(value);
           !result && subscriber.complete();
@@ -16357,7 +16340,7 @@ var require_tap = __commonJS({
         var _a;
         (_a = tapObserver.subscribe) === null || _a === void 0 ? void 0 : _a.call(tapObserver);
         var isUnsub = true;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           var _a2;
           (_a2 = tapObserver.next) === null || _a2 === void 0 ? void 0 : _a2.call(tapObserver, value);
           subscriber.next(value);
@@ -16420,7 +16403,7 @@ var require_throttle = __commonJS({
           isComplete && subscriber.complete();
         };
         var startThrottle = function(value) {
-          return throttled = innerFrom_1.innerFrom(durationSelector(value)).subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, endThrottling, cleanupThrottling));
+          return throttled = innerFrom_1.innerFrom(durationSelector(value)).subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, endThrottling, cleanupThrottling));
         };
         var send = function() {
           if (hasValue) {
@@ -16431,7 +16414,7 @@ var require_throttle = __commonJS({
             !isComplete && startThrottle(value);
           }
         };
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           hasValue = true;
           sendValue = value;
           !(throttled && !throttled.closed) && (leading ? send() : startThrottle(value));
@@ -16477,28 +16460,21 @@ var require_timeInterval = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.TimeInterval = exports2.timeInterval = void 0;
     var async_1 = require_async();
-    var scan_1 = require_scan();
-    var defer_1 = require_defer();
-    var map_1 = require_map();
+    var lift_1 = require_lift();
+    var OperatorSubscriber_1 = require_OperatorSubscriber();
     function timeInterval(scheduler) {
       if (scheduler === void 0) {
         scheduler = async_1.asyncScheduler;
       }
-      return function(source) {
-        return defer_1.defer(function() {
-          return source.pipe(scan_1.scan(function(_a, value) {
-            var current = _a.current;
-            return { value, current: scheduler.now(), last: current };
-          }, {
-            current: scheduler.now(),
-            value: void 0,
-            last: void 0
-          }), map_1.map(function(_a) {
-            var current = _a.current, last = _a.last, value = _a.value;
-            return new TimeInterval(value, current - last);
-          }));
-        });
-      };
+      return lift_1.operate(function(source, subscriber) {
+        var last = scheduler.now();
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
+          var now = scheduler.now();
+          var interval = now - last;
+          last = now;
+          subscriber.next(new TimeInterval(value, interval));
+        }));
+      });
     }
     exports2.timeInterval = timeInterval;
     var TimeInterval = function() {
@@ -16590,13 +16566,13 @@ var require_window = __commonJS({
           windowSubject.error(err);
           subscriber.error(err);
         };
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           return windowSubject === null || windowSubject === void 0 ? void 0 : windowSubject.next(value);
         }, function() {
           windowSubject.complete();
           subscriber.complete();
         }, errorHandler));
-        windowBoundaries.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function() {
+        windowBoundaries.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function() {
           windowSubject.complete();
           subscriber.next(windowSubject = new Subject_1.Subject());
         }, noop_1.noop, errorHandler));
@@ -16643,7 +16619,7 @@ var require_windowCount = __commonJS({
         var starts = [];
         var count = 0;
         subscriber.next(windows[0].asObservable());
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           var e_1, _a;
           try {
             for (var windows_1 = __values(windows), windows_1_1 = windows_1.next(); !windows_1_1.done; windows_1_1 = windows_1.next()) {
@@ -16757,7 +16733,7 @@ var require_windowTime = __commonJS({
           cb(subscriber);
           subscriber.unsubscribe();
         };
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           loop(function(record) {
             record.window.next(value);
             maxWindowSize <= ++record.seen && closeWindow(record);
@@ -16816,7 +16792,7 @@ var require_windowToggle = __commonJS({
           }
           subscriber.error(err);
         };
-        innerFrom_1.innerFrom(openings).subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(openValue) {
+        innerFrom_1.innerFrom(openings).subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(openValue) {
           var window2 = new Subject_1.Subject();
           windows.push(window2);
           var closingSubscription = new Subscription_1.Subscription();
@@ -16833,9 +16809,9 @@ var require_windowToggle = __commonJS({
             return;
           }
           subscriber.next(window2.asObservable());
-          closingSubscription.add(closingNotifier.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, closeWindow, noop_1.noop, handleError)));
+          closingSubscription.add(closingNotifier.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, closeWindow, noop_1.noop, handleError)));
         }, noop_1.noop));
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           var e_1, _a;
           var windowsCopy = windows.slice();
           try {
@@ -16900,10 +16876,10 @@ var require_windowWhen = __commonJS({
             handleError(err);
             return;
           }
-          closingNotifier.subscribe(closingSubscriber = new OperatorSubscriber_1.OperatorSubscriber(subscriber, openWindow, openWindow, handleError));
+          closingNotifier.subscribe(closingSubscriber = OperatorSubscriber_1.createOperatorSubscriber(subscriber, openWindow, openWindow, handleError));
         };
         openWindow();
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           return window2.next(value);
         }, function() {
           window2.complete();
@@ -16970,7 +16946,7 @@ var require_withLatestFrom = __commonJS({
         });
         var ready = false;
         var _loop_1 = function(i2) {
-          innerFrom_1.innerFrom(inputs[i2]).subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+          innerFrom_1.innerFrom(inputs[i2]).subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
             otherValues[i2] = value;
             if (!ready && !hasValue[i2]) {
               hasValue[i2] = true;
@@ -16981,7 +16957,7 @@ var require_withLatestFrom = __commonJS({
         for (var i = 0; i < len; i++) {
           _loop_1(i);
         }
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           if (ready) {
             var values = __spreadArray([value], __read(otherValues));
             subscriber.next(project ? project.apply(void 0, __spreadArray([], __read(values))) : values);
@@ -48706,12 +48682,12 @@ var require_minimatch = __commonJS({
   "node_modules/multimatch/node_modules/minimatch/minimatch.js"(exports2, module2) {
     module2.exports = minimatch;
     minimatch.Minimatch = Minimatch;
-    var path = (() => {
+    var path = function() {
       try {
         return require("path");
       } catch (e) {
       }
-    })() || {
+    }() || {
       sep: "/"
     };
     minimatch.sep = path.sep;
@@ -48744,9 +48720,8 @@ var require_minimatch = __commonJS({
       };
     }
     function ext(a, b) {
-      a = a || {};
       b = b || {};
-      const t = {};
+      var t = {};
       Object.keys(a).forEach(function(k) {
         t[k] = a[k];
       });
@@ -48759,14 +48734,14 @@ var require_minimatch = __commonJS({
       if (!def || typeof def !== "object" || !Object.keys(def).length) {
         return minimatch;
       }
-      const orig = minimatch;
-      const m = function minimatch2(p, pattern, options) {
+      var orig = minimatch;
+      var m = function minimatch2(p, pattern, options) {
         return orig(p, pattern, ext(def, options));
       };
       m.Minimatch = function Minimatch2(pattern, options) {
         return new orig.Minimatch(pattern, ext(def, options));
       };
-      m.Minimatch.defaults = (options) => {
+      m.Minimatch.defaults = function defaults(options) {
         return orig.defaults(ext(def, options)).Minimatch;
       };
       m.filter = function filter2(pattern, options) {
@@ -48796,8 +48771,6 @@ var require_minimatch = __commonJS({
       if (!options.nocomment && pattern.charAt(0) === "#") {
         return false;
       }
-      if (pattern.trim() === "")
-        return p === "";
       return new Minimatch(pattern, options).match(p);
     }
     function Minimatch(pattern, options) {
@@ -48807,8 +48780,7 @@ var require_minimatch = __commonJS({
       assertValidPattern(pattern);
       if (!options)
         options = {};
-      pattern = pattern.trim();
-      if (path.sep !== "/") {
+      if (!options.allowWindowsEscape && path.sep !== "/") {
         pattern = pattern.split(path.sep).join("/");
       }
       this.options = options;
@@ -48818,14 +48790,13 @@ var require_minimatch = __commonJS({
       this.negate = false;
       this.comment = false;
       this.empty = false;
+      this.partial = !!options.partial;
       this.make();
     }
     Minimatch.prototype.debug = function() {
     };
     Minimatch.prototype.make = make;
     function make() {
-      if (this._made)
-        return;
       var pattern = this.pattern;
       var options = this.options;
       if (!options.nocomment && pattern.charAt(0) === "#") {
@@ -48839,7 +48810,9 @@ var require_minimatch = __commonJS({
       this.parseNegate();
       var set = this.globSet = this.braceExpand();
       if (options.debug)
-        this.debug = console.error;
+        this.debug = function debug() {
+          console.error.apply(console, arguments);
+        };
       this.debug(this.pattern, set);
       set = this.globParts = set.map(function(s) {
         return s.split(slashSplit);
@@ -48891,7 +48864,7 @@ var require_minimatch = __commonJS({
       return expand(pattern);
     }
     var MAX_PATTERN_LENGTH = 1024 * 64;
-    var assertValidPattern = (pattern) => {
+    var assertValidPattern = function(pattern) {
       if (typeof pattern !== "string") {
         throw new TypeError("invalid pattern");
       }
@@ -48904,12 +48877,16 @@ var require_minimatch = __commonJS({
     function parse(pattern, isSub) {
       assertValidPattern(pattern);
       var options = this.options;
-      if (!options.noglobstar && pattern === "**")
-        return GLOBSTAR;
+      if (pattern === "**") {
+        if (!options.noglobstar)
+          return GLOBSTAR;
+        else
+          pattern = "*";
+      }
       if (pattern === "")
         return "";
       var re = "";
-      var hasMagic = false;
+      var hasMagic = !!options.nocase;
       var escaping = false;
       var patternListStack = [];
       var negativeLists = [];
@@ -49032,17 +49009,15 @@ var require_minimatch = __commonJS({
               escaping = false;
               continue;
             }
-            if (inClass) {
-              var cs = pattern.substring(classStart + 1, i);
-              try {
-                RegExp("[" + cs + "]");
-              } catch (er) {
-                var sp = this.parse(cs, SUBPARSE);
-                re = re.substr(0, reClassStart) + "\\[" + sp[0] + "\\]";
-                hasMagic = hasMagic || sp[1];
-                inClass = false;
-                continue;
-              }
+            var cs = pattern.substring(classStart + 1, i);
+            try {
+              RegExp("[" + cs + "]");
+            } catch (er) {
+              var sp = this.parse(cs, SUBPARSE);
+              re = re.substr(0, reClassStart) + "\\[" + sp[0] + "\\]";
+              hasMagic = hasMagic || sp[1];
+              inClass = false;
+              continue;
             }
             hasMagic = true;
             inClass = false;
@@ -49084,8 +49059,8 @@ var require_minimatch = __commonJS({
       }
       var addPatternStart = false;
       switch (re.charAt(0)) {
-        case ".":
         case "[":
+        case ".":
         case "(":
           addPatternStart = true;
       }
@@ -49163,7 +49138,7 @@ var require_minimatch = __commonJS({
     }
     minimatch.match = function(list, pattern, options) {
       options = options || {};
-      const mm = new Minimatch(pattern, options);
+      var mm = new Minimatch(pattern, options);
       list = list.filter(function(f) {
         return mm.match(f);
       });
@@ -49172,8 +49147,9 @@ var require_minimatch = __commonJS({
       }
       return list;
     };
-    Minimatch.prototype.match = match;
-    function match(f, partial) {
+    Minimatch.prototype.match = function match(f, partial) {
+      if (typeof partial === "undefined")
+        partial = this.partial;
       this.debug("match", f, this.pattern);
       if (this.comment)
         return false;
@@ -49212,7 +49188,7 @@ var require_minimatch = __commonJS({
       if (options.flipNegate)
         return false;
       return this.negate;
-    }
+    };
     Minimatch.prototype.matchOne = function(file, pattern, partial) {
       var options = this.options;
       this.debug("matchOne", { "this": this, file, pattern });
@@ -49260,11 +49236,7 @@ var require_minimatch = __commonJS({
         }
         var hit;
         if (typeof p === "string") {
-          if (options.nocase) {
-            hit = f.toLowerCase() === p.toLowerCase();
-          } else {
-            hit = f === p;
-          }
+          hit = f === p;
           this.debug("string match", p, f, hit);
         } else {
           hit = f.match(p);
@@ -65322,6 +65294,7 @@ var require_minimatch2 = __commonJS({
     };
     minimatch.sep = path.sep;
     var GLOBSTAR = Symbol("globstar **");
+    minimatch.GLOBSTAR = GLOBSTAR;
     var expand = require_brace_expansion();
     var plTypes = {
       "!": { open: "(?:(?!(?:", close: "))[^/]*?)" },
@@ -65501,11 +65474,7 @@ var require_minimatch2 = __commonJS({
           }
           var hit;
           if (typeof p === "string") {
-            if (options.nocase) {
-              hit = f.toLowerCase() === p.toLowerCase();
-            } else {
-              hit = f === p;
-            }
+            hit = f === p;
             this.debug("string match", p, f, hit);
           } else {
             hit = f.match(p);
@@ -65538,7 +65507,7 @@ var require_minimatch2 = __commonJS({
         if (pattern === "")
           return "";
         let re = "";
-        let hasMagic = false;
+        let hasMagic = !!options.nocase;
         let escaping = false;
         const patternListStack = [];
         const negativeLists = [];
@@ -76603,7 +76572,7 @@ var require_version_check = __commonJS({
     var console_12 = require_console();
     async function verifyNgDevToolIsUpToDate(workspacePath) {
       var _a, _b, _c, _d, _e;
-      const localVersion = `0.0.0-a3ad969facdad942bbb0a6a75100fe25f9243b26`;
+      const localVersion = `0.0.0-82a6c91888c66e402dccebce3b40230bd6ede5a8`;
       const workspacePackageJsonFile = path.join(workspacePath, constants_1.workspaceRelativePackageJsonPath);
       const workspaceDirLockFile = path.join(workspacePath, constants_1.workspaceRelativeYarnLockFilePath);
       try {
@@ -77323,12 +77292,12 @@ var require_minimatch3 = __commonJS({
   "node_modules/glob/node_modules/minimatch/minimatch.js"(exports2, module2) {
     module2.exports = minimatch;
     minimatch.Minimatch = Minimatch;
-    var path = (() => {
+    var path = function() {
       try {
         return require("path");
       } catch (e) {
       }
-    })() || {
+    }() || {
       sep: "/"
     };
     minimatch.sep = path.sep;
@@ -77361,9 +77330,8 @@ var require_minimatch3 = __commonJS({
       };
     }
     function ext(a, b) {
-      a = a || {};
       b = b || {};
-      const t = {};
+      var t = {};
       Object.keys(a).forEach(function(k) {
         t[k] = a[k];
       });
@@ -77376,14 +77344,14 @@ var require_minimatch3 = __commonJS({
       if (!def || typeof def !== "object" || !Object.keys(def).length) {
         return minimatch;
       }
-      const orig = minimatch;
-      const m = function minimatch2(p, pattern, options) {
+      var orig = minimatch;
+      var m = function minimatch2(p, pattern, options) {
         return orig(p, pattern, ext(def, options));
       };
       m.Minimatch = function Minimatch2(pattern, options) {
         return new orig.Minimatch(pattern, ext(def, options));
       };
-      m.Minimatch.defaults = (options) => {
+      m.Minimatch.defaults = function defaults(options) {
         return orig.defaults(ext(def, options)).Minimatch;
       };
       m.filter = function filter2(pattern, options) {
@@ -77413,8 +77381,6 @@ var require_minimatch3 = __commonJS({
       if (!options.nocomment && pattern.charAt(0) === "#") {
         return false;
       }
-      if (pattern.trim() === "")
-        return p === "";
       return new Minimatch(pattern, options).match(p);
     }
     function Minimatch(pattern, options) {
@@ -77424,8 +77390,7 @@ var require_minimatch3 = __commonJS({
       assertValidPattern(pattern);
       if (!options)
         options = {};
-      pattern = pattern.trim();
-      if (path.sep !== "/") {
+      if (!options.allowWindowsEscape && path.sep !== "/") {
         pattern = pattern.split(path.sep).join("/");
       }
       this.options = options;
@@ -77435,14 +77400,13 @@ var require_minimatch3 = __commonJS({
       this.negate = false;
       this.comment = false;
       this.empty = false;
+      this.partial = !!options.partial;
       this.make();
     }
     Minimatch.prototype.debug = function() {
     };
     Minimatch.prototype.make = make;
     function make() {
-      if (this._made)
-        return;
       var pattern = this.pattern;
       var options = this.options;
       if (!options.nocomment && pattern.charAt(0) === "#") {
@@ -77456,7 +77420,9 @@ var require_minimatch3 = __commonJS({
       this.parseNegate();
       var set = this.globSet = this.braceExpand();
       if (options.debug)
-        this.debug = console.error;
+        this.debug = function debug() {
+          console.error.apply(console, arguments);
+        };
       this.debug(this.pattern, set);
       set = this.globParts = set.map(function(s) {
         return s.split(slashSplit);
@@ -77508,7 +77474,7 @@ var require_minimatch3 = __commonJS({
       return expand(pattern);
     }
     var MAX_PATTERN_LENGTH = 1024 * 64;
-    var assertValidPattern = (pattern) => {
+    var assertValidPattern = function(pattern) {
       if (typeof pattern !== "string") {
         throw new TypeError("invalid pattern");
       }
@@ -77521,12 +77487,16 @@ var require_minimatch3 = __commonJS({
     function parse(pattern, isSub) {
       assertValidPattern(pattern);
       var options = this.options;
-      if (!options.noglobstar && pattern === "**")
-        return GLOBSTAR;
+      if (pattern === "**") {
+        if (!options.noglobstar)
+          return GLOBSTAR;
+        else
+          pattern = "*";
+      }
       if (pattern === "")
         return "";
       var re = "";
-      var hasMagic = false;
+      var hasMagic = !!options.nocase;
       var escaping = false;
       var patternListStack = [];
       var negativeLists = [];
@@ -77649,17 +77619,15 @@ var require_minimatch3 = __commonJS({
               escaping = false;
               continue;
             }
-            if (inClass) {
-              var cs = pattern.substring(classStart + 1, i);
-              try {
-                RegExp("[" + cs + "]");
-              } catch (er) {
-                var sp = this.parse(cs, SUBPARSE);
-                re = re.substr(0, reClassStart) + "\\[" + sp[0] + "\\]";
-                hasMagic = hasMagic || sp[1];
-                inClass = false;
-                continue;
-              }
+            var cs = pattern.substring(classStart + 1, i);
+            try {
+              RegExp("[" + cs + "]");
+            } catch (er) {
+              var sp = this.parse(cs, SUBPARSE);
+              re = re.substr(0, reClassStart) + "\\[" + sp[0] + "\\]";
+              hasMagic = hasMagic || sp[1];
+              inClass = false;
+              continue;
             }
             hasMagic = true;
             inClass = false;
@@ -77701,8 +77669,8 @@ var require_minimatch3 = __commonJS({
       }
       var addPatternStart = false;
       switch (re.charAt(0)) {
-        case ".":
         case "[":
+        case ".":
         case "(":
           addPatternStart = true;
       }
@@ -77780,7 +77748,7 @@ var require_minimatch3 = __commonJS({
     }
     minimatch.match = function(list, pattern, options) {
       options = options || {};
-      const mm = new Minimatch(pattern, options);
+      var mm = new Minimatch(pattern, options);
       list = list.filter(function(f) {
         return mm.match(f);
       });
@@ -77789,8 +77757,9 @@ var require_minimatch3 = __commonJS({
       }
       return list;
     };
-    Minimatch.prototype.match = match;
-    function match(f, partial) {
+    Minimatch.prototype.match = function match(f, partial) {
+      if (typeof partial === "undefined")
+        partial = this.partial;
       this.debug("match", f, this.pattern);
       if (this.comment)
         return false;
@@ -77829,7 +77798,7 @@ var require_minimatch3 = __commonJS({
       if (options.flipNegate)
         return false;
       return this.negate;
-    }
+    };
     Minimatch.prototype.matchOne = function(file, pattern, partial) {
       var options = this.options;
       this.debug("matchOne", { "this": this, file, pattern });
@@ -77877,11 +77846,7 @@ var require_minimatch3 = __commonJS({
         }
         var hit;
         if (typeof p === "string") {
-          if (options.nocase) {
-            hit = f.toLowerCase() === p.toLowerCase();
-          } else {
-            hit = f === p;
-          }
+          hit = f === p;
           this.debug("string match", p, f, hit);
         } else {
           hit = f.match(p);
