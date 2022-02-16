@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-5b35e20aeb147b713c31ba5c269cf2128c746d46",
+  "version": "0.0.0-931d406a4fd1d534bfeafd162f41a65e66be488e",
   "bin": {
     "ng-dev": "./ng-dev/cli-bundle.js"
   },
@@ -49,7 +49,7 @@
     "husky": "^7.0.1",
     "inquirer": "^8.0.0",
     "jasmine": "^3.7.0",
-    "minimatch": "^4.0.0",
+    "minimatch": "^5.0.0",
     "multimatch": "^5.0.0",
     "nock": "^13.0.3",
     "node-fetch": "^2.6.1",

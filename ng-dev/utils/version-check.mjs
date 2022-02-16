@@ -24,7 +24,7 @@ const console_1 = require("./console");
  */
 async function verifyNgDevToolIsUpToDate(workspacePath) {
     // The placeholder will be replaced by the `pkg_npm` substitutions.
-    const localVersion = `0.0.0-5b35e20aeb147b713c31ba5c269cf2128c746d46`;
+    const localVersion = `0.0.0-931d406a4fd1d534bfeafd162f41a65e66be488e`;
     const workspacePackageJsonFile = path.join(workspacePath, constants_1.workspaceRelativePackageJsonPath);
     const workspaceDirLockFile = path.join(workspacePath, constants_1.workspaceRelativeYarnLockFilePath);
     try {

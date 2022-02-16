@@ -65273,6 +65273,157 @@ var require_logging = __commonJS({
   }
 });
 
+// node_modules/minimatch/node_modules/brace-expansion/index.js
+var require_brace_expansion2 = __commonJS({
+  "node_modules/minimatch/node_modules/brace-expansion/index.js"(exports2, module2) {
+    var balanced = require_balanced_match();
+    module2.exports = expandTop;
+    var escSlash = "\0SLASH" + Math.random() + "\0";
+    var escOpen = "\0OPEN" + Math.random() + "\0";
+    var escClose = "\0CLOSE" + Math.random() + "\0";
+    var escComma = "\0COMMA" + Math.random() + "\0";
+    var escPeriod = "\0PERIOD" + Math.random() + "\0";
+    function numeric(str) {
+      return parseInt(str, 10) == str ? parseInt(str, 10) : str.charCodeAt(0);
+    }
+    function escapeBraces(str) {
+      return str.split("\\\\").join(escSlash).split("\\{").join(escOpen).split("\\}").join(escClose).split("\\,").join(escComma).split("\\.").join(escPeriod);
+    }
+    function unescapeBraces(str) {
+      return str.split(escSlash).join("\\").split(escOpen).join("{").split(escClose).join("}").split(escComma).join(",").split(escPeriod).join(".");
+    }
+    function parseCommaParts(str) {
+      if (!str)
+        return [""];
+      var parts = [];
+      var m = balanced("{", "}", str);
+      if (!m)
+        return str.split(",");
+      var pre = m.pre;
+      var body = m.body;
+      var post = m.post;
+      var p = pre.split(",");
+      p[p.length - 1] += "{" + body + "}";
+      var postParts = parseCommaParts(post);
+      if (post.length) {
+        p[p.length - 1] += postParts.shift();
+        p.push.apply(p, postParts);
+      }
+      parts.push.apply(parts, p);
+      return parts;
+    }
+    function expandTop(str) {
+      if (!str)
+        return [];
+      if (str.substr(0, 2) === "{}") {
+        str = "\\{\\}" + str.substr(2);
+      }
+      return expand(escapeBraces(str), true).map(unescapeBraces);
+    }
+    function embrace(str) {
+      return "{" + str + "}";
+    }
+    function isPadded(el) {
+      return /^-?0\d/.test(el);
+    }
+    function lte(i, y) {
+      return i <= y;
+    }
+    function gte(i, y) {
+      return i >= y;
+    }
+    function expand(str, isTop) {
+      var expansions = [];
+      var m = balanced("{", "}", str);
+      if (!m)
+        return [str];
+      var pre = m.pre;
+      var post = m.post.length ? expand(m.post, false) : [""];
+      if (/\$$/.test(m.pre)) {
+        for (var k = 0; k < post.length; k++) {
+          var expansion = pre + "{" + m.body + "}" + post[k];
+          expansions.push(expansion);
+        }
+      } else {
+        var isNumericSequence = /^-?\d+\.\.-?\d+(?:\.\.-?\d+)?$/.test(m.body);
+        var isAlphaSequence = /^[a-zA-Z]\.\.[a-zA-Z](?:\.\.-?\d+)?$/.test(m.body);
+        var isSequence = isNumericSequence || isAlphaSequence;
+        var isOptions = m.body.indexOf(",") >= 0;
+        if (!isSequence && !isOptions) {
+          if (m.post.match(/,.*\}/)) {
+            str = m.pre + "{" + m.body + escClose + m.post;
+            return expand(str);
+          }
+          return [str];
+        }
+        var n;
+        if (isSequence) {
+          n = m.body.split(/\.\./);
+        } else {
+          n = parseCommaParts(m.body);
+          if (n.length === 1) {
+            n = expand(n[0], false).map(embrace);
+            if (n.length === 1) {
+              return post.map(function(p) {
+                return m.pre + n[0] + p;
+              });
+            }
+          }
+        }
+        var N;
+        if (isSequence) {
+          var x = numeric(n[0]);
+          var y = numeric(n[1]);
+          var width = Math.max(n[0].length, n[1].length);
+          var incr = n.length == 3 ? Math.abs(numeric(n[2])) : 1;
+          var test = lte;
+          var reverse = y < x;
+          if (reverse) {
+            incr *= -1;
+            test = gte;
+          }
+          var pad = n.some(isPadded);
+          N = [];
+          for (var i = x; test(i, y); i += incr) {
+            var c;
+            if (isAlphaSequence) {
+              c = String.fromCharCode(i);
+              if (c === "\\")
+                c = "";
+            } else {
+              c = String(i);
+              if (pad) {
+                var need = width - c.length;
+                if (need > 0) {
+                  var z = new Array(need + 1).join("0");
+                  if (i < 0)
+                    c = "-" + z + c.slice(1);
+                  else
+                    c = z + c;
+                }
+              }
+            }
+            N.push(c);
+          }
+        } else {
+          N = [];
+          for (var j = 0; j < n.length; j++) {
+            N.push.apply(N, expand(n[j], false));
+          }
+        }
+        for (var j = 0; j < N.length; j++) {
+          for (var k = 0; k < post.length; k++) {
+            var expansion = pre + N[j] + post[k];
+            if (!isTop || isSequence || expansion)
+              expansions.push(expansion);
+          }
+        }
+      }
+      return expansions;
+    }
+  }
+});
+
 // node_modules/minimatch/minimatch.js
 var require_minimatch2 = __commonJS({
   "node_modules/minimatch/minimatch.js"(exports2, module2) {
@@ -65295,7 +65446,7 @@ var require_minimatch2 = __commonJS({
     minimatch.sep = path.sep;
     var GLOBSTAR = Symbol("globstar **");
     minimatch.GLOBSTAR = GLOBSTAR;
-    var expand = require_brace_expansion();
+    var expand = require_brace_expansion2();
     var plTypes = {
       "!": { open: "(?:(?!(?:", close: "))[^/]*?)" },
       "?": { open: "(?:", close: ")?" },
@@ -65374,9 +65525,6 @@ var require_minimatch2 = __commonJS({
         assertValidPattern(pattern);
         if (!options)
           options = {};
-        if (!options.allowWindowsEscape && path.sep !== "/") {
-          pattern = pattern.split(path.sep).join("/");
-        }
         this.options = options;
         this.set = [];
         this.pattern = pattern;
@@ -65540,8 +65688,14 @@ var require_minimatch2 = __commonJS({
         };
         for (let i = 0, c; i < pattern.length && (c = pattern.charAt(i)); i++) {
           this.debug("%s	%s %s %j", pattern, i, re, c);
-          if (escaping && reSpecials[c]) {
-            re += "\\" + c;
+          if (escaping) {
+            if (c === "/") {
+              return false;
+            }
+            if (reSpecials[c]) {
+              re += "\\";
+            }
+            re += c;
             escaping = false;
             continue;
           }
@@ -65607,9 +65761,8 @@ var require_minimatch2 = __commonJS({
               pl.reEnd = re.length;
               continue;
             case "|":
-              if (inClass || !patternListStack.length || escaping) {
+              if (inClass || !patternListStack.length) {
                 re += "\\|";
-                escaping = false;
                 continue;
               }
               clearStateChar();
@@ -65629,7 +65782,6 @@ var require_minimatch2 = __commonJS({
             case "]":
               if (i === classStart + 1 || !inClass) {
                 re += "\\" + c;
-                escaping = false;
                 continue;
               }
               cs = pattern.substring(classStart + 1, i);
@@ -65648,12 +65800,11 @@ var require_minimatch2 = __commonJS({
               continue;
             default:
               clearStateChar();
-              if (escaping) {
-                escaping = false;
-              } else if (reSpecials[c] && !(c === "^" && inClass)) {
+              if (reSpecials[c] && !(c === "^" && inClass)) {
                 re += "\\";
               }
               re += c;
+              break;
           }
         }
         if (inClass) {
@@ -65730,7 +65881,32 @@ var require_minimatch2 = __commonJS({
         const options = this.options;
         const twoStar = options.noglobstar ? star : options.dot ? twoStarDot : twoStarNoDot;
         const flags = options.nocase ? "i" : "";
-        let re = set.map((pattern) => pattern.map((p) => p === GLOBSTAR ? twoStar : typeof p === "string" ? regExpEscape(p) : p._src).join("\\/")).join("|");
+        let re = set.map((pattern) => {
+          pattern = pattern.map((p) => typeof p === "string" ? regExpEscape(p) : p === GLOBSTAR ? GLOBSTAR : p._src).reduce((set2, p) => {
+            if (!(set2[set2.length - 1] === GLOBSTAR && p === GLOBSTAR)) {
+              set2.push(p);
+            }
+            return set2;
+          }, []);
+          pattern.forEach((p, i) => {
+            if (p !== GLOBSTAR || pattern[i - 1] === GLOBSTAR) {
+              return;
+            }
+            if (i === 0) {
+              if (pattern.length > 1) {
+                pattern[i + 1] = "(?:\\/|" + twoStar + "\\/)?" + pattern[i + 1];
+              } else {
+                pattern[i] = twoStar;
+              }
+            } else if (i === pattern.length - 1) {
+              pattern[i - 1] += "(?:\\/|" + twoStar + ")?";
+            } else {
+              pattern[i - 1] += "(?:\\/|\\/" + twoStar + "\\/)" + pattern[i + 1];
+              pattern[i + 1] = GLOBSTAR;
+            }
+          });
+          return pattern.filter((p) => p !== GLOBSTAR).join("/");
+        }).join("|");
         re = "^(?:" + re + ")$";
         if (this.negate)
           re = "^(?!" + re + ").*$";
@@ -76572,7 +76748,7 @@ var require_version_check = __commonJS({
     var console_12 = require_console();
     async function verifyNgDevToolIsUpToDate(workspacePath) {
       var _a, _b, _c, _d, _e;
-      const localVersion = `0.0.0-5b35e20aeb147b713c31ba5c269cf2128c746d46`;
+      const localVersion = `0.0.0-931d406a4fd1d534bfeafd162f41a65e66be488e`;
       const workspacePackageJsonFile = path.join(workspacePath, constants_1.workspaceRelativePackageJsonPath);
       const workspaceDirLockFile = path.join(workspacePath, constants_1.workspaceRelativeYarnLockFilePath);
       try {
