@@ -76748,7 +76748,7 @@ var require_version_check = __commonJS({
     var console_12 = require_console();
     async function verifyNgDevToolIsUpToDate(workspacePath) {
       var _a, _b, _c, _d, _e;
-      const localVersion = `0.0.0-bf9a7738fa2662db196bc022f39c08c9417f3538`;
+      const localVersion = `0.0.0-09cb90cd7e273966d8bc1e1a2dd98484e347a4cf`;
       const workspacePackageJsonFile = path.join(workspacePath, constants_1.workspaceRelativePackageJsonPath);
       const workspaceDirLockFile = path.join(workspacePath, constants_1.workspaceRelativeYarnLockFilePath);
       try {
