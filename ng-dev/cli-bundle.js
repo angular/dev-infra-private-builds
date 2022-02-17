@@ -63519,6 +63519,9 @@ var require_cli8 = __commonJS({
         const executionCmd = check ? format_1.checkFiles : format_1.formatFiles;
         const allStagedFiles = git_client_1.GitClient.get().allStagedFiles();
         process.exitCode = await executionCmd(allStagedFiles);
+        if (!check && process.exitCode === 0) {
+          git_client_1.GitClient.get().runGraceful(["add", ...allStagedFiles]);
+        }
       }).command("files <files..>", "Run the formatter on provided files", (args) => args.positional("files", { array: true, type: "string" }), async ({ check, files }) => {
         const executionCmd = check ? format_1.checkFiles : format_1.formatFiles;
         process.exitCode = await executionCmd(files);
@@ -76748,7 +76751,7 @@ var require_version_check = __commonJS({
     var console_12 = require_console();
     async function verifyNgDevToolIsUpToDate(workspacePath) {
       var _a, _b, _c, _d, _e;
-      const localVersion = `0.0.0-1e337f000e4242534728f5410848d2ec65a83f91`;
+      const localVersion = `0.0.0-74b89a46292330ba949652680c30b0280249db74`;
       const workspacePackageJsonFile = path.join(workspacePath, constants_1.workspaceRelativePackageJsonPath);
       const workspaceDirLockFile = path.join(workspacePath, constants_1.workspaceRelativeYarnLockFilePath);
       try {
