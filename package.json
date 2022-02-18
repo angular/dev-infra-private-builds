@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-74b89a46292330ba949652680c30b0280249db74",
+  "version": "0.0.0-8a6efe415cdc32593cf9723b5a28b89b97fe8c88",
   "bin": {
     "ng-dev": "./ng-dev/cli-bundle.js"
   },
@@ -13,7 +13,7 @@
   "dependencies": {
     "@actions/core": "^1.4.0",
     "@actions/github": "^5.0.0",
-    "@angular-devkit/build-angular": "14.0.0-next.1",
+    "@angular-devkit/build-angular": "14.0.0-next.2",
     "@angular/benchpress": "0.3.0",
     "@babel/core": "^7.16.0",
     "@bazel/bazelisk": "^1.10.1",
@@ -71,13 +71,13 @@
     "yargs": "^17.0.0"
   },
   "devDependencies": {
-    "@angular/animations": "14.0.0-next.2",
-    "@angular/bazel": "14.0.0-next.2",
-    "@angular/common": "14.0.0-next.2",
-    "@angular/compiler": "14.0.0-next.2",
-    "@angular/compiler-cli": "14.0.0-next.2",
-    "@angular/core": "14.0.0-next.2",
-    "@angular/platform-browser": "14.0.0-next.2",
+    "@angular/animations": "14.0.0-next.3",
+    "@angular/bazel": "14.0.0-next.3",
+    "@angular/common": "14.0.0-next.3",
+    "@angular/compiler": "14.0.0-next.3",
+    "@angular/compiler-cli": "14.0.0-next.3",
+    "@angular/core": "14.0.0-next.3",
+    "@angular/platform-browser": "14.0.0-next.3",
     "@google-cloud/storage": "^5.18.1",
     "@octokit/graphql-schema": "^10.72.0",
     "@types/cli-progress": "^3.9.1",
@@ -115,6 +115,6 @@
     "zone.js": "^0.11.4"
   },
   "resolutions": {
-    "@angular/benchpress/@angular/core": "14.0.0-next.2"
+    "@angular/benchpress/@angular/core": "14.0.0-next.3"
   }
 }
