@@ -45388,6 +45388,7 @@ var require_git_client = __commonJS({
         return branchName;
       }
       hasUncommittedChanges() {
+        this.runGraceful(["update-index", "-q", "--refresh"]);
         return this.runGraceful(["diff-index", "--quiet", "HEAD"]).status !== 0;
       }
       checkout(branchOrRevision, cleanState) {
@@ -76751,7 +76752,7 @@ var require_version_check = __commonJS({
     var console_12 = require_console();
     async function verifyNgDevToolIsUpToDate(workspacePath) {
       var _a, _b, _c, _d, _e;
-      const localVersion = `0.0.0-165d9471fe4160661927b1816f651014f98f84b2`;
+      const localVersion = `0.0.0-a9c48602d4f54850beabdf7933e05a9ce89e9dd5`;
       const workspacePackageJsonFile = path.join(workspacePath, constants_1.workspaceRelativePackageJsonPath);
       const workspaceDirLockFile = path.join(workspacePath, constants_1.workspaceRelativeYarnLockFilePath);
       try {
