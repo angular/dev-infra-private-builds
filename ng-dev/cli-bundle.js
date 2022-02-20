@@ -8646,32 +8646,6 @@ var require_Subscriber = __commonJS({
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
       };
     }();
-    var __read = exports2 && exports2.__read || function(o, n) {
-      var m = typeof Symbol === "function" && o[Symbol.iterator];
-      if (!m)
-        return o;
-      var i = m.call(o), r, ar = [], e;
-      try {
-        while ((n === void 0 || n-- > 0) && !(r = i.next()).done)
-          ar.push(r.value);
-      } catch (error) {
-        e = { error };
-      } finally {
-        try {
-          if (r && !r.done && (m = i["return"]))
-            m.call(i);
-        } finally {
-          if (e)
-            throw e.error;
-        }
-      }
-      return ar;
-    };
-    var __spreadArray = exports2 && exports2.__spreadArray || function(to, from) {
-      for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
-        to[j] = from[i];
-      return to;
-    };
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.EMPTY_OBSERVER = exports2.SafeSubscriber = exports2.Subscriber = void 0;
     var isFunction_1 = require_isFunction2();
@@ -8750,54 +8724,87 @@ var require_Subscriber = __commonJS({
       return Subscriber2;
     }(Subscription_1.Subscription);
     exports2.Subscriber = Subscriber;
+    var _bind = Function.prototype.bind;
+    function bind(fn, thisArg) {
+      return _bind.call(fn, thisArg);
+    }
+    var ConsumerObserver = function() {
+      function ConsumerObserver2(partialObserver) {
+        this.partialObserver = partialObserver;
+      }
+      ConsumerObserver2.prototype.next = function(value) {
+        var partialObserver = this.partialObserver;
+        if (partialObserver.next) {
+          try {
+            partialObserver.next(value);
+          } catch (error) {
+            handleUnhandledError(error);
+          }
+        }
+      };
+      ConsumerObserver2.prototype.error = function(err) {
+        var partialObserver = this.partialObserver;
+        if (partialObserver.error) {
+          try {
+            partialObserver.error(err);
+          } catch (error) {
+            handleUnhandledError(error);
+          }
+        } else {
+          handleUnhandledError(err);
+        }
+      };
+      ConsumerObserver2.prototype.complete = function() {
+        var partialObserver = this.partialObserver;
+        if (partialObserver.complete) {
+          try {
+            partialObserver.complete();
+          } catch (error) {
+            handleUnhandledError(error);
+          }
+        }
+      };
+      return ConsumerObserver2;
+    }();
     var SafeSubscriber = function(_super) {
       __extends(SafeSubscriber2, _super);
       function SafeSubscriber2(observerOrNext, error, complete) {
         var _this = _super.call(this) || this;
-        var next;
-        if (isFunction_1.isFunction(observerOrNext)) {
-          next = observerOrNext;
-        } else if (observerOrNext) {
-          next = observerOrNext.next, error = observerOrNext.error, complete = observerOrNext.complete;
+        var partialObserver;
+        if (isFunction_1.isFunction(observerOrNext) || !observerOrNext) {
+          partialObserver = {
+            next: observerOrNext !== null && observerOrNext !== void 0 ? observerOrNext : void 0,
+            error: error !== null && error !== void 0 ? error : void 0,
+            complete: complete !== null && complete !== void 0 ? complete : void 0
+          };
+        } else {
           var context_1;
           if (_this && config_1.config.useDeprecatedNextContext) {
             context_1 = Object.create(observerOrNext);
             context_1.unsubscribe = function() {
               return _this.unsubscribe();
             };
+            partialObserver = {
+              next: observerOrNext.next && bind(observerOrNext.next, context_1),
+              error: observerOrNext.error && bind(observerOrNext.error, context_1),
+              complete: observerOrNext.complete && bind(observerOrNext.complete, context_1)
+            };
           } else {
-            context_1 = observerOrNext;
+            partialObserver = observerOrNext;
           }
-          next = next === null || next === void 0 ? void 0 : next.bind(context_1);
-          error = error === null || error === void 0 ? void 0 : error.bind(context_1);
-          complete = complete === null || complete === void 0 ? void 0 : complete.bind(context_1);
         }
-        _this.destination = {
-          next: next ? wrapForErrorHandling(next, _this) : noop_1.noop,
-          error: wrapForErrorHandling(error !== null && error !== void 0 ? error : defaultErrorHandler, _this),
-          complete: complete ? wrapForErrorHandling(complete, _this) : noop_1.noop
-        };
+        _this.destination = new ConsumerObserver(partialObserver);
         return _this;
       }
       return SafeSubscriber2;
     }(Subscriber);
     exports2.SafeSubscriber = SafeSubscriber;
-    function wrapForErrorHandling(handler, instance) {
-      return function() {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-          args[_i] = arguments[_i];
-        }
-        try {
-          handler.apply(void 0, __spreadArray([], __read(args)));
-        } catch (err) {
-          if (config_1.config.useDeprecatedSynchronousErrorHandling) {
-            errorContext_1.captureError(err);
-          } else {
-            reportUnhandledError_1.reportUnhandledError(err);
-          }
-        }
-      };
+    function handleUnhandledError(error) {
+      if (config_1.config.useDeprecatedSynchronousErrorHandling) {
+        errorContext_1.captureError(error);
+      } else {
+        reportUnhandledError_1.reportUnhandledError(error);
+      }
     }
     function defaultErrorHandler(err) {
       throw err;
@@ -9036,13 +9043,18 @@ var require_OperatorSubscriber = __commonJS({
       };
     }();
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.OperatorSubscriber = void 0;
+    exports2.OperatorSubscriber = exports2.createOperatorSubscriber = void 0;
     var Subscriber_1 = require_Subscriber();
+    function createOperatorSubscriber(destination, onNext, onComplete, onError, onFinalize) {
+      return new OperatorSubscriber(destination, onNext, onComplete, onError, onFinalize);
+    }
+    exports2.createOperatorSubscriber = createOperatorSubscriber;
     var OperatorSubscriber = function(_super) {
       __extends(OperatorSubscriber2, _super);
-      function OperatorSubscriber2(destination, onNext, onComplete, onError, onFinalize) {
+      function OperatorSubscriber2(destination, onNext, onComplete, onError, onFinalize, shouldUnsubscribe) {
         var _this = _super.call(this, destination) || this;
         _this.onFinalize = onFinalize;
+        _this.shouldUnsubscribe = shouldUnsubscribe;
         _this._next = onNext ? function(value) {
           try {
             onNext(value);
@@ -9072,9 +9084,11 @@ var require_OperatorSubscriber = __commonJS({
       }
       OperatorSubscriber2.prototype.unsubscribe = function() {
         var _a;
-        var closed = this.closed;
-        _super.prototype.unsubscribe.call(this);
-        !closed && ((_a = this.onFinalize) === null || _a === void 0 ? void 0 : _a.call(this));
+        if (!this.shouldUnsubscribe || this.shouldUnsubscribe()) {
+          var closed_1 = this.closed;
+          _super.prototype.unsubscribe.call(this);
+          !closed_1 && ((_a = this.onFinalize) === null || _a === void 0 ? void 0 : _a.call(this));
+        }
       };
       return OperatorSubscriber2;
     }(Subscriber_1.Subscriber);
@@ -9094,7 +9108,7 @@ var require_refCount = __commonJS({
       return lift_1.operate(function(source, subscriber) {
         var connection = null;
         source._refCount++;
-        var refCounter = new OperatorSubscriber_1.OperatorSubscriber(subscriber, void 0, void 0, void 0, function() {
+        var refCounter = OperatorSubscriber_1.createOperatorSubscriber(subscriber, void 0, void 0, void 0, function() {
           if (!source || source._refCount <= 0 || 0 < --source._refCount) {
             connection = null;
             return;
@@ -9185,7 +9199,7 @@ var require_ConnectableObservable = __commonJS({
         if (!connection) {
           connection = this._connection = new Subscription_1.Subscription();
           var subject_1 = this.getSubject();
-          connection.add(this.source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subject_1, void 0, function() {
+          connection.add(this.source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subject_1, void 0, function() {
             _this._teardown();
             subject_1.complete();
           }, function(err) {
@@ -11425,7 +11439,7 @@ var require_observeOn = __commonJS({
         delay = 0;
       }
       return lift_1.operate(function(source, subscriber) {
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           return executeSchedule_1.executeSchedule(subscriber, scheduler, function() {
             return subscriber.next(value);
           }, delay);
@@ -11993,7 +12007,7 @@ var require_timeout = __commonJS({
             }
           }, delay);
         };
-        originalSourceSubscription = source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        originalSourceSubscription = source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           timerSubscription === null || timerSubscription === void 0 ? void 0 : timerSubscription.unsubscribe();
           seen++;
           subscriber.next(lastValue = value);
@@ -12025,7 +12039,7 @@ var require_map = __commonJS({
     function map(project, thisArg) {
       return lift_1.operate(function(source, subscriber) {
         var index = 0;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           subscriber.next(project.call(thisArg, value, index++));
         }));
       });
@@ -12312,7 +12326,7 @@ var require_combineLatest = __commonJS({
             maybeSchedule(scheduler, function() {
               var source = from_1.from(observables[i2], scheduler);
               var hasFirstValue = false;
-              source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+              source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
                 values[i2] = value;
                 if (!hasFirstValue) {
                   hasFirstValue = true;
@@ -12371,7 +12385,7 @@ var require_mergeInternals = __commonJS({
         expand && subscriber.next(value);
         active++;
         var innerComplete = false;
-        innerFrom_1.innerFrom(project(value, index++)).subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(innerValue) {
+        innerFrom_1.innerFrom(project(value, index++)).subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(innerValue) {
           onBeforeNext === null || onBeforeNext === void 0 ? void 0 : onBeforeNext(innerValue);
           if (expand) {
             outerNext(innerValue);
@@ -12404,7 +12418,7 @@ var require_mergeInternals = __commonJS({
           }
         }));
       };
-      source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, outerNext, function() {
+      source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, outerNext, function() {
         isComplete = true;
         checkComplete();
       }));
@@ -12592,7 +12606,7 @@ var require_forkJoin = __commonJS({
         var remainingEmissions = length;
         var _loop_1 = function(sourceIndex2) {
           var hasValue = false;
-          innerFrom_1.innerFrom(sources[sourceIndex2]).subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+          innerFrom_1.innerFrom(sources[sourceIndex2]).subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
             if (!hasValue) {
               hasValue = true;
               remainingEmissions--;
@@ -13071,8 +13085,8 @@ var require_onErrorResumeNext = __commonJS({
                 subscribeNext();
                 return;
               }
-              var innerSub = new OperatorSubscriber_1.OperatorSubscriber(subscriber, void 0, noop_1.noop, noop_1.noop);
-              subscriber.add(nextSource.subscribe(innerSub));
+              var innerSub = OperatorSubscriber_1.createOperatorSubscriber(subscriber, void 0, noop_1.noop, noop_1.noop);
+              nextSource.subscribe(innerSub);
               innerSub.add(subscribeNext);
             } else {
               subscriber.complete();
@@ -13146,7 +13160,7 @@ var require_filter = __commonJS({
     function filter(predicate, thisArg) {
       return lift_1.operate(function(source, subscriber) {
         var index = 0;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           return predicate.call(thisArg, value, index++) && subscriber.next(value);
         }));
       });
@@ -13194,7 +13208,7 @@ var require_race = __commonJS({
       return function(subscriber) {
         var subscriptions = [];
         var _loop_1 = function(i2) {
-          subscriptions.push(innerFrom_1.innerFrom(sources[i2]).subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+          subscriptions.push(innerFrom_1.innerFrom(sources[i2]).subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
             if (subscriptions) {
               for (var s = 0; s < subscriptions.length; s++) {
                 s !== i2 && subscriptions[s].unsubscribe();
@@ -13334,7 +13348,7 @@ var require_zip = __commonJS({
           buffers = completed = null;
         });
         var _loop_1 = function(sourceIndex2) {
-          innerFrom_1.innerFrom(sources[sourceIndex2]).subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+          innerFrom_1.innerFrom(sources[sourceIndex2]).subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
             buffers[sourceIndex2].push(value);
             if (buffers.every(function(buffer) {
               return buffer.length;
@@ -13404,11 +13418,11 @@ var require_audit = __commonJS({
           durationSubscriber = null;
           isComplete && subscriber.complete();
         };
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           hasValue = true;
           lastValue = value;
           if (!durationSubscriber) {
-            innerFrom_1.innerFrom(durationSelector(value)).subscribe(durationSubscriber = new OperatorSubscriber_1.OperatorSubscriber(subscriber, endDuration, cleanupDuration));
+            innerFrom_1.innerFrom(durationSelector(value)).subscribe(durationSubscriber = OperatorSubscriber_1.createOperatorSubscriber(subscriber, endDuration, cleanupDuration));
           }
         }, function() {
           isComplete = true;
@@ -13453,13 +13467,13 @@ var require_buffer = __commonJS({
     function buffer(closingNotifier) {
       return lift_1.operate(function(source, subscriber) {
         var currentBuffer = [];
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           return currentBuffer.push(value);
         }, function() {
           subscriber.next(currentBuffer);
           subscriber.complete();
         }));
-        closingNotifier.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function() {
+        closingNotifier.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function() {
           var b = currentBuffer;
           currentBuffer = [];
           subscriber.next(b);
@@ -13504,7 +13518,7 @@ var require_bufferCount = __commonJS({
       return lift_1.operate(function(source, subscriber) {
         var buffers = [];
         var count = 0;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           var e_1, _a, e_2, _b;
           var toEmit = null;
           if (count++ % startBufferEvery === 0) {
@@ -13644,7 +13658,7 @@ var require_bufferTime = __commonJS({
           restartOnEmit = true;
         }
         startBuffer();
-        var bufferTimeSubscriber = new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        var bufferTimeSubscriber = OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           var e_1, _a2;
           var recordsCopy = bufferRecords.slice();
           try {
@@ -13711,7 +13725,7 @@ var require_bufferToggle = __commonJS({
     function bufferToggle(openings, closingSelector) {
       return lift_1.operate(function(source, subscriber) {
         var buffers = [];
-        innerFrom_1.innerFrom(openings).subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(openValue) {
+        innerFrom_1.innerFrom(openings).subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(openValue) {
           var buffer = [];
           buffers.push(buffer);
           var closingSubscription = new Subscription_1.Subscription();
@@ -13720,9 +13734,9 @@ var require_bufferToggle = __commonJS({
             subscriber.next(buffer);
             closingSubscription.unsubscribe();
           };
-          closingSubscription.add(innerFrom_1.innerFrom(closingSelector(openValue)).subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, emitBuffer, noop_1.noop)));
+          closingSubscription.add(innerFrom_1.innerFrom(closingSelector(openValue)).subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, emitBuffer, noop_1.noop)));
         }, noop_1.noop));
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           var e_1, _a;
           try {
             for (var buffers_1 = __values(buffers), buffers_1_1 = buffers_1.next(); !buffers_1_1.done; buffers_1_1 = buffers_1.next()) {
@@ -13771,10 +13785,10 @@ var require_bufferWhen = __commonJS({
           var b = buffer;
           buffer = [];
           b && subscriber.next(b);
-          innerFrom_1.innerFrom(closingSelector()).subscribe(closingSubscriber = new OperatorSubscriber_1.OperatorSubscriber(subscriber, openBuffer, noop_1.noop));
+          innerFrom_1.innerFrom(closingSelector()).subscribe(closingSubscriber = OperatorSubscriber_1.createOperatorSubscriber(subscriber, openBuffer, noop_1.noop));
         };
         openBuffer();
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           return buffer === null || buffer === void 0 ? void 0 : buffer.push(value);
         }, function() {
           buffer && subscriber.next(buffer);
@@ -13802,7 +13816,7 @@ var require_catchError = __commonJS({
         var innerSub = null;
         var syncUnsub = false;
         var handledResult;
-        innerSub = source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, void 0, void 0, function(err) {
+        innerSub = source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, void 0, void 0, function(err) {
           handledResult = innerFrom_1.innerFrom(selector(err, catchError(selector)(source)));
           if (innerSub) {
             innerSub.unsubscribe();
@@ -13835,7 +13849,7 @@ var require_scanInternals = __commonJS({
         var hasState = hasSeed;
         var state = seed;
         var index = 0;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           var i = index++;
           state = hasState ? accumulator(state, value, i) : (hasState = true, value);
           emitOnNext && subscriber.next(state);
@@ -14241,11 +14255,11 @@ var require_debounce = __commonJS({
             subscriber.next(value);
           }
         };
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           durationSubscriber === null || durationSubscriber === void 0 ? void 0 : durationSubscriber.unsubscribe();
           hasValue = true;
           lastValue = value;
-          durationSubscriber = new OperatorSubscriber_1.OperatorSubscriber(subscriber, emit, noop_1.noop);
+          durationSubscriber = OperatorSubscriber_1.createOperatorSubscriber(subscriber, emit, noop_1.noop);
           innerFrom_1.innerFrom(durationSelector(value)).subscribe(durationSubscriber);
         }, function() {
           emit();
@@ -14295,7 +14309,7 @@ var require_debounceTime = __commonJS({
           }
           emit();
         }
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           lastValue = value;
           lastTime = scheduler.now();
           if (!activeTask) {
@@ -14325,7 +14339,7 @@ var require_defaultIfEmpty = __commonJS({
     function defaultIfEmpty(defaultValue) {
       return lift_1.operate(function(source, subscriber) {
         var hasValue = false;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           hasValue = true;
           subscriber.next(value);
         }, function() {
@@ -14354,7 +14368,7 @@ var require_take = __commonJS({
         return empty_1.EMPTY;
       } : lift_1.operate(function(source, subscriber) {
         var seen = 0;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           if (++seen <= count) {
             subscriber.next(value);
             if (count <= seen) {
@@ -14379,7 +14393,7 @@ var require_ignoreElements = __commonJS({
     var noop_1 = require_noop();
     function ignoreElements() {
       return lift_1.operate(function(source, subscriber) {
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, noop_1.noop));
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, noop_1.noop));
       });
     }
     exports2.ignoreElements = ignoreElements;
@@ -14460,7 +14474,7 @@ var require_dematerialize = __commonJS({
     var OperatorSubscriber_1 = require_OperatorSubscriber();
     function dematerialize() {
       return lift_1.operate(function(source, subscriber) {
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(notification) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(notification) {
           return Notification_1.observeNotification(notification, subscriber);
         }));
       });
@@ -14481,14 +14495,14 @@ var require_distinct = __commonJS({
     function distinct(keySelector, flushes) {
       return lift_1.operate(function(source, subscriber) {
         var distinctKeys = /* @__PURE__ */ new Set();
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           var key = keySelector ? keySelector(value) : value;
           if (!distinctKeys.has(key)) {
             distinctKeys.add(key);
             subscriber.next(value);
           }
         }));
-        flushes === null || flushes === void 0 ? void 0 : flushes.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function() {
+        flushes === null || flushes === void 0 ? void 0 : flushes.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function() {
           return distinctKeys.clear();
         }, noop_1.noop));
       });
@@ -14514,7 +14528,7 @@ var require_distinctUntilChanged = __commonJS({
       return lift_1.operate(function(source, subscriber) {
         var previousKey;
         var first = true;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           var currentKey = keySelector(value);
           if (first || !comparator(previousKey, currentKey)) {
             first = false;
@@ -14562,7 +14576,7 @@ var require_throwIfEmpty = __commonJS({
       }
       return lift_1.operate(function(source, subscriber) {
         var hasValue = false;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           hasValue = true;
           subscriber.next(value);
         }, function() {
@@ -14663,7 +14677,7 @@ var require_every = __commonJS({
     function every(predicate, thisArg) {
       return lift_1.operate(function(source, subscriber) {
         var index = 0;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           if (!predicate.call(thisArg, value, index++, source)) {
             subscriber.next(false);
             subscriber.complete();
@@ -14691,9 +14705,9 @@ var require_exhaustAll = __commonJS({
       return lift_1.operate(function(source, subscriber) {
         var isComplete = false;
         var innerSub = null;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(inner) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(inner) {
           if (!innerSub) {
-            innerSub = innerFrom_1.innerFrom(inner).subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, void 0, function() {
+            innerSub = innerFrom_1.innerFrom(inner).subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, void 0, function() {
               innerSub = null;
               isComplete && subscriber.complete();
             }));
@@ -14743,9 +14757,9 @@ var require_exhaustMap = __commonJS({
         var index = 0;
         var innerSub = null;
         var isComplete = false;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(outerValue) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(outerValue) {
           if (!innerSub) {
-            innerSub = new OperatorSubscriber_1.OperatorSubscriber(subscriber, void 0, function() {
+            innerSub = OperatorSubscriber_1.createOperatorSubscriber(subscriber, void 0, function() {
               innerSub = null;
               isComplete && subscriber.complete();
             });
@@ -14818,7 +14832,7 @@ var require_find = __commonJS({
       var findIndex = emit === "index";
       return function(source, subscriber) {
         var index = 0;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           var i = index++;
           if (predicate.call(thisArg, value, i, source)) {
             subscriber.next(findIndex ? i : value);
@@ -14879,27 +14893,6 @@ var require_first = __commonJS({
 var require_groupBy = __commonJS({
   "node_modules/rxjs/dist/cjs/internal/operators/groupBy.js"(exports2) {
     "use strict";
-    var __extends = exports2 && exports2.__extends || function() {
-      var extendStatics = function(d, b) {
-        extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function(d2, b2) {
-          d2.__proto__ = b2;
-        } || function(d2, b2) {
-          for (var p in b2)
-            if (Object.prototype.hasOwnProperty.call(b2, p))
-              d2[p] = b2[p];
-        };
-        return extendStatics(d, b);
-      };
-      return function(d, b) {
-        if (typeof b !== "function" && b !== null)
-          throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() {
-          this.constructor = d;
-        }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-      };
-    }();
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.groupBy = void 0;
     var Observable_1 = require_Observable();
@@ -14925,7 +14918,9 @@ var require_groupBy = __commonJS({
             return consumer.error(err);
           });
         };
-        var groupBySourceSubscriber = new GroupBySubscriber(subscriber, function(value) {
+        var activeGroups = 0;
+        var teardownAttempted = false;
+        var groupBySourceSubscriber = new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
           try {
             var key_1 = keySelector(value);
             var group_1 = groups.get(key_1);
@@ -14934,7 +14929,7 @@ var require_groupBy = __commonJS({
               var grouped = createGroupedObservable(key_1, group_1);
               subscriber.next(grouped);
               if (duration) {
-                var durationSubscriber_1 = new OperatorSubscriber_1.OperatorSubscriber(group_1, function() {
+                var durationSubscriber_1 = OperatorSubscriber_1.createOperatorSubscriber(group_1, function() {
                   group_1.complete();
                   durationSubscriber_1 === null || durationSubscriber_1 === void 0 ? void 0 : durationSubscriber_1.unsubscribe();
                 }, void 0, void 0, function() {
@@ -14953,15 +14948,18 @@ var require_groupBy = __commonJS({
           });
         }, handleError, function() {
           return groups.clear();
+        }, function() {
+          teardownAttempted = true;
+          return activeGroups === 0;
         });
         source.subscribe(groupBySourceSubscriber);
         function createGroupedObservable(key, groupSubject) {
           var result = new Observable_1.Observable(function(groupSubscriber) {
-            groupBySourceSubscriber.activeGroups++;
+            activeGroups++;
             var innerSub = groupSubject.subscribe(groupSubscriber);
             return function() {
               innerSub.unsubscribe();
-              --groupBySourceSubscriber.activeGroups === 0 && groupBySourceSubscriber.teardownAttempted && groupBySourceSubscriber.unsubscribe();
+              --activeGroups === 0 && teardownAttempted && groupBySourceSubscriber.unsubscribe();
             };
           });
           result.key = key;
@@ -14970,20 +14968,6 @@ var require_groupBy = __commonJS({
       });
     }
     exports2.groupBy = groupBy;
-    var GroupBySubscriber = function(_super) {
-      __extends(GroupBySubscriber2, _super);
-      function GroupBySubscriber2() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.activeGroups = 0;
-        _this.teardownAttempted = false;
-        return _this;
-      }
-      GroupBySubscriber2.prototype.unsubscribe = function() {
-        this.teardownAttempted = true;
-        this.activeGroups === 0 && _super.prototype.unsubscribe.call(this);
-      };
-      return GroupBySubscriber2;
-    }(OperatorSubscriber_1.OperatorSubscriber);
   }
 });
 
@@ -14997,7 +14981,7 @@ var require_isEmpty = __commonJS({
     var OperatorSubscriber_1 = require_OperatorSubscriber();
     function isEmpty() {
       return lift_1.operate(function(source, subscriber) {
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function() {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function() {
           subscriber.next(false);
           subscriber.complete();
         }, function() {
@@ -15038,7 +15022,7 @@ var require_takeLast = __commonJS({
         return empty_1.EMPTY;
       } : lift_1.operate(function(source, subscriber) {
         var buffer = [];
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           buffer.push(value);
           count < buffer.length && buffer.shift();
         }, function() {
@@ -15106,7 +15090,7 @@ var require_materialize = __commonJS({
     var OperatorSubscriber_1 = require_OperatorSubscriber();
     function materialize() {
       return lift_1.operate(function(source, subscriber) {
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           subscriber.next(Notification_1.Notification.createNext(value));
         }, function() {
           subscriber.next(Notification_1.Notification.createComplete());
@@ -15360,7 +15344,7 @@ var require_pairwise = __commonJS({
       return lift_1.operate(function(source, subscriber) {
         var prev;
         var hasPrev = false;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           var p = prev;
           prev = value;
           hasPrev && subscriber.next([p, value]);
@@ -15567,7 +15551,7 @@ var require_repeat = __commonJS({
           sourceSub = null;
           if (delay != null) {
             var notifier = typeof delay === "number" ? timer_1.timer(delay) : innerFrom_1.innerFrom(delay(soFar));
-            var notifierSubscriber_1 = new OperatorSubscriber_1.OperatorSubscriber(subscriber, function() {
+            var notifierSubscriber_1 = OperatorSubscriber_1.createOperatorSubscriber(subscriber, function() {
               notifierSubscriber_1.unsubscribe();
               subscribeToSource();
             });
@@ -15578,7 +15562,7 @@ var require_repeat = __commonJS({
         };
         var subscribeToSource = function() {
           var syncUnsub = false;
-          sourceSub = source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, void 0, function() {
+          sourceSub = source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, void 0, function() {
             if (++soFar < count) {
               if (sourceSub) {
                 resubscribe();
@@ -15622,7 +15606,7 @@ var require_repeatWhen = __commonJS({
         var getCompletionSubject = function() {
           if (!completions$) {
             completions$ = new Subject_1.Subject();
-            notifier(completions$).subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function() {
+            notifier(completions$).subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function() {
               if (innerSub) {
                 subscribeForRepeatWhen();
               } else {
@@ -15637,7 +15621,7 @@ var require_repeatWhen = __commonJS({
         };
         var subscribeForRepeatWhen = function() {
           isMainComplete = false;
-          innerSub = source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, void 0, function() {
+          innerSub = source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, void 0, function() {
             isMainComplete = true;
             !checkComplete() && getCompletionSubject().next();
           }));
@@ -15684,7 +15668,7 @@ var require_retry = __commonJS({
         var innerSub;
         var subscribeForRetry = function() {
           var syncUnsub = false;
-          innerSub = source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+          innerSub = source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
             if (resetOnSuccess) {
               soFar = 0;
             }
@@ -15702,7 +15686,7 @@ var require_retry = __commonJS({
               };
               if (delay != null) {
                 var notifier = typeof delay === "number" ? timer_1.timer(delay) : innerFrom_1.innerFrom(delay(err, soFar));
-                var notifierSubscriber_1 = new OperatorSubscriber_1.OperatorSubscriber(subscriber, function() {
+                var notifierSubscriber_1 = OperatorSubscriber_1.createOperatorSubscriber(subscriber, function() {
                   notifierSubscriber_1.unsubscribe();
                   resub_1();
                 }, function() {
@@ -15744,10 +15728,10 @@ var require_retryWhen = __commonJS({
         var syncResub = false;
         var errors$;
         var subscribeForRetryWhen = function() {
-          innerSub = source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, void 0, void 0, function(err) {
+          innerSub = source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, void 0, void 0, function(err) {
             if (!errors$) {
               errors$ = new Subject_1.Subject();
-              notifier(errors$).subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function() {
+              notifier(errors$).subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function() {
                 return innerSub ? subscribeForRetryWhen() : syncResub = true;
               }));
             }
@@ -15782,19 +15766,18 @@ var require_sample = __commonJS({
       return lift_1.operate(function(source, subscriber) {
         var hasValue = false;
         var lastValue = null;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           hasValue = true;
           lastValue = value;
         }));
-        var emit = function() {
+        notifier.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function() {
           if (hasValue) {
             hasValue = false;
             var value = lastValue;
             lastValue = null;
             subscriber.next(value);
           }
-        };
-        notifier.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, emit, noop_1.noop));
+        }, noop_1.noop));
       });
     }
     exports2.sample = sample2;
@@ -15857,7 +15840,7 @@ var require_sequenceEqual = __commonJS({
           subscriber.complete();
         };
         var createSubscriber = function(selfState, otherState) {
-          var sequenceEqualSubscriber = new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(a) {
+          var sequenceEqualSubscriber = OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(a) {
             var buffer = otherState.buffer, complete = otherState.complete;
             if (buffer.length === 0) {
               complete ? emit(false) : selfState.buffer.push(a);
@@ -16057,7 +16040,7 @@ var require_single = __commonJS({
         var singleValue;
         var seenValue = false;
         var index = 0;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           seenValue = true;
           if (!predicate || predicate(value, index++, source)) {
             hasValue && subscriber.error(new SequenceError_1.SequenceError("Too many matching values"));
@@ -16107,7 +16090,7 @@ var require_skipLast = __commonJS({
       return skipCount <= 0 ? identity_1.identity : lift_1.operate(function(source, subscriber) {
         var ring = new Array(skipCount);
         var seen = 0;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           var valueIndex = seen++;
           if (valueIndex < skipCount) {
             ring[valueIndex] = value;
@@ -16140,12 +16123,12 @@ var require_skipUntil = __commonJS({
     function skipUntil(notifier) {
       return lift_1.operate(function(source, subscriber) {
         var taking = false;
-        var skipSubscriber = new OperatorSubscriber_1.OperatorSubscriber(subscriber, function() {
+        var skipSubscriber = OperatorSubscriber_1.createOperatorSubscriber(subscriber, function() {
           skipSubscriber === null || skipSubscriber === void 0 ? void 0 : skipSubscriber.unsubscribe();
           taking = true;
         }, noop_1.noop);
         innerFrom_1.innerFrom(notifier).subscribe(skipSubscriber);
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           return taking && subscriber.next(value);
         }));
       });
@@ -16166,7 +16149,7 @@ var require_skipWhile = __commonJS({
       return lift_1.operate(function(source, subscriber) {
         var taking = false;
         var index = 0;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           return (taking || (taking = !predicate(value, index++))) && subscriber.next(value);
         }));
       });
@@ -16215,11 +16198,11 @@ var require_switchMap = __commonJS({
         var checkComplete = function() {
           return isComplete && !innerSubscriber && subscriber.complete();
         };
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           innerSubscriber === null || innerSubscriber === void 0 ? void 0 : innerSubscriber.unsubscribe();
           var innerIndex = 0;
           var outerIndex = index++;
-          innerFrom_1.innerFrom(project(value, outerIndex)).subscribe(innerSubscriber = new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(innerValue) {
+          innerFrom_1.innerFrom(project(value, outerIndex)).subscribe(innerSubscriber = OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(innerValue) {
             return subscriber.next(resultSelector ? resultSelector(value, innerValue, outerIndex, innerIndex++) : innerValue);
           }, function() {
             innerSubscriber = null;
@@ -16306,7 +16289,7 @@ var require_takeUntil = __commonJS({
     var noop_1 = require_noop();
     function takeUntil(notifier) {
       return lift_1.operate(function(source, subscriber) {
-        innerFrom_1.innerFrom(notifier).subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function() {
+        innerFrom_1.innerFrom(notifier).subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function() {
           return subscriber.complete();
         }, noop_1.noop));
         !subscriber.closed && source.subscribe(subscriber);
@@ -16330,7 +16313,7 @@ var require_takeWhile = __commonJS({
       }
       return lift_1.operate(function(source, subscriber) {
         var index = 0;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           var result = predicate(value, index++);
           (result || inclusive) && subscriber.next(value);
           !result && subscriber.complete();
@@ -16357,7 +16340,7 @@ var require_tap = __commonJS({
         var _a;
         (_a = tapObserver.subscribe) === null || _a === void 0 ? void 0 : _a.call(tapObserver);
         var isUnsub = true;
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           var _a2;
           (_a2 = tapObserver.next) === null || _a2 === void 0 ? void 0 : _a2.call(tapObserver, value);
           subscriber.next(value);
@@ -16420,7 +16403,7 @@ var require_throttle = __commonJS({
           isComplete && subscriber.complete();
         };
         var startThrottle = function(value) {
-          return throttled = innerFrom_1.innerFrom(durationSelector(value)).subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, endThrottling, cleanupThrottling));
+          return throttled = innerFrom_1.innerFrom(durationSelector(value)).subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, endThrottling, cleanupThrottling));
         };
         var send = function() {
           if (hasValue) {
@@ -16431,7 +16414,7 @@ var require_throttle = __commonJS({
             !isComplete && startThrottle(value);
           }
         };
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           hasValue = true;
           sendValue = value;
           !(throttled && !throttled.closed) && (leading ? send() : startThrottle(value));
@@ -16477,28 +16460,21 @@ var require_timeInterval = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.TimeInterval = exports2.timeInterval = void 0;
     var async_1 = require_async();
-    var scan_1 = require_scan();
-    var defer_1 = require_defer();
-    var map_1 = require_map();
+    var lift_1 = require_lift();
+    var OperatorSubscriber_1 = require_OperatorSubscriber();
     function timeInterval(scheduler) {
       if (scheduler === void 0) {
         scheduler = async_1.asyncScheduler;
       }
-      return function(source) {
-        return defer_1.defer(function() {
-          return source.pipe(scan_1.scan(function(_a, value) {
-            var current = _a.current;
-            return { value, current: scheduler.now(), last: current };
-          }, {
-            current: scheduler.now(),
-            value: void 0,
-            last: void 0
-          }), map_1.map(function(_a) {
-            var current = _a.current, last = _a.last, value = _a.value;
-            return new TimeInterval(value, current - last);
-          }));
-        });
-      };
+      return lift_1.operate(function(source, subscriber) {
+        var last = scheduler.now();
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
+          var now = scheduler.now();
+          var interval = now - last;
+          last = now;
+          subscriber.next(new TimeInterval(value, interval));
+        }));
+      });
     }
     exports2.timeInterval = timeInterval;
     var TimeInterval = function() {
@@ -16590,13 +16566,13 @@ var require_window = __commonJS({
           windowSubject.error(err);
           subscriber.error(err);
         };
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           return windowSubject === null || windowSubject === void 0 ? void 0 : windowSubject.next(value);
         }, function() {
           windowSubject.complete();
           subscriber.complete();
         }, errorHandler));
-        windowBoundaries.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function() {
+        windowBoundaries.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function() {
           windowSubject.complete();
           subscriber.next(windowSubject = new Subject_1.Subject());
         }, noop_1.noop, errorHandler));
@@ -16643,7 +16619,7 @@ var require_windowCount = __commonJS({
         var starts = [];
         var count = 0;
         subscriber.next(windows[0].asObservable());
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           var e_1, _a;
           try {
             for (var windows_1 = __values(windows), windows_1_1 = windows_1.next(); !windows_1_1.done; windows_1_1 = windows_1.next()) {
@@ -16757,7 +16733,7 @@ var require_windowTime = __commonJS({
           cb(subscriber);
           subscriber.unsubscribe();
         };
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           loop(function(record) {
             record.window.next(value);
             maxWindowSize <= ++record.seen && closeWindow(record);
@@ -16816,7 +16792,7 @@ var require_windowToggle = __commonJS({
           }
           subscriber.error(err);
         };
-        innerFrom_1.innerFrom(openings).subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(openValue) {
+        innerFrom_1.innerFrom(openings).subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(openValue) {
           var window2 = new Subject_1.Subject();
           windows.push(window2);
           var closingSubscription = new Subscription_1.Subscription();
@@ -16833,9 +16809,9 @@ var require_windowToggle = __commonJS({
             return;
           }
           subscriber.next(window2.asObservable());
-          closingSubscription.add(closingNotifier.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, closeWindow, noop_1.noop, handleError)));
+          closingSubscription.add(closingNotifier.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, closeWindow, noop_1.noop, handleError)));
         }, noop_1.noop));
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           var e_1, _a;
           var windowsCopy = windows.slice();
           try {
@@ -16900,10 +16876,10 @@ var require_windowWhen = __commonJS({
             handleError(err);
             return;
           }
-          closingNotifier.subscribe(closingSubscriber = new OperatorSubscriber_1.OperatorSubscriber(subscriber, openWindow, openWindow, handleError));
+          closingNotifier.subscribe(closingSubscriber = OperatorSubscriber_1.createOperatorSubscriber(subscriber, openWindow, openWindow, handleError));
         };
         openWindow();
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           return window2.next(value);
         }, function() {
           window2.complete();
@@ -16970,7 +16946,7 @@ var require_withLatestFrom = __commonJS({
         });
         var ready = false;
         var _loop_1 = function(i2) {
-          innerFrom_1.innerFrom(inputs[i2]).subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+          innerFrom_1.innerFrom(inputs[i2]).subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
             otherValues[i2] = value;
             if (!ready && !hasValue[i2]) {
               hasValue[i2] = true;
@@ -16981,7 +16957,7 @@ var require_withLatestFrom = __commonJS({
         for (var i = 0; i < len; i++) {
           _loop_1(i);
         }
-        source.subscribe(new OperatorSubscriber_1.OperatorSubscriber(subscriber, function(value) {
+        source.subscribe(OperatorSubscriber_1.createOperatorSubscriber(subscriber, function(value) {
           if (ready) {
             var values = __spreadArray([value], __read(otherValues));
             subscriber.next(project ? project.apply(void 0, __spreadArray([], __read(values))) : values);
@@ -19353,6 +19329,8 @@ var require_signal_exit = __commonJS({
     };
     if (!processOk(process2)) {
       module2.exports = function() {
+        return function() {
+        };
       };
     } else {
       assert = require("assert");
@@ -19375,7 +19353,8 @@ var require_signal_exit = __commonJS({
       }
       module2.exports = function(cb, opts) {
         if (!processOk(global.process)) {
-          return;
+          return function() {
+          };
         }
         assert.equal(typeof cb, "function", "a callback must be provided for exit handler");
         if (loaded === false) {
@@ -48698,16 +48677,20 @@ var require_brace_expansion = __commonJS({
   }
 });
 
-// node_modules/minimatch/minimatch.js
+// node_modules/multimatch/node_modules/minimatch/minimatch.js
 var require_minimatch = __commonJS({
-  "node_modules/minimatch/minimatch.js"(exports2, module2) {
+  "node_modules/multimatch/node_modules/minimatch/minimatch.js"(exports2, module2) {
     module2.exports = minimatch;
     minimatch.Minimatch = Minimatch;
-    var path = { sep: "/" };
-    try {
-      path = require("path");
-    } catch (er) {
-    }
+    var path = function() {
+      try {
+        return require("path");
+      } catch (e) {
+      }
+    }() || {
+      sep: "/"
+    };
+    minimatch.sep = path.sep;
     var GLOBSTAR = minimatch.GLOBSTAR = Minimatch.GLOBSTAR = {};
     var expand = require_brace_expansion();
     var plTypes = {
@@ -48737,58 +48720,67 @@ var require_minimatch = __commonJS({
       };
     }
     function ext(a, b) {
-      a = a || {};
       b = b || {};
       var t = {};
-      Object.keys(b).forEach(function(k) {
-        t[k] = b[k];
-      });
       Object.keys(a).forEach(function(k) {
         t[k] = a[k];
+      });
+      Object.keys(b).forEach(function(k) {
+        t[k] = b[k];
       });
       return t;
     }
     minimatch.defaults = function(def) {
-      if (!def || !Object.keys(def).length)
+      if (!def || typeof def !== "object" || !Object.keys(def).length) {
         return minimatch;
+      }
       var orig = minimatch;
       var m = function minimatch2(p, pattern, options) {
-        return orig.minimatch(p, pattern, ext(def, options));
+        return orig(p, pattern, ext(def, options));
       };
       m.Minimatch = function Minimatch2(pattern, options) {
         return new orig.Minimatch(pattern, ext(def, options));
       };
+      m.Minimatch.defaults = function defaults(options) {
+        return orig.defaults(ext(def, options)).Minimatch;
+      };
+      m.filter = function filter2(pattern, options) {
+        return orig.filter(pattern, ext(def, options));
+      };
+      m.defaults = function defaults(options) {
+        return orig.defaults(ext(def, options));
+      };
+      m.makeRe = function makeRe2(pattern, options) {
+        return orig.makeRe(pattern, ext(def, options));
+      };
+      m.braceExpand = function braceExpand2(pattern, options) {
+        return orig.braceExpand(pattern, ext(def, options));
+      };
+      m.match = function(list, pattern, options) {
+        return orig.match(list, pattern, ext(def, options));
+      };
       return m;
     };
     Minimatch.defaults = function(def) {
-      if (!def || !Object.keys(def).length)
-        return Minimatch;
       return minimatch.defaults(def).Minimatch;
     };
     function minimatch(p, pattern, options) {
-      if (typeof pattern !== "string") {
-        throw new TypeError("glob pattern string required");
-      }
+      assertValidPattern(pattern);
       if (!options)
         options = {};
       if (!options.nocomment && pattern.charAt(0) === "#") {
         return false;
       }
-      if (pattern.trim() === "")
-        return p === "";
       return new Minimatch(pattern, options).match(p);
     }
     function Minimatch(pattern, options) {
       if (!(this instanceof Minimatch)) {
         return new Minimatch(pattern, options);
       }
-      if (typeof pattern !== "string") {
-        throw new TypeError("glob pattern string required");
-      }
+      assertValidPattern(pattern);
       if (!options)
         options = {};
-      pattern = pattern.trim();
-      if (path.sep !== "/") {
+      if (!options.allowWindowsEscape && path.sep !== "/") {
         pattern = pattern.split(path.sep).join("/");
       }
       this.options = options;
@@ -48798,14 +48790,13 @@ var require_minimatch = __commonJS({
       this.negate = false;
       this.comment = false;
       this.empty = false;
+      this.partial = !!options.partial;
       this.make();
     }
     Minimatch.prototype.debug = function() {
     };
     Minimatch.prototype.make = make;
     function make() {
-      if (this._made)
-        return;
       var pattern = this.pattern;
       var options = this.options;
       if (!options.nocomment && pattern.charAt(0) === "#") {
@@ -48819,7 +48810,9 @@ var require_minimatch = __commonJS({
       this.parseNegate();
       var set = this.globSet = this.braceExpand();
       if (options.debug)
-        this.debug = console.error;
+        this.debug = function debug() {
+          console.error.apply(console, arguments);
+        };
       this.debug(this.pattern, set);
       set = this.globParts = set.map(function(s) {
         return s.split(slashSplit);
@@ -48864,23 +48857,32 @@ var require_minimatch = __commonJS({
         }
       }
       pattern = typeof pattern === "undefined" ? this.pattern : pattern;
-      if (typeof pattern === "undefined") {
-        throw new TypeError("undefined pattern");
-      }
-      if (options.nobrace || !pattern.match(/\{.*\}/)) {
+      assertValidPattern(pattern);
+      if (options.nobrace || !/\{(?:(?!\{).)*\}/.test(pattern)) {
         return [pattern];
       }
       return expand(pattern);
     }
+    var MAX_PATTERN_LENGTH = 1024 * 64;
+    var assertValidPattern = function(pattern) {
+      if (typeof pattern !== "string") {
+        throw new TypeError("invalid pattern");
+      }
+      if (pattern.length > MAX_PATTERN_LENGTH) {
+        throw new TypeError("pattern is too long");
+      }
+    };
     Minimatch.prototype.parse = parse;
     var SUBPARSE = {};
     function parse(pattern, isSub) {
-      if (pattern.length > 1024 * 64) {
-        throw new TypeError("pattern is too long");
-      }
+      assertValidPattern(pattern);
       var options = this.options;
-      if (!options.noglobstar && pattern === "**")
-        return GLOBSTAR;
+      if (pattern === "**") {
+        if (!options.noglobstar)
+          return GLOBSTAR;
+        else
+          pattern = "*";
+      }
       if (pattern === "")
         return "";
       var re = "";
@@ -48921,8 +48923,9 @@ var require_minimatch = __commonJS({
           continue;
         }
         switch (c) {
-          case "/":
+          case "/": {
             return false;
+          }
           case "\\":
             clearStateChar();
             escaping = true;
@@ -49006,17 +49009,15 @@ var require_minimatch = __commonJS({
               escaping = false;
               continue;
             }
-            if (inClass) {
-              var cs = pattern.substring(classStart + 1, i);
-              try {
-                RegExp("[" + cs + "]");
-              } catch (er) {
-                var sp = this.parse(cs, SUBPARSE);
-                re = re.substr(0, reClassStart) + "\\[" + sp[0] + "\\]";
-                hasMagic = hasMagic || sp[1];
-                inClass = false;
-                continue;
-              }
+            var cs = pattern.substring(classStart + 1, i);
+            try {
+              RegExp("[" + cs + "]");
+            } catch (er) {
+              var sp = this.parse(cs, SUBPARSE);
+              re = re.substr(0, reClassStart) + "\\[" + sp[0] + "\\]";
+              hasMagic = hasMagic || sp[1];
+              inClass = false;
+              continue;
             }
             hasMagic = true;
             inClass = false;
@@ -49058,8 +49059,8 @@ var require_minimatch = __commonJS({
       }
       var addPatternStart = false;
       switch (re.charAt(0)) {
-        case ".":
         case "[":
+        case ".":
         case "(":
           addPatternStart = true;
       }
@@ -49146,8 +49147,9 @@ var require_minimatch = __commonJS({
       }
       return list;
     };
-    Minimatch.prototype.match = match;
-    function match(f, partial) {
+    Minimatch.prototype.match = function match(f, partial) {
+      if (typeof partial === "undefined")
+        partial = this.partial;
       this.debug("match", f, this.pattern);
       if (this.comment)
         return false;
@@ -49186,7 +49188,7 @@ var require_minimatch = __commonJS({
       if (options.flipNegate)
         return false;
       return this.negate;
-    }
+    };
     Minimatch.prototype.matchOne = function(file, pattern, partial) {
       var options = this.options;
       this.debug("matchOne", { "this": this, file, pattern });
@@ -49234,11 +49236,7 @@ var require_minimatch = __commonJS({
         }
         var hit;
         if (typeof p === "string") {
-          if (options.nocase) {
-            hit = f.toLowerCase() === p.toLowerCase();
-          } else {
-            hit = f === p;
-          }
+          hit = f === p;
           this.debug("string match", p, f, hit);
         } else {
           hit = f.match(p);
@@ -49252,8 +49250,7 @@ var require_minimatch = __commonJS({
       } else if (fi === fl) {
         return partial;
       } else if (pi === pl) {
-        var emptyFileEnd = fi === fl - 1 && file[fi] === "";
-        return emptyFileEnd;
+        return fi === fl - 1 && file[fi] === "";
       }
       throw new Error("wtf?");
     };
@@ -49288,9 +49285,9 @@ var require_array_differ = __commonJS({
   }
 });
 
-// node_modules/multimatch/node_modules/arrify/index.js
+// node_modules/arrify/index.js
 var require_arrify = __commonJS({
-  "node_modules/multimatch/node_modules/arrify/index.js"(exports2, module2) {
+  "node_modules/arrify/index.js"(exports2, module2) {
     "use strict";
     var arrify = (value) => {
       if (value === null || value === void 0) {
@@ -63522,6 +63519,9 @@ var require_cli8 = __commonJS({
         const executionCmd = check ? format_1.checkFiles : format_1.formatFiles;
         const allStagedFiles = git_client_1.GitClient.get().allStagedFiles();
         process.exitCode = await executionCmd(allStagedFiles);
+        if (!check && process.exitCode === 0) {
+          git_client_1.GitClient.get().runGraceful(["add", ...allStagedFiles]);
+        }
       }).command("files <files..>", "Run the formatter on provided files", (args) => args.positional("files", { array: true, type: "string" }), async ({ check, files }) => {
         const executionCmd = check ? format_1.checkFiles : format_1.formatFiles;
         process.exitCode = await executionCmd(files);
@@ -64103,7 +64103,11 @@ var require_validations = __commonJS({
     var failures_1 = require_failures();
     var console_12 = require_console();
     var fetch_pull_request_1 = require_fetch_pull_request();
-    function assertChangesAllowForTargetLabel(commits, label, config, releaseTrains) {
+    function assertChangesAllowForTargetLabel(commits, label, config, releaseTrains, labelsOnPullRequest) {
+      if (!!config.commitMessageFixupLabel && labelsOnPullRequest.some((name) => matchesPattern(name, config.commitMessageFixupLabel))) {
+        (0, console_12.debug)("Skipping commit message target label validation because the commit message fixup label is applied.");
+        return;
+      }
       const exemptedScopes = config.targetLabelExemptScopes || [];
       commits = commits.filter((commit) => !exemptedScopes.includes(commit.scope));
       const hasBreakingChanges = commits.some((commit) => commit.breakingChanges.length !== 0);
@@ -64259,7 +64263,7 @@ var require_target_label = __commonJS({
         const targetLabels = await (0, labels_1.getTargetLabelsForActiveReleaseTrains)(releaseTrains, api, config);
         const matchingLabel = await getMatchingTargetLabelForPullRequest(config.pullRequest, labelsOnPullRequest, targetLabels);
         const targetBranches = await getBranchesFromTargetLabel(matchingLabel, githubTargetBranch);
-        (0, validations_1.assertChangesAllowForTargetLabel)(commits, matchingLabel, config.pullRequest, releaseTrains);
+        (0, validations_1.assertChangesAllowForTargetLabel)(commits, matchingLabel, config.pullRequest, releaseTrains, labelsOnPullRequest);
         return targetBranches;
       } catch (error) {
         if (error instanceof InvalidTargetBranchError || error instanceof InvalidTargetLabelError) {
@@ -65272,13 +65276,704 @@ var require_logging = __commonJS({
   }
 });
 
+// node_modules/minimatch/node_modules/brace-expansion/index.js
+var require_brace_expansion2 = __commonJS({
+  "node_modules/minimatch/node_modules/brace-expansion/index.js"(exports2, module2) {
+    var balanced = require_balanced_match();
+    module2.exports = expandTop;
+    var escSlash = "\0SLASH" + Math.random() + "\0";
+    var escOpen = "\0OPEN" + Math.random() + "\0";
+    var escClose = "\0CLOSE" + Math.random() + "\0";
+    var escComma = "\0COMMA" + Math.random() + "\0";
+    var escPeriod = "\0PERIOD" + Math.random() + "\0";
+    function numeric(str) {
+      return parseInt(str, 10) == str ? parseInt(str, 10) : str.charCodeAt(0);
+    }
+    function escapeBraces(str) {
+      return str.split("\\\\").join(escSlash).split("\\{").join(escOpen).split("\\}").join(escClose).split("\\,").join(escComma).split("\\.").join(escPeriod);
+    }
+    function unescapeBraces(str) {
+      return str.split(escSlash).join("\\").split(escOpen).join("{").split(escClose).join("}").split(escComma).join(",").split(escPeriod).join(".");
+    }
+    function parseCommaParts(str) {
+      if (!str)
+        return [""];
+      var parts = [];
+      var m = balanced("{", "}", str);
+      if (!m)
+        return str.split(",");
+      var pre = m.pre;
+      var body = m.body;
+      var post = m.post;
+      var p = pre.split(",");
+      p[p.length - 1] += "{" + body + "}";
+      var postParts = parseCommaParts(post);
+      if (post.length) {
+        p[p.length - 1] += postParts.shift();
+        p.push.apply(p, postParts);
+      }
+      parts.push.apply(parts, p);
+      return parts;
+    }
+    function expandTop(str) {
+      if (!str)
+        return [];
+      if (str.substr(0, 2) === "{}") {
+        str = "\\{\\}" + str.substr(2);
+      }
+      return expand(escapeBraces(str), true).map(unescapeBraces);
+    }
+    function embrace(str) {
+      return "{" + str + "}";
+    }
+    function isPadded(el) {
+      return /^-?0\d/.test(el);
+    }
+    function lte(i, y) {
+      return i <= y;
+    }
+    function gte(i, y) {
+      return i >= y;
+    }
+    function expand(str, isTop) {
+      var expansions = [];
+      var m = balanced("{", "}", str);
+      if (!m)
+        return [str];
+      var pre = m.pre;
+      var post = m.post.length ? expand(m.post, false) : [""];
+      if (/\$$/.test(m.pre)) {
+        for (var k = 0; k < post.length; k++) {
+          var expansion = pre + "{" + m.body + "}" + post[k];
+          expansions.push(expansion);
+        }
+      } else {
+        var isNumericSequence = /^-?\d+\.\.-?\d+(?:\.\.-?\d+)?$/.test(m.body);
+        var isAlphaSequence = /^[a-zA-Z]\.\.[a-zA-Z](?:\.\.-?\d+)?$/.test(m.body);
+        var isSequence = isNumericSequence || isAlphaSequence;
+        var isOptions = m.body.indexOf(",") >= 0;
+        if (!isSequence && !isOptions) {
+          if (m.post.match(/,.*\}/)) {
+            str = m.pre + "{" + m.body + escClose + m.post;
+            return expand(str);
+          }
+          return [str];
+        }
+        var n;
+        if (isSequence) {
+          n = m.body.split(/\.\./);
+        } else {
+          n = parseCommaParts(m.body);
+          if (n.length === 1) {
+            n = expand(n[0], false).map(embrace);
+            if (n.length === 1) {
+              return post.map(function(p) {
+                return m.pre + n[0] + p;
+              });
+            }
+          }
+        }
+        var N;
+        if (isSequence) {
+          var x = numeric(n[0]);
+          var y = numeric(n[1]);
+          var width = Math.max(n[0].length, n[1].length);
+          var incr = n.length == 3 ? Math.abs(numeric(n[2])) : 1;
+          var test = lte;
+          var reverse = y < x;
+          if (reverse) {
+            incr *= -1;
+            test = gte;
+          }
+          var pad = n.some(isPadded);
+          N = [];
+          for (var i = x; test(i, y); i += incr) {
+            var c;
+            if (isAlphaSequence) {
+              c = String.fromCharCode(i);
+              if (c === "\\")
+                c = "";
+            } else {
+              c = String(i);
+              if (pad) {
+                var need = width - c.length;
+                if (need > 0) {
+                  var z = new Array(need + 1).join("0");
+                  if (i < 0)
+                    c = "-" + z + c.slice(1);
+                  else
+                    c = z + c;
+                }
+              }
+            }
+            N.push(c);
+          }
+        } else {
+          N = [];
+          for (var j = 0; j < n.length; j++) {
+            N.push.apply(N, expand(n[j], false));
+          }
+        }
+        for (var j = 0; j < N.length; j++) {
+          for (var k = 0; k < post.length; k++) {
+            var expansion = pre + N[j] + post[k];
+            if (!isTop || isSequence || expansion)
+              expansions.push(expansion);
+          }
+        }
+      }
+      return expansions;
+    }
+  }
+});
+
+// node_modules/minimatch/minimatch.js
+var require_minimatch2 = __commonJS({
+  "node_modules/minimatch/minimatch.js"(exports2, module2) {
+    var minimatch = module2.exports = (p, pattern, options = {}) => {
+      assertValidPattern(pattern);
+      if (!options.nocomment && pattern.charAt(0) === "#") {
+        return false;
+      }
+      return new Minimatch(pattern, options).match(p);
+    };
+    module2.exports = minimatch;
+    var path = (() => {
+      try {
+        return require("path");
+      } catch (e) {
+      }
+    })() || {
+      sep: "/"
+    };
+    minimatch.sep = path.sep;
+    var GLOBSTAR = Symbol("globstar **");
+    minimatch.GLOBSTAR = GLOBSTAR;
+    var expand = require_brace_expansion2();
+    var plTypes = {
+      "!": { open: "(?:(?!(?:", close: "))[^/]*?)" },
+      "?": { open: "(?:", close: ")?" },
+      "+": { open: "(?:", close: ")+" },
+      "*": { open: "(?:", close: ")*" },
+      "@": { open: "(?:", close: ")" }
+    };
+    var qmark = "[^/]";
+    var star = qmark + "*?";
+    var twoStarDot = "(?:(?!(?:\\/|^)(?:\\.{1,2})($|\\/)).)*?";
+    var twoStarNoDot = "(?:(?!(?:\\/|^)\\.).)*?";
+    var charSet = (s) => s.split("").reduce((set, c) => {
+      set[c] = true;
+      return set;
+    }, {});
+    var reSpecials = charSet("().*{}+?[]^$\\!");
+    var addPatternStartSet = charSet("[.(");
+    var slashSplit = /\/+/;
+    minimatch.filter = (pattern, options = {}) => (p, i, list) => minimatch(p, pattern, options);
+    var ext = (a, b = {}) => {
+      const t = {};
+      Object.keys(a).forEach((k) => t[k] = a[k]);
+      Object.keys(b).forEach((k) => t[k] = b[k]);
+      return t;
+    };
+    minimatch.defaults = (def) => {
+      if (!def || typeof def !== "object" || !Object.keys(def).length) {
+        return minimatch;
+      }
+      const orig = minimatch;
+      const m = (p, pattern, options) => orig(p, pattern, ext(def, options));
+      m.Minimatch = class Minimatch extends orig.Minimatch {
+        constructor(pattern, options) {
+          super(pattern, ext(def, options));
+        }
+      };
+      m.Minimatch.defaults = (options) => orig.defaults(ext(def, options)).Minimatch;
+      m.filter = (pattern, options) => orig.filter(pattern, ext(def, options));
+      m.defaults = (options) => orig.defaults(ext(def, options));
+      m.makeRe = (pattern, options) => orig.makeRe(pattern, ext(def, options));
+      m.braceExpand = (pattern, options) => orig.braceExpand(pattern, ext(def, options));
+      m.match = (list, pattern, options) => orig.match(list, pattern, ext(def, options));
+      return m;
+    };
+    minimatch.braceExpand = (pattern, options) => braceExpand(pattern, options);
+    var braceExpand = (pattern, options = {}) => {
+      assertValidPattern(pattern);
+      if (options.nobrace || !/\{(?:(?!\{).)*\}/.test(pattern)) {
+        return [pattern];
+      }
+      return expand(pattern);
+    };
+    var MAX_PATTERN_LENGTH = 1024 * 64;
+    var assertValidPattern = (pattern) => {
+      if (typeof pattern !== "string") {
+        throw new TypeError("invalid pattern");
+      }
+      if (pattern.length > MAX_PATTERN_LENGTH) {
+        throw new TypeError("pattern is too long");
+      }
+    };
+    var SUBPARSE = Symbol("subparse");
+    minimatch.makeRe = (pattern, options) => new Minimatch(pattern, options || {}).makeRe();
+    minimatch.match = (list, pattern, options = {}) => {
+      const mm = new Minimatch(pattern, options);
+      list = list.filter((f) => mm.match(f));
+      if (mm.options.nonull && !list.length) {
+        list.push(pattern);
+      }
+      return list;
+    };
+    var globUnescape = (s) => s.replace(/\\(.)/g, "$1");
+    var regExpEscape = (s) => s.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+    var Minimatch = class {
+      constructor(pattern, options) {
+        assertValidPattern(pattern);
+        if (!options)
+          options = {};
+        this.options = options;
+        this.set = [];
+        this.pattern = pattern;
+        this.regexp = null;
+        this.negate = false;
+        this.comment = false;
+        this.empty = false;
+        this.partial = !!options.partial;
+        this.make();
+      }
+      debug() {
+      }
+      make() {
+        const pattern = this.pattern;
+        const options = this.options;
+        if (!options.nocomment && pattern.charAt(0) === "#") {
+          this.comment = true;
+          return;
+        }
+        if (!pattern) {
+          this.empty = true;
+          return;
+        }
+        this.parseNegate();
+        let set = this.globSet = this.braceExpand();
+        if (options.debug)
+          this.debug = (...args) => console.error(...args);
+        this.debug(this.pattern, set);
+        set = this.globParts = set.map((s) => s.split(slashSplit));
+        this.debug(this.pattern, set);
+        set = set.map((s, si, set2) => s.map(this.parse, this));
+        this.debug(this.pattern, set);
+        set = set.filter((s) => s.indexOf(false) === -1);
+        this.debug(this.pattern, set);
+        this.set = set;
+      }
+      parseNegate() {
+        if (this.options.nonegate)
+          return;
+        const pattern = this.pattern;
+        let negate = false;
+        let negateOffset = 0;
+        for (let i = 0; i < pattern.length && pattern.charAt(i) === "!"; i++) {
+          negate = !negate;
+          negateOffset++;
+        }
+        if (negateOffset)
+          this.pattern = pattern.substr(negateOffset);
+        this.negate = negate;
+      }
+      matchOne(file, pattern, partial) {
+        var options = this.options;
+        this.debug("matchOne", { "this": this, file, pattern });
+        this.debug("matchOne", file.length, pattern.length);
+        for (var fi = 0, pi = 0, fl = file.length, pl = pattern.length; fi < fl && pi < pl; fi++, pi++) {
+          this.debug("matchOne loop");
+          var p = pattern[pi];
+          var f = file[fi];
+          this.debug(pattern, p, f);
+          if (p === false)
+            return false;
+          if (p === GLOBSTAR) {
+            this.debug("GLOBSTAR", [pattern, p, f]);
+            var fr = fi;
+            var pr = pi + 1;
+            if (pr === pl) {
+              this.debug("** at the end");
+              for (; fi < fl; fi++) {
+                if (file[fi] === "." || file[fi] === ".." || !options.dot && file[fi].charAt(0) === ".")
+                  return false;
+              }
+              return true;
+            }
+            while (fr < fl) {
+              var swallowee = file[fr];
+              this.debug("\nglobstar while", file, fr, pattern, pr, swallowee);
+              if (this.matchOne(file.slice(fr), pattern.slice(pr), partial)) {
+                this.debug("globstar found match!", fr, fl, swallowee);
+                return true;
+              } else {
+                if (swallowee === "." || swallowee === ".." || !options.dot && swallowee.charAt(0) === ".") {
+                  this.debug("dot detected!", file, fr, pattern, pr);
+                  break;
+                }
+                this.debug("globstar swallow a segment, and continue");
+                fr++;
+              }
+            }
+            if (partial) {
+              this.debug("\n>>> no match, partial?", file, fr, pattern, pr);
+              if (fr === fl)
+                return true;
+            }
+            return false;
+          }
+          var hit;
+          if (typeof p === "string") {
+            hit = f === p;
+            this.debug("string match", p, f, hit);
+          } else {
+            hit = f.match(p);
+            this.debug("pattern match", p, f, hit);
+          }
+          if (!hit)
+            return false;
+        }
+        if (fi === fl && pi === pl) {
+          return true;
+        } else if (fi === fl) {
+          return partial;
+        } else if (pi === pl) {
+          return fi === fl - 1 && file[fi] === "";
+        }
+        throw new Error("wtf?");
+      }
+      braceExpand() {
+        return braceExpand(this.pattern, this.options);
+      }
+      parse(pattern, isSub) {
+        assertValidPattern(pattern);
+        const options = this.options;
+        if (pattern === "**") {
+          if (!options.noglobstar)
+            return GLOBSTAR;
+          else
+            pattern = "*";
+        }
+        if (pattern === "")
+          return "";
+        let re = "";
+        let hasMagic = !!options.nocase;
+        let escaping = false;
+        const patternListStack = [];
+        const negativeLists = [];
+        let stateChar;
+        let inClass = false;
+        let reClassStart = -1;
+        let classStart = -1;
+        let cs;
+        let pl;
+        let sp;
+        const patternStart = pattern.charAt(0) === "." ? "" : options.dot ? "(?!(?:^|\\/)\\.{1,2}(?:$|\\/))" : "(?!\\.)";
+        const clearStateChar = () => {
+          if (stateChar) {
+            switch (stateChar) {
+              case "*":
+                re += star;
+                hasMagic = true;
+                break;
+              case "?":
+                re += qmark;
+                hasMagic = true;
+                break;
+              default:
+                re += "\\" + stateChar;
+                break;
+            }
+            this.debug("clearStateChar %j %j", stateChar, re);
+            stateChar = false;
+          }
+        };
+        for (let i = 0, c; i < pattern.length && (c = pattern.charAt(i)); i++) {
+          this.debug("%s	%s %s %j", pattern, i, re, c);
+          if (escaping) {
+            if (c === "/") {
+              return false;
+            }
+            if (reSpecials[c]) {
+              re += "\\";
+            }
+            re += c;
+            escaping = false;
+            continue;
+          }
+          switch (c) {
+            case "/": {
+              return false;
+            }
+            case "\\":
+              clearStateChar();
+              escaping = true;
+              continue;
+            case "?":
+            case "*":
+            case "+":
+            case "@":
+            case "!":
+              this.debug("%s	%s %s %j <-- stateChar", pattern, i, re, c);
+              if (inClass) {
+                this.debug("  in class");
+                if (c === "!" && i === classStart + 1)
+                  c = "^";
+                re += c;
+                continue;
+              }
+              this.debug("call clearStateChar %j", stateChar);
+              clearStateChar();
+              stateChar = c;
+              if (options.noext)
+                clearStateChar();
+              continue;
+            case "(":
+              if (inClass) {
+                re += "(";
+                continue;
+              }
+              if (!stateChar) {
+                re += "\\(";
+                continue;
+              }
+              patternListStack.push({
+                type: stateChar,
+                start: i - 1,
+                reStart: re.length,
+                open: plTypes[stateChar].open,
+                close: plTypes[stateChar].close
+              });
+              re += stateChar === "!" ? "(?:(?!(?:" : "(?:";
+              this.debug("plType %j %j", stateChar, re);
+              stateChar = false;
+              continue;
+            case ")":
+              if (inClass || !patternListStack.length) {
+                re += "\\)";
+                continue;
+              }
+              clearStateChar();
+              hasMagic = true;
+              pl = patternListStack.pop();
+              re += pl.close;
+              if (pl.type === "!") {
+                negativeLists.push(pl);
+              }
+              pl.reEnd = re.length;
+              continue;
+            case "|":
+              if (inClass || !patternListStack.length) {
+                re += "\\|";
+                continue;
+              }
+              clearStateChar();
+              re += "|";
+              continue;
+            case "[":
+              clearStateChar();
+              if (inClass) {
+                re += "\\" + c;
+                continue;
+              }
+              inClass = true;
+              classStart = i;
+              reClassStart = re.length;
+              re += c;
+              continue;
+            case "]":
+              if (i === classStart + 1 || !inClass) {
+                re += "\\" + c;
+                continue;
+              }
+              cs = pattern.substring(classStart + 1, i);
+              try {
+                RegExp("[" + cs + "]");
+              } catch (er) {
+                sp = this.parse(cs, SUBPARSE);
+                re = re.substr(0, reClassStart) + "\\[" + sp[0] + "\\]";
+                hasMagic = hasMagic || sp[1];
+                inClass = false;
+                continue;
+              }
+              hasMagic = true;
+              inClass = false;
+              re += c;
+              continue;
+            default:
+              clearStateChar();
+              if (reSpecials[c] && !(c === "^" && inClass)) {
+                re += "\\";
+              }
+              re += c;
+              break;
+          }
+        }
+        if (inClass) {
+          cs = pattern.substr(classStart + 1);
+          sp = this.parse(cs, SUBPARSE);
+          re = re.substr(0, reClassStart) + "\\[" + sp[0];
+          hasMagic = hasMagic || sp[1];
+        }
+        for (pl = patternListStack.pop(); pl; pl = patternListStack.pop()) {
+          let tail;
+          tail = re.slice(pl.reStart + pl.open.length);
+          this.debug("setting tail", re, pl);
+          tail = tail.replace(/((?:\\{2}){0,64})(\\?)\|/g, (_, $1, $2) => {
+            if (!$2) {
+              $2 = "\\";
+            }
+            return $1 + $1 + $2 + "|";
+          });
+          this.debug("tail=%j\n   %s", tail, tail, pl, re);
+          const t = pl.type === "*" ? star : pl.type === "?" ? qmark : "\\" + pl.type;
+          hasMagic = true;
+          re = re.slice(0, pl.reStart) + t + "\\(" + tail;
+        }
+        clearStateChar();
+        if (escaping) {
+          re += "\\\\";
+        }
+        const addPatternStart = addPatternStartSet[re.charAt(0)];
+        for (let n = negativeLists.length - 1; n > -1; n--) {
+          const nl = negativeLists[n];
+          const nlBefore = re.slice(0, nl.reStart);
+          const nlFirst = re.slice(nl.reStart, nl.reEnd - 8);
+          let nlAfter = re.slice(nl.reEnd);
+          const nlLast = re.slice(nl.reEnd - 8, nl.reEnd) + nlAfter;
+          const openParensBefore = nlBefore.split("(").length - 1;
+          let cleanAfter = nlAfter;
+          for (let i = 0; i < openParensBefore; i++) {
+            cleanAfter = cleanAfter.replace(/\)[+*?]?/, "");
+          }
+          nlAfter = cleanAfter;
+          const dollar = nlAfter === "" && isSub !== SUBPARSE ? "$" : "";
+          re = nlBefore + nlFirst + nlAfter + dollar + nlLast;
+        }
+        if (re !== "" && hasMagic) {
+          re = "(?=.)" + re;
+        }
+        if (addPatternStart) {
+          re = patternStart + re;
+        }
+        if (isSub === SUBPARSE) {
+          return [re, hasMagic];
+        }
+        if (!hasMagic) {
+          return globUnescape(pattern);
+        }
+        const flags = options.nocase ? "i" : "";
+        try {
+          return Object.assign(new RegExp("^" + re + "$", flags), {
+            _glob: pattern,
+            _src: re
+          });
+        } catch (er) {
+          return new RegExp("$.");
+        }
+      }
+      makeRe() {
+        if (this.regexp || this.regexp === false)
+          return this.regexp;
+        const set = this.set;
+        if (!set.length) {
+          this.regexp = false;
+          return this.regexp;
+        }
+        const options = this.options;
+        const twoStar = options.noglobstar ? star : options.dot ? twoStarDot : twoStarNoDot;
+        const flags = options.nocase ? "i" : "";
+        let re = set.map((pattern) => {
+          pattern = pattern.map((p) => typeof p === "string" ? regExpEscape(p) : p === GLOBSTAR ? GLOBSTAR : p._src).reduce((set2, p) => {
+            if (!(set2[set2.length - 1] === GLOBSTAR && p === GLOBSTAR)) {
+              set2.push(p);
+            }
+            return set2;
+          }, []);
+          pattern.forEach((p, i) => {
+            if (p !== GLOBSTAR || pattern[i - 1] === GLOBSTAR) {
+              return;
+            }
+            if (i === 0) {
+              if (pattern.length > 1) {
+                pattern[i + 1] = "(?:\\/|" + twoStar + "\\/)?" + pattern[i + 1];
+              } else {
+                pattern[i] = twoStar;
+              }
+            } else if (i === pattern.length - 1) {
+              pattern[i - 1] += "(?:\\/|" + twoStar + ")?";
+            } else {
+              pattern[i - 1] += "(?:\\/|\\/" + twoStar + "\\/)" + pattern[i + 1];
+              pattern[i + 1] = GLOBSTAR;
+            }
+          });
+          return pattern.filter((p) => p !== GLOBSTAR).join("/");
+        }).join("|");
+        re = "^(?:" + re + ")$";
+        if (this.negate)
+          re = "^(?!" + re + ").*$";
+        try {
+          this.regexp = new RegExp(re, flags);
+        } catch (ex) {
+          this.regexp = false;
+        }
+        return this.regexp;
+      }
+      match(f, partial = this.partial) {
+        this.debug("match", f, this.pattern);
+        if (this.comment)
+          return false;
+        if (this.empty)
+          return f === "";
+        if (f === "/" && partial)
+          return true;
+        const options = this.options;
+        if (path.sep !== "/") {
+          f = f.split(path.sep).join("/");
+        }
+        f = f.split(slashSplit);
+        this.debug(this.pattern, "split", f);
+        const set = this.set;
+        this.debug(this.pattern, "set", set);
+        let filename;
+        for (let i = f.length - 1; i >= 0; i--) {
+          filename = f[i];
+          if (filename)
+            break;
+        }
+        for (let i = 0; i < set.length; i++) {
+          const pattern = set[i];
+          let file = f;
+          if (options.matchBase && pattern.length === 1) {
+            file = [filename];
+          }
+          const hit = this.matchOne(file, pattern, partial);
+          if (hit) {
+            if (options.flipNegate)
+              return true;
+            return !this.negate;
+          }
+        }
+        if (options.flipNegate)
+          return false;
+        return this.negate;
+      }
+      static defaults(def) {
+        return minimatch.defaults(def).Minimatch;
+      }
+    };
+    minimatch.Minimatch = Minimatch;
+  }
+});
+
 // bazel-out/k8-fastbuild/bin/ng-dev/pullapprove/utils.js
 var require_utils4 = __commonJS({
   "bazel-out/k8-fastbuild/bin/ng-dev/pullapprove/utils.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.getOrCreateGlob = void 0;
-    var minimatch_1 = require_minimatch();
+    var minimatch_1 = require_minimatch2();
     var patternCache = /* @__PURE__ */ new Map();
     function getOrCreateGlob(pattern) {
       if (patternCache.has(pattern)) {
@@ -76056,7 +76751,7 @@ var require_version_check = __commonJS({
     var console_12 = require_console();
     async function verifyNgDevToolIsUpToDate(workspacePath) {
       var _a, _b, _c, _d, _e;
-      const localVersion = `0.0.0-8df150f507aca3021467590c860e720009d930b4`;
+      const localVersion = `0.0.0-6aa013d221cf32bb34de93694dba5d745f6f2b6a`;
       const workspacePackageJsonFile = path.join(workspacePath, constants_1.workspaceRelativePackageJsonPath);
       const workspaceDirLockFile = path.join(workspacePath, constants_1.workspaceRelativeYarnLockFilePath);
       try {
@@ -76771,6 +77466,592 @@ var require_fs = __commonJS({
   }
 });
 
+// node_modules/glob/node_modules/minimatch/minimatch.js
+var require_minimatch3 = __commonJS({
+  "node_modules/glob/node_modules/minimatch/minimatch.js"(exports2, module2) {
+    module2.exports = minimatch;
+    minimatch.Minimatch = Minimatch;
+    var path = function() {
+      try {
+        return require("path");
+      } catch (e) {
+      }
+    }() || {
+      sep: "/"
+    };
+    minimatch.sep = path.sep;
+    var GLOBSTAR = minimatch.GLOBSTAR = Minimatch.GLOBSTAR = {};
+    var expand = require_brace_expansion();
+    var plTypes = {
+      "!": { open: "(?:(?!(?:", close: "))[^/]*?)" },
+      "?": { open: "(?:", close: ")?" },
+      "+": { open: "(?:", close: ")+" },
+      "*": { open: "(?:", close: ")*" },
+      "@": { open: "(?:", close: ")" }
+    };
+    var qmark = "[^/]";
+    var star = qmark + "*?";
+    var twoStarDot = "(?:(?!(?:\\/|^)(?:\\.{1,2})($|\\/)).)*?";
+    var twoStarNoDot = "(?:(?!(?:\\/|^)\\.).)*?";
+    var reSpecials = charSet("().*{}+?[]^$\\!");
+    function charSet(s) {
+      return s.split("").reduce(function(set, c) {
+        set[c] = true;
+        return set;
+      }, {});
+    }
+    var slashSplit = /\/+/;
+    minimatch.filter = filter;
+    function filter(pattern, options) {
+      options = options || {};
+      return function(p, i, list) {
+        return minimatch(p, pattern, options);
+      };
+    }
+    function ext(a, b) {
+      b = b || {};
+      var t = {};
+      Object.keys(a).forEach(function(k) {
+        t[k] = a[k];
+      });
+      Object.keys(b).forEach(function(k) {
+        t[k] = b[k];
+      });
+      return t;
+    }
+    minimatch.defaults = function(def) {
+      if (!def || typeof def !== "object" || !Object.keys(def).length) {
+        return minimatch;
+      }
+      var orig = minimatch;
+      var m = function minimatch2(p, pattern, options) {
+        return orig(p, pattern, ext(def, options));
+      };
+      m.Minimatch = function Minimatch2(pattern, options) {
+        return new orig.Minimatch(pattern, ext(def, options));
+      };
+      m.Minimatch.defaults = function defaults(options) {
+        return orig.defaults(ext(def, options)).Minimatch;
+      };
+      m.filter = function filter2(pattern, options) {
+        return orig.filter(pattern, ext(def, options));
+      };
+      m.defaults = function defaults(options) {
+        return orig.defaults(ext(def, options));
+      };
+      m.makeRe = function makeRe2(pattern, options) {
+        return orig.makeRe(pattern, ext(def, options));
+      };
+      m.braceExpand = function braceExpand2(pattern, options) {
+        return orig.braceExpand(pattern, ext(def, options));
+      };
+      m.match = function(list, pattern, options) {
+        return orig.match(list, pattern, ext(def, options));
+      };
+      return m;
+    };
+    Minimatch.defaults = function(def) {
+      return minimatch.defaults(def).Minimatch;
+    };
+    function minimatch(p, pattern, options) {
+      assertValidPattern(pattern);
+      if (!options)
+        options = {};
+      if (!options.nocomment && pattern.charAt(0) === "#") {
+        return false;
+      }
+      return new Minimatch(pattern, options).match(p);
+    }
+    function Minimatch(pattern, options) {
+      if (!(this instanceof Minimatch)) {
+        return new Minimatch(pattern, options);
+      }
+      assertValidPattern(pattern);
+      if (!options)
+        options = {};
+      if (!options.allowWindowsEscape && path.sep !== "/") {
+        pattern = pattern.split(path.sep).join("/");
+      }
+      this.options = options;
+      this.set = [];
+      this.pattern = pattern;
+      this.regexp = null;
+      this.negate = false;
+      this.comment = false;
+      this.empty = false;
+      this.partial = !!options.partial;
+      this.make();
+    }
+    Minimatch.prototype.debug = function() {
+    };
+    Minimatch.prototype.make = make;
+    function make() {
+      var pattern = this.pattern;
+      var options = this.options;
+      if (!options.nocomment && pattern.charAt(0) === "#") {
+        this.comment = true;
+        return;
+      }
+      if (!pattern) {
+        this.empty = true;
+        return;
+      }
+      this.parseNegate();
+      var set = this.globSet = this.braceExpand();
+      if (options.debug)
+        this.debug = function debug() {
+          console.error.apply(console, arguments);
+        };
+      this.debug(this.pattern, set);
+      set = this.globParts = set.map(function(s) {
+        return s.split(slashSplit);
+      });
+      this.debug(this.pattern, set);
+      set = set.map(function(s, si, set2) {
+        return s.map(this.parse, this);
+      }, this);
+      this.debug(this.pattern, set);
+      set = set.filter(function(s) {
+        return s.indexOf(false) === -1;
+      });
+      this.debug(this.pattern, set);
+      this.set = set;
+    }
+    Minimatch.prototype.parseNegate = parseNegate;
+    function parseNegate() {
+      var pattern = this.pattern;
+      var negate = false;
+      var options = this.options;
+      var negateOffset = 0;
+      if (options.nonegate)
+        return;
+      for (var i = 0, l = pattern.length; i < l && pattern.charAt(i) === "!"; i++) {
+        negate = !negate;
+        negateOffset++;
+      }
+      if (negateOffset)
+        this.pattern = pattern.substr(negateOffset);
+      this.negate = negate;
+    }
+    minimatch.braceExpand = function(pattern, options) {
+      return braceExpand(pattern, options);
+    };
+    Minimatch.prototype.braceExpand = braceExpand;
+    function braceExpand(pattern, options) {
+      if (!options) {
+        if (this instanceof Minimatch) {
+          options = this.options;
+        } else {
+          options = {};
+        }
+      }
+      pattern = typeof pattern === "undefined" ? this.pattern : pattern;
+      assertValidPattern(pattern);
+      if (options.nobrace || !/\{(?:(?!\{).)*\}/.test(pattern)) {
+        return [pattern];
+      }
+      return expand(pattern);
+    }
+    var MAX_PATTERN_LENGTH = 1024 * 64;
+    var assertValidPattern = function(pattern) {
+      if (typeof pattern !== "string") {
+        throw new TypeError("invalid pattern");
+      }
+      if (pattern.length > MAX_PATTERN_LENGTH) {
+        throw new TypeError("pattern is too long");
+      }
+    };
+    Minimatch.prototype.parse = parse;
+    var SUBPARSE = {};
+    function parse(pattern, isSub) {
+      assertValidPattern(pattern);
+      var options = this.options;
+      if (pattern === "**") {
+        if (!options.noglobstar)
+          return GLOBSTAR;
+        else
+          pattern = "*";
+      }
+      if (pattern === "")
+        return "";
+      var re = "";
+      var hasMagic = !!options.nocase;
+      var escaping = false;
+      var patternListStack = [];
+      var negativeLists = [];
+      var stateChar;
+      var inClass = false;
+      var reClassStart = -1;
+      var classStart = -1;
+      var patternStart = pattern.charAt(0) === "." ? "" : options.dot ? "(?!(?:^|\\/)\\.{1,2}(?:$|\\/))" : "(?!\\.)";
+      var self2 = this;
+      function clearStateChar() {
+        if (stateChar) {
+          switch (stateChar) {
+            case "*":
+              re += star;
+              hasMagic = true;
+              break;
+            case "?":
+              re += qmark;
+              hasMagic = true;
+              break;
+            default:
+              re += "\\" + stateChar;
+              break;
+          }
+          self2.debug("clearStateChar %j %j", stateChar, re);
+          stateChar = false;
+        }
+      }
+      for (var i = 0, len = pattern.length, c; i < len && (c = pattern.charAt(i)); i++) {
+        this.debug("%s	%s %s %j", pattern, i, re, c);
+        if (escaping && reSpecials[c]) {
+          re += "\\" + c;
+          escaping = false;
+          continue;
+        }
+        switch (c) {
+          case "/": {
+            return false;
+          }
+          case "\\":
+            clearStateChar();
+            escaping = true;
+            continue;
+          case "?":
+          case "*":
+          case "+":
+          case "@":
+          case "!":
+            this.debug("%s	%s %s %j <-- stateChar", pattern, i, re, c);
+            if (inClass) {
+              this.debug("  in class");
+              if (c === "!" && i === classStart + 1)
+                c = "^";
+              re += c;
+              continue;
+            }
+            self2.debug("call clearStateChar %j", stateChar);
+            clearStateChar();
+            stateChar = c;
+            if (options.noext)
+              clearStateChar();
+            continue;
+          case "(":
+            if (inClass) {
+              re += "(";
+              continue;
+            }
+            if (!stateChar) {
+              re += "\\(";
+              continue;
+            }
+            patternListStack.push({
+              type: stateChar,
+              start: i - 1,
+              reStart: re.length,
+              open: plTypes[stateChar].open,
+              close: plTypes[stateChar].close
+            });
+            re += stateChar === "!" ? "(?:(?!(?:" : "(?:";
+            this.debug("plType %j %j", stateChar, re);
+            stateChar = false;
+            continue;
+          case ")":
+            if (inClass || !patternListStack.length) {
+              re += "\\)";
+              continue;
+            }
+            clearStateChar();
+            hasMagic = true;
+            var pl = patternListStack.pop();
+            re += pl.close;
+            if (pl.type === "!") {
+              negativeLists.push(pl);
+            }
+            pl.reEnd = re.length;
+            continue;
+          case "|":
+            if (inClass || !patternListStack.length || escaping) {
+              re += "\\|";
+              escaping = false;
+              continue;
+            }
+            clearStateChar();
+            re += "|";
+            continue;
+          case "[":
+            clearStateChar();
+            if (inClass) {
+              re += "\\" + c;
+              continue;
+            }
+            inClass = true;
+            classStart = i;
+            reClassStart = re.length;
+            re += c;
+            continue;
+          case "]":
+            if (i === classStart + 1 || !inClass) {
+              re += "\\" + c;
+              escaping = false;
+              continue;
+            }
+            var cs = pattern.substring(classStart + 1, i);
+            try {
+              RegExp("[" + cs + "]");
+            } catch (er) {
+              var sp = this.parse(cs, SUBPARSE);
+              re = re.substr(0, reClassStart) + "\\[" + sp[0] + "\\]";
+              hasMagic = hasMagic || sp[1];
+              inClass = false;
+              continue;
+            }
+            hasMagic = true;
+            inClass = false;
+            re += c;
+            continue;
+          default:
+            clearStateChar();
+            if (escaping) {
+              escaping = false;
+            } else if (reSpecials[c] && !(c === "^" && inClass)) {
+              re += "\\";
+            }
+            re += c;
+        }
+      }
+      if (inClass) {
+        cs = pattern.substr(classStart + 1);
+        sp = this.parse(cs, SUBPARSE);
+        re = re.substr(0, reClassStart) + "\\[" + sp[0];
+        hasMagic = hasMagic || sp[1];
+      }
+      for (pl = patternListStack.pop(); pl; pl = patternListStack.pop()) {
+        var tail = re.slice(pl.reStart + pl.open.length);
+        this.debug("setting tail", re, pl);
+        tail = tail.replace(/((?:\\{2}){0,64})(\\?)\|/g, function(_, $1, $2) {
+          if (!$2) {
+            $2 = "\\";
+          }
+          return $1 + $1 + $2 + "|";
+        });
+        this.debug("tail=%j\n   %s", tail, tail, pl, re);
+        var t = pl.type === "*" ? star : pl.type === "?" ? qmark : "\\" + pl.type;
+        hasMagic = true;
+        re = re.slice(0, pl.reStart) + t + "\\(" + tail;
+      }
+      clearStateChar();
+      if (escaping) {
+        re += "\\\\";
+      }
+      var addPatternStart = false;
+      switch (re.charAt(0)) {
+        case "[":
+        case ".":
+        case "(":
+          addPatternStart = true;
+      }
+      for (var n = negativeLists.length - 1; n > -1; n--) {
+        var nl = negativeLists[n];
+        var nlBefore = re.slice(0, nl.reStart);
+        var nlFirst = re.slice(nl.reStart, nl.reEnd - 8);
+        var nlLast = re.slice(nl.reEnd - 8, nl.reEnd);
+        var nlAfter = re.slice(nl.reEnd);
+        nlLast += nlAfter;
+        var openParensBefore = nlBefore.split("(").length - 1;
+        var cleanAfter = nlAfter;
+        for (i = 0; i < openParensBefore; i++) {
+          cleanAfter = cleanAfter.replace(/\)[+*?]?/, "");
+        }
+        nlAfter = cleanAfter;
+        var dollar = "";
+        if (nlAfter === "" && isSub !== SUBPARSE) {
+          dollar = "$";
+        }
+        var newRe = nlBefore + nlFirst + nlAfter + dollar + nlLast;
+        re = newRe;
+      }
+      if (re !== "" && hasMagic) {
+        re = "(?=.)" + re;
+      }
+      if (addPatternStart) {
+        re = patternStart + re;
+      }
+      if (isSub === SUBPARSE) {
+        return [re, hasMagic];
+      }
+      if (!hasMagic) {
+        return globUnescape(pattern);
+      }
+      var flags = options.nocase ? "i" : "";
+      try {
+        var regExp = new RegExp("^" + re + "$", flags);
+      } catch (er) {
+        return new RegExp("$.");
+      }
+      regExp._glob = pattern;
+      regExp._src = re;
+      return regExp;
+    }
+    minimatch.makeRe = function(pattern, options) {
+      return new Minimatch(pattern, options || {}).makeRe();
+    };
+    Minimatch.prototype.makeRe = makeRe;
+    function makeRe() {
+      if (this.regexp || this.regexp === false)
+        return this.regexp;
+      var set = this.set;
+      if (!set.length) {
+        this.regexp = false;
+        return this.regexp;
+      }
+      var options = this.options;
+      var twoStar = options.noglobstar ? star : options.dot ? twoStarDot : twoStarNoDot;
+      var flags = options.nocase ? "i" : "";
+      var re = set.map(function(pattern) {
+        return pattern.map(function(p) {
+          return p === GLOBSTAR ? twoStar : typeof p === "string" ? regExpEscape(p) : p._src;
+        }).join("\\/");
+      }).join("|");
+      re = "^(?:" + re + ")$";
+      if (this.negate)
+        re = "^(?!" + re + ").*$";
+      try {
+        this.regexp = new RegExp(re, flags);
+      } catch (ex) {
+        this.regexp = false;
+      }
+      return this.regexp;
+    }
+    minimatch.match = function(list, pattern, options) {
+      options = options || {};
+      var mm = new Minimatch(pattern, options);
+      list = list.filter(function(f) {
+        return mm.match(f);
+      });
+      if (mm.options.nonull && !list.length) {
+        list.push(pattern);
+      }
+      return list;
+    };
+    Minimatch.prototype.match = function match(f, partial) {
+      if (typeof partial === "undefined")
+        partial = this.partial;
+      this.debug("match", f, this.pattern);
+      if (this.comment)
+        return false;
+      if (this.empty)
+        return f === "";
+      if (f === "/" && partial)
+        return true;
+      var options = this.options;
+      if (path.sep !== "/") {
+        f = f.split(path.sep).join("/");
+      }
+      f = f.split(slashSplit);
+      this.debug(this.pattern, "split", f);
+      var set = this.set;
+      this.debug(this.pattern, "set", set);
+      var filename;
+      var i;
+      for (i = f.length - 1; i >= 0; i--) {
+        filename = f[i];
+        if (filename)
+          break;
+      }
+      for (i = 0; i < set.length; i++) {
+        var pattern = set[i];
+        var file = f;
+        if (options.matchBase && pattern.length === 1) {
+          file = [filename];
+        }
+        var hit = this.matchOne(file, pattern, partial);
+        if (hit) {
+          if (options.flipNegate)
+            return true;
+          return !this.negate;
+        }
+      }
+      if (options.flipNegate)
+        return false;
+      return this.negate;
+    };
+    Minimatch.prototype.matchOne = function(file, pattern, partial) {
+      var options = this.options;
+      this.debug("matchOne", { "this": this, file, pattern });
+      this.debug("matchOne", file.length, pattern.length);
+      for (var fi = 0, pi = 0, fl = file.length, pl = pattern.length; fi < fl && pi < pl; fi++, pi++) {
+        this.debug("matchOne loop");
+        var p = pattern[pi];
+        var f = file[fi];
+        this.debug(pattern, p, f);
+        if (p === false)
+          return false;
+        if (p === GLOBSTAR) {
+          this.debug("GLOBSTAR", [pattern, p, f]);
+          var fr = fi;
+          var pr = pi + 1;
+          if (pr === pl) {
+            this.debug("** at the end");
+            for (; fi < fl; fi++) {
+              if (file[fi] === "." || file[fi] === ".." || !options.dot && file[fi].charAt(0) === ".")
+                return false;
+            }
+            return true;
+          }
+          while (fr < fl) {
+            var swallowee = file[fr];
+            this.debug("\nglobstar while", file, fr, pattern, pr, swallowee);
+            if (this.matchOne(file.slice(fr), pattern.slice(pr), partial)) {
+              this.debug("globstar found match!", fr, fl, swallowee);
+              return true;
+            } else {
+              if (swallowee === "." || swallowee === ".." || !options.dot && swallowee.charAt(0) === ".") {
+                this.debug("dot detected!", file, fr, pattern, pr);
+                break;
+              }
+              this.debug("globstar swallow a segment, and continue");
+              fr++;
+            }
+          }
+          if (partial) {
+            this.debug("\n>>> no match, partial?", file, fr, pattern, pr);
+            if (fr === fl)
+              return true;
+          }
+          return false;
+        }
+        var hit;
+        if (typeof p === "string") {
+          hit = f === p;
+          this.debug("string match", p, f, hit);
+        } else {
+          hit = f.match(p);
+          this.debug("pattern match", p, f, hit);
+        }
+        if (!hit)
+          return false;
+      }
+      if (fi === fl && pi === pl) {
+        return true;
+      } else if (fi === fl) {
+        return partial;
+      } else if (pi === pl) {
+        return fi === fl - 1 && file[fi] === "";
+      }
+      throw new Error("wtf?");
+    };
+    function globUnescape(s) {
+      return s.replace(/\\(.)/g, "$1");
+    }
+    function regExpEscape(s) {
+      return s.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+    }
+  }
+});
+
 // node_modules/path-is-absolute/index.js
 var require_path_is_absolute = __commonJS({
   "node_modules/path-is-absolute/index.js"(exports2, module2) {
@@ -76806,7 +78087,7 @@ var require_common = __commonJS({
     }
     var fs = require("fs");
     var path = require("path");
-    var minimatch = require_minimatch();
+    var minimatch = require_minimatch3();
     var isAbsolute = require_path_is_absolute();
     var Minimatch = minimatch.Minimatch;
     function alphasort(a, b) {
@@ -76990,7 +78271,7 @@ var require_sync2 = __commonJS({
     module2.exports = globSync;
     globSync.GlobSync = GlobSync;
     var rp = require_fs();
-    var minimatch = require_minimatch();
+    var minimatch = require_minimatch3();
     var Minimatch = minimatch.Minimatch;
     var Glob = require_glob().Glob;
     var util = require("util");
@@ -77386,7 +78667,7 @@ var require_glob = __commonJS({
   "node_modules/glob/glob.js"(exports2, module2) {
     module2.exports = glob;
     var rp = require_fs();
-    var minimatch = require_minimatch();
+    var minimatch = require_minimatch3();
     var Minimatch = minimatch.Minimatch;
     var inherits = require_inherits();
     var EE = require("events").EventEmitter;
