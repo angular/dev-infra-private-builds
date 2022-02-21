@@ -48781,6 +48781,7 @@ var require_minimatch = __commonJS({
       assertValidPattern(pattern);
       if (!options)
         options = {};
+      pattern = pattern.trim();
       if (!options.allowWindowsEscape && path.sep !== "/") {
         pattern = pattern.split(path.sep).join("/");
       }
@@ -76752,7 +76753,7 @@ var require_version_check = __commonJS({
     var console_12 = require_console();
     async function verifyNgDevToolIsUpToDate(workspacePath) {
       var _a, _b, _c, _d, _e;
-      const localVersion = `0.0.0-a9c48602d4f54850beabdf7933e05a9ce89e9dd5`;
+      const localVersion = `0.0.0-a374a86a173de226812da3530270b1c5b1dcc25e`;
       const workspacePackageJsonFile = path.join(workspacePath, constants_1.workspaceRelativePackageJsonPath);
       const workspaceDirLockFile = path.join(workspacePath, constants_1.workspaceRelativeYarnLockFilePath);
       try {
@@ -77570,6 +77571,7 @@ var require_minimatch3 = __commonJS({
       assertValidPattern(pattern);
       if (!options)
         options = {};
+      pattern = pattern.trim();
       if (!options.allowWindowsEscape && path.sep !== "/") {
         pattern = pattern.split(path.sep).join("/");
       }
