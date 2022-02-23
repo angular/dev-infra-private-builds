@@ -45388,6 +45388,7 @@ var require_git_client = __commonJS({
         return branchName;
       }
       hasUncommittedChanges() {
+        this.runGraceful(["update-index", "-q", "--refresh"]);
         return this.runGraceful(["diff-index", "--quiet", "HEAD"]).status !== 0;
       }
       checkout(branchOrRevision, cleanState) {
@@ -48780,6 +48781,7 @@ var require_minimatch = __commonJS({
       assertValidPattern(pattern);
       if (!options)
         options = {};
+      pattern = pattern.trim();
       if (!options.allowWindowsEscape && path.sep !== "/") {
         pattern = pattern.split(path.sep).join("/");
       }
@@ -76751,7 +76753,7 @@ var require_version_check = __commonJS({
     var console_12 = require_console();
     async function verifyNgDevToolIsUpToDate(workspacePath) {
       var _a, _b, _c, _d, _e;
-      const localVersion = `0.0.0-6aa013d221cf32bb34de93694dba5d745f6f2b6a`;
+      const localVersion = `0.0.0-0464395881cd553b8985c143e8845463914efb24`;
       const workspacePackageJsonFile = path.join(workspacePath, constants_1.workspaceRelativePackageJsonPath);
       const workspaceDirLockFile = path.join(workspacePath, constants_1.workspaceRelativeYarnLockFilePath);
       try {
@@ -77569,6 +77571,7 @@ var require_minimatch3 = __commonJS({
       assertValidPattern(pattern);
       if (!options)
         options = {};
+      pattern = pattern.trim();
       if (!options.allowWindowsEscape && path.sep !== "/") {
         pattern = pattern.split(path.sep).join("/");
       }
