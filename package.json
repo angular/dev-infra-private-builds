@@ -1,21 +1,24 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-ca72f83dccf6037dcdfc51d61bcb00e2ffac9ed9",
+  "version": "0.0.0-138ec743c342cd2a4a75443d19e0ccd47244ee07",
   "bin": {
-    "ng-dev": "./ng-dev/cli-bundle.js"
+    "ng-dev": "./ng-dev/bundles/cli.js"
   },
   "private": true,
   "scripts": {
     "ng-dev": "bash ./tools/local-dev.sh",
-    "build-env-stamp": "ts-node --transpile-only ./ng-dev/release/stamping/cli.ts build-env-stamp",
+    "build-env-stamp": "ts-node --transpile-only ./ng-dev/release/stamping/_private_main.ts build-env-stamp",
     "update-generated-files": "ts-node --transpile-only ./tools/update-generated-files.ts"
   },
   "exports": {
+    "./ng-dev": {
+      "default": "./ng-dev/bundles/index.js"
+    },
     "./ng-dev/*": {
       "default": "./ng-dev/bundles/*.js"
     },
     "./*": {
-      "default": "./'"
+      "default": "./*"
     }
   },
   "packageManager": "yarn@3.2.0",
