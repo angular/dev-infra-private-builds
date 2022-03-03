@@ -46456,9 +46456,9 @@ function encode_char(c) {
     }
   });
 
-  // node_modules/multimatch/node_modules/brace-expansion/index.js
+  // node_modules/brace-expansion/index.js
   var require_brace_expansion = __commonJS({
-    "node_modules/multimatch/node_modules/brace-expansion/index.js"(exports2, module) {
+    "node_modules/brace-expansion/index.js"(exports2, module) {
       var concatMap = require_concat_map();
       var balanced = require_balanced_match();
       module.exports = expandTop;
