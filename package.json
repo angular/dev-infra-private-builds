@@ -1,26 +1,38 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-09580e44cdb322a727105b099a2885d4c7d34a1a",
+  "version": "0.0.0-48f87f05c625d28fd40bcd13f55983cbee492f7a",
   "bin": {
-    "ng-dev": "./ng-dev/cli-bundle.js"
+    "ng-dev": "./ng-dev/bundles/cli.js"
   },
   "private": true,
   "scripts": {
-    "ng-dev": "ts-node --transpile-only ./ng-dev/cli.ts",
+    "ng-dev": "bash ./tools/local-dev.sh",
+    "build-env-stamp": "ts-node --transpile-only ./ng-dev/release/stamping/_private_main.ts build-env-stamp",
     "update-generated-files": "ts-node --transpile-only ./tools/update-generated-files.ts"
+  },
+  "exports": {
+    "./ng-dev": {
+      "default": "./ng-dev/bundles/index.js"
+    },
+    "./ng-dev/*": {
+      "default": "./ng-dev/bundles/*.js"
+    },
+    "./*": {
+      "default": "./*"
+    }
   },
   "packageManager": "yarn@3.2.0",
   "dependencies": {
-    "@angular-devkit/build-angular": "14.0.0-next.2",
+    "@angular-devkit/build-angular": "14.0.0-next.4",
     "@angular/benchpress": "0.3.0",
     "@babel/core": "^7.16.0",
-    "@bazel/concatjs": "4.6.0",
-    "@bazel/esbuild": "4.6.0",
-    "@bazel/protractor": "4.6.0",
-    "@bazel/runfiles": "4.6.0",
-    "@bazel/terser": "4.6.0",
-    "@bazel/typescript": "4.6.0",
-    "@google-cloud/storage": "^5.18.1",
+    "@bazel/buildifier": "^5.0.1",
+    "@bazel/concatjs": "5.2.0",
+    "@bazel/esbuild": "5.2.0",
+    "@bazel/protractor": "5.2.0",
+    "@bazel/runfiles": "5.2.0",
+    "@bazel/terser": "5.2.0",
+    "@bazel/typescript": "5.2.0",
     "@microsoft/api-extractor": "7.19.4",
     "@types/browser-sync": "^2.26.3",
     "@types/node": "16.10.9",
@@ -32,9 +44,9 @@
     "@types/yargs": "^17.0.0",
     "browser-sync": "^2.27.7",
     "chalk": "^4.1.0",
+    "clang-format": "^1.6.0",
     "node-fetch": "^2.6.1",
     "prettier": "^2.3.2",
-    "protobufjs": "^6.11.2",
     "protractor": "^7.0.0",
     "selenium-webdriver": "4.1.1",
     "send": "^0.17.2",
@@ -49,15 +61,16 @@
   "devDependencies": {
     "@actions/core": "^1.4.0",
     "@actions/github": "^5.0.0",
-    "@angular/animations": "14.0.0-next.3",
-    "@angular/bazel": "14.0.0-next.3",
-    "@angular/common": "14.0.0-next.3",
-    "@angular/compiler": "14.0.0-next.3",
-    "@angular/compiler-cli": "14.0.0-next.3",
-    "@angular/core": "14.0.0-next.3",
-    "@angular/platform-browser": "14.0.0-next.3",
-    "@bazel/bazelisk": "^1.10.1",
-    "@bazel/jasmine": "4.6.0",
+    "@angular/animations": "14.0.0-next.5",
+    "@angular/bazel": "14.0.0-next.5",
+    "@angular/common": "14.0.0-next.5",
+    "@angular/compiler": "14.0.0-next.5",
+    "@angular/compiler-cli": "14.0.0-next.5",
+    "@angular/core": "14.0.0-next.5",
+    "@angular/platform-browser": "14.0.0-next.5",
+    "@bazel/bazelisk": "^1.11.0",
+    "@bazel/jasmine": "5.2.0",
+    "@google-cloud/storage": "^5.18.1",
     "@octokit/auth-app": "^3.6.0",
     "@octokit/core": "^3.5.1",
     "@octokit/graphql": "^4.8.0",
@@ -81,7 +94,6 @@
     "@types/which": "^2.0.1",
     "@types/yarnpkg__lockfile": "^1.1.5",
     "@yarnpkg/lockfile": "^1.1.0",
-    "clang-format": "^1.4.0",
     "cli-progress": "^3.7.0",
     "conventional-commits-parser": "^3.2.1",
     "ejs": "^3.1.6",
@@ -102,6 +114,7 @@
     "minimist": "^1.2.5",
     "multimatch": "^5.0.0",
     "nock": "^13.0.3",
+    "protobufjs": "^6.11.2",
     "requirejs": "^2.3.6",
     "rxjs": "^7.4.0",
     "semver": "^7.3.5",
@@ -114,6 +127,6 @@
     "yaml": "^1.10.0"
   },
   "resolutions": {
-    "@angular/benchpress/@angular/core": "14.0.0-next.3"
+    "@angular/benchpress/@angular/core": "14.0.0-next.5"
   }
 }
