@@ -9,7 +9,6 @@ import { CommandModule } from 'yargs';
 import { EnvStampMode } from './env-stamp';
 export interface Options {
     mode: EnvStampMode;
-    includeVersion: boolean;
 }
 /** CLI command module for building the environment stamp. */
 export declare const BuildEnvStampCommand: CommandModule<{}, Options>;
