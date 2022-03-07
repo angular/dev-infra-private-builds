@@ -44986,6 +44986,117 @@ Ran at: ${now}
     }
   });
 
+  // bazel-out/k8-fastbuild/bin/ng-dev/utils/git/graphql-queries.js
+  var require_graphql_queries = __commonJS({
+    "bazel-out/k8-fastbuild/bin/ng-dev/utils/git/graphql-queries.js"(exports2) {
+      "use strict";
+      Object.defineProperty(exports2, "__esModule", { value: true });
+      exports2.findOwnedForksOfRepoQuery = void 0;
+      var typed_graphqlify_1 = require_dist();
+      exports2.findOwnedForksOfRepoQuery = (0, typed_graphqlify_1.params)({
+        $owner: "String!",
+        $name: "String!"
+      }, {
+        repository: (0, typed_graphqlify_1.params)({ owner: "$owner", name: "$name" }, {
+          forks: (0, typed_graphqlify_1.params)({ affiliations: "OWNER", first: 1 }, {
+            nodes: [
+              {
+                owner: {
+                  login: typed_graphqlify_1.types.string
+                },
+                name: typed_graphqlify_1.types.string
+              }
+            ]
+          })
+        })
+      });
+    }
+  });
+
+  // bazel-out/k8-fastbuild/bin/ng-dev/utils/git/authenticated-git-client.js
+  var require_authenticated_git_client = __commonJS({
+    "bazel-out/k8-fastbuild/bin/ng-dev/utils/git/authenticated-git-client.js"(exports2) {
+      "use strict";
+      Object.defineProperty(exports2, "__esModule", { value: true });
+      exports2.AuthenticatedGitClient = void 0;
+      var graphql_queries_1 = require_graphql_queries();
+      var console_1 = require_console();
+      var git_client_1 = require_git_client();
+      var github_1 = require_github();
+      var github_urls_1 = require_github_urls();
+      var AuthenticatedGitClient = class extends git_client_1.GitClient {
+        constructor(githubToken, baseDir, config) {
+          super(baseDir, config);
+          this.githubToken = githubToken;
+          this._githubTokenRegex = new RegExp(this.githubToken, "g");
+          this._cachedOauthScopes = null;
+          this._cachedForkRepo = null;
+          this.github = new github_1.AuthenticatedGithubClient(this.githubToken);
+        }
+        sanitizeConsoleOutput(value) {
+          return value.replace(this._githubTokenRegex, "<TOKEN>");
+        }
+        getRepoGitUrl() {
+          return (0, github_urls_1.getRepositoryGitUrl)(this.remoteConfig, this.githubToken);
+        }
+        async hasOauthScopes(testFn) {
+          const scopes = await this._fetchAuthScopesForToken();
+          const missingScopes = [];
+          testFn(scopes, missingScopes);
+          if (missingScopes.length === 0) {
+            return true;
+          }
+          const error = `The provided <TOKEN> does not have required permissions due to missing scope(s): ${(0, console_1.yellow)(missingScopes.join(", "))}
+
+Update the token in use at:
+  ${github_urls_1.GITHUB_TOKEN_SETTINGS_URL}
+
+Alternatively, a new token can be created at: ${github_urls_1.GITHUB_TOKEN_GENERATE_URL}
+`;
+          return { error };
+        }
+        async getForkOfAuthenticatedUser() {
+          if (this._cachedForkRepo !== null) {
+            return this._cachedForkRepo;
+          }
+          const { owner, name } = this.remoteConfig;
+          const result = await this.github.graphql(graphql_queries_1.findOwnedForksOfRepoQuery, { owner, name });
+          const forks = result.repository.forks.nodes;
+          if (forks.length === 0) {
+            throw Error(`Unable to find fork for currently authenticated user. Please ensure you created a fork  of: ${owner}/${name}.`);
+          }
+          const fork = forks[0];
+          return this._cachedForkRepo = { owner: fork.owner.login, name: fork.name };
+        }
+        _fetchAuthScopesForToken() {
+          if (this._cachedOauthScopes !== null) {
+            return this._cachedOauthScopes;
+          }
+          return this._cachedOauthScopes = this.github.rateLimit.get().then((response) => {
+            const scopes = response.headers["x-oauth-scopes"];
+            if (scopes === void 0) {
+              throw Error("Unable to retrieve OAuth scopes for token provided to Git client.");
+            }
+            return scopes.split(",").map((scope) => scope.trim()).filter((scope) => scope !== "");
+          });
+        }
+        static get() {
+          if (!AuthenticatedGitClient._authenticatedInstance) {
+            throw new Error("No instance of `AuthenticatedGitClient` has been set up yet.");
+          }
+          return AuthenticatedGitClient._authenticatedInstance;
+        }
+        static configure(token) {
+          if (AuthenticatedGitClient._authenticatedInstance) {
+            throw Error("Unable to configure `AuthenticatedGitClient` as it has been configured already.");
+          }
+          AuthenticatedGitClient._authenticatedInstance = new AuthenticatedGitClient(token);
+        }
+      };
+      exports2.AuthenticatedGitClient = AuthenticatedGitClient;
+    }
+  });
+
   // bazel-out/k8-fastbuild/bin/ng-dev/utils/spinner.js
   var require_spinner = __commonJS({
     "bazel-out/k8-fastbuild/bin/ng-dev/utils/spinner.js"(exports2) {
@@ -68358,6 +68469,9 @@ ${cbNode.commentBefore}` : cb;
   __exportStar(require_config7(), exports);
   __exportStar(require_versioning(), exports);
   __exportStar(require_console(), exports);
+  __exportStar(require_authenticated_git_client(), exports);
+  __exportStar(require_git_client(), exports);
+  __exportStar(require_github(), exports);
   var actions_1 = require_actions();
   Object.defineProperty(exports, "ReleaseAction", { enumerable: true, get: function() {
     return actions_1.ReleaseAction;
