@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-417fb0041357a61c6a8d89c46d93f7927933e9bc",
+  "version": "0.0.0-4c18a850bf70c94da7777faa99ebf04ab0d9c9b8",
   "bin": {
     "ng-dev": "./ng-dev/bundles/cli.js"
   },
@@ -53,7 +53,7 @@
     "tmp": "^0.2.1",
     "true-case-path": "^2.2.1",
     "tslib": "^2.3.0",
-    "typescript": "~4.5.0",
+    "typescript": "~4.6.2",
     "uuid": "^8.3.2",
     "yargs": "^17.0.0",
     "zone.js": "^0.11.4"
