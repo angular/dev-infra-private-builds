@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-619eb9b9aacf7fd6239445a0175d60460eac0676",
+  "version": "0.0.0-f96f2e9555b6a77c54b32947be8061aaaa1dfab6",
   "bin": {
     "ng-dev": "./ng-dev/bundles/cli.js"
   },
@@ -101,7 +101,7 @@
     "glob": "7.2.0",
     "husky": "^7.0.1",
     "inquirer": "^8.0.0",
-    "jasmine": "^3.7.0",
+    "jasmine": "~4.0.0",
     "jsdoc": "^3.6.7",
     "jsdom": "^19.0.0",
     "karma": "^6.3.15",
