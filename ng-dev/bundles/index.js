@@ -47906,7 +47906,7 @@ ${logOutput}`);
           return content.replace(/#(\d+)/g, (_, g) => this.pullRequestToLink(Number(g)));
         }
         bulletizeText(text) {
-          return "- " + text.replace(/\\n/g, "\\n  ");
+          return "- " + text.replace(/\n/g, "\n  ");
         }
         commitAuthors(commits) {
           return [...new Set(commits.map((c) => c.author))].filter((a) => !botsAuthorNames.includes(a)).sort();
