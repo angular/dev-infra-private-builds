@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-f96f2e9555b6a77c54b32947be8061aaaa1dfab6",
+  "version": "0.0.0-e60312a062a16756f631496ffcad2b7e78c0046d",
   "bin": {
     "ng-dev": "./ng-dev/bundles/cli.js"
   },
@@ -23,7 +23,7 @@
   },
   "packageManager": "yarn@3.2.0",
   "dependencies": {
-    "@angular-devkit/build-angular": "14.0.0-next.4",
+    "@angular-devkit/build-angular": "14.0.0-next.5",
     "@angular/benchpress": "0.3.0",
     "@babel/core": "^7.16.0",
     "@bazel/buildifier": "^5.0.1",
