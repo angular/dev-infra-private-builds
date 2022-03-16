@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-73705f1bc32a13e6ffeeb92a8b3f5918f429576d",
+  "version": "0.0.0-9e76fa7ed8f5284ae219c5e5adef4f0d55d4d038",
   "bin": {
     "ng-dev": "./ng-dev/bundles/cli.js"
   },
@@ -87,7 +87,7 @@
     "@types/git-raw-commits": "^2.0.0",
     "@types/glob": "^7.1.3",
     "@types/inquirer": "8.2.0",
-    "@types/jasmine": "^3.7.0",
+    "@types/jasmine": "^4.0.0",
     "@types/jsdom": "^16.2.13",
     "@types/semver": "^7.3.6",
     "@types/wait-on": "^5.3.1",
