@@ -5,8 +5,8 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+import { CheckConclusionState, CheckStatusState, MergeableState, PullRequestState, StatusState } from '@octokit/graphql-schema';
 import { AuthenticatedGitClient } from '../../utils/git/authenticated-git-client';
-import { MergeableState, CheckConclusionState, StatusState, PullRequestState, CheckStatusState } from '@octokit/graphql-schema';
 /** A status for a pull request status or check. */
 export declare enum PullRequestStatus {
     PASSING = 0,
@@ -31,7 +31,7 @@ export declare const PR_SCHEMA: {
                         nodes: ({
                             __typename: "CheckRun";
                             status: CheckStatusState;
-                            conclusion: CheckConclusionState;
+                            conclusion: CheckConclusionState | null;
                             name: string;
                             state?: undefined;
                             context?: undefined;
@@ -44,7 +44,7 @@ export declare const PR_SCHEMA: {
                             name?: undefined;
                         })[];
                     };
-                };
+                } | null | undefined;
                 message: string;
             };
         }[];
@@ -75,19 +75,21 @@ export declare const PR_SCHEMA: {
     };
 };
 export declare type PullRequestFromGithub = typeof PR_SCHEMA;
+/** Type describing the normalized and combined status of a pull request. */
+export declare type PullRequestStatusInfo = {
+    combinedStatus: PullRequestStatus;
+    statuses: {
+        status: PullRequestStatus;
+        type: 'check' | 'status';
+        name: string;
+    }[];
+};
 /** Fetches a pull request from Github. Returns null if an error occurred. */
 export declare function fetchPullRequestFromGithub(git: AuthenticatedGitClient, prNumber: number): Promise<PullRequestFromGithub | null>;
 /** Fetches a pull request from Github. Returns null if an error occurred. */
 export declare function fetchPendingPullRequestsFromGithub(git: AuthenticatedGitClient): Promise<PullRequestFromGithub[] | null>;
 /**
- * Gets the statuses for a commit from a pull requeste, using a consistent interface for both
- * status and checks results.
+ * Gets the statuses for a commit from a pull request, using a consistent interface
+ * for both status and checks results.
  */
-export declare function getStatusesForPullRequest(pullRequest: PullRequestFromGithub): {
-    combinedStatus: PullRequestStatus;
-    statuses: {
-        type: string;
-        name: string;
-        status: PullRequestStatus;
-    }[];
-};
+export declare function getStatusesForPullRequest(pullRequest: PullRequestFromGithub): PullRequestStatusInfo;
