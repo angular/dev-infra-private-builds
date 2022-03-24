@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-38f2a980e08337f150c2840d961e44cc361aa37d",
+  "version": "0.0.0-f1187b5ec8479627b6e3cc41b1789b7eef26850a",
   "bin": {
     "ng-dev": "./ng-dev/bundles/cli.js"
   },
@@ -49,7 +49,7 @@
     "prettier": "^2.3.2",
     "protractor": "^7.0.0",
     "selenium-webdriver": "4.1.1",
-    "send": "^0.17.2",
+    "send": "^0.18.0",
     "tmp": "^0.2.1",
     "true-case-path": "^2.2.1",
     "tslib": "^2.3.0",
