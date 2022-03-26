@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-2e2d1a6beeb26b0cc61c70f157f1dc073cdcf235",
+  "version": "0.0.0-d831eaabed39001fe776a4d4d0f11c7fdcf4afae",
   "bin": {
     "ng-dev": "./ng-dev/bundles/cli.js"
   },
@@ -26,7 +26,7 @@
     "@angular-devkit/build-angular": "14.0.0-next.6",
     "@angular/benchpress": "0.3.0",
     "@babel/core": "^7.16.0",
-    "@bazel/buildifier": "^5.0.1",
+    "@bazel/buildifier": "5.0.1",
     "@bazel/concatjs": "5.3.0",
     "@bazel/esbuild": "5.3.0",
     "@bazel/protractor": "5.3.0",
@@ -44,9 +44,9 @@
     "@types/yargs": "^17.0.0",
     "browser-sync": "^2.27.7",
     "chalk": "^4.1.0",
-    "clang-format": "^1.6.0",
+    "clang-format": "1.6.0",
     "node-fetch": "^2.6.1",
-    "prettier": "^2.3.2",
+    "prettier": "2.6.1",
     "protractor": "^7.0.0",
     "selenium-webdriver": "4.1.1",
     "send": "^0.18.0",
