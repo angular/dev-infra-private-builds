@@ -41225,10 +41225,10 @@
       "use strict";
       Object.defineProperty(exports2, "__esModule", { value: true });
       exports2.GitClient = exports2.GitCommandError = void 0;
-      var child_process_1 = __require("child_process");
-      var config_1 = require_config2();
-      var console_1 = require_console();
       var dry_run_1 = require_dry_run();
+      var config_1 = require_config2();
+      var child_process_1 = __require("child_process");
+      var console_1 = require_console();
       var github_1 = require_github();
       var github_urls_1 = require_github_urls();
       var GitCommandError = class extends Error {
@@ -41261,17 +41261,20 @@
             (0, console_1.debug)(`"git push" is not able to be run in dryRun mode.`);
             throw new dry_run_1.DryRunError();
           }
-          const printFn = GitClient.verboseLogging || options.verboseLogging ? console_1.info : console_1.debug;
-          printFn("Executing: git", this.sanitizeConsoleOutput(args.join(" ")));
+          (0, console_1.debug)("Executing: git", this.sanitizeConsoleOutput(args.join(" ")));
           const result = (0, child_process_1.spawnSync)(this.gitBinPath, args, __spreadProps(__spreadValues({
             cwd: this.baseDir,
             stdio: "pipe"
           }, options), {
             encoding: "utf8"
           }));
-          if (result.stderr !== null) {
+          (0, console_1.debug)(`Status: ${result.status}, Error: ${!!result.error}, Signal: ${result.signal}`);
+          if (result.status !== 0 && result.stderr !== null) {
             process.stderr.write(this.sanitizeConsoleOutput(result.stderr));
           }
+          (0, console_1.debug)("Stdout:", result.stdout);
+          (0, console_1.debug)("Stderr:", result.stderr);
+          (0, console_1.debug)("Process Error:", result.error);
           if (result.error !== void 0) {
             process.stderr.write(this.sanitizeConsoleOutput(result.error.message));
           }
@@ -41321,9 +41324,6 @@
         sanitizeConsoleOutput(value) {
           return value;
         }
-        static setVerboseLoggingState(verbose) {
-          GitClient.verboseLogging = verbose;
-        }
         static get() {
           if (!this._unauthenticatedInstance) {
             GitClient._unauthenticatedInstance = new GitClient();
@@ -41332,7 +41332,6 @@
         }
       };
       exports2.GitClient = GitClient;
-      GitClient.verboseLogging = false;
       function gitOutputAsArray(gitCommandResult) {
         return gitCommandResult.stdout.split("\n").map((x) => x.trim()).filter((x) => !!x);
       }
@@ -44359,7 +44358,7 @@ Ran at: ${now}
           this.githubToken = githubToken;
           this._githubTokenRegex = new RegExp(this.githubToken, "g");
           this._cachedOauthScopes = null;
-          this._cachedForkRepo = null;
+          this._cachedForkRepositories = null;
           this.github = new github_1.AuthenticatedGithubClient(this.githubToken);
         }
         sanitizeConsoleOutput(value) {
@@ -44385,17 +44384,22 @@ Alternatively, a new token can be created at: ${github_urls_1.GITHUB_TOKEN_GENER
           return { error };
         }
         async getForkOfAuthenticatedUser() {
-          if (this._cachedForkRepo !== null) {
-            return this._cachedForkRepo;
+          const forks = await this.getAllForksOfAuthenticatedUser();
+          if (forks.length === 0) {
+            throw Error("Unable to find fork a for currently authenticated user.");
+          }
+          return forks[0];
+        }
+        async getAllForksOfAuthenticatedUser() {
+          if (this._cachedForkRepositories !== null) {
+            return this._cachedForkRepositories;
           }
           const { owner, name } = this.remoteConfig;
           const result = await this.github.graphql(graphql_queries_1.findOwnedForksOfRepoQuery, { owner, name });
-          const forks = result.repository.forks.nodes;
-          if (forks.length === 0) {
-            throw Error(`Unable to find fork for currently authenticated user. Please ensure you created a fork  of: ${owner}/${name}.`);
-          }
-          const fork = forks[0];
-          return this._cachedForkRepo = { owner: fork.owner.login, name: fork.name };
+          return this._cachedForkRepositories = result.repository.forks.nodes.map((node) => ({
+            owner: node.owner.login,
+            name: node.name
+          }));
         }
         _fetchAuthScopesForToken() {
           if (this._cachedOauthScopes !== null) {

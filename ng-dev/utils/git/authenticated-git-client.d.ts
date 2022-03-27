@@ -23,8 +23,8 @@ export declare class AuthenticatedGitClient extends GitClient {
     private readonly _githubTokenRegex;
     /** The OAuth scopes available for the provided Github token. */
     private _cachedOauthScopes;
-    /** Cached found fork of the configured project. */
-    private _cachedForkRepo;
+    /** Cached fork repositories of the authenticated user. */
+    private _cachedForkRepositories;
     /** Instance of an authenticated github client. */
     readonly github: AuthenticatedGithubClient;
     protected constructor(githubToken: string, baseDir?: string, config?: {
@@ -41,11 +41,15 @@ export declare class AuthenticatedGitClient extends GitClient {
     hasOauthScopes(testFn: OAuthScopeTestFunction): Promise<true | {
         error: string;
     }>;
-    /**
-     * Gets an owned fork for the configured project of the authenticated user, caching the determined
-     * fork repository as the authenticated user cannot change during action execution.
-     */
+    /** Gets an owned fork for the configured project of the authenticated user. */
     getForkOfAuthenticatedUser(): Promise<GithubRepo>;
+    /**
+     * Finds all forks owned by the currently authenticated user in the Git client,
+     *
+     * The determined fork repositories are cached as we assume that the authenticated
+     * user will not change during execution, or that no new forks are created.
+     */
+    getAllForksOfAuthenticatedUser(): Promise<GithubRepo[]>;
     /** Fetch the OAuth scopes for the loaded Github token. */
     private _fetchAuthScopesForToken;
     /** The singleton instance of the `AuthenticatedGitClient`. */
