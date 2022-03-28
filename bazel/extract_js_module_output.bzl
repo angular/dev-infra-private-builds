@@ -1,4 +1,5 @@
-load("@build_bazel_rules_nodejs//:providers.bzl", "DeclarationInfo", "ExternalNpmPackageInfo", "JSEcmaScriptModuleInfo", "JSModuleInfo", "JSNamedModuleInfo", "node_modules_aspect")
+load("@rules_nodejs//nodejs:providers.bzl", "JSModuleInfo")
+load("@build_bazel_rules_nodejs//:providers.bzl", "DeclarationInfo", "ExternalNpmPackageInfo", "JSEcmaScriptModuleInfo", "JSNamedModuleInfo", "node_modules_aspect")
 load("@build_bazel_rules_nodejs//internal/linker:link_node_modules.bzl", "LinkerPackageMappingInfo", "module_mappings_aspect")
 
 """Converts a provider name to its actually Starlark provider instance."""
@@ -16,7 +17,8 @@ def _name_to_js_module_provider(name):
 
 def _extract_js_module_output_impl(ctx):
     js_module_provider = _name_to_js_module_provider(ctx.attr.provider)
-    mappings = {}
+    transitive_mappings = []
+    transitive_node_modules_roots = []
     depsets = []
 
     for dep in ctx.attr.deps:
@@ -33,7 +35,8 @@ def _extract_js_module_output_impl(ctx):
         # If we intend to forward linker mappings, capture first-party package
         # linker mappings and collect them in a dictionary that we will re-expose.
         if ctx.attr.forward_linker_mappings and LinkerPackageMappingInfo in dep:
-            mappings.update(dep[LinkerPackageMappingInfo].mappings)
+            transitive_mappings.append(dep[LinkerPackageMappingInfo].mappings)
+            transitive_node_modules_roots.append(dep[LinkerPackageMappingInfo].node_modules_roots)
 
         # Based on whether declarations should be collected, extract direct
         # and transitive declaration files using the `DeclarationInfo` provider.
@@ -52,7 +55,12 @@ def _extract_js_module_output_impl(ctx):
 
     return [
         DefaultInfo(files = sources),
-        LinkerPackageMappingInfo(mappings = mappings),
+        LinkerPackageMappingInfo(
+            # Example of how linker mappings are constructed in `rules_nodejs`.
+            # https://github.com/bazelbuild/rules_nodejs/blob/ae49c0e85a60234f273ea6629bc6056ab293fe5b/internal/linker/link_node_modules.bzl#L220-L222.
+            mappings = depset(transitive = transitive_mappings),
+            node_modules_roots = depset(transitive = transitive_node_modules_roots),
+        ),
     ]
 
 """

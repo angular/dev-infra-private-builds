@@ -6,17 +6,15 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <reference types="node" />
-import { SpawnSyncOptions, SpawnSyncReturns } from 'child_process';
 import { GithubConfig } from '../config';
+import { SpawnSyncOptions, SpawnSyncReturns } from 'child_process';
 import { GithubClient } from './github';
 /** Error for failed Git commands. */
 export declare class GitCommandError extends Error {
     constructor(client: GitClient, unsanitizedArgs: string[]);
 }
 /** The options available for the `GitClient``run` and `runGraceful` methods. */
-declare type GitCommandRunOptions = SpawnSyncOptions & {
-    verboseLogging?: boolean;
-};
+declare type GitCommandRunOptions = SpawnSyncOptions;
 /** Class that can be used to perform Git interactions with a given remote. **/
 export declare class GitClient {
     /** The full path to the root of the repository base. */
@@ -81,12 +79,8 @@ export declare class GitClient {
      * derived classes. e.g. to sanitize access tokens from Git commands.
      */
     sanitizeConsoleOutput(value: string): string;
-    /** Whether verbose logging of Git actions should be used. */
-    private static verboseLogging;
     /** The singleton instance of the unauthenticated `GitClient`. */
     private static _unauthenticatedInstance;
-    /** Set the verbose logging state of all git client instances. */
-    static setVerboseLoggingState(verbose: boolean): void;
     /**
      * Static method to get the singleton instance of the `GitClient`, creating it
      * if it has not yet been created.

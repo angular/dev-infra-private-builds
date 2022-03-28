@@ -6,8 +6,6 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { PullApproveGroup } from './group';
-export declare class PullApproveGroupStateDependencyError extends Error {
-}
 /**
  * Superset of a native array. The superset provides methods which mimic the
  * list data structure used in PullApprove for files in conditions.
@@ -26,6 +24,7 @@ export declare class PullApproveGroupArray extends Array<PullApproveGroup> {
     include(pattern: string): PullApproveGroupArray;
     /** Returns a new array which only includes files that did not match the given pattern. */
     exclude(pattern: string): PullApproveGroupArray;
+    get approved(): void;
     get pending(): void;
     get active(): void;
     get inactive(): void;
