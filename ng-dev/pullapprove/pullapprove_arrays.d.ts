@@ -24,6 +24,7 @@ export declare class PullApproveGroupArray extends Array<PullApproveGroup> {
     include(pattern: string): PullApproveGroupArray;
     /** Returns a new array which only includes files that did not match the given pattern. */
     exclude(pattern: string): PullApproveGroupArray;
+    get approved(): void;
     get pending(): void;
     get active(): void;
     get inactive(): void;
