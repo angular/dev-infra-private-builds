@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-975e75098c9e1b3da8ad3c93335bfa514fc27af7",
+  "version": "0.0.0-632458e8109a38e8ef881cc8b70a33d4bff75055",
   "bin": {
     "ng-dev": "./ng-dev/bundles/cli.js"
   },
@@ -80,6 +80,7 @@
     "@octokit/request-error": "^2.1.0",
     "@octokit/rest": "^18.7.0",
     "@octokit/types": "^6.16.6",
+    "@types/babel__core": "^7.1.19",
     "@types/cli-progress": "^3.9.1",
     "@types/conventional-commits-parser": "^3.0.1",
     "@types/ejs": "^3.0.6",
