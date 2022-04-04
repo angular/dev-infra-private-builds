@@ -31,9 +31,9 @@
     return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
   };
 
-  // node_modules/ansi-styles/node_modules/color-name/index.js
+  // node_modules/color-name/index.js
   var require_color_name = __commonJS({
-    "node_modules/ansi-styles/node_modules/color-name/index.js"(exports2, module) {
+    "node_modules/color-name/index.js"(exports2, module) {
       "use strict";
       module.exports = {
         "aliceblue": [240, 248, 255],
