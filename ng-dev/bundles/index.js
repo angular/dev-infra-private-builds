@@ -42845,9 +42845,9 @@ Ran at: ${now}
     }
   });
 
-  // node_modules/semver/node_modules/lru-cache/index.js
+  // node_modules/lru-cache/index.js
   var require_lru_cache = __commonJS({
-    "node_modules/semver/node_modules/lru-cache/index.js"(exports2, module) {
+    "node_modules/lru-cache/index.js"(exports2, module) {
       "use strict";
       var Yallist = require_yallist();
       var MAX = Symbol("max");
