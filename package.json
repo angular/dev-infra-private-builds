@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-b26959063a9a0bdc1fca8a82c2fc545089be706c",
+  "version": "0.0.0-7842990c04c24210f20f64404e219046a262aa8f",
   "bin": {
     "ng-dev": "./ng-dev/bundles/cli.js"
   },
@@ -33,7 +33,7 @@
     "@bazel/runfiles": "5.4.0",
     "@bazel/terser": "5.4.0",
     "@bazel/typescript": "5.4.0",
-    "@microsoft/api-extractor": "7.21.2",
+    "@microsoft/api-extractor": "7.21.3",
     "@types/browser-sync": "^2.26.3",
     "@types/node": "16.10.9",
     "@types/node-fetch": "^2.5.10",
@@ -114,8 +114,8 @@
     "glob": "7.2.0",
     "husky": "^7.0.1",
     "inquirer": "^8.0.0",
-    "jasmine": "~4.0.0",
-    "jasmine-core": "~4.0.0",
+    "jasmine": "~4.1.0",
+    "jasmine-core": "~4.1.0",
     "jsdoc": "^3.6.7",
     "jsdom": "^19.0.0",
     "karma": "^6.3.15",
