@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-44e81e16f235c8bdc846c854128a60987bd2ee38",
+  "version": "0.0.0-a18ea6f7729b23e24ed3273d662fd0c8d42b3545",
   "bin": {
     "ng-dev": "./ng-dev/bundles/cli.js"
   },
@@ -122,7 +122,7 @@
     "karma-chrome-launcher": "^3.1.0",
     "karma-coverage": "~2.2.0",
     "karma-firefox-launcher": "^2.1.2",
-    "karma-jasmine": "^4.0.1",
+    "karma-jasmine": "^5.0.0",
     "karma-jasmine-html-reporter": "~1.7.0",
     "karma-requirejs": "^1.1.0",
     "karma-sourcemap-loader": "^0.3.8",
