@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-d0cf6d597d9b5cf6a34f62a705e3024feb21cf38",
+  "version": "0.0.0-c85d765c3408c85916cf084f8499549956037f99",
   "bin": {
     "ng-dev": "./ng-dev/bundles/cli.js"
   },
@@ -26,7 +26,7 @@
     "@angular-devkit/build-angular": "14.0.0-next.9",
     "@angular/benchpress": "0.3.0",
     "@babel/core": "^7.16.0",
-    "@bazel/buildifier": "5.0.1",
+    "@bazel/buildifier": "5.1.0",
     "@bazel/concatjs": "5.4.0",
     "@bazel/esbuild": "5.4.0",
     "@bazel/protractor": "5.4.0",
