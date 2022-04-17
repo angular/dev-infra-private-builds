@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-b6a8e9e727b9829195f391933db262c7bb95538d",
+  "version": "0.0.0-8a7e038d773fbae483d5366d7f27bd403f072665",
   "bin": {
     "ng-dev": "./ng-dev/bundles/cli.js"
   },
@@ -110,6 +110,7 @@
     "firebase-admin": "^10.0.2",
     "firebase-functions": "^3.19.0",
     "firebase-tools": "^10.5.0",
+    "font-color-contrast": "^11.1.0",
     "git-raw-commits": "^2.0.10",
     "glob": "7.2.0",
     "husky": "^7.0.1",
