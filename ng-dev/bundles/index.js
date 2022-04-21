@@ -42467,9 +42467,9 @@ Ran at: ${now}
     }
   });
 
-  // node_modules/lru-cache/index.js
+  // node_modules/semver/node_modules/lru-cache/index.js
   var require_lru_cache = __commonJS({
-    "node_modules/lru-cache/index.js"(exports2, module) {
+    "node_modules/semver/node_modules/lru-cache/index.js"(exports2, module) {
       var perf = typeof performance === "object" && performance && typeof performance.now === "function" ? performance : Date;
       var hasAbortController = typeof AbortController !== "undefined";
       var AC = hasAbortController ? AbortController : Object.assign(class AbortController {
