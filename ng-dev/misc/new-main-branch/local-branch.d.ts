@@ -10,3 +10,5 @@ import { GitClient } from '../../utils/git/git-client';
 export declare function findAvailableLocalBranchName(git: GitClient, baseName: string): string;
 /** Gets whether the given branch exists locally. */
 export declare function hasLocalBranch(git: GitClient, branchName: string): boolean;
+/** Gets the current branch name. */
+export declare function getCurrentBranch(git: GitClient): string;
