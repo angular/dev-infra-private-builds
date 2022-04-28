@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-6d279acb490fd63f1beeb9bd4c3278842b577cb0",
+  "version": "0.0.0-ffaa552ee384726d61dd989756ef56916d8a5972",
   "bin": {
     "ng-dev": "./ng-dev/bundles/cli.js"
   },
@@ -62,7 +62,7 @@
     "@actions/github": "^5.0.0",
     "@angular/animations": "14.0.0-next.15",
     "@angular/bazel": "14.0.0-next.15",
-    "@angular/cdk": "14.0.0-next.11",
+    "@angular/cdk": "14.0.0-next.12",
     "@angular/cli": "14.0.0-next.12",
     "@angular/common": "14.0.0-next.15",
     "@angular/compiler": "14.0.0-next.15",
@@ -70,7 +70,7 @@
     "@angular/core": "14.0.0-next.15",
     "@angular/fire": "^7.1.0-rc",
     "@angular/forms": "14.0.0-next.15",
-    "@angular/material": "14.0.0-next.11",
+    "@angular/material": "14.0.0-next.12",
     "@angular/platform-browser": "14.0.0-next.15",
     "@angular/platform-browser-dynamic": "14.0.0-next.15",
     "@angular/router": "14.0.0-next.15",
