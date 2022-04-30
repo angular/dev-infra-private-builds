@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-7e0a7c63ca0f1bef60475dd9d38434c0a74c14e1",
+  "version": "0.0.0-b9fb6c7b91b144a901bffb5fa7fd4302b588a58f",
   "bin": {
     "ng-dev": "./ng-dev/bundles/cli.js"
   },
@@ -44,7 +44,7 @@
     "@types/yargs": "^17.0.0",
     "browser-sync": "^2.27.7",
     "chalk": "^4.1.0",
-    "clang-format": "1.7.0",
+    "clang-format": "1.8.0",
     "node-fetch": "^2.6.1",
     "prettier": "2.6.2",
     "protractor": "^7.0.0",
