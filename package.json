@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-d9f50abe777f5077aee75a35f2fe65bb478638b5",
+  "version": "0.0.0-6f5ad484efbab50c504a6ae0ea15fd9439888321",
   "bin": {
     "ng-dev": "./ng-dev/bundles/cli.js"
   },
@@ -33,7 +33,7 @@
     "@bazel/runfiles": "5.4.2",
     "@bazel/terser": "5.4.2",
     "@bazel/typescript": "5.4.2",
-    "@microsoft/api-extractor": "7.23.1",
+    "@microsoft/api-extractor": "7.23.2",
     "@types/browser-sync": "^2.26.3",
     "@types/node": "16.10.9",
     "@types/node-fetch": "^2.5.10",
