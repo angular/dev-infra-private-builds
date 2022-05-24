@@ -40,4 +40,5 @@ export declare class PullRequestFailure {
     static hasFeatureCommits(label: TargetLabel): PullRequestFailure;
     static missingBreakingChangeLabel(): PullRequestFailure;
     static missingBreakingChangeCommit(): PullRequestFailure;
+    static failedToManualSelectGithubTargetBranch(branch: string): PullRequestFailure;
 }
