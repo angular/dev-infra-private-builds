@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-e37fca2bbb0835024b595d4cf3349c61c803df1a",
+  "version": "0.0.0-a4016f1b61a41b9abb99521544cb478061a0118e",
   "bin": {
     "ng-dev": "./ng-dev/bundles/cli.js"
   },
@@ -77,7 +77,7 @@
     "@bazel/bazelisk": "^1.11.0",
     "@bazel/jasmine": "5.5.0",
     "@google-cloud/firestore": "^5.0.2",
-    "@google-cloud/storage": "^5.18.1",
+    "@google-cloud/storage": "^6.0.0",
     "@octokit/auth-app": "^3.6.0",
     "@octokit/core": "^3.5.1",
     "@octokit/graphql": "^4.8.0",
