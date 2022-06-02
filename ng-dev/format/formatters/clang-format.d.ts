@@ -6,6 +6,9 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <reference types="node" />
+/// <reference types="node" />
+/// <reference types="node" />
+/// <reference types="node" />
 import { Formatter } from './base-formatter';
 /**
  * Formatter for running clang-format against Typescript and Javascript files

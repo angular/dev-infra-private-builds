@@ -20,14 +20,14 @@ async function main(
   entryPointFilePath: string,
   approveGolden: boolean,
   stripExportPattern: RegExp,
-  typeModuleNames: string[],
+  typePackageNames: string[],
 ) {
   const {succeeded, apiReportChanged} = await testApiGolden(
     goldenFilePath,
     entryPointFilePath,
     approveGolden,
     stripExportPattern,
-    typeModuleNames,
+    typePackageNames,
   );
 
   if (!succeeded && apiReportChanged) {
@@ -49,14 +49,14 @@ if (require.main === module) {
   const entryPointFilePath = runfiles.resolve(args[1]);
   const approveGolden = args[2] === 'true';
   const stripExportPattern = new RegExp(args[3]);
-  const typeModuleNames = args.slice(4);
+  const typePackageNames = args.slice(4);
 
   main(
     goldenFilePath,
     entryPointFilePath,
     approveGolden,
     stripExportPattern,
-    typeModuleNames,
+    typePackageNames,
   ).catch((e) => {
     console.error(e);
     process.exit(1);

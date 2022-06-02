@@ -6,8 +6,6 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import * as ts from 'typescript';
-
 import {
   ConsoleMessageId,
   Extractor,
@@ -22,7 +20,7 @@ import {basename, dirname} from 'path';
 
 import {AstModule} from '@microsoft/api-extractor/lib/analyzer/AstModule';
 import {ExportAnalyzer} from '@microsoft/api-extractor/lib/analyzer/ExportAnalyzer';
-import {resolveTypeModules} from './module_mappings';
+import {resolveTypePackages} from './module_mappings';
 import {runfiles} from '@bazel/runfiles';
 
 /**
@@ -41,8 +39,8 @@ const _origFetchAstModuleExportInfo = ExportAnalyzer.prototype.fetchAstModuleExp
  * @param approveGolden Whether the golden file should be updated.
  * @param stripExportPattern Regular Expression that can be used to filter out exports
  *   from the API report.
- * @param typeModuleNames Module name of types which should be included for analysis of the entry-point.
- *   Types are expected to exist within the default `node_modules/@types/` folder.
+ * @param typePackageNames Package names for which types should be included in the analysis of the
+ *   API-report entry-point. Packages are expected to exist within the external `npm` workspace.
  * @param packageJsonPath Optional path to a `package.json` file that contains the entry
  *   point. Note that the `package.json` is currently only used by `api-extractor` to determine
  *   the package name displayed within the API golden.
@@ -55,14 +53,14 @@ export async function testApiGolden(
   indexFilePath: string,
   approveGolden: boolean,
   stripExportPattern: RegExp,
-  typeModuleNames: string[] = [],
+  typePackageNames: string[] = [],
   packageJsonPath = resolveWorkspacePackageJsonPath(),
   customPackageName?: string,
 ): Promise<ExtractorResult> {
   // If no `TEST_TMPDIR` is defined, then this script runs using `bazel run`. We use
   // the runfile directory as temporary directory for API extractor.
   const tempDir = process.env.TEST_TMPDIR ?? process.cwd();
-  const {paths, typeFiles} = resolveTypeModules(typeModuleNames);
+  const {paths, typeFiles} = await resolveTypePackages(typePackageNames);
 
   const configObject: IConfigFile = {
     compiler: {

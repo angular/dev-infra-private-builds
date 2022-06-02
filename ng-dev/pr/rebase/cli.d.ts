@@ -5,13 +5,11 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { Arguments, Argv } from 'yargs';
+import { CommandModule } from 'yargs';
 /** The options available to the rebase command via CLI. */
-export interface RebaseCommandOptions {
+export interface RebaseOptions {
     githubToken: string;
-    prNumber: number;
+    pr: number;
 }
-/** Builds the rebase pull request command. */
-export declare function buildRebaseCommand(yargs: Argv): Argv<RebaseCommandOptions>;
-/** Handles the rebase pull request command. */
-export declare function handleRebaseCommand({ prNumber, githubToken, }: Arguments<RebaseCommandOptions>): Promise<void>;
+/** yargs command module for rebaseing a PR  */
+export declare const RebaseCommandModule: CommandModule<{}, RebaseOptions>;

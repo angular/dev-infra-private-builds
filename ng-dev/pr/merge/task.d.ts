@@ -28,6 +28,7 @@ export interface MergeResult {
 }
 export interface PullRequestMergeTaskFlags {
     branchPrompt: boolean;
+    forceManualBranches: boolean;
 }
 /**
  * Class that accepts a merge script configuration and Github token. It provides
@@ -51,4 +52,9 @@ export declare class PullRequestMergeTask {
      * @param force Whether non-critical pull request failures should be ignored.
      */
     merge(prNumber: number, force?: boolean): Promise<MergeResult>;
+    /**
+     * Modifies the pull request in place with new target branches based on user selection from
+     * the available active branches.
+     */
+    private setTargetedBranchesManually;
 }
