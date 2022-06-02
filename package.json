@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-e24867bc8949be9d2846d9220debe6bcc1864bb2",
+  "version": "0.0.0-4fdbd0060583d4b1549b5ad41a46698d8f993052",
   "bin": {
     "ng-dev": "./ng-dev/bundles/cli.js"
   },
@@ -93,6 +93,7 @@
     "@types/conventional-commits-parser": "^3.0.1",
     "@types/ejs": "^3.0.6",
     "@types/events": "^3.0.0",
+    "@types/folder-hash": "^4.0.1",
     "@types/git-raw-commits": "^2.0.0",
     "@types/glob": "^7.1.3",
     "@types/inquirer": "8.2.1",
@@ -113,6 +114,7 @@
     "firebase-admin": "^10.0.2",
     "firebase-functions": "^3.19.0",
     "firebase-tools": "^11.0.0",
+    "folder-hash": "^4.0.2",
     "font-color-contrast": "^11.1.0",
     "gcip-cloud-functions": "0.0.3",
     "git-raw-commits": "^2.0.10",

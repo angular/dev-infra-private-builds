@@ -7,7 +7,7 @@
  */
 import * as semver from 'semver';
 import { AuthenticatedGitClient } from '../../utils/git/authenticated-git-client';
-import { ReleaseConfig } from '../config/index';
+import { BuiltPackageWithInfo, ReleaseConfig } from '../config/index';
 import { ReleaseNotes } from '../notes/release-notes';
 import { NpmDistTag } from '../versioning';
 import { ActiveReleaseTrains } from '../versioning/active-release-trains';
@@ -58,9 +58,16 @@ export declare abstract class ReleaseAction {
     /** Updates the version in the project top-level `package.json` file. */
     protected updateProjectVersion(newVersion: semver.SemVer): Promise<void>;
     /** Gets the most recent commit of a specified branch. */
-    private _getCommitOfBranch;
-    /** Verifies that the latest commit for the given branch is passing all statuses. */
-    protected verifyPassingGithubStatus(branchName: string): Promise<void>;
+    protected getLatestCommitOfBranch(branchName: string): Promise<string>;
+    /** Checks whether the given revision is ahead to the base by the specified amount. */
+    private _isRevisionAheadOfBase;
+    /**
+     * Verifies that the given commit has passing all statuses.
+     *
+     * Upon error, a link to the branch containing the commit is printed,
+     * allowing the caretaker to quickly inspect the GitHub commit status failures.
+     */
+    protected assertPassingGithubStatus(commitSha: string, branchNameForError: string): Promise<void>;
     /**
      * Prompts the user for potential release notes edits that need to be made. Once
      * confirmed, a new commit for the release point is created.
@@ -122,18 +129,28 @@ export declare abstract class ReleaseAction {
      */
     protected createCommit(message: string, files: string[]): Promise<void>;
     /**
-     * Stages the specified new version for the current branch and creates a pull request
-     * that targets the given base branch. Assumes the staging branch is already checked-out.
+     * Builds the release output for the current branch. Assumes the node modules
+     * to be already installed for the current branch.
+     *
+     * @returns A list of built release packages.
+     */
+    protected buildReleaseForCurrentBranch(): Promise<BuiltPackageWithInfo[]>;
+    /**
+     * Stages the specified new version for the current branch, builds the release output,
+     * verifies its output and creates a pull request  that targets the given base branch.
+     *
+     * This method assumes the staging branch is already checked-out.
      *
      * @param newVersion New version to be staged.
      * @param compareVersionForReleaseNotes Version used for comparing with the current
      *   `HEAD` in order build the release notes.
      * @param pullRequestTargetBranch Branch the pull request should target.
-     * @returns an object describing the created pull request.
+     * @returns an object capturing actions performed as part of staging.
      */
     protected stageVersionForBranchAndCreatePullRequest(newVersion: semver.SemVer, compareVersionForReleaseNotes: semver.SemVer, pullRequestTargetBranch: string): Promise<{
         releaseNotes: ReleaseNotes;
         pullRequest: PullRequest;
+        builtPackagesWithInfo: BuiltPackageWithInfo[];
     }>;
     /**
      * Checks out the specified target branch, verifies its CI status and stages
@@ -143,11 +160,13 @@ export declare abstract class ReleaseAction {
      * @param compareVersionForReleaseNotes Version used for comparing with `HEAD` of
      *   the staging branch in order build the release notes.
      * @param stagingBranch Branch within the new version should be staged.
-     * @returns an object describing the created pull request.
+     * @returns an object capturing actions performed as part of staging.
      */
     protected checkoutBranchAndStageVersion(newVersion: semver.SemVer, compareVersionForReleaseNotes: semver.SemVer, stagingBranch: string): Promise<{
         releaseNotes: ReleaseNotes;
         pullRequest: PullRequest;
+        builtPackagesWithInfo: BuiltPackageWithInfo[];
+        beforeStagingSha: string;
     }>;
     /**
      * Cherry-picks the release notes of a version that have been pushed to a given branch
@@ -171,14 +190,19 @@ export declare abstract class ReleaseAction {
     /** Gets a Github URL that resolves to the release notes in the given ref. */
     private _getGithubChangelogUrlForRef;
     /**
-     * Builds and publishes the given version in the specified branch.
+     * Publishes the given packages to the registry and makes the releases
+     * available on GitHub.
      *
+     * @param builtPackagesWithInfo List of built packages that will be published.
      * @param releaseNotes The release notes for the version being published.
+     * @param beforeStagingSha Commit SHA that is expected to be the most recent one after
+     *   the actual version bump commit. This exists to ensure that caretakers do not land
+     *   additional changes after the release output has been built locally.
      * @param publishBranch Name of the branch that contains the new version.
      * @param npmDistTag NPM dist tag where the version should be published to.
      * @param additionalOptions Additional options for building and publishing.
      */
-    protected buildAndPublish(releaseNotes: ReleaseNotes, publishBranch: string, npmDistTag: NpmDistTag, additionalOptions?: {
+    protected publish(builtPackagesWithInfo: BuiltPackageWithInfo[], releaseNotes: ReleaseNotes, beforeStagingSha: string, publishBranch: string, npmDistTag: NpmDistTag, additionalOptions?: {
         skipExperimentalPackages?: boolean;
     }): Promise<void>;
     /** Publishes the given built package to NPM with the specified NPM dist tag. */
