@@ -5,7 +5,6 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { SemVer } from 'semver';
 import { CommitFromGitLog } from '../../commit-message/parse';
 /** Interface describing a built package. */
 export interface BuiltPackage {
@@ -53,7 +52,7 @@ export interface ReleaseConfig {
      * If provided, the release can occur when the promise resolves. Upon rejection,
      * the release will abort the release and print the `ReleasePrecheckError` error.
      */
-    prereleaseCheck?: (newVersion: SemVer, builtPackagesWithInfo: BuiltPackageWithInfo[]) => Promise<void>;
+    prereleaseCheck?: (newVersion: string, builtPackagesWithInfo: BuiltPackageWithInfo[]) => Promise<void>;
 }
 /**
  * Type describing a built package with its associated NPM package info and package

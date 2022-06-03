@@ -44527,7 +44527,7 @@ Ran at: ${now}
           return true;
         }
         try {
-          await config.prereleaseCheck(newVersion, builtPackagesWithInfo);
+          await config.prereleaseCheck(newVersion.format(), builtPackagesWithInfo);
           (0, console_2.info)((0, console_2.green)("  \u2713   Release pre-checks passing."));
           return true;
         } catch (e) {
