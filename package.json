@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-e95af25ecb2346e9381188adf9197c97b5bbc78f",
+  "version": "0.0.0-2cf16080967379e8e7f9e1a7e76503b777eb7f84",
   "bin": {
     "ng-dev": "./ng-dev/bundles/cli.js"
   },
@@ -100,6 +100,7 @@
     "@types/jasmine": "^4.0.0",
     "@types/jsdom": "^16.2.13",
     "@types/semver": "^7.3.6",
+    "@types/supports-color": "^8.1.1",
     "@types/wait-on": "^5.3.1",
     "@types/which": "^2.0.1",
     "@types/yarnpkg__lockfile": "^1.1.5",
@@ -141,6 +142,7 @@
     "requirejs": "^2.3.6",
     "rxjs": "^7.4.0",
     "semver": "^7.3.5",
+    "supports-color": "8.1.1",
     "ts-node": "^10.2.1",
     "tslint": "^6.1.3",
     "typed-graphqlify": "^3.1.1",
