@@ -19,6 +19,7 @@ export interface SpawnOptions extends Omit<_SpawnOptions, 'shell' | 'stdio'> {
     mode?: 'enabled' | 'silent' | 'on-error';
     /** Whether to prevent exit codes being treated as failures. */
     suppressErrorOnFailingExitCode?: boolean;
+    input?: string;
 }
 /** Interface describing the options for spawning an interactive process. */
 export declare type SpawnInteractiveCommandOptions = Omit<_SpawnOptions, 'shell' | 'stdio'>;

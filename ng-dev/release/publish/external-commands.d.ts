@@ -9,6 +9,7 @@ import * as semver from 'semver';
 import { NpmDistTag } from '../versioning';
 import { ReleaseBuildJsonStdout } from '../build/cli';
 import { ReleaseInfoJsonStdout } from '../info/cli';
+import { BuiltPackageWithInfo } from '../config';
 /**
  * Invokes the `ng-dev release set-dist-tag` command in order to set the specified
  * NPM dist tag for all packages in the checked out branch to the given version.
@@ -32,6 +33,15 @@ export declare function invokeReleaseBuildCommand(projectDir: string): Promise<R
  * denoted as experimental or not.
  */
 export declare function invokeReleaseInfoCommand(projectDir: string): Promise<ReleaseInfoJsonStdout>;
+/**
+ * Invokes the `ng-dev release precheck` command in order to validate the
+ * built packages or run other validations before actually releasing.
+ *
+ * This is run as an external command because prechecks can be customized
+ * through the `ng-dev` configuration, and we wouldn't want to run prechecks
+ * from the `next` branch for older branches, like patch or an LTS branch.
+ */
+export declare function invokeReleasePrecheckCommand(projectDir: string, newVersion: semver.SemVer, builtPackagesWithInfo: BuiltPackageWithInfo[]): Promise<void>;
 /**
  * Invokes the `yarn install` command in order to install dependencies for
  * the configured project with the currently checked out revision.

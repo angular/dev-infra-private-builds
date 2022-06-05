@@ -1140,9 +1140,9 @@
     }
   });
 
-  // node_modules/supports-color/index.js
+  // node_modules/chalk/node_modules/supports-color/index.js
   var require_supports_color = __commonJS({
-    "node_modules/supports-color/index.js"(exports2, module) {
+    "node_modules/chalk/node_modules/supports-color/index.js"(exports2, module) {
       "use strict";
       var os = __require("os");
       var tty = __require("tty");

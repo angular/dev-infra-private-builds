@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-f809d410b31526df09b487b182fbb2e9bae28c8c",
+  "version": "0.0.0-2042c0e37b31d943e33c73d94acf41773ef0efaf",
   "bin": {
     "ng-dev": "./ng-dev/bundles/cli.js"
   },
@@ -60,20 +60,20 @@
   "devDependencies": {
     "@actions/core": "^1.4.0",
     "@actions/github": "^5.0.0",
-    "@angular/animations": "14.0.0-rc.3",
-    "@angular/bazel": "14.0.0-rc.3",
+    "@angular/animations": "14.0.0",
+    "@angular/bazel": "14.0.0",
     "@angular/cdk": "14.0.0-rc.2",
     "@angular/cli": "14.0.0-rc.3",
-    "@angular/common": "14.0.0-rc.3",
-    "@angular/compiler": "14.0.0-rc.3",
-    "@angular/compiler-cli": "14.0.0-rc.3",
-    "@angular/core": "14.0.0-rc.3",
+    "@angular/common": "14.0.0",
+    "@angular/compiler": "14.0.0",
+    "@angular/compiler-cli": "14.0.0",
+    "@angular/core": "14.0.0",
     "@angular/fire": "^7.1.0-rc",
-    "@angular/forms": "14.0.0-rc.3",
+    "@angular/forms": "14.0.0",
     "@angular/material": "14.0.0-rc.2",
-    "@angular/platform-browser": "14.0.0-rc.3",
-    "@angular/platform-browser-dynamic": "14.0.0-rc.3",
-    "@angular/router": "14.0.0-rc.3",
+    "@angular/platform-browser": "14.0.0",
+    "@angular/platform-browser-dynamic": "14.0.0",
+    "@angular/router": "14.0.0",
     "@bazel/bazelisk": "^1.11.0",
     "@bazel/jasmine": "5.5.0",
     "@google-cloud/firestore": "^5.0.2",
@@ -93,12 +93,14 @@
     "@types/conventional-commits-parser": "^3.0.1",
     "@types/ejs": "^3.0.6",
     "@types/events": "^3.0.0",
+    "@types/folder-hash": "^4.0.1",
     "@types/git-raw-commits": "^2.0.0",
     "@types/glob": "^7.1.3",
     "@types/inquirer": "8.2.1",
     "@types/jasmine": "^4.0.0",
     "@types/jsdom": "^16.2.13",
     "@types/semver": "^7.3.6",
+    "@types/supports-color": "^8.1.1",
     "@types/wait-on": "^5.3.1",
     "@types/which": "^2.0.1",
     "@types/yarnpkg__lockfile": "^1.1.5",
@@ -113,6 +115,7 @@
     "firebase-admin": "^10.0.2",
     "firebase-functions": "^3.19.0",
     "firebase-tools": "^11.0.0",
+    "folder-hash": "^4.0.2",
     "font-color-contrast": "^11.1.0",
     "gcip-cloud-functions": "0.0.3",
     "git-raw-commits": "^2.0.10",
@@ -139,6 +142,7 @@
     "requirejs": "^2.3.6",
     "rxjs": "^7.4.0",
     "semver": "^7.3.5",
+    "supports-color": "8.1.1",
     "ts-node": "^10.2.1",
     "tslint": "^6.1.3",
     "typed-graphqlify": "^3.1.1",
@@ -149,6 +153,6 @@
     "zone.js": "^0.11.4"
   },
   "resolutions": {
-    "@angular/benchpress/@angular/core": "14.0.0-rc.3"
+    "@angular/benchpress/@angular/core": "14.0.0"
   }
 }
