@@ -73762,7 +73762,7 @@ import * as path2 from "path";
 import * as fs3 from "fs";
 async function verifyNgDevToolIsUpToDate(workspacePath) {
   var _a, _b, _c;
-  const localVersion = `0.0.0-507a855e733e6da647489cb6d976ed94fc844c65`;
+  const localVersion = `0.0.0-82bbfeef9c820f0a83e15453e11bf37053f2bbb3`;
   const workspacePackageJsonFile = path2.join(workspacePath, workspaceRelativePackageJsonPath);
   const workspaceDirLockFile = path2.join(workspacePath, workspaceRelativeYarnLockFilePath);
   try {

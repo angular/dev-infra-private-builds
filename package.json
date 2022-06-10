@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-507a855e733e6da647489cb6d976ed94fc844c65",
+  "version": "0.0.0-82bbfeef9c820f0a83e15453e11bf37053f2bbb3",
   "bin": {
     "ng-dev": "./ng-dev/bundles/cli.mjs"
   },
@@ -13,9 +13,11 @@
   },
   "exports": {
     "./ng-dev": {
+      "types": "./ng-dev/index.d.ts",
       "default": "./ng-dev/bundles/index.mjs"
     },
     "./ng-dev/*": {
+      "types": "./ng-dev/*.d.ts",
       "default": "./ng-dev/bundles/*.mjs"
     },
     "./*": {
