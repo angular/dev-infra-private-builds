@@ -7,7 +7,7 @@
  */
 import { RuleFailure } from 'tslint/lib';
 import { TypedRule } from 'tslint/lib/rules';
-import * as ts from 'typescript';
+import ts from 'typescript';
 /**
  * Rule which enforces that class members implementing abstract members
  * from base classes explicitly specify the `override` modifier.

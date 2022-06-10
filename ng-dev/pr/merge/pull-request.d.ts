@@ -5,8 +5,8 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { PullRequestFailure } from '../common/validation/failures';
-import { PullRequestMergeTask } from './task';
+import { PullRequestFailure } from '../common/validation/failures.js';
+import { PullRequestMergeTask } from './task.js';
 /** Interface that describes a pull request. */
 export interface PullRequest {
     /** URL to the pull request. */

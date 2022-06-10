@@ -7,4 +7,4 @@
  */
 import { Argv } from 'yargs';
 /** Build the parser for the caretaker commands. */
-export declare function buildCaretakerParser(yargs: Argv): Argv<import("./handoff/cli").CaretakerHandoffOptions>;
+export declare function buildCaretakerParser(argv: Argv): Argv<import("./handoff/cli.js").CaretakerHandoffOptions>;

@@ -5,6 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
+import { NgDevConfig } from '../utils/config.js';
 /** Configuration for commit-message comands. */
 export interface CommitMessageConfig {
     maxLineLength: number;
@@ -13,7 +14,7 @@ export interface CommitMessageConfig {
     scopes: string[];
 }
 /** Assert the provided config contains a `CommitMessageConfig`. */
-export declare function assertValidCommitMessageConfig<T>(config: T & Partial<{
+export declare function assertValidCommitMessageConfig<T extends NgDevConfig>(config: T & Partial<{
     commitMessage: CommitMessageConfig;
 }>): asserts config is T & {
     commitMessage: CommitMessageConfig;

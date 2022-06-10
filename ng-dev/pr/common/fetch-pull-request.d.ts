@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { CheckConclusionState, CheckStatusState, MergeableState, PullRequestState, StatusState } from '@octokit/graphql-schema';
-import { AuthenticatedGitClient } from '../../utils/git/authenticated-git-client';
+import { AuthenticatedGitClient } from '../../utils/git/authenticated-git-client.js';
 /** A status for a pull request status or check. */
 export declare enum PullRequestStatus {
     PASSING = 0,

@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { ReleaseAction } from '../actions';
+import { ReleaseAction } from '../actions.js';
 /**
  * Release action that cuts a prerelease for the next branch. A version in the next
  * branch can have an arbitrary amount of next pre-releases.

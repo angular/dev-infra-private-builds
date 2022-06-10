@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { BuiltPackage, BuiltPackageWithInfo, NpmPackage } from '../config';
+import { BuiltPackage, BuiltPackageWithInfo, NpmPackage } from '../config/index.js';
 /**
  * Analyzes and extends the given built packages with additional information,
  * such as their corresponding NPM information or a hash for the package contents.

@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { PullApproveGroup } from './group';
+import { PullApproveGroup } from './group.js';
 /**
  * Converts a given condition to a function that accepts a set of files. The returned
  * function can be called to check if the set of files matches the condition.

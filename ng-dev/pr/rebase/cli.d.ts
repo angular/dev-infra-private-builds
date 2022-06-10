@@ -11,5 +11,5 @@ export interface RebaseOptions {
     githubToken: string;
     pr: number;
 }
-/** yargs command module for rebaseing a PR  */
+/** yargs command module for rebasing a PR  */
 export declare const RebaseCommandModule: CommandModule<{}, RebaseOptions>;

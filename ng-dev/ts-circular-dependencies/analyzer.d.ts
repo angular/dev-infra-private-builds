@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import * as ts from 'typescript';
+import ts from 'typescript';
 export declare type ModuleResolver = (specifier: string) => string | null;
 /**
  * Reference chains describe a sequence of source files which are connected through imports.

@@ -1,4 +1,4 @@
-import { PullApproveGroup } from './group';
+import { PullApproveGroup } from './group.js';
 export interface PullApproveGroupConfig {
     conditions?: string[];
     reviewers?: {

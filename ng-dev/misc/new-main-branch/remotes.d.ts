@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { GitClient } from '../../utils/git/git-client';
+import { GitClient } from '../../utils/git/git-client.js';
 /** Type describing extracted remotes, mapping remote name to its URL. */
 export declare type Remotes = Map<string, string>;
 /**

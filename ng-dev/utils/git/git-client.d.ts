@@ -6,9 +6,9 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <reference types="node" />
-import { GithubConfig } from '../config';
+import { GithubConfig } from '../config.js';
 import { SpawnSyncOptions, SpawnSyncReturns } from 'child_process';
-import { GithubClient } from './github';
+import { GithubClient } from './github.js';
 /** Error for failed Git commands. */
 export declare class GitCommandError extends Error {
     constructor(client: GitClient, unsanitizedArgs: string[]);
@@ -40,10 +40,12 @@ export declare class GitClient {
      */
     readonly gitBinPath: string;
     constructor(
-    /** The full path to the root of the repository base. */
-    baseDir?: string, 
     /** The configuration, containing the github specific configuration. */
-    config?: {});
+    config: {
+        github: GithubConfig;
+    }, 
+    /** The full path to the root of the repository base. */
+    baseDir?: string);
     /** Executes the given git command. Throws if the command fails. */
     run(args: string[], options?: GitCommandRunOptions): Omit<SpawnSyncReturns<string>, 'status'>;
     /**
@@ -85,6 +87,8 @@ export declare class GitClient {
      * Static method to get the singleton instance of the `GitClient`, creating it
      * if it has not yet been created.
      */
-    static get(): GitClient;
+    static get(): Promise<GitClient>;
 }
+/** Determines the repository base directory from the current working directory. */
+export declare function determineRepoBaseDirFromCwd(): string;
 export {};

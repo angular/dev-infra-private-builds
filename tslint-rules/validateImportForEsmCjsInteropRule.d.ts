@@ -7,7 +7,7 @@
  */
 import { RuleFailure } from 'tslint/lib';
 import { AbstractRule } from 'tslint/lib/rules';
-import * as ts from 'typescript';
+import ts from 'typescript';
 /**
  * Rule that blocks named imports from being used for certain configured module
  * specifiers. This is helpful for enforcing an ESM-compatible interop with CommonJS

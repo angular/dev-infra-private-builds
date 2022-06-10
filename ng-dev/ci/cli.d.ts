@@ -7,4 +7,4 @@
  */
 import { Argv } from 'yargs';
 /** Build the parser for the ci commands. */
-export declare function buildCiParser(yargs: Argv): Argv<import("./gather-test-results/cli").Options>;
+export declare function buildCiParser(argv: Argv): Argv<import("./gather-test-results/cli.js").Options>;

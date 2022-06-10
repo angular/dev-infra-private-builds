@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { BaseModule } from './base';
+import { BaseModule } from './base.js';
 /** Information expressing the difference between the main and g3 branches */
 export interface G3StatsData {
     insertions: number;

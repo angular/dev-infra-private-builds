@@ -5,11 +5,11 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { Commit } from '../../../commit-message/parse';
-import { TargetLabel } from '../targeting/target-label';
-import { PullRequestConfig } from '../../config';
-import { PullRequestFromGithub } from '../fetch-pull-request';
-import { ActiveReleaseTrains } from '../../../release/versioning';
+import { Commit } from '../../../commit-message/parse.js';
+import { TargetLabel } from '../targeting/target-label.js';
+import { PullRequestConfig } from '../../config/index.js';
+import { PullRequestFromGithub } from '../fetch-pull-request.js';
+import { ActiveReleaseTrains } from '../../../release/versioning/index.js';
 /**
  * Assert the commits provided are allowed to merge to the provided target label,
  * throwing an error otherwise.

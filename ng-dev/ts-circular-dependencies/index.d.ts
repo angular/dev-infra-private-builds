@@ -5,9 +5,9 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import * as yargs from 'yargs';
-import { CircularDependenciesTestConfig } from './config';
-export declare function tsCircularDependenciesBuilder(localYargs: yargs.Argv): yargs.Argv<{
+import { Argv } from 'yargs';
+import { CircularDependenciesTestConfig } from './config.js';
+export declare function tsCircularDependenciesBuilder(localYargs: Argv): Argv<{
     config: string;
 } & {
     warnings: boolean | undefined;

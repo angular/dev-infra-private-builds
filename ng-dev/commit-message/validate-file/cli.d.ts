@@ -9,7 +9,7 @@ import { CommandModule } from 'yargs';
 export interface ValidateFileOptions {
     file?: string;
     fileEnvVariable?: string;
-    error: boolean;
+    error: boolean | null;
 }
 /** yargs command module describing the command. */
 export declare const ValidateFileModule: CommandModule<{}, ValidateFileOptions>;

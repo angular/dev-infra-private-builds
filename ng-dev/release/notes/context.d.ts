@@ -5,9 +5,9 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { CommitFromGitLog } from '../../commit-message/parse';
-import { GithubConfig } from '../../utils/config';
-import { ReleaseNotesConfig } from '../config/index';
+import { CommitFromGitLog } from '../../commit-message/parse.js';
+import { GithubConfig } from '../../utils/config.js';
+import { ReleaseNotesConfig } from '../config/index.js';
 /** Data used for context during rendering. */
 export interface RenderContextData {
     title: string | false;

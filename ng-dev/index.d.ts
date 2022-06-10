@@ -5,15 +5,15 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-export * from './utils/config';
-export * from './caretaker/config';
-export * from './commit-message/config';
-export * from './format/config';
-export * from './pr/config';
-export * from './release/config';
-export * from './release/versioning';
-export { ReleasePrecheckError } from './release/precheck';
-export * from './utils/console';
-export * from './utils/git/authenticated-git-client';
-export * from './utils/git/git-client';
-export * from './utils/git/github';
+export * from './utils/config.js';
+export * from './caretaker/config.js';
+export * from './commit-message/config.js';
+export * from './format/config.js';
+export * from './pr/config/index.js';
+export * from './release/config/index.js';
+export * from './release/versioning/index.js';
+export { ReleasePrecheckError } from './release/precheck/index.js';
+export * from './utils/logging.js';
+export * from './utils/git/authenticated-git-client.js';
+export * from './utils/git/git-client.js';
+export * from './utils/git/github.js';

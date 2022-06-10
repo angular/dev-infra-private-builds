@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import * as semver from 'semver';
+import semver from 'semver';
 /** Gets the commit message for a new release point in the project. */
 export declare function getCommitMessageForRelease(newVersion: semver.SemVer): string;
 /**

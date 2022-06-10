@@ -1,5 +1,5 @@
-import * as semver from 'semver';
-import { GitClient } from '../../utils/git/git-client';
+import semver from 'semver';
+import { GitClient } from '../../utils/git/git-client.js';
 /** A marker used to split a CHANGELOG.md file into individual entries. */
 export declare const splitMarker = "<!-- CHANGELOG SPLIT MARKER -->";
 export declare class Changelog {

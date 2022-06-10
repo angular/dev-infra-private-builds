@@ -5,8 +5,8 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import * as semver from 'semver';
-import { ReleaseConfig } from '../config/index';
+import semver from 'semver';
+import { ReleaseConfig } from '../config/index.js';
 /** Type describing a NPM dist tag indicating long-term support. */
 export declare type LtsNpmDistTag = `v${number}-lts`;
 /** Interface describing determined LTS branches. */

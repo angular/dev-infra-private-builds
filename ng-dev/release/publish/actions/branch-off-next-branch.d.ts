@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { ReleaseAction } from '../actions';
+import { ReleaseAction } from '../actions.js';
 /**
  * Base action that can be used to move the next release-train into the feature-freeze or
  * release-candidate phase. This means that a new version branch is created from the next

@@ -5,11 +5,11 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { AuthenticatedGitClient } from '../../../utils/git/authenticated-git-client';
-import { GithubApiMergeStrategyConfig } from '../../config';
-import { PullRequestFailure } from '../../common/validation/failures';
-import { PullRequest } from '../pull-request';
-import { MergeStrategy } from './strategy';
+import { AuthenticatedGitClient } from '../../../utils/git/authenticated-git-client.js';
+import { GithubApiMergeStrategyConfig } from '../../config/index.js';
+import { PullRequestFailure } from '../../common/validation/failures.js';
+import { PullRequest } from '../pull-request.js';
+import { MergeStrategy } from './strategy.js';
 /**
  * Merge strategy that primarily leverages the Github API. The strategy merges a given
  * pull request into a target branch using the API. This ensures that Github displays

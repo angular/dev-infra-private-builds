@@ -5,9 +5,9 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { AuthenticatedGitClient } from '../../../utils/git/authenticated-git-client';
-import { PullRequestFailure } from '../../common/validation/failures';
-import { PullRequest } from '../pull-request';
+import { AuthenticatedGitClient } from '../../../utils/git/authenticated-git-client.js';
+import { PullRequestFailure } from '../../common/validation/failures.js';
+import { PullRequest } from '../pull-request.js';
 /**
  * Name of a temporary branch that contains the head of a currently-processed PR. Note
  * that a branch name should be used that most likely does not conflict with other local
