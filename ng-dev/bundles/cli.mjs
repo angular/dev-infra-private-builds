@@ -68709,11 +68709,7 @@ function addGithubTokenOption(argv) {
         Log.warn(`You can generate a token here: ${GITHUB_TOKEN_GENERATE_URL}`);
         process.exit(1);
       }
-      try {
-        AuthenticatedGitClient.get();
-      } catch {
-        AuthenticatedGitClient.configure(githubToken);
-      }
+      AuthenticatedGitClient.configure(githubToken);
       return githubToken;
     }
   }).default("github-token", "", "<LOCAL TOKEN>");
@@ -73762,7 +73758,7 @@ import * as path2 from "path";
 import * as fs3 from "fs";
 async function verifyNgDevToolIsUpToDate(workspacePath) {
   var _a, _b, _c;
-  const localVersion = `0.0.0-82bbfeef9c820f0a83e15453e11bf37053f2bbb3`;
+  const localVersion = `0.0.0-a5c2fb281ba9b0fa3b8d30d10f50bc909415b8e4`;
   const workspacePackageJsonFile = path2.join(workspacePath, workspaceRelativePackageJsonPath);
   const workspaceDirLockFile = path2.join(workspacePath, workspaceRelativeYarnLockFilePath);
   try {
