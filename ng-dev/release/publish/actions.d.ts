@@ -202,9 +202,7 @@ export declare abstract class ReleaseAction {
      * @param npmDistTag NPM dist tag where the version should be published to.
      * @param additionalOptions Additional options for building and publishing.
      */
-    protected publish(builtPackagesWithInfo: BuiltPackageWithInfo[], releaseNotes: ReleaseNotes, beforeStagingSha: string, publishBranch: string, npmDistTag: NpmDistTag, additionalOptions?: {
-        skipExperimentalPackages?: boolean;
-    }): Promise<void>;
+    protected publish(builtPackagesWithInfo: BuiltPackageWithInfo[], releaseNotes: ReleaseNotes, beforeStagingSha: string, publishBranch: string, npmDistTag: NpmDistTag): Promise<void>;
     /** Publishes the given built package to NPM with the specified NPM dist tag. */
     private _publishBuiltPackageToNpm;
     /** Checks whether the given commit represents a staging commit for the specified version. */
