@@ -9075,8 +9075,7 @@ var DryRunError = class extends Error {
 };
 
 // bazel-out/k8-fastbuild/bin/ng-dev/utils/config.js
-import tsNode from "ts-node";
-import { dirname, join as join2 } from "path";
+import { join as join2 } from "path";
 
 // node_modules/chalk/source/vendor/ansi-styles/index.js
 var ANSI_BACKGROUND_OFFSET = 10;
@@ -9699,11 +9698,6 @@ function assertValidGithubConfig(config) {
   }
 }
 async function readConfigFile(configPath, returnEmptyObjectOnError = false) {
-  tsNode.register({
-    dir: dirname(configPath),
-    esm: true,
-    transpileOnly: true
-  });
   try {
     return await import(configPath);
   } catch (e) {
@@ -9843,12 +9837,15 @@ var GitClient = class {
     return value;
   }
   static async get() {
-    if (!this._unauthenticatedInstance) {
-      GitClient._unauthenticatedInstance = new GitClient(await getConfig([assertValidGithubConfig]));
+    if (GitClient._unauthenticatedInstance === null) {
+      GitClient._unauthenticatedInstance = (async () => {
+        return new GitClient(await getConfig([assertValidGithubConfig]));
+      })();
     }
     return GitClient._unauthenticatedInstance;
   }
 };
+GitClient._unauthenticatedInstance = null;
 function gitOutputAsArray(gitCommandResult) {
   return gitCommandResult.stdout.split("\n").map((x) => x.trim()).filter((x) => !!x);
 }
@@ -9946,4 +9943,4 @@ export {
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-//# sourceMappingURL=chunk-LZGTSFGG.mjs.map
+//# sourceMappingURL=chunk-SL4O3ID6.mjs.map

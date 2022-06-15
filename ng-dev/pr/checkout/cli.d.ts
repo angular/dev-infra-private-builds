@@ -7,7 +7,7 @@
  */
 import { CommandModule } from 'yargs';
 export interface CheckoutOptions {
-    prNumber: number;
+    pr: number;
     githubToken: string;
 }
 /** yargs command module for checking out a PR  */

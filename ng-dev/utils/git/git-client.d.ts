@@ -84,8 +84,8 @@ export declare class GitClient {
     /** The singleton instance of the unauthenticated `GitClient`. */
     private static _unauthenticatedInstance;
     /**
-     * Static method to get the singleton instance of the `GitClient`, creating it
-     * if it has not yet been created.
+     * Static method to get the singleton instance of the `GitClient`,
+     * creating it, if not created yet.
      */
     static get(): Promise<GitClient>;
 }

@@ -15,7 +15,7 @@ import {
   green,
   require_dist,
   yellow
-} from "./chunk-LZGTSFGG.mjs";
+} from "./chunk-SL4O3ID6.mjs";
 import {
   FormData,
   fetch_blob_default,
@@ -2424,7 +2424,9 @@ Alternatively, a new token can be created at: ${GITHUB_TOKEN_GENERATE_URL}
       throw new Error("No instance of `AuthenticatedGitClient` has been configured.");
     }
     if (AuthenticatedGitClient._authenticatedInstance === null) {
-      AuthenticatedGitClient._authenticatedInstance = new AuthenticatedGitClient(AuthenticatedGitClient._token, await getConfig([assertValidGithubConfig]));
+      AuthenticatedGitClient._authenticatedInstance = (async (token) => {
+        return new AuthenticatedGitClient(token, await getConfig([assertValidGithubConfig]));
+      })(AuthenticatedGitClient._token);
     }
     return AuthenticatedGitClient._authenticatedInstance;
   }
@@ -3969,4 +3971,4 @@ export {
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-//# sourceMappingURL=chunk-FTN2RGBY.mjs.map
+//# sourceMappingURL=chunk-SDWD7BFR.mjs.map
