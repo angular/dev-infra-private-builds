@@ -5,7 +5,8 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { CommitFromGitLog } from '../../commit-message/parse';
+import { CommitFromGitLog } from '../../commit-message/parse.js';
+import { NgDevConfig } from '../../utils/config.js';
 /** Interface describing a built package. */
 export interface BuiltPackage {
     /** Name of the package. */
@@ -99,4 +100,4 @@ export declare type DevInfraReleaseConfig = {
     release: ReleaseConfig;
 };
 /** Asserts that the given configuration is a valid `DevInfraReleaseConfig`. */
-export declare function assertValidReleaseConfig<T>(config: T & Partial<DevInfraReleaseConfig>): asserts config is T & DevInfraReleaseConfig;
+export declare function assertValidReleaseConfig<T extends NgDevConfig>(config: T & Partial<DevInfraReleaseConfig>): asserts config is T & DevInfraReleaseConfig;

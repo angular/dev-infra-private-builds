@@ -5,9 +5,8 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import * as semver from 'semver';
-import { ReleaseTrain } from './release-trains';
-import { ReleaseRepoWithApi, VersionBranch } from './version-branches';
+import { ReleaseTrain } from './release-trains.js';
+import { ReleaseRepoWithApi } from './version-branches.js';
 /** The active release trains for a project. */
 export declare class ActiveReleaseTrains {
     private trains;
@@ -24,11 +23,6 @@ export declare class ActiveReleaseTrains {
     });
     /** Whether the active release trains indicate the repository is in a feature freeze state. */
     isFeatureFreeze(): boolean;
+    /** Fetches the active release trains for the configured project. */
+    static fetch(repo: ReleaseRepoWithApi): Promise<ActiveReleaseTrains>;
 }
-/** Fetches the active release trains for the configured project. */
-export declare function fetchActiveReleaseTrains(repo: ReleaseRepoWithApi): Promise<ActiveReleaseTrains>;
-/** Finds the currently active release trains from the specified version branches. */
-export declare function findActiveReleaseTrainsFromVersionBranches(repo: ReleaseRepoWithApi, nextVersion: semver.SemVer, branches: VersionBranch[], expectedReleaseCandidateMajor: number): Promise<{
-    latest: ReleaseTrain | null;
-    releaseCandidate: ReleaseTrain | null;
-}>;

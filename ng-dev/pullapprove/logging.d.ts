@@ -5,12 +5,12 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { PullApproveGroupResult } from './group';
+import { PullApproveGroupResult } from './group.js';
 declare type ConditionGrouping = keyof Pick<PullApproveGroupResult, 'matchedConditions' | 'unmatchedConditions' | 'unverifiableConditions'>;
 /** Create logs for each pullapprove group result. */
 export declare function logGroup(group: PullApproveGroupResult, conditionsToPrint: ConditionGrouping, printMessageFn?: {
-    (...text: unknown[]): void;
-    group(label: unknown, collapsed?: boolean | undefined): void;
+    (...values: unknown[]): void;
+    group(label: string, collapsed?: boolean | undefined): void;
     groupEnd(): void;
 }): void;
 /** Logs a header within a text drawn box. */

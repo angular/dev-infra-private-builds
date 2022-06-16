@@ -5,8 +5,8 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { ReleaseConfig } from '../../../release/config/index';
-import { ReleaseRepoWithApi } from '../../../release/versioning';
+import { ReleaseConfig } from '../../../release/config/index.js';
+import { ReleaseRepoWithApi } from '../../../release/versioning/index.js';
 /**
  * Asserts that the given branch corresponds to an active LTS version-branch that can receive
  * backport fixes. Throws an error if LTS expired or an invalid branch is selected.

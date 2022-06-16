@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { Commit } from './parse';
+import { Commit } from './parse.js';
 /** Options for commit message validation. */
 export interface ValidateCommitMessageOptions {
     disallowSquash?: boolean;
@@ -18,10 +18,10 @@ export interface ValidateCommitMessageResult {
     commit: Commit;
 }
 /** Validate a commit message against using the local repo's config. */
-export declare function validateCommitMessage(commitMsg: string | Commit, options?: ValidateCommitMessageOptions): ValidateCommitMessageResult;
+export declare function validateCommitMessage(commitMsg: string | Commit, options?: ValidateCommitMessageOptions): Promise<ValidateCommitMessageResult>;
 /** Print the error messages from the commit message validation to the console. */
 export declare function printValidationErrors(errors: string[], print?: {
-    (...text: unknown[]): void;
-    group(label: unknown, collapsed?: boolean | undefined): void;
+    (...values: unknown[]): void;
+    group(label: string, collapsed?: boolean | undefined): void;
     groupEnd(): void;
 }): void;

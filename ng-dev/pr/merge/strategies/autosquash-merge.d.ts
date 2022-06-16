@@ -5,9 +5,9 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { PullRequestFailure } from '../../common/validation/failures';
-import { PullRequest } from '../pull-request';
-import { MergeStrategy } from './strategy';
+import { PullRequestFailure } from '../../common/validation/failures.js';
+import { PullRequest } from '../pull-request.js';
+import { MergeStrategy } from './strategy.js';
 /**
  * Merge strategy that does not use the Github API for merging. Instead, it fetches
  * all target branches and the PR locally. The PR is then cherry-picked with autosquash

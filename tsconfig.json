@@ -1,13 +1,25 @@
 {
   "compilerOptions": {
-    "module": "CommonJS",
+    "module": "Node16",
     "target": "es2020",
     "lib": ["es2020", "dom"],
     "experimentalDecorators": true,
     "strict": true,
+    "outDir": "./dist/tsc-non-bazel-out",
+    "skipLibCheck": true,
     "noImplicitOverride": true,
-    "noImplicitReturns": true,
-    "moduleResolution": "node"
+    // TODO(ESM): Remove this when Bazel also uses the Node resolution.
+    "esModuleInterop": true,
+    "noImplicitReturns": true
   },
-  "exclude": ["node_modules/**", "bazel-out/**", "dist/**"]
+  "exclude": [
+    "node_modules/**",
+    "bazel-out/**",
+    "dist/**",
+    "bazel/benchmark/component_benchmark/**",
+    "bazel/benchmark/driver-utilities/**",
+    "bazel/integration/tests/**",
+    ".yarn/**",
+    ".angular/**"
+  ]
 }

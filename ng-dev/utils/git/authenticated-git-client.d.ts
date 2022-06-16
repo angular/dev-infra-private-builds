@@ -5,9 +5,9 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { GithubConfig } from '../config';
-import { GitClient } from './git-client';
-import { AuthenticatedGithubClient, GithubRepo } from './github';
+import { GithubConfig } from '../config.js';
+import { GitClient } from './git-client.js';
+import { AuthenticatedGithubClient, GithubRepo } from './github.js';
 /** Describes a function that can be used to test for given Github OAuth scopes. */
 export declare type OAuthScopeTestFunction = (scopes: string[], missing: string[]) => void;
 /**
@@ -27,9 +27,9 @@ export declare class AuthenticatedGitClient extends GitClient {
     private _cachedForkRepositories;
     /** Instance of an authenticated github client. */
     readonly github: AuthenticatedGithubClient;
-    protected constructor(githubToken: string, baseDir?: string, config?: {
+    protected constructor(githubToken: string, config: {
         github: GithubConfig;
-    });
+    }, baseDir?: string);
     /** Sanitizes a given message by omitting the provided Github token if present. */
     sanitizeConsoleOutput(value: string): string;
     /** Git URL that resolves to the configured repository. */
@@ -52,13 +52,15 @@ export declare class AuthenticatedGitClient extends GitClient {
     getAllForksOfAuthenticatedUser(): Promise<GithubRepo[]>;
     /** Fetch the OAuth scopes for the loaded Github token. */
     private _fetchAuthScopesForToken;
+    /** The previously configured access token. */
+    private static _token;
     /** The singleton instance of the `AuthenticatedGitClient`. */
     private static _authenticatedInstance;
     /**
      * Static method to get the singleton instance of the `AuthenticatedGitClient`,
      * creating it if it has not yet been created.
      */
-    static get(): AuthenticatedGitClient;
+    static get(): Promise<AuthenticatedGitClient>;
     /** Configures an authenticated git client. */
     static configure(token: string): void;
 }

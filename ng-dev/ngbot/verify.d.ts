@@ -1,1 +1,1 @@
-export declare function verify(): void;
+export declare function verify(): Promise<void>;

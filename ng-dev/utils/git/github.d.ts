@@ -5,9 +5,9 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { OctokitOptions } from '@octokit/core/dist-types/types';
-import { PaginateInterface } from '@octokit/plugin-paginate-rest';
-import { RestEndpointMethods } from '@octokit/plugin-rest-endpoint-methods/dist-types/generated/method-types';
+import type { OctokitOptions } from '@octokit/core/dist-types/types.js';
+import type { RestEndpointMethods } from '@octokit/plugin-rest-endpoint-methods/dist-types/generated/method-types.js';
+import type { PaginateInterface } from '@octokit/plugin-paginate-rest';
 import { RequestParameters } from '@octokit/types';
 import { RequestError } from '@octokit/request-error';
 import { query } from 'typed-graphqlify';

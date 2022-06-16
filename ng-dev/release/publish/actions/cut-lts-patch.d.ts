@@ -5,8 +5,8 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { ActiveReleaseTrains } from '../../versioning/active-release-trains';
-import { ReleaseAction } from '../actions';
+import { ActiveReleaseTrains } from '../../versioning/active-release-trains.js';
+import { ReleaseAction } from '../actions.js';
 /**
  * Release action that cuts a new patch release for an active release-train in the long-term
  * support phase. The patch segment is incremented. The changelog is generated for the new
@@ -14,7 +14,7 @@ import { ReleaseAction } from '../actions';
  */
 export declare class CutLongTermSupportPatchAction extends ReleaseAction {
     /** Promise resolving an object describing long-term support branches. */
-    ltsBranches: Promise<import("../../versioning/long-term-support").LtsBranches>;
+    ltsBranches: Promise<import("../../versioning/long-term-support.js").LtsBranches>;
     getDescription(): Promise<string>;
     perform(): Promise<void>;
     /** Prompts the user to select an LTS branch for which a patch should but cut. */

@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { ModuleResolver } from './analyzer';
+import { ModuleResolver } from './analyzer.js';
 /** Configuration for a circular dependencies test. */
 export interface CircularDependenciesTestConfig {
     /** Base directory used for shortening paths in the golden file. */

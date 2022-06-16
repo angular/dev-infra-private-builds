@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { CommandModule } from 'yargs';
-import { BuiltPackageWithInfo } from '../config/index';
+import { BuiltPackageWithInfo } from '../config/index.js';
 /**
  * Type describing the JSON stdin input of this command. The release tool will
  * deliver this information through `stdin` because command line arguments are

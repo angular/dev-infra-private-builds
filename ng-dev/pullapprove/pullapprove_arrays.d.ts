@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { PullApproveGroup } from './group';
+import { PullApproveGroup } from './group.js';
 /**
  * Superset of a native array. The superset provides methods which mimic the
  * list data structure used in PullApprove for files in conditions.

@@ -5,10 +5,10 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { PullRequestConfig } from '../../config';
-import { GithubConfig } from '../../../utils/config';
-import { Commit } from '../../../commit-message/parse';
-import { GithubClient } from '../../../utils/git/github';
+import { PullRequestConfig } from '../../config/index.js';
+import { GithubConfig, NgDevConfig } from '../../../utils/config.js';
+import { Commit } from '../../../commit-message/parse.js';
+import { GithubClient } from '../../../utils/git/github.js';
 /**
  * Enum capturing available target label names in the Angular organization. A target
  * label is set on a pull request to specify where its changes should land.
@@ -59,10 +59,10 @@ export declare class InvalidTargetLabelError {
 /** Gets the target label from the specified pull request labels. */
 export declare function getMatchingTargetLabelForPullRequest(config: Pick<PullRequestConfig, 'noTargetLabeling'>, labelsOnPullRequest: string[], allTargetLabels: TargetLabel[]): Promise<TargetLabel>;
 /** Get the branches the pull request should be merged into. */
-export declare function getTargetBranchesForPullRequest(api: GithubClient, config: {
+export declare function getTargetBranchesForPullRequest(api: GithubClient, config: NgDevConfig<{
     pullRequest: PullRequestConfig;
     github: GithubConfig;
-}, labelsOnPullRequest: string[], githubTargetBranch: string, commits: Commit[]): Promise<string[]>;
+}>, labelsOnPullRequest: string[], githubTargetBranch: string, commits: Commit[]): Promise<string[]>;
 /**
  * Gets the branches from the specified target label.
  *

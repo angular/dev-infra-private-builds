@@ -5,11 +5,11 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { ReleaseConfig } from '../../../release/config/index';
-import { ActiveReleaseTrains } from '../../../release/versioning';
-import { GithubConfig } from '../../../utils/config';
-import { TargetLabel } from './target-label';
-import { GithubClient } from '../../../utils/git/github';
+import { ReleaseConfig } from '../../../release/config/index.js';
+import { ActiveReleaseTrains } from '../../../release/versioning/index.js';
+import { GithubConfig, NgDevConfig } from '../../../utils/config.js';
+import { TargetLabel } from './target-label.js';
+import { GithubClient } from '../../../utils/git/github.js';
 /**
  * Gets a list of target labels which should be considered by the merge
  * tooling when a pull request is processed to be merged.
@@ -22,7 +22,7 @@ import { GithubClient } from '../../../utils/git/github';
  * @param config Configuration for the Github remote and release packages. Used to fetch
  *   NPM version data when LTS version branches are validated.
  */
-export declare function getTargetLabelsForActiveReleaseTrains({ latest, releaseCandidate, next }: ActiveReleaseTrains, api: GithubClient, config: Partial<{
-    github: GithubConfig;
-    release: ReleaseConfig;
+export declare function getTargetLabelsForActiveReleaseTrains({ latest, releaseCandidate, next }: ActiveReleaseTrains, api: GithubClient, config: NgDevConfig<{
+    github?: GithubConfig;
+    release?: ReleaseConfig;
 }>): Promise<TargetLabel[]>;

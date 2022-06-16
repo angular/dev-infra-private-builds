@@ -1,10 +1,15 @@
-import * as semver from 'semver';
-import { CommitFromGitLog } from '../../commit-message/parse';
-import { GitClient } from '../../utils/git/git-client';
+import semver from 'semver';
+import { CommitFromGitLog } from '../../commit-message/parse.js';
+import { GitClient } from '../../utils/git/git-client.js';
+import { ReleaseConfig } from '../config/index.js';
+import { NgDevConfig } from '../../utils/config.js';
 /** Workspace-relative path for the changelog file. */
 export declare const workspaceRelativeChangelogPath = "CHANGELOG.md";
 /** Release note generation. */
 export declare class ReleaseNotes {
+    config: NgDevConfig<{
+        release: ReleaseConfig;
+    }>;
     version: semver.SemVer;
     private commits;
     private git;
@@ -13,11 +18,9 @@ export declare class ReleaseNotes {
     private renderContext;
     /** The title to use for the release. */
     private title;
-    /** The configuration ng-dev. */
-    private config;
-    /** The configuration for the release notes. */
-    private get notesConfig();
-    protected constructor(version: semver.SemVer, commits: CommitFromGitLog[], git: GitClient);
+    protected constructor(config: NgDevConfig<{
+        release: ReleaseConfig;
+    }>, version: semver.SemVer, commits: CommitFromGitLog[], git: GitClient);
     /** Retrieve the release note generated for a Github Release. */
     getGithubReleaseEntry(): Promise<string>;
     /** Retrieve the release note generated for a CHANGELOG entry. */
@@ -41,4 +44,6 @@ export declare class ReleaseNotes {
     promptForReleaseTitle(): Promise<string | false>;
     /** Build the render context data object for constructing the RenderContext instance. */
     private generateRenderContext;
+    /** Gets the configuration for the release notes. */
+    private _getNotesConfig;
 }

@@ -5,10 +5,10 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { ReleaseConfig } from '../../config';
-import { ActiveReleaseTrains } from '../../versioning/active-release-trains';
-import { ReleaseAction } from '../actions';
-import { SemVer } from 'semver';
+import semver from 'semver';
+import { ReleaseConfig } from '../../config/index.js';
+import { ActiveReleaseTrains } from '../../versioning/active-release-trains.js';
+import { ReleaseAction } from '../actions.js';
 /**
  * Release action that tags the recently published major as latest within the NPM
  * registry. Major versions are published to the `next` NPM dist tag initially and
@@ -26,6 +26,6 @@ export declare class TagRecentMajorAsLatest extends ReleaseAction {
      * Updates the Github release entry for the specified version to show
      * it as stable release, compared to it being shown as a pre-release.
      */
-    updateGithubReleaseEntryToStable(version: SemVer): Promise<void>;
+    updateGithubReleaseEntryToStable(version: semver.SemVer): Promise<void>;
     static isActive({ latest }: ActiveReleaseTrains, config: ReleaseConfig): Promise<boolean>;
 }

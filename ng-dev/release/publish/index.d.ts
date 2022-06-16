@@ -5,9 +5,9 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { GithubConfig } from '../../utils/config';
-import { AuthenticatedGitClient } from '../../utils/git/authenticated-git-client';
-import { ReleaseConfig } from '../config/index';
+import { GithubConfig } from '../../utils/config.js';
+import { AuthenticatedGitClient } from '../../utils/git/authenticated-git-client.js';
+import { ReleaseConfig } from '../config/index.js';
 export declare enum CompletionState {
     SUCCESS = 0,
     FATAL_ERROR = 1,

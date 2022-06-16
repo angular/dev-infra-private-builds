@@ -5,20 +5,19 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { GithubConfig } from '../../utils/config';
-import { AuthenticatedGitClient } from '../../utils/git/authenticated-git-client';
-import { CaretakerConfig } from '../config';
+import { GithubConfig } from '../../utils/config.js';
+import { AuthenticatedGitClient } from '../../utils/git/authenticated-git-client.js';
+import { CaretakerConfig } from '../config.js';
 /** The BaseModule to extend modules for caretaker checks from. */
 export declare abstract class BaseModule<Data> {
+    protected git: AuthenticatedGitClient;
     protected config: {
         caretaker: CaretakerConfig;
         github: GithubConfig;
     };
-    /** The singleton instance of the authenticated git client. */
-    protected git: AuthenticatedGitClient;
     /** The data for the module. */
     readonly data: Promise<Data>;
-    constructor(config: {
+    constructor(git: AuthenticatedGitClient, config: {
         caretaker: CaretakerConfig;
         github: GithubConfig;
     });

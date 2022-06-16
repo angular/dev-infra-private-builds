@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { GithubConfig } from '../../utils/config';
+import { GithubConfig, NgDevConfig } from '../../utils/config.js';
 /**
  * Possible merge methods supported by the Github API.
  * https://developer.github.com/v3/pulls/#merge-a-pull-request-merge-button.
@@ -54,7 +54,7 @@ export interface PullRequestConfig {
     targetLabelExemptScopes?: string[];
 }
 /** Loads and validates the merge configuration. */
-export declare function assertValidPullRequestConfig<T>(config: T & Partial<{
+export declare function assertValidPullRequestConfig<T extends NgDevConfig>(config: T & Partial<{
     pullRequest: PullRequestConfig;
 }>): asserts config is T & {
     pullRequest: PullRequestConfig;

@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { AuthenticatedGitClient } from './git/authenticated-git-client';
+import { AuthenticatedGitClient } from './git/authenticated-git-client.js';
 /**
  * Gets the given pull request from Github using the GraphQL API endpoint.
  */

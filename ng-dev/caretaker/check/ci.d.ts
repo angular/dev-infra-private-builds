@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { BaseModule } from './base';
+import { BaseModule } from './base.js';
 /** The result of checking a branch on CI. */
 declare type CiBranchStatus = 'success' | 'failed' | 'not found';
 /** A list of results for checking CI branches. */

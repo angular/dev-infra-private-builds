@@ -9,7 +9,7 @@
 /// <reference types="node" />
 /// <reference types="node" />
 /// <reference types="node" />
-import { Formatter } from './base-formatter';
+import { Formatter } from './base-formatter.js';
 /**
  * Formatter for running prettier against Typescript and Javascript files.
  */

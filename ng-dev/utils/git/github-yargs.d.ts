@@ -10,7 +10,7 @@ export declare type ArgvWithGithubToken = Argv<{
     githubToken: string;
 }>;
 /** Sets up the `github-token` command option for the given Yargs instance. */
-export declare function addGithubTokenOption(yargs: Argv): ArgvWithGithubToken;
+export declare function addGithubTokenOption(argv: Argv): ArgvWithGithubToken;
 /**
  * Finds a non-explicitly provided Github token in the local environment.
  * The function looks for `GITHUB_TOKEN` or `TOKEN` in the environment variables.

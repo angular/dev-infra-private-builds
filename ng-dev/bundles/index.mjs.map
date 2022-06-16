@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../../../ng-dev/index.ts"],
+  "sourcesContent": ["/**\n * @license\n * Copyright Google LLC All Rights Reserved.\n *\n * Use of this source code is governed by an MIT-style license that can be\n * found in the LICENSE file at https://angular.io/license\n */\n\n// Exposes config types, helpers for the individual commands.\nexport * from './utils/config.js';\nexport * from './caretaker/config.js';\nexport * from './commit-message/config.js';\nexport * from './format/config.js';\nexport * from './pr/config/index.js';\nexport * from './release/config/index.js';\n\n// Exposes versioning utilities which are useful for building scripts with\n// respect to Angular's branching/versioning and release process.\nexport * from './release/versioning/index.js';\n\n// Exposes the release precheck command utilities. These should be available\n// as they are needed for authoring pre-release custom checks.\nexport {ReleasePrecheckError} from './release/precheck/index.js';\n\n// Exposes logging and console utils that can be used by consumers to e.g. add\n// messages to the dev-infra log which is stored on failures.\nexport * from './utils/logging.js';\n\n// Exposes Git/Github client classes needed for interacting with some of the\n// release versioning APIs.\nexport * from './utils/git/authenticated-git-client.js';\nexport * from './utils/git/git-client.js';\nexport * from './utils/git/github.js';\n"],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAA",
+  "names": []
+}

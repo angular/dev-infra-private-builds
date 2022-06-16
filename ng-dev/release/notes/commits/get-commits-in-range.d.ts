@@ -5,8 +5,8 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { GitClient } from '../../../utils/git/git-client';
-import { CommitFromGitLog } from '../../../commit-message/parse';
+import { GitClient } from '../../../utils/git/git-client.js';
+import { CommitFromGitLog } from '../../../commit-message/parse.js';
 /**
  * Gets all commits the head branch contains, but the base branch does not include.
  * This follows the same semantics as Git's double-dot revision range.

@@ -6,8 +6,8 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <reference types="node" />
-import { GitClient } from '../../utils/git/git-client';
-import { FormatConfig } from '../config';
+import { GitClient } from '../../utils/git/git-client.js';
+import { FormatConfig } from '../config.js';
 export declare type CallbackFunc = (file: string, code: number | NodeJS.Signals, stdout: string, stderr: string) => boolean;
 export declare type FormatterAction = 'check' | 'format';
 interface FormatterActionMetadata {
@@ -18,8 +18,8 @@ interface FormatterActionMetadata {
  * The base class for formatters to run against provided files.
  */
 export declare abstract class Formatter {
-    protected config: FormatConfig;
     protected git: GitClient;
+    protected config: FormatConfig;
     /**
      * The name of the formatter, this is used for identification in logging and for enabling and
      * configuring the formatter in the config.
@@ -34,7 +34,7 @@ export declare abstract class Formatter {
     };
     /** The default matchers for the formatter for filtering files to be formatted. */
     abstract defaultFileMatcher: string[];
-    constructor(config: FormatConfig);
+    constructor(git: GitClient, config: FormatConfig);
     /**
      * Retrieve the command to execute the provided action, including both the binary
      * and command line flags.

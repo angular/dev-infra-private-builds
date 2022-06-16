@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { CommandModule } from 'yargs';
-import { EnvStampMode } from './env-stamp';
+import { EnvStampMode } from './env-stamp.js';
 export interface Options {
     mode: EnvStampMode;
     includeVersion: boolean;

@@ -5,12 +5,12 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import * as semver from 'semver';
-import { AuthenticatedGitClient } from '../../utils/git/authenticated-git-client';
-import { BuiltPackageWithInfo, ReleaseConfig } from '../config/index';
-import { ReleaseNotes } from '../notes/release-notes';
-import { NpmDistTag } from '../versioning';
-import { ActiveReleaseTrains } from '../versioning/active-release-trains';
+import semver from 'semver';
+import { AuthenticatedGitClient } from '../../utils/git/authenticated-git-client.js';
+import { BuiltPackageWithInfo, ReleaseConfig } from '../config/index.js';
+import { ReleaseNotes } from '../notes/release-notes.js';
+import { NpmDistTag } from '../versioning/index.js';
+import { ActiveReleaseTrains } from '../versioning/active-release-trains.js';
 /** Interface describing a Github repository. */
 export interface GithubRepo {
     owner: string;

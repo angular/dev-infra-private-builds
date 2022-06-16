@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { CommandModule } from 'yargs';
-import { NpmPackage } from '../config/index';
+import { NpmPackage } from '../config/index.js';
 /**
  * Type describing the JSON output of this command.
  *
