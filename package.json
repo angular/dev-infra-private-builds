@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-b6213c5a2f89f353fd848a78afa0636e5dee793a",
+  "version": "0.0.0-51690e8084176d1dbb08e04e750b44929439c2be",
   "bin": {
     "ng-dev": "./ng-dev/bundles/cli.mjs"
   },
@@ -47,7 +47,7 @@
     "@yarnpkg/lockfile": "^1.1.0",
     "browser-sync": "^2.27.7",
     "clang-format": "1.8.0",
-    "prettier": "2.7.0",
+    "prettier": "2.7.1",
     "protractor": "^7.0.0",
     "selenium-webdriver": "4.2.0",
     "send": "^0.18.0",
@@ -110,7 +110,7 @@
     "conventional-commits-parser": "^3.2.1",
     "ejs": "^3.1.6",
     "escodegen": "^1.13.0",
-    "firebase": "9.8.2-canary.497d34c84",
+    "firebase": "9.8.3",
     "firebase-admin": "^10.2.0",
     "firebase-functions": "^3.21.2",
     "firebase-tools": "^11.0.1",
