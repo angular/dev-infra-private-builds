@@ -9075,6 +9075,7 @@ var DryRunError = class extends Error {
 };
 
 // bazel-out/k8-fastbuild/bin/ng-dev/utils/config.js
+import { pathToFileURL } from "url";
 import { join as join2 } from "path";
 
 // node_modules/chalk/source/vendor/ansi-styles/index.js
@@ -9699,7 +9700,7 @@ function assertValidGithubConfig(config) {
 }
 async function readConfigFile(configPath, returnEmptyObjectOnError = false) {
   try {
-    return await import(configPath);
+    return await import(pathToFileURL(configPath).toString());
   } catch (e) {
     if (returnEmptyObjectOnError) {
       Log.debug(`Could not read configuration file at ${configPath}, returning empty object instead.`);
@@ -9943,4 +9944,4 @@ export {
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-//# sourceMappingURL=chunk-SL4O3ID6.mjs.map
+//# sourceMappingURL=chunk-OSP5ZQZ2.mjs.map

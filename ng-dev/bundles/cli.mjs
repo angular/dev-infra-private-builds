@@ -25,7 +25,7 @@ import {
   isVersionBranch,
   isVersionPublishedToNpm,
   require_semver
-} from "./chunk-SDWD7BFR.mjs";
+} from "./chunk-SGHQTWKI.mjs";
 import {
   ConfigValidationError,
   GITHUB_TOKEN_GENERATE_URL,
@@ -52,7 +52,7 @@ import {
   require_safer,
   require_wrappy,
   yellow
-} from "./chunk-SL4O3ID6.mjs";
+} from "./chunk-OSP5ZQZ2.mjs";
 import "./chunk-TD4KPB7G.mjs";
 import {
   __commonJS,
@@ -66146,7 +66146,7 @@ import * as fs3 from "fs";
 import lockfile2 from "@yarnpkg/lockfile";
 async function verifyNgDevToolIsUpToDate(workspacePath) {
   var _a, _b, _c;
-  const localVersion = `0.0.0-51690e8084176d1dbb08e04e750b44929439c2be`;
+  const localVersion = `0.0.0-e0f37fcf32c3a8472e60775523c8d76c898521e8`;
   const workspacePackageJsonFile = path2.join(workspacePath, workspaceRelativePackageJsonPath);
   const workspaceDirLockFile = path2.join(workspacePath, workspaceRelativeYarnLockFilePath);
   try {
