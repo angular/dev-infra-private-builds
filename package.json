@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-642f77e231f3346605832ba85e63b04da26c6dcf",
+  "version": "0.0.0-ba882506fb3b12c96d27f11669f2fde32c620b2d",
   "bin": {
     "ng-dev": "./ng-dev/bundles/cli.mjs"
   },
@@ -140,7 +140,7 @@
     "requirejs": "^2.3.6",
     "rxjs": "^7.4.0",
     "semver": "^7.3.5",
-    "supports-color": "8.1.1",
+    "supports-color": "9.2.2",
     "ts-node": "^10.8.1",
     "tslint": "^6.1.3",
     "typed-graphqlify": "^3.1.1",

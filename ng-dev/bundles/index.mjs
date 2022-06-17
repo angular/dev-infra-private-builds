@@ -5,7 +5,11 @@ const require = __cjsCompatRequire(import.meta.url);
 import {
   ActiveReleaseTrains,
   AuthenticatedGitClient,
+  AuthenticatedGithubClient,
   COMMIT_TYPES,
+  GitClient,
+  GitCommandError,
+  GithubClient,
   ReleaseNotesLevel,
   ReleasePrecheckError,
   ReleaseTrain,
@@ -25,17 +29,14 @@ import {
   getNextBranchName,
   getVersionForVersionBranch,
   getVersionOfBranch,
+  import_request_error,
   isLtsDistTag,
   isVersionBranch,
   isVersionPublishedToNpm
-} from "./chunk-SGHQTWKI.mjs";
+} from "./chunk-XLHJTNK2.mjs";
 import {
-  AuthenticatedGithubClient,
   ConfigValidationError,
   DEFAULT_LOG_LEVEL,
-  GitClient,
-  GitCommandError,
-  GithubClient,
   Log,
   LogLevel,
   assertValidGithubConfig,
@@ -43,18 +44,16 @@ import {
   blue,
   bold,
   captureLogOutputForCommand,
-  determineRepoBaseDirFromCwd,
   getConfig,
   getUserConfig,
   green,
-  import_request_error,
   red,
   reset,
   setConfig,
   yellow
-} from "./chunk-OSP5ZQZ2.mjs";
-import "./chunk-TD4KPB7G.mjs";
-import "./chunk-YUSEAZDH.mjs";
+} from "./chunk-WFLFO5HZ.mjs";
+import "./chunk-KTTQTX6B.mjs";
+import "./chunk-3CEJO2PC.mjs";
 var export_GithubApiRequestError = import_request_error.RequestError;
 export {
   ActiveReleaseTrains,
@@ -86,7 +85,6 @@ export {
   captureLogOutputForCommand,
   computeLtsEndDateOfMajor,
   deprecationLabel,
-  determineRepoBaseDirFromCwd,
   fetchLongTermSupportBranchesFromNpm,
   fetchProjectNpmPackageInfo,
   getBranchesForMajorVersions,
