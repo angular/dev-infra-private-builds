@@ -38,7 +38,7 @@ import {
   require_safer,
   require_semver,
   require_wrappy
-} from "./chunk-XLHJTNK2.mjs";
+} from "./chunk-2IZQBLJ3.mjs";
 import {
   ConfigValidationError,
   Log,
@@ -66162,7 +66162,7 @@ import * as fs3 from "fs";
 import lockfile2 from "@yarnpkg/lockfile";
 async function verifyNgDevToolIsUpToDate(workspacePath) {
   var _a, _b, _c;
-  const localVersion = `0.0.0-91c9200c31977ecb179172cb67d288dc0ba390f3`;
+  const localVersion = `0.0.0-ecdefcd2d4811b96a16afee0877bf77755ce3a01`;
   const workspacePackageJsonFile = path2.join(workspacePath, workspaceRelativePackageJsonPath);
   const workspaceDirLockFile = path2.join(workspacePath, workspaceRelativeYarnLockFilePath);
   try {

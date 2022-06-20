@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-91c9200c31977ecb179172cb67d288dc0ba390f3",
+  "version": "0.0.0-ecdefcd2d4811b96a16afee0877bf77755ce3a01",
   "bin": {
     "ng-dev": "./ng-dev/bundles/cli.mjs"
   },
@@ -123,7 +123,7 @@
     "inquirer": "^8.0.0",
     "jasmine": "~4.2.0",
     "jasmine-core": "~4.2.0",
-    "jsdom": "^19.0.0",
+    "jsdom": "^20.0.0",
     "karma": "^6.3.15",
     "karma-chrome-launcher": "^3.1.0",
     "karma-coverage": "~2.2.0",
