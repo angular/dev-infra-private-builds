@@ -66002,21 +66002,23 @@ var CutStableAction = class extends ReleaseAction {
   constructor() {
     super(...arguments);
     this._newVersion = this._computeNewVersion();
+    this._isNewMajor = this.active.releaseCandidate.isMajor;
   }
   async getDescription() {
-    const newVersion = this._newVersion;
-    return `Cut a stable release for the release-candidate branch (v${newVersion}).`;
+    if (this._isNewMajor) {
+      return `Cut a stable release for the release-candidate branch \u2014 published as \`@next\` (v${this._newVersion}).`;
+    } else {
+      return `Cut a stable release for the release-candidate branch \u2014 published as \`@latest\` (v${this._newVersion}).`;
+    }
   }
   async perform() {
-    var _a;
     const { branchName } = this.active.releaseCandidate;
     const newVersion = this._newVersion;
-    const isNewMajor = (_a = this.active.releaseCandidate) == null ? void 0 : _a.isMajor;
     const compareVersionForReleaseNotes = this.active.latest.version;
     const { pullRequest, releaseNotes, builtPackagesWithInfo, beforeStagingSha } = await this.checkoutBranchAndStageVersion(newVersion, compareVersionForReleaseNotes, branchName);
     await this.waitForPullRequestToBeMerged(pullRequest);
-    await this.publish(builtPackagesWithInfo, releaseNotes, beforeStagingSha, branchName, isNewMajor ? "next" : "latest");
-    if (isNewMajor) {
+    await this.publish(builtPackagesWithInfo, releaseNotes, beforeStagingSha, branchName, this._isNewMajor ? "next" : "latest");
+    if (this._isNewMajor) {
       const previousPatch = this.active.latest;
       const ltsTagForPatch = getLtsNpmDistTagOfMajor(previousPatch.version.major);
       await this.checkoutUpstreamBranch(previousPatch.branchName);
@@ -66162,7 +66164,7 @@ import * as fs3 from "fs";
 import lockfile2 from "@yarnpkg/lockfile";
 async function verifyNgDevToolIsUpToDate(workspacePath) {
   var _a, _b, _c;
-  const localVersion = `0.0.0-04a54cdfa050a7b6ed1dab8f0054f85022827ed5`;
+  const localVersion = `0.0.0-5a1ba848f83ac29315ea68803c3ee31127cae65f`;
   const workspacePackageJsonFile = path2.join(workspacePath, workspaceRelativePackageJsonPath);
   const workspaceDirLockFile = path2.join(workspacePath, workspaceRelativeYarnLockFilePath);
   try {
