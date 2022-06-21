@@ -10,6 +10,7 @@ import { ActiveReleaseTrains } from '../../../release/versioning/index.js';
 import { GithubConfig, NgDevConfig } from '../../../utils/config.js';
 import { TargetLabel } from './target-label.js';
 import { GithubClient } from '../../../utils/git/github.js';
+import { PullRequestConfig } from '../../config/index.js';
 /**
  * Gets a list of target labels which should be considered by the merge
  * tooling when a pull request is processed to be merged.
@@ -23,6 +24,7 @@ import { GithubClient } from '../../../utils/git/github.js';
  *   NPM version data when LTS version branches are validated.
  */
 export declare function getTargetLabelsForActiveReleaseTrains({ latest, releaseCandidate, next }: ActiveReleaseTrains, api: GithubClient, config: NgDevConfig<{
-    github?: GithubConfig;
+    github: GithubConfig;
+    pullRequest: PullRequestConfig;
     release?: ReleaseConfig;
 }>): Promise<TargetLabel[]>;

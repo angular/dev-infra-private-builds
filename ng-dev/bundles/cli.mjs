@@ -38,7 +38,7 @@ import {
   require_safer,
   require_semver,
   require_wrappy
-} from "./chunk-2IZQBLJ3.mjs";
+} from "./chunk-SELDHKSO.mjs";
 import {
   ConfigValidationError,
   Log,
@@ -62930,6 +62930,7 @@ async function assertActiveLtsBranch(repo, releaseConfig, branchName) {
 // bazel-out/k8-fastbuild/bin/ng-dev/pr/common/targeting/labels.js
 async function getTargetLabelsForActiveReleaseTrains({ latest, releaseCandidate, next }, api, config) {
   assertValidGithubConfig(config);
+  assertValidPullRequestConfig(config);
   const nextBranchName = getNextBranchName(config.github);
   const repo = {
     owner: config.github.owner,
@@ -62949,7 +62950,12 @@ async function getTargetLabelsForActiveReleaseTrains({ latest, releaseCandidate,
     },
     {
       name: TargetLabelName.MINOR,
-      branches: () => [nextBranchName]
+      branches: () => {
+        if (config.pullRequest.__specialTreatRcAsExceptionalMinor && releaseCandidate !== null) {
+          return [releaseCandidate.branchName];
+        }
+        return [nextBranchName];
+      }
     },
     {
       name: TargetLabelName.PATCH,
@@ -66164,7 +66170,7 @@ import * as fs3 from "fs";
 import lockfile2 from "@yarnpkg/lockfile";
 async function verifyNgDevToolIsUpToDate(workspacePath) {
   var _a, _b, _c;
-  const localVersion = `0.0.0-5a1ba848f83ac29315ea68803c3ee31127cae65f`;
+  const localVersion = `0.0.0-3276c531167dacaff492e06fe5354df552a65197`;
   const workspacePackageJsonFile = path2.join(workspacePath, workspaceRelativePackageJsonPath);
   const workspaceDirLockFile = path2.join(workspacePath, workspaceRelativeYarnLockFilePath);
   try {
