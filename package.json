@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-3e07a8f0335813ddeee471c7c1db12325c07325e",
+  "version": "0.0.0-06d2e615d9f6a541005695b62e6e312a355bbd39",
   "bin": {
     "ng-dev": "./ng-dev/bundles/cli.mjs"
   },
@@ -26,7 +26,7 @@
   },
   "packageManager": "yarn@3.2.1",
   "dependencies": {
-    "@angular-devkit/build-angular": "14.1.0-next.1",
+    "@angular-devkit/build-angular": "14.1.0-next.2",
     "@angular/benchpress": "0.3.0",
     "@babel/core": "^7.16.0",
     "@bazel/buildifier": "5.1.0",
@@ -61,20 +61,20 @@
   "devDependencies": {
     "@actions/core": "^1.4.0",
     "@actions/github": "^5.0.0",
-    "@angular/animations": "14.1.0-next.0",
-    "@angular/bazel": "14.1.0-next.0",
-    "@angular/cdk": "14.1.0-next.0",
-    "@angular/cli": "14.1.0-next.1",
-    "@angular/common": "14.1.0-next.0",
-    "@angular/compiler": "14.1.0-next.0",
-    "@angular/compiler-cli": "14.1.0-next.0",
-    "@angular/core": "14.1.0-next.0",
+    "@angular/animations": "14.1.0-next.2",
+    "@angular/bazel": "patch:@angular/bazel@npm:14.1.0-next.2#.yarn/patches/@angular-bazel-npm.patch",
+    "@angular/cdk": "14.1.0-next.2",
+    "@angular/cli": "14.1.0-next.2",
+    "@angular/common": "14.1.0-next.2",
+    "@angular/compiler": "14.1.0-next.2",
+    "@angular/compiler-cli": "14.1.0-next.2",
+    "@angular/core": "14.1.0-next.2",
     "@angular/fire": "^7.1.0-rc",
-    "@angular/forms": "14.1.0-next.0",
-    "@angular/material": "14.1.0-next.0",
-    "@angular/platform-browser": "14.1.0-next.0",
-    "@angular/platform-browser-dynamic": "14.1.0-next.0",
-    "@angular/router": "14.1.0-next.0",
+    "@angular/forms": "14.1.0-next.2",
+    "@angular/material": "14.1.0-next.2",
+    "@angular/platform-browser": "14.1.0-next.2",
+    "@angular/platform-browser-dynamic": "14.1.0-next.2",
+    "@angular/router": "14.1.0-next.2",
     "@bazel/bazelisk": "^1.11.0",
     "@bazel/jasmine": "5.5.0",
     "@google-cloud/firestore": "^5.0.2",
@@ -150,7 +150,6 @@
     "zone.js": "^0.11.4"
   },
   "resolutions": {
-    "@angular/benchpress/@angular/core": "14.1.0-next.0",
-    "@angular/bazel@14.1.0-next.0": "patch:@angular/bazel@npm:14.1.0-next.0#.yarn/patches/@angular-bazel-npm-14.1.0-next.0-9dd2cc71f8.patch"
+    "@angular/benchpress/@angular/core": "14.1.0-next.2"
   }
 }
