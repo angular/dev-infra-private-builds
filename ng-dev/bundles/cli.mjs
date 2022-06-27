@@ -64339,7 +64339,7 @@ function getOrCreateGlob(pattern) {
   if (patternCache.has(pattern)) {
     return patternCache.get(pattern);
   }
-  const glob2 = new import_minimatch.Minimatch(pattern, { dot: true });
+  const glob2 = new import_minimatch.Minimatch(pattern, { dot: false, nobrace: false });
   patternCache.set(pattern, glob2);
   return glob2;
 }
@@ -66170,7 +66170,7 @@ import * as fs3 from "fs";
 import lockfile2 from "@yarnpkg/lockfile";
 async function verifyNgDevToolIsUpToDate(workspacePath) {
   var _a, _b, _c;
-  const localVersion = `0.0.0-5f98f0cd7dad6fa133d6a7e97a37ea7de4ffa11f`;
+  const localVersion = `0.0.0-fcb33b0c754217727aa031298bb02069e464963f`;
   const workspacePackageJsonFile = path2.join(workspacePath, workspaceRelativePackageJsonPath);
   const workspaceDirLockFile = path2.join(workspacePath, workspaceRelativeYarnLockFilePath);
   try {
