@@ -62952,7 +62952,7 @@ async function getTargetLabelsForActiveReleaseTrains({ latest, releaseCandidate,
       name: TargetLabelName.MINOR,
       branches: () => {
         if (config.pullRequest.__specialTreatRcAsExceptionalMinor && releaseCandidate !== null) {
-          return [releaseCandidate.branchName];
+          return [nextBranchName, releaseCandidate.branchName];
         }
         return [nextBranchName];
       }
@@ -66170,7 +66170,7 @@ import * as fs3 from "fs";
 import lockfile2 from "@yarnpkg/lockfile";
 async function verifyNgDevToolIsUpToDate(workspacePath) {
   var _a, _b, _c;
-  const localVersion = `0.0.0-fb2a4f5157609e3709ac450bba1de3a6c7d8477f`;
+  const localVersion = `0.0.0-c713d4a7449b499c0ac31a9941095a7319b15441`;
   const workspacePackageJsonFile = path2.join(workspacePath, workspaceRelativePackageJsonPath);
   const workspaceDirLockFile = path2.join(workspacePath, workspaceRelativeYarnLockFilePath);
   try {
