@@ -3,9 +3,137 @@ import {createRequire as __cjsCompatRequire} from 'module';
 const require = __cjsCompatRequire(import.meta.url);
 
 import {
+  __esm,
+  __export,
   __spreadProps,
   __spreadValues
 } from "./chunk-3CEJO2PC.mjs";
+
+// node_modules/supports-color/index.js
+var supports_color_exports = {};
+__export(supports_color_exports, {
+  createSupportsColor: () => createSupportsColor2,
+  default: () => supports_color_default2
+});
+import process3 from "process";
+import os2 from "os";
+import tty2 from "tty";
+function hasFlag2(flag, argv = process3.argv) {
+  const prefix = flag.startsWith("-") ? "" : flag.length === 1 ? "-" : "--";
+  const position = argv.indexOf(prefix + flag);
+  const terminatorPosition = argv.indexOf("--");
+  return position !== -1 && (terminatorPosition === -1 || position < terminatorPosition);
+}
+function envForceColor2() {
+  if ("FORCE_COLOR" in env2) {
+    if (env2.FORCE_COLOR === "true") {
+      return 1;
+    }
+    if (env2.FORCE_COLOR === "false") {
+      return 0;
+    }
+    return env2.FORCE_COLOR.length === 0 ? 1 : Math.min(Number.parseInt(env2.FORCE_COLOR, 10), 3);
+  }
+}
+function translateLevel2(level) {
+  if (level === 0) {
+    return false;
+  }
+  return {
+    level,
+    hasBasic: true,
+    has256: level >= 2,
+    has16m: level >= 3
+  };
+}
+function _supportsColor2(haveStream, { streamIsTTY, sniffFlags = true } = {}) {
+  const noFlagForceColor = envForceColor2();
+  if (noFlagForceColor !== void 0) {
+    flagForceColor2 = noFlagForceColor;
+  }
+  const forceColor = sniffFlags ? flagForceColor2 : noFlagForceColor;
+  if (forceColor === 0) {
+    return 0;
+  }
+  if (sniffFlags) {
+    if (hasFlag2("color=16m") || hasFlag2("color=full") || hasFlag2("color=truecolor")) {
+      return 3;
+    }
+    if (hasFlag2("color=256")) {
+      return 2;
+    }
+  }
+  if (haveStream && !streamIsTTY && forceColor === void 0) {
+    return 0;
+  }
+  const min = forceColor || 0;
+  if (env2.TERM === "dumb") {
+    return min;
+  }
+  if (process3.platform === "win32") {
+    const osRelease = os2.release().split(".");
+    if (Number(osRelease[0]) >= 10 && Number(osRelease[2]) >= 10586) {
+      return Number(osRelease[2]) >= 14931 ? 3 : 2;
+    }
+    return 1;
+  }
+  if ("CI" in env2) {
+    if (["TRAVIS", "CIRCLECI", "APPVEYOR", "GITLAB_CI", "GITHUB_ACTIONS", "BUILDKITE", "DRONE"].some((sign) => sign in env2) || env2.CI_NAME === "codeship") {
+      return 1;
+    }
+    return min;
+  }
+  if ("TEAMCITY_VERSION" in env2) {
+    return /^(9\.(0*[1-9]\d*)\.|\d{2,}\.)/.test(env2.TEAMCITY_VERSION) ? 1 : 0;
+  }
+  if ("TF_BUILD" in env2 && "AGENT_NAME" in env2) {
+    return 1;
+  }
+  if (env2.COLORTERM === "truecolor") {
+    return 3;
+  }
+  if ("TERM_PROGRAM" in env2) {
+    const version = Number.parseInt((env2.TERM_PROGRAM_VERSION || "").split(".")[0], 10);
+    switch (env2.TERM_PROGRAM) {
+      case "iTerm.app":
+        return version >= 3 ? 3 : 2;
+      case "Apple_Terminal":
+        return 2;
+    }
+  }
+  if (/-256(color)?$/i.test(env2.TERM)) {
+    return 2;
+  }
+  if (/^screen|^xterm|^vt100|^vt220|^rxvt|color|ansi|cygwin|linux/i.test(env2.TERM)) {
+    return 1;
+  }
+  if ("COLORTERM" in env2) {
+    return 1;
+  }
+  return min;
+}
+function createSupportsColor2(stream, options = {}) {
+  const level = _supportsColor2(stream, __spreadValues({
+    streamIsTTY: stream && stream.isTTY
+  }, options));
+  return translateLevel2(level);
+}
+var env2, flagForceColor2, supportsColor2, supports_color_default2;
+var init_supports_color = __esm({
+  "node_modules/supports-color/index.js"() {
+    ({ env: env2 } = process3);
+    if (hasFlag2("no-color") || hasFlag2("no-colors") || hasFlag2("color=false") || hasFlag2("color=never")) {
+      flagForceColor2 = 0;
+    } else if (hasFlag2("color") || hasFlag2("colors") || hasFlag2("color=true") || hasFlag2("color=always")) {
+      flagForceColor2 = 1;
+    }
+    supportsColor2 = {
+      stdout: createSupportsColor2({ isTTY: tty2.isatty(1) }),
+      stderr: createSupportsColor2({ isTTY: tty2.isatty(2) })
+    };
+    supports_color_default2 = supportsColor2;
+  }
+});
 
 // node_modules/chalk/source/vendor/ansi-styles/index.js
 var ANSI_BACKGROUND_OFFSET = 10;
@@ -477,14 +605,84 @@ var source_default = chalk;
 import { writeFileSync } from "fs";
 import { join } from "path";
 
+// bazel-out/k8-fastbuild/bin/ng-dev/utils/child-process.js
+init_supports_color();
+import { spawn as _spawn, spawnSync as _spawnSync } from "child_process";
+var ChildProcess = class {
+  static spawnInteractive(command, args, options = {}) {
+    return new Promise((resolve, reject) => {
+      const commandText = `${command} ${args.join(" ")}`;
+      Log.debug(`Executing command: ${commandText}`);
+      const childProcess = _spawn(command, args, __spreadProps(__spreadValues({}, options), { shell: true, stdio: "inherit" }));
+      childProcess.on("close", (status) => status === 0 ? resolve() : reject(status));
+    });
+  }
+  static spawn(command, args, options = {}) {
+    return new Promise((resolve, reject) => {
+      const commandText = `${command} ${args.join(" ")}`;
+      const outputMode = options.mode;
+      const env3 = getEnvironmentForNonInteractiveSpawn(options.env);
+      Log.debug(`Executing command: ${commandText}`);
+      const childProcess = _spawn(command, args, __spreadProps(__spreadValues({}, options), { env: env3, shell: true, stdio: "pipe" }));
+      let logOutput = "";
+      let stdout = "";
+      let stderr = "";
+      if (options.input !== void 0) {
+        childProcess.stdin.write(options.input);
+        childProcess.stdin.end();
+      }
+      childProcess.stderr.on("data", (message) => {
+        stderr += message;
+        logOutput += message;
+        if (outputMode === void 0 || outputMode === "enabled") {
+          process.stderr.write(message);
+        }
+      });
+      childProcess.stdout.on("data", (message) => {
+        stdout += message;
+        logOutput += message;
+        if (outputMode === void 0 || outputMode === "enabled") {
+          process.stderr.write(message);
+        }
+      });
+      childProcess.on("close", (exitCode, signal) => {
+        const exitDescription = exitCode !== null ? `exit code "${exitCode}"` : `signal "${signal}"`;
+        const printFn = outputMode === "on-error" ? Log.error : Log.debug;
+        const status = statusFromExitCodeAndSignal(exitCode, signal);
+        printFn(`Command "${commandText}" completed with ${exitDescription}.`);
+        printFn(`Process output: 
+${logOutput}`);
+        if (status === 0 || options.suppressErrorOnFailingExitCode) {
+          resolve({ stdout, stderr, status });
+        } else {
+          reject(outputMode === "silent" ? logOutput : void 0);
+        }
+      });
+    });
+  }
+  static spawnSync(command, args, options = {}) {
+    const commandText = `${command} ${args.join(" ")}`;
+    const env3 = getEnvironmentForNonInteractiveSpawn(options.env);
+    Log.debug(`Executing command: ${commandText}`);
+    const { status: exitCode, signal, stdout, stderr } = _spawnSync(command, args, __spreadProps(__spreadValues({}, options), { env: env3, encoding: "utf8", shell: true, stdio: "pipe" }));
+    const status = statusFromExitCodeAndSignal(exitCode, signal);
+    if (status === 0 || options.suppressErrorOnFailingExitCode) {
+      return { status, stdout, stderr };
+    }
+    throw new Error(stderr);
+  }
+};
+function statusFromExitCodeAndSignal(exitCode, signal) {
+  return exitCode ?? signal ?? -1;
+}
+function getEnvironmentForNonInteractiveSpawn(userProvidedEnv) {
+  const forceColorValue = supports_color_default2.stdout !== false ? supports_color_default2.stdout.level.toString() : void 0;
+  return __spreadValues({ FORCE_COLOR: forceColorValue }, userProvidedEnv ?? process.env);
+}
+
 // bazel-out/k8-fastbuild/bin/ng-dev/utils/repo-directory.js
-import { spawnSync } from "child_process";
 function determineRepoBaseDirFromCwd() {
-  const { stdout, stderr, status } = spawnSync("git", ["rev-parse --show-toplevel"], {
-    shell: true,
-    stdio: "pipe",
-    encoding: "utf8"
-  });
+  const { stdout, stderr, status } = ChildProcess.spawnSync("git", ["rev-parse --show-toplevel"]);
   if (status !== 0) {
     throw Error(`Unable to find the path to the base directory of the repository.
 Was the command run from inside of the repo?
@@ -697,6 +895,9 @@ function assertValidReleaseConfig(config) {
 }
 
 export {
+  supports_color_exports,
+  init_supports_color,
+  ChildProcess,
   determineRepoBaseDirFromCwd,
   LogLevel,
   DEFAULT_LOG_LEVEL,
@@ -722,4 +923,4 @@ export {
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-//# sourceMappingURL=chunk-WFLFO5HZ.mjs.map
+//# sourceMappingURL=chunk-5JIGVKPD.mjs.map

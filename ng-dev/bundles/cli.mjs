@@ -38,8 +38,9 @@ import {
   require_safer,
   require_semver,
   require_wrappy
-} from "./chunk-YEV2C36O.mjs";
+} from "./chunk-ZXKPKNF4.mjs";
 import {
+  ChildProcess,
   ConfigValidationError,
   Log,
   assertValidGithubConfig,
@@ -50,14 +51,14 @@ import {
   getConfig,
   getUserConfig,
   green,
+  init_supports_color,
   red,
+  supports_color_exports,
   yellow
-} from "./chunk-WFLFO5HZ.mjs";
+} from "./chunk-5JIGVKPD.mjs";
 import "./chunk-KTTQTX6B.mjs";
 import {
   __commonJS,
-  __esm,
-  __export,
   __require,
   __spreadProps,
   __spreadValues,
@@ -939,12 +940,12 @@ var require_multimatch = __commonJS({
       let result = [];
       for (const item of list) {
         for (let pattern of patterns) {
-          let process3 = arrayUnion;
+          let process2 = arrayUnion;
           if (pattern[0] === "!") {
             pattern = pattern.slice(1);
-            process3 = arrayDiffer;
+            process2 = arrayDiffer;
           }
-          result = process3(result, minimatch.match([item], pattern, options));
+          result = process2(result, minimatch.match([item], pattern, options));
         }
       }
       return result;
@@ -8903,26 +8904,26 @@ var require_has_flag = __commonJS({
 var require_supports_color = __commonJS({
   "node_modules/inquirer/node_modules/supports-color/index.js"(exports2, module2) {
     "use strict";
-    var os2 = __require("os");
-    var tty2 = __require("tty");
-    var hasFlag2 = require_has_flag();
-    var { env: env3 } = process;
+    var os = __require("os");
+    var tty = __require("tty");
+    var hasFlag = require_has_flag();
+    var { env: env2 } = process;
     var forceColor;
-    if (hasFlag2("no-color") || hasFlag2("no-colors") || hasFlag2("color=false") || hasFlag2("color=never")) {
+    if (hasFlag("no-color") || hasFlag("no-colors") || hasFlag("color=false") || hasFlag("color=never")) {
       forceColor = 0;
-    } else if (hasFlag2("color") || hasFlag2("colors") || hasFlag2("color=true") || hasFlag2("color=always")) {
+    } else if (hasFlag("color") || hasFlag("colors") || hasFlag("color=true") || hasFlag("color=always")) {
       forceColor = 1;
     }
-    if ("FORCE_COLOR" in env3) {
-      if (env3.FORCE_COLOR === "true") {
+    if ("FORCE_COLOR" in env2) {
+      if (env2.FORCE_COLOR === "true") {
         forceColor = 1;
-      } else if (env3.FORCE_COLOR === "false") {
+      } else if (env2.FORCE_COLOR === "false") {
         forceColor = 0;
       } else {
-        forceColor = env3.FORCE_COLOR.length === 0 ? 1 : Math.min(parseInt(env3.FORCE_COLOR, 10), 3);
+        forceColor = env2.FORCE_COLOR.length === 0 ? 1 : Math.min(parseInt(env2.FORCE_COLOR, 10), 3);
       }
     }
-    function translateLevel2(level) {
+    function translateLevel(level) {
       if (level === 0) {
         return false;
       }
@@ -8933,70 +8934,70 @@ var require_supports_color = __commonJS({
         has16m: level >= 3
       };
     }
-    function supportsColor2(haveStream, streamIsTTY) {
+    function supportsColor(haveStream, streamIsTTY) {
       if (forceColor === 0) {
         return 0;
       }
-      if (hasFlag2("color=16m") || hasFlag2("color=full") || hasFlag2("color=truecolor")) {
+      if (hasFlag("color=16m") || hasFlag("color=full") || hasFlag("color=truecolor")) {
         return 3;
       }
-      if (hasFlag2("color=256")) {
+      if (hasFlag("color=256")) {
         return 2;
       }
       if (haveStream && !streamIsTTY && forceColor === void 0) {
         return 0;
       }
       const min = forceColor || 0;
-      if (env3.TERM === "dumb") {
+      if (env2.TERM === "dumb") {
         return min;
       }
       if (process.platform === "win32") {
-        const osRelease = os2.release().split(".");
+        const osRelease = os.release().split(".");
         if (Number(osRelease[0]) >= 10 && Number(osRelease[2]) >= 10586) {
           return Number(osRelease[2]) >= 14931 ? 3 : 2;
         }
         return 1;
       }
-      if ("CI" in env3) {
-        if (["TRAVIS", "CIRCLECI", "APPVEYOR", "GITLAB_CI", "GITHUB_ACTIONS", "BUILDKITE"].some((sign) => sign in env3) || env3.CI_NAME === "codeship") {
+      if ("CI" in env2) {
+        if (["TRAVIS", "CIRCLECI", "APPVEYOR", "GITLAB_CI", "GITHUB_ACTIONS", "BUILDKITE"].some((sign) => sign in env2) || env2.CI_NAME === "codeship") {
           return 1;
         }
         return min;
       }
-      if ("TEAMCITY_VERSION" in env3) {
-        return /^(9\.(0*[1-9]\d*)\.|\d{2,}\.)/.test(env3.TEAMCITY_VERSION) ? 1 : 0;
+      if ("TEAMCITY_VERSION" in env2) {
+        return /^(9\.(0*[1-9]\d*)\.|\d{2,}\.)/.test(env2.TEAMCITY_VERSION) ? 1 : 0;
       }
-      if (env3.COLORTERM === "truecolor") {
+      if (env2.COLORTERM === "truecolor") {
         return 3;
       }
-      if ("TERM_PROGRAM" in env3) {
-        const version = parseInt((env3.TERM_PROGRAM_VERSION || "").split(".")[0], 10);
-        switch (env3.TERM_PROGRAM) {
+      if ("TERM_PROGRAM" in env2) {
+        const version = parseInt((env2.TERM_PROGRAM_VERSION || "").split(".")[0], 10);
+        switch (env2.TERM_PROGRAM) {
           case "iTerm.app":
             return version >= 3 ? 3 : 2;
           case "Apple_Terminal":
             return 2;
         }
       }
-      if (/-256(color)?$/i.test(env3.TERM)) {
+      if (/-256(color)?$/i.test(env2.TERM)) {
         return 2;
       }
-      if (/^screen|^xterm|^vt100|^vt220|^rxvt|color|ansi|cygwin|linux/i.test(env3.TERM)) {
+      if (/^screen|^xterm|^vt100|^vt220|^rxvt|color|ansi|cygwin|linux/i.test(env2.TERM)) {
         return 1;
       }
-      if ("COLORTERM" in env3) {
+      if ("COLORTERM" in env2) {
         return 1;
       }
       return min;
     }
     function getSupportLevel(stream) {
-      const level = supportsColor2(stream, stream && stream.isTTY);
-      return translateLevel2(level);
+      const level = supportsColor(stream, stream && stream.isTTY);
+      return translateLevel(level);
     }
     module2.exports = {
       supportsColor: getSupportLevel,
-      stdout: translateLevel2(supportsColor2(true, tty2.isatty(1))),
-      stderr: translateLevel2(supportsColor2(true, tty2.isatty(2)))
+      stdout: translateLevel(supportsColor(true, tty.isatty(1))),
+      stderr: translateLevel(supportsColor(true, tty.isatty(2)))
     };
   }
 });
@@ -14097,7 +14098,7 @@ var require_innerFrom = __commonJS({
     exports2.fromIterable = fromIterable;
     function fromAsyncIterable(asyncIterable) {
       return new Observable_1.Observable(function(subscriber) {
-        process3(asyncIterable, subscriber).catch(function(err) {
+        process2(asyncIterable, subscriber).catch(function(err) {
           return subscriber.error(err);
         });
       });
@@ -14107,7 +14108,7 @@ var require_innerFrom = __commonJS({
       return fromAsyncIterable(isReadableStreamLike_1.readableStreamLikeToAsyncGenerator(readableStream));
     }
     exports2.fromReadableStreamLike = fromReadableStreamLike;
-    function process3(asyncIterable, subscriber) {
+    function process2(asyncIterable, subscriber) {
       var asyncIterable_1, asyncIterable_1_1;
       var e_2, _a;
       return __awaiter(this, void 0, void 0, function() {
@@ -21335,11 +21336,11 @@ var require_signals = __commonJS({
 // node_modules/signal-exit/index.js
 var require_signal_exit = __commonJS({
   "node_modules/signal-exit/index.js"(exports2, module2) {
-    var process3 = global.process;
-    var processOk = function(process4) {
-      return process4 && typeof process4 === "object" && typeof process4.removeListener === "function" && typeof process4.emit === "function" && typeof process4.reallyExit === "function" && typeof process4.listeners === "function" && typeof process4.kill === "function" && typeof process4.pid === "number" && typeof process4.on === "function";
+    var process2 = global.process;
+    var processOk = function(process3) {
+      return process3 && typeof process3 === "object" && typeof process3.removeListener === "function" && typeof process3.emit === "function" && typeof process3.reallyExit === "function" && typeof process3.listeners === "function" && typeof process3.kill === "function" && typeof process3.pid === "number" && typeof process3.on === "function";
     };
-    if (!processOk(process3)) {
+    if (!processOk(process2)) {
       module2.exports = function() {
         return function() {
         };
@@ -21347,15 +21348,15 @@ var require_signal_exit = __commonJS({
     } else {
       assert = __require("assert");
       signals = require_signals();
-      isWin = /^win/i.test(process3.platform);
+      isWin = /^win/i.test(process2.platform);
       EE = __require("events");
       if (typeof EE !== "function") {
         EE = EE.EventEmitter;
       }
-      if (process3.__signal_exit_emitter__) {
-        emitter = process3.__signal_exit_emitter__;
+      if (process2.__signal_exit_emitter__) {
+        emitter = process2.__signal_exit_emitter__;
       } else {
-        emitter = process3.__signal_exit_emitter__ = new EE();
+        emitter = process2.__signal_exit_emitter__ = new EE();
         emitter.count = 0;
         emitter.emitted = {};
       }
@@ -21392,12 +21393,12 @@ var require_signal_exit = __commonJS({
         loaded = false;
         signals.forEach(function(sig) {
           try {
-            process3.removeListener(sig, sigListeners[sig]);
+            process2.removeListener(sig, sigListeners[sig]);
           } catch (er) {
           }
         });
-        process3.emit = originalProcessEmit;
-        process3.reallyExit = originalProcessReallyExit;
+        process2.emit = originalProcessEmit;
+        process2.reallyExit = originalProcessReallyExit;
         emitter.count -= 1;
       };
       module2.exports.unload = unload;
@@ -21414,7 +21415,7 @@ var require_signal_exit = __commonJS({
           if (!processOk(global.process)) {
             return;
           }
-          var listeners = process3.listeners(sig);
+          var listeners = process2.listeners(sig);
           if (listeners.length === emitter.count) {
             unload();
             emit("exit", null, sig);
@@ -21422,7 +21423,7 @@ var require_signal_exit = __commonJS({
             if (isWin && sig === "SIGHUP") {
               sig = "SIGINT";
             }
-            process3.kill(process3.pid, sig);
+            process2.kill(process2.pid, sig);
           }
         };
       });
@@ -21438,35 +21439,35 @@ var require_signal_exit = __commonJS({
         emitter.count += 1;
         signals = signals.filter(function(sig) {
           try {
-            process3.on(sig, sigListeners[sig]);
+            process2.on(sig, sigListeners[sig]);
             return true;
           } catch (er) {
             return false;
           }
         });
-        process3.emit = processEmit;
-        process3.reallyExit = processReallyExit;
+        process2.emit = processEmit;
+        process2.reallyExit = processReallyExit;
       };
       module2.exports.load = load;
-      originalProcessReallyExit = process3.reallyExit;
+      originalProcessReallyExit = process2.reallyExit;
       processReallyExit = function processReallyExit2(code) {
         if (!processOk(global.process)) {
           return;
         }
-        process3.exitCode = code || 0;
-        emit("exit", process3.exitCode, null);
-        emit("afterexit", process3.exitCode, null);
-        originalProcessReallyExit.call(process3, process3.exitCode);
+        process2.exitCode = code || 0;
+        emit("exit", process2.exitCode, null);
+        emit("afterexit", process2.exitCode, null);
+        originalProcessReallyExit.call(process2, process2.exitCode);
       };
-      originalProcessEmit = process3.emit;
+      originalProcessEmit = process2.emit;
       processEmit = function processEmit2(ev, arg) {
         if (ev === "exit" && processOk(global.process)) {
           if (arg !== void 0) {
-            process3.exitCode = arg;
+            process2.exitCode = arg;
           }
           var ret = originalProcessEmit.apply(this, arguments);
-          emit("exit", process3.exitCode, null);
-          emit("afterexit", process3.exitCode, null);
+          emit("exit", process2.exitCode, null);
+          emit("afterexit", process2.exitCode, null);
           return ret;
         } else {
           return originalProcessEmit.apply(this, arguments);
@@ -23971,26 +23972,26 @@ var require_wrap_ansi = __commonJS({
 var require_supports_color2 = __commonJS({
   "node_modules/ora/node_modules/supports-color/index.js"(exports2, module2) {
     "use strict";
-    var os2 = __require("os");
-    var tty2 = __require("tty");
-    var hasFlag2 = require_has_flag();
-    var { env: env3 } = process;
+    var os = __require("os");
+    var tty = __require("tty");
+    var hasFlag = require_has_flag();
+    var { env: env2 } = process;
     var forceColor;
-    if (hasFlag2("no-color") || hasFlag2("no-colors") || hasFlag2("color=false") || hasFlag2("color=never")) {
+    if (hasFlag("no-color") || hasFlag("no-colors") || hasFlag("color=false") || hasFlag("color=never")) {
       forceColor = 0;
-    } else if (hasFlag2("color") || hasFlag2("colors") || hasFlag2("color=true") || hasFlag2("color=always")) {
+    } else if (hasFlag("color") || hasFlag("colors") || hasFlag("color=true") || hasFlag("color=always")) {
       forceColor = 1;
     }
-    if ("FORCE_COLOR" in env3) {
-      if (env3.FORCE_COLOR === "true") {
+    if ("FORCE_COLOR" in env2) {
+      if (env2.FORCE_COLOR === "true") {
         forceColor = 1;
-      } else if (env3.FORCE_COLOR === "false") {
+      } else if (env2.FORCE_COLOR === "false") {
         forceColor = 0;
       } else {
-        forceColor = env3.FORCE_COLOR.length === 0 ? 1 : Math.min(parseInt(env3.FORCE_COLOR, 10), 3);
+        forceColor = env2.FORCE_COLOR.length === 0 ? 1 : Math.min(parseInt(env2.FORCE_COLOR, 10), 3);
       }
     }
-    function translateLevel2(level) {
+    function translateLevel(level) {
       if (level === 0) {
         return false;
       }
@@ -24001,70 +24002,70 @@ var require_supports_color2 = __commonJS({
         has16m: level >= 3
       };
     }
-    function supportsColor2(haveStream, streamIsTTY) {
+    function supportsColor(haveStream, streamIsTTY) {
       if (forceColor === 0) {
         return 0;
       }
-      if (hasFlag2("color=16m") || hasFlag2("color=full") || hasFlag2("color=truecolor")) {
+      if (hasFlag("color=16m") || hasFlag("color=full") || hasFlag("color=truecolor")) {
         return 3;
       }
-      if (hasFlag2("color=256")) {
+      if (hasFlag("color=256")) {
         return 2;
       }
       if (haveStream && !streamIsTTY && forceColor === void 0) {
         return 0;
       }
       const min = forceColor || 0;
-      if (env3.TERM === "dumb") {
+      if (env2.TERM === "dumb") {
         return min;
       }
       if (process.platform === "win32") {
-        const osRelease = os2.release().split(".");
+        const osRelease = os.release().split(".");
         if (Number(osRelease[0]) >= 10 && Number(osRelease[2]) >= 10586) {
           return Number(osRelease[2]) >= 14931 ? 3 : 2;
         }
         return 1;
       }
-      if ("CI" in env3) {
-        if (["TRAVIS", "CIRCLECI", "APPVEYOR", "GITLAB_CI", "GITHUB_ACTIONS", "BUILDKITE"].some((sign) => sign in env3) || env3.CI_NAME === "codeship") {
+      if ("CI" in env2) {
+        if (["TRAVIS", "CIRCLECI", "APPVEYOR", "GITLAB_CI", "GITHUB_ACTIONS", "BUILDKITE"].some((sign) => sign in env2) || env2.CI_NAME === "codeship") {
           return 1;
         }
         return min;
       }
-      if ("TEAMCITY_VERSION" in env3) {
-        return /^(9\.(0*[1-9]\d*)\.|\d{2,}\.)/.test(env3.TEAMCITY_VERSION) ? 1 : 0;
+      if ("TEAMCITY_VERSION" in env2) {
+        return /^(9\.(0*[1-9]\d*)\.|\d{2,}\.)/.test(env2.TEAMCITY_VERSION) ? 1 : 0;
       }
-      if (env3.COLORTERM === "truecolor") {
+      if (env2.COLORTERM === "truecolor") {
         return 3;
       }
-      if ("TERM_PROGRAM" in env3) {
-        const version = parseInt((env3.TERM_PROGRAM_VERSION || "").split(".")[0], 10);
-        switch (env3.TERM_PROGRAM) {
+      if ("TERM_PROGRAM" in env2) {
+        const version = parseInt((env2.TERM_PROGRAM_VERSION || "").split(".")[0], 10);
+        switch (env2.TERM_PROGRAM) {
           case "iTerm.app":
             return version >= 3 ? 3 : 2;
           case "Apple_Terminal":
             return 2;
         }
       }
-      if (/-256(color)?$/i.test(env3.TERM)) {
+      if (/-256(color)?$/i.test(env2.TERM)) {
         return 2;
       }
-      if (/^screen|^xterm|^vt100|^vt220|^rxvt|color|ansi|cygwin|linux/i.test(env3.TERM)) {
+      if (/^screen|^xterm|^vt100|^vt220|^rxvt|color|ansi|cygwin|linux/i.test(env2.TERM)) {
         return 1;
       }
-      if ("COLORTERM" in env3) {
+      if ("COLORTERM" in env2) {
         return 1;
       }
       return min;
     }
     function getSupportLevel(stream) {
-      const level = supportsColor2(stream, stream && stream.isTTY);
-      return translateLevel2(level);
+      const level = supportsColor(stream, stream && stream.isTTY);
+      return translateLevel(level);
     }
     module2.exports = {
       supportsColor: getSupportLevel,
-      stdout: translateLevel2(supportsColor2(true, tty2.isatty(1))),
-      stderr: translateLevel2(supportsColor2(true, tty2.isatty(2)))
+      stdout: translateLevel(supportsColor(true, tty.isatty(1))),
+      stderr: translateLevel(supportsColor(true, tty.isatty(2)))
     };
   }
 });
@@ -25838,26 +25839,26 @@ var require_cli_spinners = __commonJS({
 var require_supports_color3 = __commonJS({
   "node_modules/log-symbols/node_modules/supports-color/index.js"(exports2, module2) {
     "use strict";
-    var os2 = __require("os");
-    var tty2 = __require("tty");
-    var hasFlag2 = require_has_flag();
-    var { env: env3 } = process;
+    var os = __require("os");
+    var tty = __require("tty");
+    var hasFlag = require_has_flag();
+    var { env: env2 } = process;
     var forceColor;
-    if (hasFlag2("no-color") || hasFlag2("no-colors") || hasFlag2("color=false") || hasFlag2("color=never")) {
+    if (hasFlag("no-color") || hasFlag("no-colors") || hasFlag("color=false") || hasFlag("color=never")) {
       forceColor = 0;
-    } else if (hasFlag2("color") || hasFlag2("colors") || hasFlag2("color=true") || hasFlag2("color=always")) {
+    } else if (hasFlag("color") || hasFlag("colors") || hasFlag("color=true") || hasFlag("color=always")) {
       forceColor = 1;
     }
-    if ("FORCE_COLOR" in env3) {
-      if (env3.FORCE_COLOR === "true") {
+    if ("FORCE_COLOR" in env2) {
+      if (env2.FORCE_COLOR === "true") {
         forceColor = 1;
-      } else if (env3.FORCE_COLOR === "false") {
+      } else if (env2.FORCE_COLOR === "false") {
         forceColor = 0;
       } else {
-        forceColor = env3.FORCE_COLOR.length === 0 ? 1 : Math.min(parseInt(env3.FORCE_COLOR, 10), 3);
+        forceColor = env2.FORCE_COLOR.length === 0 ? 1 : Math.min(parseInt(env2.FORCE_COLOR, 10), 3);
       }
     }
-    function translateLevel2(level) {
+    function translateLevel(level) {
       if (level === 0) {
         return false;
       }
@@ -25868,70 +25869,70 @@ var require_supports_color3 = __commonJS({
         has16m: level >= 3
       };
     }
-    function supportsColor2(haveStream, streamIsTTY) {
+    function supportsColor(haveStream, streamIsTTY) {
       if (forceColor === 0) {
         return 0;
       }
-      if (hasFlag2("color=16m") || hasFlag2("color=full") || hasFlag2("color=truecolor")) {
+      if (hasFlag("color=16m") || hasFlag("color=full") || hasFlag("color=truecolor")) {
         return 3;
       }
-      if (hasFlag2("color=256")) {
+      if (hasFlag("color=256")) {
         return 2;
       }
       if (haveStream && !streamIsTTY && forceColor === void 0) {
         return 0;
       }
       const min = forceColor || 0;
-      if (env3.TERM === "dumb") {
+      if (env2.TERM === "dumb") {
         return min;
       }
       if (process.platform === "win32") {
-        const osRelease = os2.release().split(".");
+        const osRelease = os.release().split(".");
         if (Number(osRelease[0]) >= 10 && Number(osRelease[2]) >= 10586) {
           return Number(osRelease[2]) >= 14931 ? 3 : 2;
         }
         return 1;
       }
-      if ("CI" in env3) {
-        if (["TRAVIS", "CIRCLECI", "APPVEYOR", "GITLAB_CI", "GITHUB_ACTIONS", "BUILDKITE"].some((sign) => sign in env3) || env3.CI_NAME === "codeship") {
+      if ("CI" in env2) {
+        if (["TRAVIS", "CIRCLECI", "APPVEYOR", "GITLAB_CI", "GITHUB_ACTIONS", "BUILDKITE"].some((sign) => sign in env2) || env2.CI_NAME === "codeship") {
           return 1;
         }
         return min;
       }
-      if ("TEAMCITY_VERSION" in env3) {
-        return /^(9\.(0*[1-9]\d*)\.|\d{2,}\.)/.test(env3.TEAMCITY_VERSION) ? 1 : 0;
+      if ("TEAMCITY_VERSION" in env2) {
+        return /^(9\.(0*[1-9]\d*)\.|\d{2,}\.)/.test(env2.TEAMCITY_VERSION) ? 1 : 0;
       }
-      if (env3.COLORTERM === "truecolor") {
+      if (env2.COLORTERM === "truecolor") {
         return 3;
       }
-      if ("TERM_PROGRAM" in env3) {
-        const version = parseInt((env3.TERM_PROGRAM_VERSION || "").split(".")[0], 10);
-        switch (env3.TERM_PROGRAM) {
+      if ("TERM_PROGRAM" in env2) {
+        const version = parseInt((env2.TERM_PROGRAM_VERSION || "").split(".")[0], 10);
+        switch (env2.TERM_PROGRAM) {
           case "iTerm.app":
             return version >= 3 ? 3 : 2;
           case "Apple_Terminal":
             return 2;
         }
       }
-      if (/-256(color)?$/i.test(env3.TERM)) {
+      if (/-256(color)?$/i.test(env2.TERM)) {
         return 2;
       }
-      if (/^screen|^xterm|^vt100|^vt220|^rxvt|color|ansi|cygwin|linux/i.test(env3.TERM)) {
+      if (/^screen|^xterm|^vt100|^vt220|^rxvt|color|ansi|cygwin|linux/i.test(env2.TERM)) {
         return 1;
       }
-      if ("COLORTERM" in env3) {
+      if ("COLORTERM" in env2) {
         return 1;
       }
       return min;
     }
     function getSupportLevel(stream) {
-      const level = supportsColor2(stream, stream && stream.isTTY);
-      return translateLevel2(level);
+      const level = supportsColor(stream, stream && stream.isTTY);
+      return translateLevel(level);
     }
     module2.exports = {
       supportsColor: getSupportLevel,
-      stdout: translateLevel2(supportsColor2(true, tty2.isatty(1))),
-      stderr: translateLevel2(supportsColor2(true, tty2.isatty(2)))
+      stdout: translateLevel(supportsColor(true, tty.isatty(1))),
+      stderr: translateLevel(supportsColor(true, tty.isatty(2)))
     };
   }
 });
@@ -42971,132 +42972,6 @@ var require_bazel_test_status_pb = __commonJS({
   }
 });
 
-// node_modules/supports-color/index.js
-var supports_color_exports = {};
-__export(supports_color_exports, {
-  createSupportsColor: () => createSupportsColor,
-  default: () => supports_color_default
-});
-import process2 from "process";
-import os from "os";
-import tty from "tty";
-function hasFlag(flag, argv = process2.argv) {
-  const prefix = flag.startsWith("-") ? "" : flag.length === 1 ? "-" : "--";
-  const position = argv.indexOf(prefix + flag);
-  const terminatorPosition = argv.indexOf("--");
-  return position !== -1 && (terminatorPosition === -1 || position < terminatorPosition);
-}
-function envForceColor() {
-  if ("FORCE_COLOR" in env2) {
-    if (env2.FORCE_COLOR === "true") {
-      return 1;
-    }
-    if (env2.FORCE_COLOR === "false") {
-      return 0;
-    }
-    return env2.FORCE_COLOR.length === 0 ? 1 : Math.min(Number.parseInt(env2.FORCE_COLOR, 10), 3);
-  }
-}
-function translateLevel(level) {
-  if (level === 0) {
-    return false;
-  }
-  return {
-    level,
-    hasBasic: true,
-    has256: level >= 2,
-    has16m: level >= 3
-  };
-}
-function _supportsColor(haveStream, { streamIsTTY, sniffFlags = true } = {}) {
-  const noFlagForceColor = envForceColor();
-  if (noFlagForceColor !== void 0) {
-    flagForceColor = noFlagForceColor;
-  }
-  const forceColor = sniffFlags ? flagForceColor : noFlagForceColor;
-  if (forceColor === 0) {
-    return 0;
-  }
-  if (sniffFlags) {
-    if (hasFlag("color=16m") || hasFlag("color=full") || hasFlag("color=truecolor")) {
-      return 3;
-    }
-    if (hasFlag("color=256")) {
-      return 2;
-    }
-  }
-  if (haveStream && !streamIsTTY && forceColor === void 0) {
-    return 0;
-  }
-  const min = forceColor || 0;
-  if (env2.TERM === "dumb") {
-    return min;
-  }
-  if (process2.platform === "win32") {
-    const osRelease = os.release().split(".");
-    if (Number(osRelease[0]) >= 10 && Number(osRelease[2]) >= 10586) {
-      return Number(osRelease[2]) >= 14931 ? 3 : 2;
-    }
-    return 1;
-  }
-  if ("CI" in env2) {
-    if (["TRAVIS", "CIRCLECI", "APPVEYOR", "GITLAB_CI", "GITHUB_ACTIONS", "BUILDKITE", "DRONE"].some((sign) => sign in env2) || env2.CI_NAME === "codeship") {
-      return 1;
-    }
-    return min;
-  }
-  if ("TEAMCITY_VERSION" in env2) {
-    return /^(9\.(0*[1-9]\d*)\.|\d{2,}\.)/.test(env2.TEAMCITY_VERSION) ? 1 : 0;
-  }
-  if ("TF_BUILD" in env2 && "AGENT_NAME" in env2) {
-    return 1;
-  }
-  if (env2.COLORTERM === "truecolor") {
-    return 3;
-  }
-  if ("TERM_PROGRAM" in env2) {
-    const version = Number.parseInt((env2.TERM_PROGRAM_VERSION || "").split(".")[0], 10);
-    switch (env2.TERM_PROGRAM) {
-      case "iTerm.app":
-        return version >= 3 ? 3 : 2;
-      case "Apple_Terminal":
-        return 2;
-    }
-  }
-  if (/-256(color)?$/i.test(env2.TERM)) {
-    return 2;
-  }
-  if (/^screen|^xterm|^vt100|^vt220|^rxvt|color|ansi|cygwin|linux/i.test(env2.TERM)) {
-    return 1;
-  }
-  if ("COLORTERM" in env2) {
-    return 1;
-  }
-  return min;
-}
-function createSupportsColor(stream, options = {}) {
-  const level = _supportsColor(stream, __spreadValues({
-    streamIsTTY: stream && stream.isTTY
-  }, options));
-  return translateLevel(level);
-}
-var env2, flagForceColor, supportsColor, supports_color_default;
-var init_supports_color = __esm({
-  "node_modules/supports-color/index.js"() {
-    ({ env: env2 } = process2);
-    if (hasFlag("no-color") || hasFlag("no-colors") || hasFlag("color=false") || hasFlag("color=never")) {
-      flagForceColor = 0;
-    } else if (hasFlag("color") || hasFlag("colors") || hasFlag("color=true") || hasFlag("color=always")) {
-      flagForceColor = 1;
-    }
-    supportsColor = {
-      stdout: createSupportsColor({ isTTY: tty.isatty(1) }),
-      stderr: createSupportsColor({ isTTY: tty.isatty(2) })
-    };
-    supports_color_default = supportsColor;
-  }
-});
-
 // node_modules/lodash/lodash.js
 var require_lodash = __commonJS({
   "node_modules/lodash/lodash.js"(exports2, module2) {
@@ -51961,7 +51836,7 @@ var require_ms = __commonJS({
 // node_modules/debug/src/common.js
 var require_common = __commonJS({
   "node_modules/debug/src/common.js"(exports2, module2) {
-    function setup(env3) {
+    function setup(env2) {
       createDebug.debug = createDebug;
       createDebug.default = createDebug;
       createDebug.coerce = coerce;
@@ -51970,8 +51845,8 @@ var require_common = __commonJS({
       createDebug.enabled = enabled;
       createDebug.humanize = require_ms();
       createDebug.destroy = destroy;
-      Object.keys(env3).forEach((key) => {
-        createDebug[key] = env3[key];
+      Object.keys(env2).forEach((key) => {
+        createDebug[key] = env2[key];
       });
       createDebug.names = [];
       createDebug.skips = [];
@@ -52289,7 +52164,7 @@ var require_browser = __commonJS({
 // node_modules/debug/src/node.js
 var require_node2 = __commonJS({
   "node_modules/debug/src/node.js"(exports2, module2) {
-    var tty2 = __require("tty");
+    var tty = __require("tty");
     var util = __require("util");
     exports2.init = init;
     exports2.log = log;
@@ -52301,8 +52176,8 @@ var require_node2 = __commonJS({
     }, "Instance method `debug.destroy()` is deprecated and no longer does anything. It will be removed in the next major version of `debug`.");
     exports2.colors = [6, 2, 3, 4, 5, 1];
     try {
-      const supportsColor2 = (init_supports_color(), __toCommonJS(supports_color_exports));
-      if (supportsColor2 && (supportsColor2.stderr || supportsColor2).level >= 2) {
+      const supportsColor = (init_supports_color(), __toCommonJS(supports_color_exports));
+      if (supportsColor && (supportsColor.stderr || supportsColor).level >= 2) {
         exports2.colors = [
           20,
           21,
@@ -52404,7 +52279,7 @@ var require_node2 = __commonJS({
       return obj;
     }, {});
     function useColors() {
-      return "colors" in exports2.inspectOpts ? Boolean(exports2.inspectOpts.colors) : tty2.isatty(process.stderr.fd);
+      return "colors" in exports2.inspectOpts ? Boolean(exports2.inspectOpts.colors) : tty.isatty(process.stderr.fd);
     }
     function formatArgs(args) {
       const { namespace: name, useColors: useColors2 } = this;
@@ -57232,8 +57107,8 @@ var YargsParser = class {
       if (typeof envPrefix === "undefined")
         return;
       const prefix = typeof envPrefix === "string" ? envPrefix : "";
-      const env3 = mixin2.env();
-      Object.keys(env3).forEach(function(envVar) {
+      const env2 = mixin2.env();
+      Object.keys(env2).forEach(function(envVar) {
         if (prefix === "" || envVar.lastIndexOf(prefix, 0) === 0) {
           const keys = envVar.split("__").map(function(key, i) {
             if (i === 0) {
@@ -57242,7 +57117,7 @@ var YargsParser = class {
             return camelCase(key);
           });
           if ((configOnly && flags.configs[keys.join(".")] || !configOnly) && !hasKey(argv2, keys)) {
-            setArg(keys.join("."), env3[envVar]);
+            setArg(keys.join("."), env2[envVar]);
           }
         }
       });
@@ -61556,83 +61431,6 @@ function caretakerCommandCanRun() {
 
 // bazel-out/k8-fastbuild/bin/ng-dev/ci/gather-test-results/index.js
 var import_bazel_test_status_pb = __toESM(require_bazel_test_status_pb());
-
-// bazel-out/k8-fastbuild/bin/ng-dev/utils/child-process.js
-init_supports_color();
-import { spawn as _spawn, spawnSync as _spawnSync } from "child_process";
-var ChildProcess = class {
-  static spawnInteractive(command2, args, options = {}) {
-    return new Promise((resolve13, reject) => {
-      const commandText = `${command2} ${args.join(" ")}`;
-      Log.debug(`Executing command: ${commandText}`);
-      const childProcess = _spawn(command2, args, __spreadProps(__spreadValues({}, options), { shell: true, stdio: "inherit" }));
-      childProcess.on("close", (status) => status === 0 ? resolve13() : reject(status));
-    });
-  }
-  static spawn(command2, args, options = {}) {
-    return new Promise((resolve13, reject) => {
-      const commandText = `${command2} ${args.join(" ")}`;
-      const outputMode = options.mode;
-      const env3 = getEnvironmentForNonInteractiveSpawn(options.env);
-      Log.debug(`Executing command: ${commandText}`);
-      const childProcess = _spawn(command2, args, __spreadProps(__spreadValues({}, options), { env: env3, shell: true, stdio: "pipe" }));
-      let logOutput = "";
-      let stdout = "";
-      let stderr = "";
-      if (options.input !== void 0) {
-        childProcess.stdin.write(options.input);
-        childProcess.stdin.end();
-      }
-      childProcess.stderr.on("data", (message) => {
-        stderr += message;
-        logOutput += message;
-        if (outputMode === void 0 || outputMode === "enabled") {
-          process.stderr.write(message);
-        }
-      });
-      childProcess.stdout.on("data", (message) => {
-        stdout += message;
-        logOutput += message;
-        if (outputMode === void 0 || outputMode === "enabled") {
-          process.stderr.write(message);
-        }
-      });
-      childProcess.on("close", (exitCode, signal) => {
-        const exitDescription = exitCode !== null ? `exit code "${exitCode}"` : `signal "${signal}"`;
-        const printFn = outputMode === "on-error" ? Log.error : Log.debug;
-        const status = statusFromExitCodeAndSignal(exitCode, signal);
-        printFn(`Command "${commandText}" completed with ${exitDescription}.`);
-        printFn(`Process output: 
-${logOutput}`);
-        if (status === 0 || options.suppressErrorOnFailingExitCode) {
-          resolve13({ stdout, stderr, status });
-        } else {
-          reject(outputMode === "silent" ? logOutput : void 0);
-        }
-      });
-    });
-  }
-  static spawnSync(command2, args, options = {}) {
-    const commandText = `${command2} ${args.join(" ")}`;
-    const env3 = getEnvironmentForNonInteractiveSpawn(options.env);
-    Log.debug(`Executing command: ${commandText}`);
-    const { status: exitCode, signal, stdout, stderr } = _spawnSync(command2, args, __spreadProps(__spreadValues({}, options), { env: env3, encoding: "utf8", shell: true, stdio: "pipe" }));
-    const status = statusFromExitCodeAndSignal(exitCode, signal);
-    if (status === 0 || options.suppressErrorOnFailingExitCode) {
-      return { status, stdout, stderr };
-    }
-    throw new Error(stderr);
-  }
-};
-function statusFromExitCodeAndSignal(exitCode, signal) {
-  return exitCode ?? signal ?? -1;
-}
-function getEnvironmentForNonInteractiveSpawn(userProvidedEnv) {
-  const forceColorValue = supports_color_default.stdout !== false ? supports_color_default.stdout.level.toString() : void 0;
-  return __spreadValues({ FORCE_COLOR: forceColorValue }, userProvidedEnv ?? process.env);
-}
-
-// bazel-out/k8-fastbuild/bin/ng-dev/ci/gather-test-results/index.js
 import { join as join2, extname as extname2 } from "path";
 import { mkdirSync, rmSync, readFileSync as readFileSync5, statSync as statSync3, readdirSync as readdirSync2, copyFileSync, writeFileSync } from "fs";
 var TestResultData = import_bazel_test_status_pb.blaze.TestResultData;
@@ -64243,8 +64041,8 @@ async function rebasePr(prNumber, githubToken) {
     const commits = await getCommitsInRange(commonAncestorSha, "HEAD");
     let squashFixups = process.env["CI"] !== void 0 || commits.filter((commit) => commit.isFixup).length === 0 ? false : await Prompt.confirm(`PR #${prNumber} contains fixup commits, would you like to squash them during rebase?`, true);
     Log.info(`Attempting to rebase PR #${prNumber} on ${fullBaseRef}`);
-    const [flags, env3] = squashFixups ? [["--interactive", "--autosquash"], __spreadProps(__spreadValues({}, process.env), { GIT_SEQUENCE_EDITOR: "true" })] : [[], void 0];
-    const rebaseResult = git.runGraceful(["rebase", ...flags, "FETCH_HEAD"], { env: env3 });
+    const [flags, env2] = squashFixups ? [["--interactive", "--autosquash"], __spreadProps(__spreadValues({}, process.env), { GIT_SEQUENCE_EDITOR: "true" })] : [[], void 0];
+    const rebaseResult = git.runGraceful(["rebase", ...flags, "FETCH_HEAD"], { env: env2 });
     if (rebaseResult.status === 0) {
       Log.info(`Rebase was able to complete automatically without conflicts`);
       Log.info(`Pushing rebased PR #${prNumber} to ${fullHeadRef}`);
@@ -66173,7 +65971,7 @@ import * as fs3 from "fs";
 import lockfile2 from "@yarnpkg/lockfile";
 async function verifyNgDevToolIsUpToDate(workspacePath) {
   var _a, _b, _c;
-  const localVersion = `0.0.0-19856c7a959f22ae371c96f204e4c1fb31117d18`;
+  const localVersion = `0.0.0-f5e706a8bd255a86681369fabf0b8ebed4858b30`;
   const workspacePackageJsonFile = path2.join(workspacePath, workspaceRelativePackageJsonPath);
   const workspaceDirLockFile = path2.join(workspacePath, workspaceRelativeYarnLockFilePath);
   try {
