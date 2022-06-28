@@ -38,7 +38,7 @@ import {
   require_safer,
   require_semver,
   require_wrappy
-} from "./chunk-SELDHKSO.mjs";
+} from "./chunk-YEV2C36O.mjs";
 import {
   ConfigValidationError,
   Log,
@@ -63293,7 +63293,7 @@ function normalizeGithubCheckState(conclusion, status) {
 
 // bazel-out/k8-fastbuild/bin/ng-dev/pr/common/validation/validations.js
 function assertChangesAllowForTargetLabel(commits, label, config, releaseTrains, labelsOnPullRequest) {
-  if (!!config.commitMessageFixupLabel && labelsOnPullRequest.some((name) => matchesPattern(name, config.commitMessageFixupLabel))) {
+  if (!!config.commitMessageFixupLabel && labelsOnPullRequest.includes(config.commitMessageFixupLabel)) {
     Log.debug("Skipping commit message target label validation because the commit message fixup label is applied.");
     return;
   }
@@ -63360,7 +63360,7 @@ function assertSignedCla(pullRequest) {
   throw PullRequestFailure.claUnsigned();
 }
 function assertMergeReady(pullRequest, config) {
-  if (pullRequest.labels.nodes.some(({ name }) => matchesPattern(name, config.mergeReadyLabel))) {
+  if (pullRequest.labels.nodes.some(({ name }) => name === config.mergeReadyLabel)) {
     return true;
   }
   throw PullRequestFailure.notMergeReady();
@@ -63373,9 +63373,6 @@ function assertPassingCi(pullRequest) {
   if (combinedStatus === PullRequestStatus.FAILING) {
     throw PullRequestFailure.failingCiJobs();
   }
-}
-function matchesPattern(value, pattern) {
-  return typeof pattern === "string" ? value === pattern : pattern.test(value);
 }
 
 // bazel-out/k8-fastbuild/bin/ng-dev/pr/common/targeting/target-label.js
@@ -63715,8 +63712,8 @@ async function loadAndValidatePullRequest({ git, config }, prNumber, ignoreNonFa
     throw error;
   }
   const requiredBaseSha = config.pullRequest.requiredBaseCommits && config.pullRequest.requiredBaseCommits[githubTargetBranch];
-  const needsCommitMessageFixup = !!config.pullRequest.commitMessageFixupLabel && labels.some((name) => matchesPattern(name, config.pullRequest.commitMessageFixupLabel));
-  const hasCaretakerNote = !!config.pullRequest.caretakerNoteLabel && labels.some((name) => matchesPattern(name, config.pullRequest.caretakerNoteLabel));
+  const needsCommitMessageFixup = !!config.pullRequest.commitMessageFixupLabel && labels.includes(config.pullRequest.commitMessageFixupLabel);
+  const hasCaretakerNote = !!config.pullRequest.caretakerNoteLabel && labels.includes(config.pullRequest.caretakerNoteLabel);
   return {
     url: prData.url,
     prNumber,
@@ -63909,7 +63906,7 @@ var GithubApiMergeStrategy = class extends MergeStrategy {
   }
   _getMergeActionFromPullRequest({ labels }) {
     if (this._config.labels) {
-      const matchingLabel = this._config.labels.find(({ pattern }) => labels.some((l) => matchesPattern(l, pattern)));
+      const matchingLabel = this._config.labels.find(({ pattern }) => labels.includes(pattern));
       if (matchingLabel !== void 0) {
         return matchingLabel.method;
       }
@@ -66176,7 +66173,7 @@ import * as fs3 from "fs";
 import lockfile2 from "@yarnpkg/lockfile";
 async function verifyNgDevToolIsUpToDate(workspacePath) {
   var _a, _b, _c;
-  const localVersion = `0.0.0-1fd5d8a97b8d3f0a70dc4db36ff755fb245bdfc3`;
+  const localVersion = `0.0.0-19856c7a959f22ae371c96f204e4c1fb31117d18`;
   const workspacePackageJsonFile = path2.join(workspacePath, workspaceRelativePackageJsonPath);
   const workspaceDirLockFile = path2.join(workspacePath, workspaceRelativeYarnLockFilePath);
   try {
