@@ -40,4 +40,6 @@ export declare function checkOutPullRequestLocally(prNumber: number, githubToken
     pushToUpstream: () => true;
     /** Restores the state of the local repository to before the PR checkout occured. */
     resetGitState: () => boolean;
+    pushToUpstreamCommand: string;
+    resetGitStateCommand: string;
 }>;

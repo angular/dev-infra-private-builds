@@ -63545,7 +63545,9 @@ async function checkOutPullRequestLocally(prNumber, githubToken, opts = {}) {
     },
     resetGitState: () => {
       return git.checkout(previousBranchOrRevision, true);
-    }
+    },
+    pushToUpstreamCommand: `git push ${pr.headRef.repository.url} HEAD:${headRefName} ${forceWithLeaseFlag}`,
+    resetGitStateCommand: `git rebase --abort && git reset --hard && git checkout ${previousBranchOrRevision}`
   };
 }
 
@@ -63554,8 +63556,12 @@ function builder10(yargs) {
   return addGithubTokenOption(yargs).positional("pr", { type: "number", demandOption: true });
 }
 async function handler11({ pr, githubToken }) {
-  const prCheckoutOptions = { allowIfMaintainerCannotModify: true, branchName: `pr-${pr}` };
-  await checkOutPullRequestLocally(pr, githubToken, prCheckoutOptions);
+  const options = { allowIfMaintainerCannotModify: true, branchName: `pr-${pr}` };
+  const { pushToUpstreamCommand } = await checkOutPullRequestLocally(pr, githubToken, options);
+  Log.info(`Checked out the remote branch for pull request #${pr}
+`);
+  Log.info("To push the checked out branch back to its PR, run the following command:");
+  Log.info(`  $ ${pushToUpstreamCommand}`);
 }
 var CheckoutCommandModule = {
   handler: handler11,
@@ -66170,7 +66176,7 @@ import * as fs3 from "fs";
 import lockfile2 from "@yarnpkg/lockfile";
 async function verifyNgDevToolIsUpToDate(workspacePath) {
   var _a, _b, _c;
-  const localVersion = `0.0.0-e258a714881810c97f993dc90f4ea3bcf5f49fd6`;
+  const localVersion = `0.0.0-1fd5d8a97b8d3f0a70dc4db36ff755fb245bdfc3`;
   const workspacePackageJsonFile = path2.join(workspacePath, workspaceRelativePackageJsonPath);
   const workspaceDirLockFile = path2.join(workspacePath, workspaceRelativeYarnLockFilePath);
   try {
