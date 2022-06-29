@@ -13,6 +13,7 @@ filegroup(
         "@npm//@angular/dev-infra-private/bazel/http-server:files",
         "@npm//@angular/dev-infra-private/bazel/integration:files",
         "@npm//@angular/dev-infra-private/bazel/karma:files",
+        "@npm//@angular/dev-infra-private/bazel/map-size-tracking:files",
         "@npm//@angular/dev-infra-private/bazel/remote-execution:files",
         "@npm//@angular/dev-infra-private/bazel/spec-bundling:files",
     ],
