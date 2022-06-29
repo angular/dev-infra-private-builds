@@ -38,7 +38,7 @@ import {
   require_safer,
   require_semver,
   require_wrappy
-} from "./chunk-ZXKPKNF4.mjs";
+} from "./chunk-WATBVD2P.mjs";
 import {
   ChildProcess,
   ConfigValidationError,
@@ -55,16 +55,14 @@ import {
   red,
   supports_color_exports,
   yellow
-} from "./chunk-5JIGVKPD.mjs";
-import "./chunk-KTTQTX6B.mjs";
+} from "./chunk-XBLHPK6F.mjs";
+import "./chunk-D7GSJ3JO.mjs";
 import {
   __commonJS,
   __require,
-  __spreadProps,
-  __spreadValues,
   __toCommonJS,
   __toESM
-} from "./chunk-3CEJO2PC.mjs";
+} from "./chunk-X3O2C2F5.mjs";
 
 // node_modules/concat-map/index.js
 var require_concat_map = __commonJS({
@@ -9241,7 +9239,8 @@ var require_source = __commonJS({
       };
     }
     var proto = Object.defineProperties(() => {
-    }, __spreadProps(__spreadValues({}, styles), {
+    }, {
+      ...styles,
       level: {
         enumerable: true,
         get() {
@@ -9251,7 +9250,7 @@ var require_source = __commonJS({
           this._generator.level = level;
         }
       }
-    }));
+    });
     var createStyler = (open, close, parent) => {
       let openAll;
       let closeAll;
@@ -9777,12 +9776,12 @@ var require_baseUI = __commonJS({
       const ms = new MuteStream();
       ms.pipe(opt.output || process.stdout);
       const output = ms;
-      return __spreadProps(__spreadValues({
-        terminal: true
-      }, opt), {
+      return {
+        terminal: true,
+        ...opt,
         input,
         output
-      });
+      };
     }
     module2.exports = UI2;
   }
@@ -21198,12 +21197,12 @@ var require_prompt = __commonJS({
       }
       run(questions, answers) {
         if (_.isPlainObject(answers)) {
-          this.answers = __spreadValues({}, answers);
+          this.answers = { ...answers };
         } else {
           this.answers = {};
         }
         if (_.isPlainObject(questions)) {
-          questions = Object.values(questions).every((v) => _.isPlainObject(v) && v.name === void 0) ? Object.entries(questions).map(([name, question]) => __spreadValues({ name }, question)) : [questions];
+          questions = Object.values(questions).every((v) => _.isPlainObject(v) && v.name === void 0) ? Object.entries(questions).map(([name, question]) => ({ name, ...question })) : [questions];
         }
         const obs = Array.isArray(questions) ? from(questions) : questions;
         this.process = obs.pipe(concatMap(this.processQuestion.bind(this)), publish());
@@ -21222,7 +21221,7 @@ var require_prompt = __commonJS({
         return Promise.reject(error);
       }
       processQuestion(question) {
-        question = __spreadValues({}, question);
+        question = { ...question };
         return defer(() => {
           const obs = of(question);
           return obs.pipe(concatMap(this.setDefaultType.bind(this)), concatMap(this.filterIfRunnable.bind(this)), concatMap(() => utils.fetchAsyncQuestionProperty(question, "message", this.answers)), concatMap(() => utils.fetchAsyncQuestionProperty(question, "default", this.answers)), concatMap(() => utils.fetchAsyncQuestionProperty(question, "choices", this.answers)), concatMap(this.fetchAnswer.bind(this)));
@@ -24309,7 +24308,8 @@ var require_source2 = __commonJS({
       };
     }
     var proto = Object.defineProperties(() => {
-    }, __spreadProps(__spreadValues({}, styles), {
+    }, {
+      ...styles,
       level: {
         enumerable: true,
         get() {
@@ -24319,7 +24319,7 @@ var require_source2 = __commonJS({
           this._generator.level = level;
         }
       }
-    }));
+    });
     var createStyler = (open, close, parent) => {
       let openAll;
       let closeAll;
@@ -26176,7 +26176,8 @@ var require_source3 = __commonJS({
       };
     }
     var proto = Object.defineProperties(() => {
-    }, __spreadProps(__spreadValues({}, styles), {
+    }, {
+      ...styles,
       level: {
         enumerable: true,
         get() {
@@ -26186,7 +26187,7 @@ var require_source3 = __commonJS({
           this._generator.level = level;
         }
       }
-    }));
+    });
     var createStyler = (open, close, parent) => {
       let openAll;
       let closeAll;
@@ -29960,12 +29961,13 @@ var require_ora = __commonJS({
             text: options
           };
         }
-        this.options = __spreadValues({
+        this.options = {
           text: "",
           color: "cyan",
           stream: process.stderr,
-          discardStdin: true
-        }, options);
+          discardStdin: true,
+          ...options
+        };
         this.spinner = this.options.spinner;
         this.color = this.options.color;
         this.hideCursor = this.options.hideCursor !== false;
@@ -48852,10 +48854,11 @@ var require_dargs = __commonJS({
       const arguments_ = [];
       let extraArguments = [];
       let separatedArguments = [];
-      options = __spreadValues({
+      options = {
         useEquals: true,
-        shortFlag: true
-      }, options);
+        shortFlag: true,
+        ...options
+      };
       const makeArguments = (key, value) => {
         const prefix = options.shortFlag && key.length === 1 ? "-" : "--";
         const theKey = options.allowCamelCase ? key : key.replace(/[A-Z]/g, "-$&").toLowerCase();
@@ -58848,7 +58851,7 @@ function usage(yargs, shim3) {
     if (!frozen)
       return;
     if (defaultCommand) {
-      descriptions = __spreadValues(__spreadValues({}, frozen.descriptions), descriptions);
+      descriptions = { ...frozen.descriptions, ...descriptions };
       commands = [...frozen.commands, ...commands];
       usages = [...frozen.usages, ...usages];
       examples = [...frozen.examples, ...examples];
@@ -60817,7 +60820,7 @@ var YargsInstance = class {
       "populate--": true
     });
     const parsed = __classPrivateFieldGet(this, _YargsInstance_shim, "f").Parser.detailed(args, Object.assign({}, __classPrivateFieldGet(this, _YargsInstance_options, "f"), {
-      configuration: __spreadValues({ "parse-positional-numbers": false }, config)
+      configuration: { "parse-positional-numbers": false, ...config }
     }));
     const argv = Object.assign(parsed.argv, __classPrivateFieldGet(this, _YargsInstance_parseContext, "f"));
     let argvPromise = void 0;
@@ -60938,7 +60941,7 @@ var YargsInstance = class {
     return this[kPostProcess](argvPromise !== null && argvPromise !== void 0 ? argvPromise : argv, populateDoubleDash, !!calledFromCommand, true);
   }
   [kRunValidation](aliases, positionalMap, parseErrors, isDefaultCommand) {
-    const demandedOptions = __spreadValues({}, this.getDemandedOptions());
+    const demandedOptions = { ...this.getDemandedOptions() };
     return (argv) => {
       if (parseErrors)
         throw new YError(parseErrors.message);
@@ -61017,11 +61020,11 @@ var BaseModule = class {
 var CiModule = class extends BaseModule {
   async retrieveData() {
     const nextBranchName = getNextBranchName(this.config.github);
-    const repo = __spreadProps(__spreadValues({
-      api: this.git.github
-    }, this.git.remoteConfig), {
+    const repo = {
+      api: this.git.github,
+      ...this.git.remoteConfig,
       nextBranchName
-    });
+    };
     const { latest, next, releaseCandidate } = await ActiveReleaseTrains.fetch(repo);
     const ciResultPromises = Object.entries({ releaseCandidate, latest, next }).map(async ([trainName, train]) => {
       if (train === null) {
@@ -61162,14 +61165,16 @@ var import_typed_graphqlify = __toESM(require_dist());
 var GithubQueryResultFragment = {
   issueCount: import_typed_graphqlify.types.number,
   nodes: [
-    __spreadValues({}, (0, import_typed_graphqlify.onUnion)({
-      PullRequest: {
-        url: import_typed_graphqlify.types.string
-      },
-      Issue: {
-        url: import_typed_graphqlify.types.string
-      }
-    }))
+    {
+      ...(0, import_typed_graphqlify.onUnion)({
+        PullRequest: {
+          url: import_typed_graphqlify.types.string
+        },
+        Issue: {
+          url: import_typed_graphqlify.types.string
+        }
+      })
+    }
   ]
 };
 var MAX_RETURNED_ISSUES = 20;
@@ -61203,7 +61208,7 @@ var GithubQueriesModule = class extends BaseModule {
         type: "ISSUE",
         first: MAX_RETURNED_ISSUES,
         query: `"${repoFilter} ${query.replace(/"/g, '\\"')}"`
-      }, __spreadValues({}, GithubQueryResultFragment));
+      }, { ...GithubQueryResultFragment });
     });
     return graphqlQuery;
   }
@@ -62322,7 +62327,8 @@ async function promptForRemoteForkUpdate() {
   const accessToken = await Prompt.input("Please enter a Github access token (`public_repo` scope is required)");
   AuthenticatedGitClient.configure(accessToken);
   const git = await AuthenticatedGitClient.get();
-  const forks = (await git.getAllForksOfAuthenticatedUser()).map((fork2) => __spreadProps(__spreadValues({}, fork2), {
+  const forks = (await git.getAllForksOfAuthenticatedUser()).map((fork2) => ({
+    ...fork2,
     description: getDescriptionForRepo(fork2)
   }));
   const failedForks = [];
@@ -62335,8 +62341,8 @@ async function promptForRemoteForkUpdate() {
     const forkApiParams = { owner: fork2.owner, repo: fork2.name };
     Log.debug(`Updating fork: ${fork2.description}`);
     try {
-      await git.github.repos.renameBranch(__spreadProps(__spreadValues({}, forkApiParams), { branch: "master", new_name: "main" }));
-      await git.github.repos.update(__spreadProps(__spreadValues({}, forkApiParams), { default_branch: "main" }));
+      await git.github.repos.renameBranch({ ...forkApiParams, branch: "master", new_name: "main" });
+      await git.github.repos.update({ ...forkApiParams, default_branch: "main" });
       Log.debug(`Successfully updated the fork: ${fork2.description}`);
     } catch (e) {
       Log.debug(`An error occurred while renaming the default branch for fork: ${fork2.description}`);
@@ -62588,12 +62594,14 @@ async function readFileGracefully(filePath) {
 async function builder8(argv) {
   return addGithubTokenOption(argv);
 }
-var useYarnPathEnv = __spreadProps(__spreadValues({}, process.env), {
+var useYarnPathEnv = {
+  ...process.env,
   YARN_IGNORE_PATH: "0"
-});
-var skipHuskyEnv = __spreadProps(__spreadValues({}, process.env), {
+};
+var skipHuskyEnv = {
+  ...process.env,
   HUSKY: "0"
-});
+};
 async function handler9() {
   const yarnGlobalBin = await getYarnPathFromNpmGlobalBinaries() ?? "yarn";
   const git = await AuthenticatedGitClient.get();
@@ -62637,12 +62645,13 @@ ${body}`;
     spinner.update("Pushing commit changes to github.");
     git.run(["push", "-q", "origin", "--force-with-lease", `HEAD:refs/heads/${branchName}`]);
     spinner.update("Creating a PR for the changes.");
-    const { number } = (await git.github.pulls.create(__spreadProps(__spreadValues({}, git.remoteParams), {
+    const { number } = (await git.github.pulls.create({
+      ...git.remoteParams,
       title,
       body,
       base: mainBranchName,
       head: `${localOwner}:${branchName}`
-    }))).data;
+    })).data;
     spinner.complete();
     Log.info(`Created PR #${number} to update to yarn v${newYarnVersion}`);
   } catch (e) {
@@ -63620,10 +63629,11 @@ var GithubApiMergeStrategy = class extends MergeStrategy {
     if (failure !== null) {
       return failure;
     }
-    const mergeOptions = __spreadValues({
+    const mergeOptions = {
       pull_number: prNumber,
-      merge_method: method
-    }, this.git.remoteParams);
+      merge_method: method,
+      ...this.git.remoteParams
+    };
     if (needsCommitMessageFixup) {
       if (method !== "squash") {
         return PullRequestFailure.unableToFixupCommitMessageSquashOnly();
@@ -63687,9 +63697,10 @@ var GithubApiMergeStrategy = class extends MergeStrategy {
     return `${messageBase}${joinedMessages}`;
   }
   async _getPullRequestCommitMessages({ prNumber }) {
-    const allCommits = await this.git.github.paginate(this.git.github.pulls.listCommits, __spreadProps(__spreadValues({}, this.git.remoteParams), {
+    const allCommits = await this.git.github.paginate(this.git.github.pulls.listCommits, {
+      ...this.git.remoteParams,
       pull_number: prNumber
-    }));
+    });
     return allCommits.map(({ commit }) => commit.message);
   }
   async _checkMergability(pullRequest, targetBranches) {
@@ -63723,7 +63734,7 @@ var AutosquashMergeStrategy = class extends MergeStrategy {
     const baseSha = this.git.run(["rev-parse", this.getPullRequestBaseRevision(pullRequest)]).stdout.trim();
     const revisionRange = `${baseSha}..${TEMP_PR_HEAD_BRANCH}`;
     const branchOrRevisionBeforeRebase = this.git.getCurrentBranchOrRevision();
-    const rebaseEnv = needsCommitMessageFixup ? void 0 : __spreadProps(__spreadValues({}, process.env), { GIT_SEQUENCE_EDITOR: "true" });
+    const rebaseEnv = needsCommitMessageFixup ? void 0 : { ...process.env, GIT_SEQUENCE_EDITOR: "true" };
     this.git.run(["rebase", "--interactive", "--autosquash", baseSha, TEMP_PR_HEAD_BRANCH], {
       stdio: "inherit",
       env: rebaseEnv
@@ -63743,15 +63754,17 @@ var AutosquashMergeStrategy = class extends MergeStrategy {
     this.pushTargetBranchesUpstream(targetBranches);
     const localBranch = this.getLocalTargetBranchName(githubTargetBranch);
     const sha = this.git.run(["rev-parse", localBranch]).stdout.trim();
-    await this.git.github.issues.createComment(__spreadProps(__spreadValues({}, this.git.remoteParams), {
+    await this.git.github.issues.createComment({
+      ...this.git.remoteParams,
       issue_number: pullRequest.prNumber,
       body: `This PR was merged into the repository by commit ${sha}.`
-    }));
+    });
     if (githubTargetBranch !== this.git.mainBranchName) {
-      await this.git.github.pulls.update(__spreadProps(__spreadValues({}, this.git.remoteParams), {
+      await this.git.github.pulls.update({
+        ...this.git.remoteParams,
         pull_number: pullRequest.prNumber,
         state: "closed"
-      }));
+      });
     }
     return null;
   }
@@ -63769,7 +63782,7 @@ var PullRequestMergeTask = class {
   constructor(config, git, flags) {
     this.config = config;
     this.git = git;
-    this.flags = __spreadValues(__spreadValues({}, defaultPullRequestMergeTaskFlags), flags);
+    this.flags = { ...defaultPullRequestMergeTaskFlags, ...flags };
   }
   async merge(prNumber, force = false) {
     if (this.git.hasUncommittedChanges()) {
@@ -64041,7 +64054,7 @@ async function rebasePr(prNumber, githubToken) {
     const commits = await getCommitsInRange(commonAncestorSha, "HEAD");
     let squashFixups = process.env["CI"] !== void 0 || commits.filter((commit) => commit.isFixup).length === 0 ? false : await Prompt.confirm(`PR #${prNumber} contains fixup commits, would you like to squash them during rebase?`, true);
     Log.info(`Attempting to rebase PR #${prNumber} on ${fullBaseRef}`);
-    const [flags, env2] = squashFixups ? [["--interactive", "--autosquash"], __spreadProps(__spreadValues({}, process.env), { GIT_SEQUENCE_EDITOR: "true" })] : [[], void 0];
+    const [flags, env2] = squashFixups ? [["--interactive", "--autosquash"], { ...process.env, GIT_SEQUENCE_EDITOR: "true" }] : [[], void 0];
     const rebaseResult = git.runGraceful(["rebase", ...flags, "FETCH_HEAD"], { env: env2 });
     if (rebaseResult.status === 0) {
       Log.info(`Rebase was able to complete automatically without conflicts`);
@@ -64466,7 +64479,7 @@ async function handler16(argv) {
   }
   const git = await GitClient.get();
   const nextBranchName = getNextBranchName(git.config.github);
-  const repo = __spreadProps(__spreadValues({ api: git.github }, git.remoteConfig), { nextBranchName });
+  const repo = { api: git.github, ...git.remoteConfig, nextBranchName };
   const releaseTrains = await ActiveReleaseTrains.fetch(repo);
   await printActiveReleaseTrains(releaseTrains, config.release);
 }
@@ -64509,10 +64522,11 @@ var RenderContext = class {
     return commits.map((commit) => {
       var _a, _b;
       const { description, groupName } = ((_b = (_a = this.data).categorizeCommit) == null ? void 0 : _b.call(_a, commit)) ?? {};
-      return __spreadValues({
+      return {
         groupName: groupName ?? commit.scope,
-        description: description ?? commit.subject
-      }, commit);
+        description: description ?? commit.subject,
+        ...commit
+      };
     });
   }
   asCommitGroups(commits) {
@@ -65178,9 +65192,11 @@ async function analyzeAndExtendBuiltPackagesWithInfo(builtPackages, npmPackages)
       Log.error(`  \u2718   Could not find package information for built package: "${pkg.name}".`);
       throw new FatalReleaseActionError();
     }
-    result.push(__spreadValues(__spreadValues({
-      hash: await computeHashForPackageContents(pkg)
-    }, pkg), info2));
+    result.push({
+      hash: await computeHashForPackageContents(pkg),
+      ...pkg,
+      ...info2
+    });
   }
   return result;
 }
@@ -65304,7 +65320,7 @@ var ExternalCommands = class {
 // bazel-out/k8-fastbuild/bin/ng-dev/release/publish/pull-request-state.js
 var THIRTY_SECONDS_IN_MS = 3e4;
 async function getPullRequestState(api, id) {
-  const { data } = await api.github.pulls.get(__spreadProps(__spreadValues({}, api.remoteParams), { pull_number: id }));
+  const { data } = await api.github.pulls.get({ ...api.remoteParams, pull_number: id });
   if (data.merged) {
     return "merged";
   }
@@ -65314,9 +65330,10 @@ async function getPullRequestState(api, id) {
   return "open";
 }
 async function isPullRequestClosedWithAssociatedCommit(api, id) {
-  const events = await api.github.paginate(api.github.issues.listEvents, __spreadProps(__spreadValues({}, api.remoteParams), {
+  const events = await api.github.paginate(api.github.issues.listEvents, {
+    ...api.remoteParams,
     issue_number: id
-  }));
+  });
   for (let i = events.length - 1; i >= 0; i--) {
     const { event, commit_id } = events[i];
     if (event === "reopened") {
@@ -65332,7 +65349,7 @@ async function isPullRequestClosedWithAssociatedCommit(api, id) {
   return false;
 }
 async function isCommitClosingPullRequest(api, sha, id) {
-  const { data } = await api.github.repos.getCommit(__spreadProps(__spreadValues({}, api.remoteParams), { ref: sha }));
+  const { data } = await api.github.repos.getCommit({ ...api.remoteParams, ref: sha });
   return data.commit.message.match(new RegExp(`(?:close[sd]?|fix(?:e[sd]?)|resolve[sd]?):? #${id}(?!\\d)`, "i"));
 }
 
@@ -65356,20 +65373,22 @@ var ReleaseAction = class {
     Log.info(green(`  \u2713   Updated project version to ${pkgJson.version}`));
   }
   async getLatestCommitOfBranch(branchName) {
-    const { data: { commit } } = await this.git.github.repos.getBranch(__spreadProps(__spreadValues({}, this.git.remoteParams), { branch: branchName }));
+    const { data: { commit } } = await this.git.github.repos.getBranch({ ...this.git.remoteParams, branch: branchName });
     return commit.sha;
   }
   async _isRevisionAheadOfBase(baseRevision, targetRevision, expectedAheadCount) {
-    const { data: { ahead_by, status } } = await this.git.github.repos.compareCommits(__spreadProps(__spreadValues({}, this.git.remoteParams), {
+    const { data: { ahead_by, status } } = await this.git.github.repos.compareCommits({
+      ...this.git.remoteParams,
       base: baseRevision,
       head: targetRevision
-    }));
+    });
     return status === "ahead" && ahead_by === expectedAheadCount;
   }
   async assertPassingGithubStatus(commitSha, branchNameForError) {
-    const { data: { state } } = await this.git.github.repos.getCombinedStatusForRef(__spreadProps(__spreadValues({}, this.git.remoteParams), {
+    const { data: { state } } = await this.git.github.repos.getCombinedStatusForRef({
+      ...this.git.remoteParams,
       ref: commitSha
-    }));
+    });
     const branchCommitsUrl = getListCommitsInBranchUrl(this.git, branchNameForError);
     if (state === "failure") {
       Log.error(`  \u2718   Cannot stage release. Commit "${commitSha}" does not pass all github status checks. Please make sure this commit passes all checks before re-running.`);
@@ -65441,7 +65460,7 @@ var ReleaseAction = class {
   }
   async _pushHeadToFork(proposedBranchName, trackLocalBranch) {
     const fork2 = await this._getForkOfAuthenticatedUser();
-    const repoGitUrl = getRepositoryGitUrl(__spreadProps(__spreadValues({}, fork2), { useSsh: this.git.remoteConfig.useSsh }), this.git.githubToken);
+    const repoGitUrl = getRepositoryGitUrl({ ...fork2, useSsh: this.git.remoteConfig.useSsh }, this.git.githubToken);
     const branchName = await this._findAvailableBranchName(fork2, proposedBranchName);
     const pushArgs = [];
     if (trackLocalBranch) {
@@ -65454,17 +65473,19 @@ var ReleaseAction = class {
   async pushChangesToForkAndCreatePullRequest(targetBranch, proposedForkBranchName, title, body) {
     const repoSlug = `${this.git.remoteParams.owner}/${this.git.remoteParams.repo}`;
     const { fork: fork2, branchName } = await this._pushHeadToFork(proposedForkBranchName, true);
-    const { data } = await this.git.github.pulls.create(__spreadProps(__spreadValues({}, this.git.remoteParams), {
+    const { data } = await this.git.github.pulls.create({
+      ...this.git.remoteParams,
       head: `${fork2.owner}:${branchName}`,
       base: targetBranch,
       body,
       title
-    }));
+    });
     if (this.config.releasePrLabels !== void 0) {
-      await this.git.github.issues.addLabels(__spreadProps(__spreadValues({}, this.git.remoteParams), {
+      await this.git.github.issues.addLabels({
+        ...this.git.remoteParams,
         issue_number: data.number,
         labels: this.config.releasePrLabels
-      }));
+      });
     }
     Log.info(green(`  \u2713   Created pull request #${data.number} in ${repoSlug}.`));
     return {
@@ -65542,9 +65563,10 @@ var ReleaseAction = class {
     await this.assertPassingGithubStatus(beforeStagingSha, stagingBranch);
     await this.checkoutUpstreamBranch(stagingBranch);
     const stagingInfo = await this.stageVersionForBranchAndCreatePullRequest(newVersion, compareVersionForReleaseNotes, stagingBranch);
-    return __spreadProps(__spreadValues({}, stagingInfo), {
+    return {
+      ...stagingInfo,
       beforeStagingSha
-    });
+    };
   }
   async cherryPickChangelogIntoNextBranch(releaseNotes, stagingBranch) {
     const nextBranch = this.active.next.branchName;
@@ -65561,22 +65583,24 @@ var ReleaseAction = class {
   }
   async _createGithubReleaseForVersion(releaseNotes, versionBumpCommitSha, isPrerelease) {
     const tagName = getReleaseTagForVersion(releaseNotes.version);
-    await this.git.github.git.createRef(__spreadProps(__spreadValues({}, this.git.remoteParams), {
+    await this.git.github.git.createRef({
+      ...this.git.remoteParams,
       ref: `refs/tags/${tagName}`,
       sha: versionBumpCommitSha
-    }));
+    });
     Log.info(green(`  \u2713   Tagged v${releaseNotes.version} release upstream.`));
     let releaseBody = await releaseNotes.getGithubReleaseEntry();
     if (releaseBody.length > githubReleaseBodyLimit) {
       const releaseNotesUrl = await this._getGithubChangelogUrlForRef(releaseNotes, tagName);
       releaseBody = `Release notes are too large to be captured here. [View all changes here](${releaseNotesUrl}).`;
     }
-    await this.git.github.repos.createRelease(__spreadProps(__spreadValues({}, this.git.remoteParams), {
+    await this.git.github.repos.createRelease({
+      ...this.git.remoteParams,
       name: `v${releaseNotes.version}`,
       tag_name: tagName,
       prerelease: isPrerelease,
       body: releaseBody
-    }));
+    });
     Log.info(green(`  \u2713   Created v${releaseNotes.version} release in Github.`));
   }
   async _getGithubChangelogUrlForRef(releaseNotes, ref) {
@@ -65618,9 +65642,10 @@ var ReleaseAction = class {
     }
   }
   async _isCommitForVersionStaging(version, commitSha) {
-    const { data } = await this.git.github.repos.getCommit(__spreadProps(__spreadValues({}, this.git.remoteParams), {
+    const { data } = await this.git.github.repos.getCommit({
+      ...this.git.remoteParams,
       ref: commitSha
-    }));
+    });
     return data.commit.message.startsWith(getCommitMessageForRelease(version));
   }
   async _verifyPackageVersions(version, packages) {
@@ -65935,13 +65960,15 @@ var TagRecentMajorAsLatest = class extends ReleaseAction {
   }
   async updateGithubReleaseEntryToStable(version) {
     const releaseTagName = getReleaseTagForVersion(version);
-    const { data: releaseInfo } = await this.git.github.repos.getReleaseByTag(__spreadProps(__spreadValues({}, this.git.remoteParams), {
+    const { data: releaseInfo } = await this.git.github.repos.getReleaseByTag({
+      ...this.git.remoteParams,
       tag: releaseTagName
-    }));
-    await this.git.github.repos.updateRelease(__spreadProps(__spreadValues({}, this.git.remoteParams), {
+    });
+    await this.git.github.repos.updateRelease({
+      ...this.git.remoteParams,
       release_id: releaseInfo.id,
       prerelease: false
-    }));
+    });
   }
   static async isActive({ latest }, config) {
     if (latest.version.minor !== 0 || latest.version.patch !== 0) {
@@ -65971,7 +65998,7 @@ import * as fs3 from "fs";
 import lockfile2 from "@yarnpkg/lockfile";
 async function verifyNgDevToolIsUpToDate(workspacePath) {
   var _a, _b, _c;
-  const localVersion = `0.0.0-f0e133d87f697c8e7ef58bd3ce16e4d4fd024494`;
+  const localVersion = `0.0.0-550c81899c5705eefc2e1ba323873f6b85e123fa`;
   const workspacePackageJsonFile = path2.join(workspacePath, workspaceRelativePackageJsonPath);
   const workspaceDirLockFile = path2.join(workspacePath, workspaceRelativeYarnLockFilePath);
   try {
@@ -66088,9 +66115,10 @@ var ReleaseTool = class {
   }
   async _verifyRunningFromNextBranch(nextBranchName) {
     const headSha = this._git.run(["rev-parse", "HEAD"]).stdout.trim();
-    const { data } = await this._git.github.repos.getBranch(__spreadProps(__spreadValues({}, this._git.remoteParams), {
+    const { data } = await this._git.github.repos.getBranch({
+      ...this._git.remoteParams,
       branch: this._git.mainBranchName
-    }));
+    });
     if (headSha !== data.commit.sha) {
       Log.error("  \u2718   Running release tool from an outdated local branch.");
       Log.error(`      Please make sure you are running from the "${nextBranchName}" branch.`);

@@ -10,19 +10,17 @@ import {
   getConfig,
   green,
   yellow
-} from "./chunk-5JIGVKPD.mjs";
+} from "./chunk-XBLHPK6F.mjs";
 import {
   FormData,
   fetch_blob_default,
   formDataToBlob
-} from "./chunk-KTTQTX6B.mjs";
+} from "./chunk-D7GSJ3JO.mjs";
 import {
   __commonJS,
   __require,
-  __spreadProps,
-  __spreadValues,
   __toESM
-} from "./chunk-3CEJO2PC.mjs";
+} from "./chunk-X3O2C2F5.mjs";
 
 // node_modules/is-plain-object/dist/is-plain-object.js
 var require_is_plain_object = __commonJS({
@@ -11461,12 +11459,12 @@ var GitClient = class {
       throw new DryRunError();
     }
     Log.debug("Executing: git", this.sanitizeConsoleOutput(args.join(" ")));
-    const result = spawnSync(this.gitBinPath, args, __spreadProps(__spreadValues({
+    const result = spawnSync(this.gitBinPath, args, {
       cwd: this.baseDir,
-      stdio: "pipe"
-    }, options), {
+      stdio: "pipe",
+      ...options,
       encoding: "utf8"
-    }));
+    });
     Log.debug(`Status: ${result.status}, Error: ${!!result.error}, Signal: ${result.signal}`);
     if (result.status !== 0 && result.stderr !== null) {
       process.stderr.write(this.sanitizeConsoleOutput(result.stderr));
@@ -11933,7 +11931,7 @@ var Body = class {
       }
       return formData;
     }
-    const { toFormData } = await import("./multipart-parser-A4DMIJ5D.mjs");
+    const { toFormData } = await import("./multipart-parser-R2L6Q4UW.mjs");
     return toFormData(this.body, ct);
   }
   async blob() {
@@ -13192,4 +13190,4 @@ export {
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-//# sourceMappingURL=chunk-ZXKPKNF4.mjs.map
+//# sourceMappingURL=chunk-WATBVD2P.mjs.map

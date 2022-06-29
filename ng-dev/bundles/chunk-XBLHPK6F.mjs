@@ -4,10 +4,8 @@ const require = __cjsCompatRequire(import.meta.url);
 
 import {
   __esm,
-  __export,
-  __spreadProps,
-  __spreadValues
-} from "./chunk-3CEJO2PC.mjs";
+  __export
+} from "./chunk-X3O2C2F5.mjs";
 
 // node_modules/supports-color/index.js
 var supports_color_exports = {};
@@ -113,9 +111,10 @@ function _supportsColor2(haveStream, { streamIsTTY, sniffFlags = true } = {}) {
   return min;
 }
 function createSupportsColor2(stream, options = {}) {
-  const level = _supportsColor2(stream, __spreadValues({
-    streamIsTTY: stream && stream.isTTY
-  }, options));
+  const level = _supportsColor2(stream, {
+    streamIsTTY: stream && stream.isTTY,
+    ...options
+  });
   return translateLevel2(level);
 }
 var env2, flagForceColor2, supportsColor2, supports_color_default2;
@@ -414,9 +413,10 @@ function _supportsColor(haveStream, { streamIsTTY, sniffFlags = true } = {}) {
   return min;
 }
 function createSupportsColor(stream, options = {}) {
-  const level = _supportsColor(stream, __spreadValues({
-    streamIsTTY: stream && stream.isTTY
-  }, options));
+  const level = _supportsColor(stream, {
+    streamIsTTY: stream && stream.isTTY,
+    ...options
+  });
   return translateLevel(level);
 }
 var supportsColor = {
@@ -538,7 +538,8 @@ for (const model of usedModels) {
   };
 }
 var proto = Object.defineProperties(() => {
-}, __spreadProps(__spreadValues({}, styles), {
+}, {
+  ...styles,
   level: {
     enumerable: true,
     get() {
@@ -548,7 +549,7 @@ var proto = Object.defineProperties(() => {
       this[GENERATOR].level = level;
     }
   }
-}));
+});
 var createStyler = (open, close, parent) => {
   let openAll;
   let closeAll;
@@ -613,7 +614,7 @@ var ChildProcess = class {
     return new Promise((resolve, reject) => {
       const commandText = `${command} ${args.join(" ")}`;
       Log.debug(`Executing command: ${commandText}`);
-      const childProcess = _spawn(command, args, __spreadProps(__spreadValues({}, options), { shell: true, stdio: "inherit" }));
+      const childProcess = _spawn(command, args, { ...options, shell: true, stdio: "inherit" });
       childProcess.on("close", (status) => status === 0 ? resolve() : reject(status));
     });
   }
@@ -623,7 +624,7 @@ var ChildProcess = class {
       const outputMode = options.mode;
       const env3 = getEnvironmentForNonInteractiveSpawn(options.env);
       Log.debug(`Executing command: ${commandText}`);
-      const childProcess = _spawn(command, args, __spreadProps(__spreadValues({}, options), { env: env3, shell: true, stdio: "pipe" }));
+      const childProcess = _spawn(command, args, { ...options, env: env3, shell: true, stdio: "pipe" });
       let logOutput = "";
       let stdout = "";
       let stderr = "";
@@ -664,7 +665,7 @@ ${logOutput}`);
     const commandText = `${command} ${args.join(" ")}`;
     const env3 = getEnvironmentForNonInteractiveSpawn(options.env);
     Log.debug(`Executing command: ${commandText}`);
-    const { status: exitCode, signal, stdout, stderr } = _spawnSync(command, args, __spreadProps(__spreadValues({}, options), { env: env3, encoding: "utf8", shell: true, stdio: "pipe" }));
+    const { status: exitCode, signal, stdout, stderr } = _spawnSync(command, args, { ...options, env: env3, encoding: "utf8", shell: true, stdio: "pipe" });
     const status = statusFromExitCodeAndSignal(exitCode, signal);
     if (status === 0 || options.suppressErrorOnFailingExitCode) {
       return { status, stdout, stderr };
@@ -677,7 +678,7 @@ function statusFromExitCodeAndSignal(exitCode, signal) {
 }
 function getEnvironmentForNonInteractiveSpawn(userProvidedEnv) {
   const forceColorValue = supports_color_default2.stdout !== false ? supports_color_default2.stdout.level.toString() : void 0;
-  return __spreadValues({ FORCE_COLOR: forceColorValue }, userProvidedEnv ?? process.env);
+  return { FORCE_COLOR: forceColorValue, ...userProvidedEnv ?? process.env };
 }
 
 // bazel-out/k8-fastbuild/bin/ng-dev/utils/repo-directory.js
@@ -817,14 +818,14 @@ async function getConfig(baseDirOrAssertions) {
       assertion(cachedConfig2);
     }
   }
-  return __spreadProps(__spreadValues({}, cachedConfig2), { __isNgDevConfigObject: true });
+  return { ...cachedConfig2, __isNgDevConfigObject: true };
 }
 async function getUserConfig() {
   if (userConfig === null) {
     const configPath = join2(determineRepoBaseDirFromCwd(), USER_CONFIG_FILE_PATH);
     userConfig = await readConfigFile(configPath, true);
   }
-  return __spreadValues({}, userConfig);
+  return { ...userConfig };
 }
 var ConfigValidationError = class extends Error {
   constructor(message, errors = []) {
@@ -923,4 +924,4 @@ export {
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-//# sourceMappingURL=chunk-5JIGVKPD.mjs.map
+//# sourceMappingURL=chunk-XBLHPK6F.mjs.map
