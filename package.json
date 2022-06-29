@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-f628b17877646e0c6a129b52ef603dd6e11b64ce",
+  "version": "0.0.0-e662c953b3f5aa0c1ec9a37d0c33a9d660b45725",
   "bin": {
     "ng-dev": "./ng-dev/bundles/cli.mjs"
   },
@@ -148,6 +148,11 @@
     "which": "^2.0.2",
     "yaml": "^2.0.0",
     "zone.js": "^0.11.4"
+  },
+  "dependenciesMeta": {
+    "re2": {
+      "built": false
+    }
   },
   "resolutions": {
     "@angular/benchpress/@angular/core": "14.1.0-next.2"
