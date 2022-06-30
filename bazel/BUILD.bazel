@@ -6,6 +6,7 @@ filegroup(
         "extract_js_module_output.bzl",
         "extract_types.bzl",
         "@npm//@angular/dev-infra-private/bazel/api-golden:files",
+        "@npm//@angular/dev-infra-private/bazel/app-bundling:files",
         "@npm//@angular/dev-infra-private/bazel/benchmark:files",
         "@npm//@angular/dev-infra-private/bazel/browsers:files",
         "@npm//@angular/dev-infra-private/bazel/constraints:files",

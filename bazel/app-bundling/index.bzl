@@ -45,7 +45,7 @@ def app_bundle(
     expand_template(
         name = "%s_config_file" % name,
         output_name = "%s_config.mjs" % name,
-        template = "@npm//@angular/dev-infra-private/bazel/benchmark/app_bundling:esbuild.config-tmpl.mjs",
+        template = "@npm//@angular/dev-infra-private/bazel/app-bundling:esbuild.config-tmpl.mjs",
         visibility = visibility,
         substitutions = {
             "TMPL_ENTRY_POINT_ROOTPATH": "$(rootpath %s)" % entry_point,
@@ -75,7 +75,7 @@ def app_bundle(
 
     common_terser_options = {
         "visibility": visibility,
-        "config_file": "@npm//@angular/dev-infra-private/bazel/benchmark/app_bundling:terser_config.json",
+        "config_file": "@npm//@angular/dev-infra-private/bazel/app-bundling:terser_config.json",
         # TODO: Enable source maps for better debugging when `@bazel/terser` pre-declares
         # JS and map outputs. Tracked with: DEV-120
         "sourcemap": False,
@@ -114,7 +114,7 @@ def app_bundle(
 
     npm_package_bin(
         name = "_%s_brotli" % name,
-        tool = "@npm//@angular/dev-infra-private/bazel/benchmark/brotli-cli",
+        tool = "@npm//@angular/dev-infra-private/bazel/app-bundling:brotli-compress",
         data = [name + ".min.js"],
         outs = [name + ".min.js.br"],
         args = [
