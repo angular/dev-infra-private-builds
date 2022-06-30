@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-02950c964f8c0cfc855685748c42b35c5aaa3ca5",
+  "version": "0.0.0-161402f8b339908d9067e0c501ddb1a26d2c3672",
   "bin": {
     "ng-dev": "./ng-dev/bundles/cli.mjs"
   },
@@ -89,7 +89,7 @@
     "@octokit/request-error": "^2.1.0",
     "@octokit/rest": "^18.7.0",
     "@octokit/types": "^6.16.6",
-    "@octokit/webhooks-types": "^5.5.1",
+    "@octokit/webhooks-types": "^6.0.0",
     "@types/babel__core": "^7.1.19",
     "@types/cli-progress": "^3.9.1",
     "@types/conventional-commits-parser": "^3.0.1",
