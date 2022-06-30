@@ -26793,7 +26793,7 @@ var require_buffer_list = __commonJS({
         }
       }, {
         key: "join",
-        value: function join13(s) {
+        value: function join15(s) {
           if (this.length === 0)
             return "";
           var p = this.head;
@@ -46212,7 +46212,7 @@ var require_lodash = __commonJS({
           }
           return mapped.length && mapped[0] === arrays[0] ? baseIntersection(mapped, undefined2, comparator) : [];
         });
-        function join13(array, separator) {
+        function join15(array, separator) {
           return array == null ? "" : nativeJoin.call(array, separator);
         }
         function last(array) {
@@ -48128,7 +48128,7 @@ var require_lodash = __commonJS({
         lodash.isUndefined = isUndefined;
         lodash.isWeakMap = isWeakMap;
         lodash.isWeakSet = isWeakSet;
-        lodash.join = join13;
+        lodash.join = join15;
         lodash.kebabCase = kebabCase;
         lodash.last = last;
         lodash.lastIndexOf = lastIndexOf;
@@ -48646,7 +48646,7 @@ var require_regex = __commonJS({
   "node_modules/conventional-commits-parser/lib/regex.js"(exports2, module2) {
     "use strict";
     var reNomatch = /(?!.*)/;
-    function join13(array, joiner) {
+    function join15(array, joiner) {
       return array.map(function(val) {
         return val.trim();
       }).filter(function(val) {
@@ -48657,7 +48657,7 @@ var require_regex = __commonJS({
       if (!noteKeywords) {
         return reNomatch;
       }
-      const noteKeywordsSelection = join13(noteKeywords, "|");
+      const noteKeywordsSelection = join15(noteKeywords, "|");
       if (!notesPattern) {
         return new RegExp("^[\\s|*]*(" + noteKeywordsSelection + ")[:\\s]+(.*)", "i");
       }
@@ -48668,13 +48668,13 @@ var require_regex = __commonJS({
         return reNomatch;
       }
       const flags = issuePrefixesCaseSensitive ? "g" : "gi";
-      return new RegExp("(?:.*?)??\\s*([\\w-\\.\\/]*?)??(" + join13(issuePrefixes, "|") + ")([\\w-]*\\d+)", flags);
+      return new RegExp("(?:.*?)??\\s*([\\w-\\.\\/]*?)??(" + join15(issuePrefixes, "|") + ")([\\w-]*\\d+)", flags);
     }
     function getReferencesRegex(referenceActions) {
       if (!referenceActions) {
         return /()(.+)/gi;
       }
-      const joinedKeywords = join13(referenceActions, "|");
+      const joinedKeywords = join15(referenceActions, "|");
       return new RegExp("(" + joinedKeywords + ")(?:\\s+(.*?))(?=(?:" + joinedKeywords + ")|$)", "gi");
     }
     module2.exports = function(options) {
@@ -51217,10 +51217,10 @@ var require_ejs = __commonJS({
     exports2.localsName = _DEFAULT_LOCALS_NAME;
     exports2.promiseImpl = new Function("return this;")().Promise;
     exports2.resolveInclude = function(name, filename, isDir) {
-      var dirname5 = path3.dirname;
+      var dirname7 = path3.dirname;
       var extname3 = path3.extname;
       var resolve13 = path3.resolve;
-      var includePath = resolve13(isDir ? filename : dirname5(filename), name);
+      var includePath = resolve13(isDir ? filename : dirname7(filename), name);
       var ext = extname3(name);
       if (!ext) {
         includePath += ".ejs";
@@ -53747,14 +53747,14 @@ var require_folder_hash = __commonJS({
           }
         });
       }
-      function hashElementPromise(stats, dirname5, options, isRootElement = false) {
+      function hashElementPromise(stats, dirname7, options, isRootElement = false) {
         const name = stats.name;
         if (stats.isDirectory()) {
-          return hashFolderPromise(name, dirname5, options, isRootElement);
+          return hashFolderPromise(name, dirname7, options, isRootElement);
         } else if (stats.isFile()) {
-          return hashFilePromise(name, dirname5, options, isRootElement);
+          return hashFilePromise(name, dirname7, options, isRootElement);
         } else if (stats.isSymbolicLink()) {
-          return hashSymLinkPromise(name, dirname5, options, isRootElement);
+          return hashSymLinkPromise(name, dirname7, options, isRootElement);
         } else {
           log.err("hashElementPromise cannot handle ", stats);
           return { name, hash: "Error: unknown element type" };
@@ -62234,6 +62234,8 @@ import { lstatSync } from "fs";
 import { resolve as resolve6 } from "path";
 
 // bazel-out/k8-fastbuild/bin/ng-dev/release/build/index.js
+import { dirname as dirname3, join as join6 } from "path";
+import { fileURLToPath as fileURLToPath2 } from "url";
 import { fork } from "child_process";
 var BuildWorker = class {
   static async invokeBuild() {
@@ -62248,7 +62250,8 @@ var BuildWorker = class {
   }
 };
 function getBuildWorkerScriptPath() {
-  return __require.resolve("@angular/dev-infra-private/ng-dev/release/build/build-worker");
+  const bundlesDir = dirname3(fileURLToPath2(import.meta.url));
+  return join6(bundlesDir, "./release/build/build-worker.mjs");
 }
 
 // bazel-out/k8-fastbuild/bin/ng-dev/misc/build-and-link/cli.js
@@ -62469,7 +62472,7 @@ var NewMainBranchCommandModule = {
 
 // bazel-out/k8-fastbuild/bin/ng-dev/misc/update-yarn/cli.js
 import { readdirSync as readdirSync3, unlinkSync as unlinkSync2 } from "fs";
-import { join as join7 } from "path";
+import { join as join8 } from "path";
 
 // bazel-out/k8-fastbuild/bin/ng-dev/utils/spinner.js
 import { cursorTo, clearLine } from "readline";
@@ -62618,8 +62621,8 @@ async function handler9() {
     git.run(["fetch", "-q", git.getRepoGitUrl(), mainBranchName]);
     git.checkout("FETCH_HEAD", false);
     spinner.update("Removing previous yarn version.");
-    const yarnReleasesDir = join7(git.baseDir, ".yarn/releases");
-    readdirSync3(yarnReleasesDir).forEach((file) => unlinkSync2(join7(yarnReleasesDir, file)));
+    const yarnReleasesDir = join8(git.baseDir, ".yarn/releases");
+    readdirSync3(yarnReleasesDir).forEach((file) => unlinkSync2(join8(yarnReleasesDir, file)));
     spinner.update("Updating yarn version.");
     ChildProcess.spawnSync(yarnGlobalBin, ["policies", "set-version", "latest"]);
     spinner.update("Confirming the version of yarn was updated.");
@@ -63725,6 +63728,8 @@ var GithubApiMergeStrategy = class extends MergeStrategy {
 };
 
 // bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/strategies/autosquash-merge.js
+import { dirname as dirname4, join as join9 } from "path";
+import { fileURLToPath as fileURLToPath3 } from "url";
 var AutosquashMergeStrategy = class extends MergeStrategy {
   async merge(pullRequest) {
     const { prNumber, targetBranches, requiredBaseSha, needsCommitMessageFixup, githubTargetBranch } = pullRequest;
@@ -63770,7 +63775,8 @@ var AutosquashMergeStrategy = class extends MergeStrategy {
   }
 };
 function getCommitMessageFilterScriptPath() {
-  return __require.resolve("@angular/dev-infra-private/ng-dev/pr/merge/strategies/commit-message-filter");
+  const bundlesDir = dirname4(fileURLToPath3(import.meta.url));
+  return join9(bundlesDir, "./pr/merge/strategies/commit-message-filter.mjs");
 }
 
 // bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/task.js
@@ -64826,7 +64832,7 @@ function fetchCommitsForRevisionRange(client, revisionRange) {
 // bazel-out/k8-fastbuild/bin/ng-dev/release/notes/changelog.js
 var import_semver2 = __toESM(require_semver());
 import { existsSync as existsSync3, readFileSync as readFileSync10, writeFileSync as writeFileSync4 } from "fs";
-import { join as join8 } from "path";
+import { join as join10 } from "path";
 var changelogPath = "CHANGELOG.md";
 var changelogArchivePath = "CHANGELOG_ARCHIVE.md";
 var splitMarker = "<!-- CHANGELOG SPLIT MARKER -->";
@@ -64839,8 +64845,8 @@ var versionAnchorMatcher = new RegExp(`<a name="(.*)"></a>`);
 var Changelog = class {
   constructor(git) {
     this.git = git;
-    this.filePath = join8(this.git.baseDir, changelogPath);
-    this.archiveFilePath = join8(this.git.baseDir, changelogArchivePath);
+    this.filePath = join10(this.git.baseDir, changelogPath);
+    this.archiveFilePath = join10(this.git.baseDir, changelogArchivePath);
     this._entries = void 0;
     this._archiveEntries = void 0;
   }
@@ -65149,7 +65155,7 @@ function semverInc(version, release, identifier) {
 
 // bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions.js
 import { promises as fs2 } from "fs";
-import { join as join9 } from "path";
+import { join as join11 } from "path";
 
 // bazel-out/k8-fastbuild/bin/ng-dev/utils/constants.js
 var ngDevNpmPackageName = "@angular/dev-infra-private";
@@ -65365,7 +65371,7 @@ var ReleaseAction = class {
     throw Error("Not implemented.");
   }
   async updateProjectVersion(newVersion) {
-    const pkgJsonPath = join9(this.projectDir, workspaceRelativePackageJsonPath);
+    const pkgJsonPath = join11(this.projectDir, workspaceRelativePackageJsonPath);
     const pkgJson = JSON.parse(await fs2.readFile(pkgJsonPath, "utf8"));
     pkgJson.version = newVersion.format();
     await fs2.writeFile(pkgJsonPath, `${JSON.stringify(pkgJson, null, 2)}
@@ -65524,7 +65530,7 @@ var ReleaseAction = class {
     this.git.run(["checkout", "-q", "FETCH_HEAD", "--detach"]);
   }
   async installDependenciesForCurrentBranch() {
-    const nodeModulesDir = join9(this.projectDir, "node_modules");
+    const nodeModulesDir = join11(this.projectDir, "node_modules");
     await fs2.rm(nodeModulesDir, { force: true, recursive: true, maxRetries: 3 });
     await ExternalCommands.invokeYarnInstall(this.projectDir);
   }
@@ -65651,7 +65657,7 @@ var ReleaseAction = class {
   async _verifyPackageVersions(version, packages) {
     const experimentalVersion = createExperimentalSemver(version);
     for (const pkg of packages) {
-      const { version: packageJsonVersion } = JSON.parse(await fs2.readFile(join9(pkg.outputPath, "package.json"), "utf8"));
+      const { version: packageJsonVersion } = JSON.parse(await fs2.readFile(join11(pkg.outputPath, "package.json"), "utf8"));
       const expectedVersion = pkg.experimental ? experimentalVersion : version;
       const mismatchesVersion = expectedVersion.compare(packageJsonVersion) !== 0;
       if (mismatchesVersion) {
@@ -65998,7 +66004,7 @@ import * as fs3 from "fs";
 import lockfile2 from "@yarnpkg/lockfile";
 async function verifyNgDevToolIsUpToDate(workspacePath) {
   var _a, _b, _c;
-  const localVersion = `0.0.0-749792b779b9f7089305c9bea7afef37f2558c17`;
+  const localVersion = `0.0.0-050669a27b26f501c1b6e2a5680032927fba9d81`;
   const workspacePackageJsonFile = path2.join(workspacePath, workspaceRelativePackageJsonPath);
   const workspaceDirLockFile = path2.join(workspacePath, workspaceRelativeYarnLockFilePath);
   try {
@@ -66252,7 +66258,7 @@ var ReleaseSetDistTagCommand = {
 // bazel-out/k8-fastbuild/bin/ng-dev/release/stamping/env-stamp.js
 import * as fs4 from "fs";
 var import_semver18 = __toESM(require_semver());
-import { join as join11 } from "path";
+import { join as join13 } from "path";
 async function buildEnvStamp(mode, includeVersion) {
   const git = await GitClient.get();
   console.info(`BUILD_SCM_BRANCH ${getCurrentBranch2(git)}`);
@@ -66330,7 +66336,7 @@ function getCurrentGitUser(git) {
   }
 }
 function getVersionFromWorkspacePackageJson(git) {
-  const packageJsonPath = join11(git.baseDir, "package.json");
+  const packageJsonPath = join13(git.baseDir, "package.json");
   const packageJson = JSON.parse(fs4.readFileSync(packageJsonPath, "utf8"));
   if (packageJson.version === void 0) {
     throw new Error(`No workspace version found in: ${packageJsonPath}`);
@@ -66372,7 +66378,7 @@ import { isAbsolute as isAbsolute2, relative as relative3, resolve as resolve12 
 
 // bazel-out/k8-fastbuild/bin/ng-dev/ts-circular-dependencies/analyzer.js
 import { readFileSync as readFileSync13 } from "fs";
-import { dirname as dirname3, join as join12, resolve as resolve10 } from "path";
+import { dirname as dirname5, join as join14, resolve as resolve10 } from "path";
 import ts2 from "typescript";
 
 // bazel-out/k8-fastbuild/bin/ng-dev/ts-circular-dependencies/file_system.js
@@ -66468,7 +66474,7 @@ var Analyzer = class {
     this.unresolvedFiles.get(originFilePath).push(specifier);
   }
   _resolveFileSpecifier(specifier, containingFilePath) {
-    const importFullPath = containingFilePath !== void 0 ? join12(dirname3(containingFilePath), specifier) : specifier;
+    const importFullPath = containingFilePath !== void 0 ? join14(dirname5(containingFilePath), specifier) : specifier;
     const stat = getFileStatus(importFullPath);
     if (stat && stat.isFile()) {
       return importFullPath;
@@ -66481,16 +66487,16 @@ var Analyzer = class {
       }
     }
     if (stat && stat.isDirectory()) {
-      return this._resolveFileSpecifier(join12(importFullPath, "index"));
+      return this._resolveFileSpecifier(join14(importFullPath, "index"));
     }
     return null;
   }
 };
 
 // bazel-out/k8-fastbuild/bin/ng-dev/ts-circular-dependencies/config.js
-import { dirname as dirname4, isAbsolute, resolve as resolve11 } from "path";
+import { dirname as dirname6, isAbsolute, resolve as resolve11 } from "path";
 function loadTestConfig(configPath) {
-  const configBaseDir = dirname4(configPath);
+  const configBaseDir = dirname6(configPath);
   const resolveRelativePath = (relativePath) => resolve11(configBaseDir, relativePath);
   try {
     const config = __require(configPath);
