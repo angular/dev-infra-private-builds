@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-19cf0d937c5d6fa749034c34d5f7f95b46ff64d9",
+  "version": "0.0.0-9bbee479ef6084948452c9fbf3b67eaac0d0d9d8",
   "bin": {
     "ng-dev": "./ng-dev/bundles/cli.mjs"
   },
@@ -36,7 +36,7 @@
     "@bazel/runfiles": "5.5.1",
     "@bazel/terser": "5.5.1",
     "@bazel/typescript": "5.5.1",
-    "@microsoft/api-extractor": "7.28.3",
+    "@microsoft/api-extractor": "7.28.4",
     "@types/browser-sync": "^2.26.3",
     "@types/node": "16.10.9",
     "@types/selenium-webdriver": "^4.0.18",
@@ -111,7 +111,7 @@
     "conventional-commits-parser": "^3.2.1",
     "ejs": "^3.1.6",
     "escodegen": "^1.13.0",
-    "firebase": "9.8.4",
+    "firebase": "9.9.0",
     "firebase-admin": "^11.0.0",
     "firebase-functions": "^3.21.2",
     "firebase-tools": "^11.0.1",
