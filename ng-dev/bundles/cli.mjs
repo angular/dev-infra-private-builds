@@ -292,8 +292,8 @@ var require_brace_expansion = __commonJS({
 // node_modules/multimatch/node_modules/minimatch/minimatch.js
 var require_minimatch = __commonJS({
   "node_modules/multimatch/node_modules/minimatch/minimatch.js"(exports2, module2) {
-    module2.exports = minimatch;
-    minimatch.Minimatch = Minimatch2;
+    module2.exports = minimatch2;
+    minimatch2.Minimatch = Minimatch2;
     var path3 = function() {
       try {
         return __require("path");
@@ -302,8 +302,8 @@ var require_minimatch = __commonJS({
     }() || {
       sep: "/"
     };
-    minimatch.sep = path3.sep;
-    var GLOBSTAR = minimatch.GLOBSTAR = Minimatch2.GLOBSTAR = {};
+    minimatch2.sep = path3.sep;
+    var GLOBSTAR = minimatch2.GLOBSTAR = Minimatch2.GLOBSTAR = {};
     var expand = require_brace_expansion();
     var plTypes = {
       "!": { open: "(?:(?!(?:", close: "))[^/]*?)" },
@@ -324,11 +324,11 @@ var require_minimatch = __commonJS({
       }, {});
     }
     var slashSplit = /\/+/;
-    minimatch.filter = filter;
+    minimatch2.filter = filter;
     function filter(pattern, options) {
       options = options || {};
       return function(p, i, list) {
-        return minimatch(p, pattern, options);
+        return minimatch2(p, pattern, options);
       };
     }
     function ext(a, b) {
@@ -342,12 +342,12 @@ var require_minimatch = __commonJS({
       });
       return t;
     }
-    minimatch.defaults = function(def) {
+    minimatch2.defaults = function(def) {
       if (!def || typeof def !== "object" || !Object.keys(def).length) {
-        return minimatch;
+        return minimatch2;
       }
-      var orig = minimatch;
-      var m = function minimatch2(p, pattern, options) {
+      var orig = minimatch2;
+      var m = function minimatch3(p, pattern, options) {
         return orig(p, pattern, ext(def, options));
       };
       m.Minimatch = function Minimatch3(pattern, options) {
@@ -374,9 +374,9 @@ var require_minimatch = __commonJS({
       return m;
     };
     Minimatch2.defaults = function(def) {
-      return minimatch.defaults(def).Minimatch;
+      return minimatch2.defaults(def).Minimatch;
     };
-    function minimatch(p, pattern, options) {
+    function minimatch2(p, pattern, options) {
       assertValidPattern(pattern);
       if (!options)
         options = {};
@@ -457,7 +457,7 @@ var require_minimatch = __commonJS({
         this.pattern = pattern.substr(negateOffset);
       this.negate = negate;
     }
-    minimatch.braceExpand = function(pattern, options) {
+    minimatch2.braceExpand = function(pattern, options) {
       return braceExpand(pattern, options);
     };
     Minimatch2.prototype.braceExpand = braceExpand;
@@ -719,7 +719,7 @@ var require_minimatch = __commonJS({
       regExp._src = re;
       return regExp;
     }
-    minimatch.makeRe = function(pattern, options) {
+    minimatch2.makeRe = function(pattern, options) {
       return new Minimatch2(pattern, options || {}).makeRe();
     };
     Minimatch2.prototype.makeRe = makeRe;
@@ -749,7 +749,7 @@ var require_minimatch = __commonJS({
       }
       return this.regexp;
     }
-    minimatch.match = function(list, pattern, options) {
+    minimatch2.match = function(list, pattern, options) {
       options = options || {};
       var mm = new Minimatch2(pattern, options);
       list = list.filter(function(f) {
@@ -873,81 +873,6 @@ var require_minimatch = __commonJS({
     function regExpEscape(s) {
       return s.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
     }
-  }
-});
-
-// node_modules/array-union/index.js
-var require_array_union = __commonJS({
-  "node_modules/array-union/index.js"(exports2, module2) {
-    "use strict";
-    module2.exports = (...arguments_) => {
-      return [...new Set([].concat(...arguments_))];
-    };
-  }
-});
-
-// node_modules/array-differ/index.js
-var require_array_differ = __commonJS({
-  "node_modules/array-differ/index.js"(exports2, module2) {
-    "use strict";
-    var arrayDiffer = (array, ...values) => {
-      const rest = new Set([].concat(...values));
-      return array.filter((element) => !rest.has(element));
-    };
-    module2.exports = arrayDiffer;
-  }
-});
-
-// node_modules/arrify/index.js
-var require_arrify = __commonJS({
-  "node_modules/arrify/index.js"(exports2, module2) {
-    "use strict";
-    var arrify = (value) => {
-      if (value === null || value === void 0) {
-        return [];
-      }
-      if (Array.isArray(value)) {
-        return value;
-      }
-      if (typeof value === "string") {
-        return [value];
-      }
-      if (typeof value[Symbol.iterator] === "function") {
-        return [...value];
-      }
-      return [value];
-    };
-    module2.exports = arrify;
-  }
-});
-
-// node_modules/multimatch/index.js
-var require_multimatch = __commonJS({
-  "node_modules/multimatch/index.js"(exports2, module2) {
-    "use strict";
-    var minimatch = require_minimatch();
-    var arrayUnion = require_array_union();
-    var arrayDiffer = require_array_differ();
-    var arrify = require_arrify();
-    module2.exports = (list, patterns, options = {}) => {
-      list = arrify(list);
-      patterns = arrify(patterns);
-      if (list.length === 0 || patterns.length === 0) {
-        return [];
-      }
-      let result = [];
-      for (const item of list) {
-        for (let pattern of patterns) {
-          let process2 = arrayUnion;
-          if (pattern[0] === "!") {
-            pattern = pattern.slice(1);
-            process2 = arrayDiffer;
-          }
-          result = process2(result, minimatch.match([item], pattern, options));
-        }
-      }
-      return result;
-    };
   }
 });
 
@@ -50536,18 +50461,18 @@ var require_brace_expansion2 = __commonJS({
 // node_modules/minimatch/minimatch.js
 var require_minimatch2 = __commonJS({
   "node_modules/minimatch/minimatch.js"(exports2, module2) {
-    var minimatch = module2.exports = (p, pattern, options = {}) => {
+    var minimatch2 = module2.exports = (p, pattern, options = {}) => {
       assertValidPattern(pattern);
       if (!options.nocomment && pattern.charAt(0) === "#") {
         return false;
       }
       return new Minimatch2(pattern, options).match(p);
     };
-    module2.exports = minimatch;
+    module2.exports = minimatch2;
     var path3 = require_path();
-    minimatch.sep = path3.sep;
+    minimatch2.sep = path3.sep;
     var GLOBSTAR = Symbol("globstar **");
-    minimatch.GLOBSTAR = GLOBSTAR;
+    minimatch2.GLOBSTAR = GLOBSTAR;
     var expand = require_brace_expansion2();
     var plTypes = {
       "!": { open: "(?:(?!(?:", close: "))[^/]*?)" },
@@ -50567,18 +50492,18 @@ var require_minimatch2 = __commonJS({
     var reSpecials = charSet("().*{}+?[]^$\\!");
     var addPatternStartSet = charSet("[.(");
     var slashSplit = /\/+/;
-    minimatch.filter = (pattern, options = {}) => (p, i, list) => minimatch(p, pattern, options);
+    minimatch2.filter = (pattern, options = {}) => (p, i, list) => minimatch2(p, pattern, options);
     var ext = (a, b = {}) => {
       const t = {};
       Object.keys(a).forEach((k) => t[k] = a[k]);
       Object.keys(b).forEach((k) => t[k] = b[k]);
       return t;
     };
-    minimatch.defaults = (def) => {
+    minimatch2.defaults = (def) => {
       if (!def || typeof def !== "object" || !Object.keys(def).length) {
-        return minimatch;
+        return minimatch2;
       }
-      const orig = minimatch;
+      const orig = minimatch2;
       const m = (p, pattern, options) => orig(p, pattern, ext(def, options));
       m.Minimatch = class Minimatch extends orig.Minimatch {
         constructor(pattern, options) {
@@ -50593,7 +50518,7 @@ var require_minimatch2 = __commonJS({
       m.match = (list, pattern, options) => orig.match(list, pattern, ext(def, options));
       return m;
     };
-    minimatch.braceExpand = (pattern, options) => braceExpand(pattern, options);
+    minimatch2.braceExpand = (pattern, options) => braceExpand(pattern, options);
     var braceExpand = (pattern, options = {}) => {
       assertValidPattern(pattern);
       if (options.nobrace || !/\{(?:(?!\{).)*\}/.test(pattern)) {
@@ -50611,8 +50536,8 @@ var require_minimatch2 = __commonJS({
       }
     };
     var SUBPARSE = Symbol("subparse");
-    minimatch.makeRe = (pattern, options) => new Minimatch2(pattern, options || {}).makeRe();
-    minimatch.match = (list, pattern, options = {}) => {
+    minimatch2.makeRe = (pattern, options) => new Minimatch2(pattern, options || {}).makeRe();
+    minimatch2.match = (list, pattern, options = {}) => {
       const mm = new Minimatch2(pattern, options);
       list = list.filter((f) => mm.match(f));
       if (mm.options.nonull && !list.length) {
@@ -51063,10 +50988,10 @@ var require_minimatch2 = __commonJS({
         return this.negate;
       }
       static defaults(def) {
-        return minimatch.defaults(def).Minimatch;
+        return minimatch2.defaults(def).Minimatch;
       }
     };
-    minimatch.Minimatch = Minimatch2;
+    minimatch2.Minimatch = Minimatch2;
   }
 });
 
@@ -52410,18 +52335,18 @@ var require_path2 = __commonJS({
 // node_modules/folder-hash/node_modules/minimatch/minimatch.js
 var require_minimatch3 = __commonJS({
   "node_modules/folder-hash/node_modules/minimatch/minimatch.js"(exports2, module2) {
-    var minimatch = module2.exports = (p, pattern, options = {}) => {
+    var minimatch2 = module2.exports = (p, pattern, options = {}) => {
       assertValidPattern(pattern);
       if (!options.nocomment && pattern.charAt(0) === "#") {
         return false;
       }
       return new Minimatch2(pattern, options).match(p);
     };
-    module2.exports = minimatch;
+    module2.exports = minimatch2;
     var path3 = require_path2();
-    minimatch.sep = path3.sep;
+    minimatch2.sep = path3.sep;
     var GLOBSTAR = Symbol("globstar **");
-    minimatch.GLOBSTAR = GLOBSTAR;
+    minimatch2.GLOBSTAR = GLOBSTAR;
     var expand = require_brace_expansion2();
     var plTypes = {
       "!": { open: "(?:(?!(?:", close: "))[^/]*?)" },
@@ -52441,18 +52366,18 @@ var require_minimatch3 = __commonJS({
     var reSpecials = charSet("().*{}+?[]^$\\!");
     var addPatternStartSet = charSet("[.(");
     var slashSplit = /\/+/;
-    minimatch.filter = (pattern, options = {}) => (p, i, list) => minimatch(p, pattern, options);
+    minimatch2.filter = (pattern, options = {}) => (p, i, list) => minimatch2(p, pattern, options);
     var ext = (a, b = {}) => {
       const t = {};
       Object.keys(a).forEach((k) => t[k] = a[k]);
       Object.keys(b).forEach((k) => t[k] = b[k]);
       return t;
     };
-    minimatch.defaults = (def) => {
+    minimatch2.defaults = (def) => {
       if (!def || typeof def !== "object" || !Object.keys(def).length) {
-        return minimatch;
+        return minimatch2;
       }
-      const orig = minimatch;
+      const orig = minimatch2;
       const m = (p, pattern, options) => orig(p, pattern, ext(def, options));
       m.Minimatch = class Minimatch extends orig.Minimatch {
         constructor(pattern, options) {
@@ -52467,7 +52392,7 @@ var require_minimatch3 = __commonJS({
       m.match = (list, pattern, options) => orig.match(list, pattern, ext(def, options));
       return m;
     };
-    minimatch.braceExpand = (pattern, options) => braceExpand(pattern, options);
+    minimatch2.braceExpand = (pattern, options) => braceExpand(pattern, options);
     var braceExpand = (pattern, options = {}) => {
       assertValidPattern(pattern);
       if (options.nobrace || !/\{(?:(?!\{).)*\}/.test(pattern)) {
@@ -52485,8 +52410,8 @@ var require_minimatch3 = __commonJS({
       }
     };
     var SUBPARSE = Symbol("subparse");
-    minimatch.makeRe = (pattern, options) => new Minimatch2(pattern, options || {}).makeRe();
-    minimatch.match = (list, pattern, options = {}) => {
+    minimatch2.makeRe = (pattern, options) => new Minimatch2(pattern, options || {}).makeRe();
+    minimatch2.match = (list, pattern, options = {}) => {
       const mm = new Minimatch2(pattern, options);
       list = list.filter((f) => mm.match(f));
       if (mm.options.nonull && !list.length) {
@@ -52933,10 +52858,10 @@ var require_minimatch3 = __commonJS({
         return this.negate;
       }
       static defaults(def) {
-        return minimatch.defaults(def).Minimatch;
+        return minimatch2.defaults(def).Minimatch;
       }
     };
-    minimatch.Minimatch = Minimatch2;
+    minimatch2.Minimatch = Minimatch2;
   }
 });
 
@@ -53738,7 +53663,7 @@ var require_folder_hash = __commonJS({
   "node_modules/folder-hash/index.js"(exports2, module2) {
     var crypto = __require("crypto");
     var debug = require_src();
-    var minimatch = require_minimatch3();
+    var minimatch2 = require_minimatch3();
     var path3 = __require("path");
     var defaultOptions = {
       algo: "sha1",
@@ -54038,7 +53963,7 @@ ${padding}]`;
         return void 0;
       } else {
         const regex = new RegExp(globs.reduce((acc, exclude) => {
-          return acc + "|" + minimatch.makeRe(exclude).source;
+          return acc + "|" + minimatch2.makeRe(exclude).source;
         }, "").substr(1));
         return (param) => regex.test(param);
       }
@@ -54338,9 +54263,9 @@ var require_common2 = __commonJS({
     }
     var fs5 = __require("fs");
     var path3 = __require("path");
-    var minimatch = require_minimatch2();
+    var minimatch2 = require_minimatch2();
     var isAbsolute3 = __require("path").isAbsolute;
-    var Minimatch2 = minimatch.Minimatch;
+    var Minimatch2 = minimatch2.Minimatch;
     function alphasort(a, b) {
       return a.localeCompare(b, "en");
     }
@@ -54524,8 +54449,8 @@ var require_sync = __commonJS({
     module2.exports = globSync;
     globSync.GlobSync = GlobSync;
     var rp = require_fs();
-    var minimatch = require_minimatch2();
-    var Minimatch2 = minimatch.Minimatch;
+    var minimatch2 = require_minimatch2();
+    var Minimatch2 = minimatch2.Minimatch;
     var Glob = require_glob().Glob;
     var util = __require("util");
     var path3 = __require("path");
@@ -54613,7 +54538,7 @@ var require_sync = __commonJS({
       var abs = this._makeAbs(read);
       if (childrenIgnored(this, read))
         return;
-      var isGlobStar = remain[0] === minimatch.GLOBSTAR;
+      var isGlobStar = remain[0] === minimatch2.GLOBSTAR;
       if (isGlobStar)
         this._processGlobStar(prefix, read, abs, remain, index, inGlobStar);
       else
@@ -54922,8 +54847,8 @@ var require_glob = __commonJS({
   "node_modules/glob/glob.js"(exports2, module2) {
     module2.exports = glob2;
     var rp = require_fs();
-    var minimatch = require_minimatch2();
-    var Minimatch2 = minimatch.Minimatch;
+    var minimatch2 = require_minimatch2();
+    var Minimatch2 = minimatch2.Minimatch;
     var inherits = require_inherits();
     var EE = __require("events").EventEmitter;
     var path3 = __require("path");
@@ -55161,7 +55086,7 @@ var require_glob = __commonJS({
       var abs = this._makeAbs(read);
       if (childrenIgnored(this, read))
         return cb();
-      var isGlobStar = remain[0] === minimatch.GLOBSTAR;
+      var isGlobStar = remain[0] === minimatch2.GLOBSTAR;
       if (isGlobStar)
         this._processGlobStar(prefix, read, abs, remain, index, inGlobStar, cb);
       else
@@ -60384,9 +60309,44 @@ var CiModule = class extends BaseModule {
 };
 
 // bazel-out/k8-fastbuild/bin/ng-dev/caretaker/check/g3.js
-var import_multimatch = __toESM(require_multimatch());
-var import_yaml = __toESM(require_dist2());
 import { existsSync, readFileSync as readFileSync4 } from "fs";
+
+// node_modules/multimatch/index.js
+var import_minimatch = __toESM(require_minimatch(), 1);
+
+// node_modules/array-union/index.js
+var arrayUnion = (...arguments_) => [...new Set(arguments_.flat())];
+var array_union_default = arrayUnion;
+
+// node_modules/array-differ/index.js
+function arrayDiffer(array, ...values) {
+  const rest = new Set([...values].flat());
+  return array.filter((element) => !rest.has(element));
+}
+
+// node_modules/multimatch/index.js
+function multimatch(list, patterns, options = {}) {
+  list = [list].flat();
+  patterns = [patterns].flat();
+  if (list.length === 0 || patterns.length === 0) {
+    return [];
+  }
+  let result = [];
+  for (const item of list) {
+    for (let pattern of patterns) {
+      let process2 = array_union_default;
+      if (pattern[0] === "!") {
+        pattern = pattern.slice(1);
+        process2 = arrayDiffer;
+      }
+      result = process2(result, import_minimatch.default.match([item], pattern, options));
+    }
+  }
+  return result;
+}
+
+// bazel-out/k8-fastbuild/bin/ng-dev/caretaker/check/g3.js
+var import_yaml = __toESM(require_dist2());
 import { join } from "path";
 var G3Module = class extends BaseModule {
   async retrieveData() {
@@ -60438,7 +60398,7 @@ var G3Module = class extends BaseModule {
     return stats;
   }
   checkMatchAgainstIncludeAndExclude(file, includes, excludes) {
-    return import_multimatch.default.call(void 0, file, includes).length >= 1 && import_multimatch.default.call(void 0, file, excludes).length === 0;
+    return multimatch.call(void 0, file, includes).length >= 1 && multimatch.call(void 0, file, excludes).length === 0;
   }
   getG3FileIncludeAndExcludeLists() {
     var _a, _b, _c, _d;
@@ -61236,7 +61196,6 @@ var Prompt = class {
 
 // bazel-out/k8-fastbuild/bin/ng-dev/format/run-commands-parallel.js
 var import_cli_progress = __toESM(require_cli_progress());
-var import_multimatch2 = __toESM(require_multimatch());
 import { cpus } from "os";
 
 // bazel-out/k8-fastbuild/bin/ng-dev/format/formatters/buildifier.js
@@ -61403,7 +61362,7 @@ function runFormatterInParallel(allFiles, action) {
     const failures = [];
     const pendingCommands = [];
     for (const formatter of formatters) {
-      pendingCommands.push(...import_multimatch2.default.call(void 0, allFiles, formatter.getFileMatcher(), { dot: true }).map((file) => ({ formatter, file })));
+      pendingCommands.push(...multimatch.call(void 0, allFiles, formatter.getFileMatcher(), { dot: true }).map((file) => ({ formatter, file })));
     }
     if (pendingCommands.length === 0) {
       return resolve13(false);
@@ -63460,13 +63419,13 @@ var PullApproveAuthorStateDependencyError = class extends Error {
 };
 
 // bazel-out/k8-fastbuild/bin/ng-dev/pullapprove/utils.js
-var import_minimatch = __toESM(require_minimatch2());
+var import_minimatch2 = __toESM(require_minimatch2());
 var patternCache = /* @__PURE__ */ new Map();
 function getOrCreateGlob(pattern) {
   if (patternCache.has(pattern)) {
     return patternCache.get(pattern);
   }
-  const glob2 = new import_minimatch.Minimatch(pattern, { dot: false, nobrace: false });
+  const glob2 = new import_minimatch2.Minimatch(pattern, { dot: false, nobrace: false });
   patternCache.set(pattern, glob2);
   return glob2;
 }
@@ -65311,7 +65270,7 @@ import * as fs3 from "fs";
 import lockfile2 from "@yarnpkg/lockfile";
 async function verifyNgDevToolIsUpToDate(workspacePath) {
   var _a, _b, _c;
-  const localVersion = `0.0.0-d11661f0e5f3486a6a040098ad756955d581c15d`;
+  const localVersion = `0.0.0-ef4f528b25336f6e0e9b22b830eeee977fc448f3`;
   const workspacePackageJsonFile = path2.join(workspacePath, workspaceRelativePackageJsonPath);
   const workspaceDirLockFile = path2.join(workspacePath, workspaceRelativeYarnLockFilePath);
   try {

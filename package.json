@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-d11661f0e5f3486a6a040098ad756955d581c15d",
+  "version": "0.0.0-ef4f528b25336f6e0e9b22b830eeee977fc448f3",
   "bin": {
     "ng-dev": "./ng-dev/bundles/cli.mjs"
   },
@@ -133,7 +133,7 @@
     "karma-requirejs": "^1.1.0",
     "karma-sourcemap-loader": "^0.3.8",
     "minimatch": "^5.0.0",
-    "multimatch": "^5.0.0",
+    "multimatch": "^6.0.0",
     "nock": "^13.0.3",
     "node-fetch": "^3.2.5",
     "protobufjs": "^7.0.0",
