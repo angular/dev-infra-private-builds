@@ -41519,13 +41519,30 @@ var require_minimal = __commonJS({
         if (properties)
           merge(this, properties);
       }
-      (CustomError.prototype = Object.create(Error.prototype)).constructor = CustomError;
-      Object.defineProperty(CustomError.prototype, "name", { get: function() {
-        return name;
-      } });
-      CustomError.prototype.toString = function toString() {
-        return this.name + ": " + this.message;
-      };
+      CustomError.prototype = Object.create(Error.prototype, {
+        constructor: {
+          value: CustomError,
+          writable: true,
+          enumerable: false,
+          configurable: true
+        },
+        name: {
+          get() {
+            return name;
+          },
+          set: void 0,
+          enumerable: false,
+          configurable: true
+        },
+        toString: {
+          value() {
+            return this.name + ": " + this.message;
+          },
+          writable: true,
+          enumerable: false,
+          configurable: true
+        }
+      });
       return CustomError;
     }
     util.newError = newError;
@@ -66004,7 +66021,7 @@ import * as fs3 from "fs";
 import lockfile2 from "@yarnpkg/lockfile";
 async function verifyNgDevToolIsUpToDate(workspacePath) {
   var _a, _b, _c;
-  const localVersion = `0.0.0-8ef8d154583700e810fced47a085a15e2fbb447d`;
+  const localVersion = `0.0.0-eb3bd9bac1cb113780bb6aeaf530c4edbb3b603c`;
   const workspacePackageJsonFile = path2.join(workspacePath, workspaceRelativePackageJsonPath);
   const workspaceDirLockFile = path2.join(workspacePath, workspaceRelativeYarnLockFilePath);
   try {

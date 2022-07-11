@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-8ef8d154583700e810fced47a085a15e2fbb447d",
+  "version": "0.0.0-eb3bd9bac1cb113780bb6aeaf530c4edbb3b603c",
   "bin": {
     "ng-dev": "./ng-dev/bundles/cli.mjs"
   },
@@ -137,7 +137,7 @@
     "multimatch": "^5.0.0",
     "nock": "^13.0.3",
     "node-fetch": "^3.2.5",
-    "protobufjs": "^6.11.3",
+    "protobufjs": "^7.0.0",
     "requirejs": "^2.3.6",
     "rxjs": "^7.4.0",
     "semver": "^7.3.5",
