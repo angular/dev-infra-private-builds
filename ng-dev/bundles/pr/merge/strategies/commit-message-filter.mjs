@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-"use strict";
 
 import {createRequire as __cjsCompatRequire} from 'module';
 const require = __cjsCompatRequire(import.meta.url);
