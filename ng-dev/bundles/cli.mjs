@@ -60388,7 +60388,11 @@ var G3Module = class extends BaseModule {
       commits: 0
     };
     stats.commits = parseInt(this.git.run(["rev-list", "--count", `${g3Ref}..${mainRef}`]).stdout, 10);
-    this.git.run(["diff", `${g3Ref}...${mainRef}`, "--numstat"]).stdout.trim().split("\n").map((line) => line.trim().split("	")).map((line) => [Number(line[0]), Number(line[1]), line[2]]).forEach(([insertions, deletions, fileName]) => {
+    const numStatDiff = this.git.run(["diff", `${g3Ref}...${mainRef}`, "--numstat"]).stdout.trim();
+    if (numStatDiff === "") {
+      return stats;
+    }
+    numStatDiff.split("\n").map((line) => line.trim().split("	")).map((line) => [Number(line[0]), Number(line[1]), line[2]]).forEach(([insertions, deletions, fileName]) => {
       if (this.checkMatchAgainstIncludeAndExclude(fileName, includeFiles, excludeFiles)) {
         stats.insertions += insertions;
         stats.deletions += deletions;
@@ -65270,7 +65274,7 @@ import * as fs3 from "fs";
 import lockfile2 from "@yarnpkg/lockfile";
 async function verifyNgDevToolIsUpToDate(workspacePath) {
   var _a, _b, _c;
-  const localVersion = `0.0.0-0268158ec3bcce2bba0b02d263965383b60b18a3`;
+  const localVersion = `0.0.0-6c6c6b0ad1732f437c0d0fb4c195b4d05cc90f03`;
   const workspacePackageJsonFile = path2.join(workspacePath, workspaceRelativePackageJsonPath);
   const workspaceDirLockFile = path2.join(workspacePath, workspaceRelativeYarnLockFilePath);
   try {
