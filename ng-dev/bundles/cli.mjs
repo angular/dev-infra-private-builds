@@ -65165,7 +65165,8 @@ var BranchOffNextBranchBaseAction = class extends ReleaseAction {
     const { pullRequest, releaseNotes, builtPackagesWithInfo } = await this.stageVersionForBranchAndCreatePullRequest(newVersion, compareVersionForReleaseNotes, newBranch);
     await this.waitForPullRequestToBeMerged(pullRequest);
     await this.publish(builtPackagesWithInfo, releaseNotes, beforeStagingSha, newBranch, "next");
-    await this._createNextBranchUpdatePullRequest(releaseNotes, newVersion);
+    const branchOffPullRequest = await this._createNextBranchUpdatePullRequest(releaseNotes, newVersion);
+    await this.waitForPullRequestToBeMerged(branchOffPullRequest);
   }
   async _computeNewVersion() {
     if (this.newPhaseName === "feature-freeze") {
@@ -65197,6 +65198,7 @@ Also this PR cherry-picks the changelog for v${newVersion} into the ${nextBranch
     const nextUpdatePullRequest = await this.pushChangesToForkAndCreatePullRequest(nextBranch, `next-release-train-${newNextVersion}`, `Update next branch to reflect new release-train "v${newNextVersion}".`, nextPullRequestMessage);
     Log.info(green(`  \u2713   Pull request for updating the "${nextBranch}" branch has been created.`));
     Log.info(yellow(`      Please ask team members to review: ${nextUpdatePullRequest.url}.`));
+    return nextUpdatePullRequest;
   }
 };
 
@@ -65274,7 +65276,7 @@ import * as fs3 from "fs";
 import lockfile2 from "@yarnpkg/lockfile";
 async function verifyNgDevToolIsUpToDate(workspacePath) {
   var _a, _b, _c;
-  const localVersion = `0.0.0-1241c1280f4a2a58eda8c322a0f057840a9d5b6c`;
+  const localVersion = `0.0.0-e795433f416d0ecd1d38afd27f8d72c94513e0cb`;
   const workspacePackageJsonFile = path2.join(workspacePath, workspaceRelativePackageJsonPath);
   const workspaceDirLockFile = path2.join(workspacePath, workspaceRelativeYarnLockFilePath);
   try {
