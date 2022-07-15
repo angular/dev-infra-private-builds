@@ -1,6 +1,6 @@
 {
   "name": "@angular/dev-infra-private",
-  "version": "0.0.0-e795433f416d0ecd1d38afd27f8d72c94513e0cb",
+  "version": "0.0.0-97a1c20544472a835d8c7826418c7d56f61396c1",
   "bin": {
     "ng-dev": "./ng-dev/bundles/cli.mjs"
   },
@@ -26,7 +26,7 @@
   },
   "packageManager": "yarn@3.2.1",
   "dependencies": {
-    "@angular-devkit/build-angular": "14.1.0-next.4",
+    "@angular-devkit/build-angular": "14.1.0-rc.3",
     "@angular/benchpress": "0.3.0",
     "@babel/core": "^7.16.0",
     "@bazel/buildifier": "5.1.0",
@@ -64,15 +64,15 @@
     "@actions/github": "^5.0.0",
     "@angular/animations": "14.1.0-rc.0",
     "@angular/bazel": "patch:@angular/bazel@npm:14.1.0-next.2#.yarn/patches/@angular-bazel-npm.patch",
-    "@angular/cdk": "14.1.0-next.3",
-    "@angular/cli": "14.1.0-next.4",
+    "@angular/cdk": "14.1.0-rc.0",
+    "@angular/cli": "14.1.0-rc.3",
     "@angular/common": "14.1.0-rc.0",
     "@angular/compiler": "14.1.0-rc.0",
     "@angular/compiler-cli": "14.1.0-rc.0",
     "@angular/core": "14.1.0-rc.0",
     "@angular/fire": "^7.1.0-rc",
     "@angular/forms": "14.1.0-rc.0",
-    "@angular/material": "14.1.0-next.3",
+    "@angular/material": "14.1.0-rc.0",
     "@angular/platform-browser": "14.1.0-rc.0",
     "@angular/platform-browser-dynamic": "14.1.0-rc.0",
     "@angular/router": "14.1.0-rc.0",
