@@ -35,11 +35,11 @@ export interface PullRequestConfig {
         [branchName: string]: string;
     };
     /** Pattern that matches labels which imply a merge ready pull request. */
-    mergeReadyLabel: string | RegExp;
+    mergeReadyLabel: string;
     /** Label that is applied when special attention from the caretaker is required. */
-    caretakerNoteLabel?: string | RegExp;
+    caretakerNoteLabel?: string;
     /** Label which can be applied to fixup commit messages in the merge script. */
-    commitMessageFixupLabel: string | RegExp;
+    commitMessageFixupLabel: string;
     /**
      * Whether pull requests should be merged using the Github API. This can be enabled
      * if projects want to have their pull requests show up as `Merged` in the Github UI.
@@ -52,6 +52,13 @@ export interface PullRequestConfig {
      * scopes in patch branches, no breaking changes in minor or patch changes.
      */
     targetLabelExemptScopes?: string[];
+    /**
+     * Special flag that should **NOT** be used without confirming with the dev-infra team.
+     * This flag turns the RC/FF release-train into an exceptional minor release-train by:
+     *
+     *    - changing `target: minor` to point to `target: rc` (without the RC merge restrictions)
+     */
+    __specialTreatRcAsExceptionalMinor?: boolean;
 }
 /** Loads and validates the merge configuration. */
 export declare function assertValidPullRequestConfig<T extends NgDevConfig>(config: T & Partial<{

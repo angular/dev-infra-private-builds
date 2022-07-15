@@ -6180,6 +6180,13 @@ export declare class GithubClient {
                 url: string;
             }>;
         };
+        codeownersErrors: {
+            (params?: (RequestParameters & Omit<any, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<any>;
+            defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
+            endpoint: import("@octokit/types").EndpointInterface<{
+                url: string;
+            }>;
+        };
         compareCommits: {
             (params?: (RequestParameters & Omit<{
                 owner: string;
@@ -9145,6 +9152,13 @@ export declare class GithubClient {
                 url: string;
             }>;
         };
+        createTagProtection: {
+            (params?: (RequestParameters & Omit<any, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<any>;
+            defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
+            endpoint: import("@octokit/types").EndpointInterface<{
+                url: string;
+            }>;
+        };
         createUsingTemplate: {
             (params?: (RequestParameters & Omit<{
                 template_owner: string;
@@ -9715,6 +9729,13 @@ export declare class GithubClient {
                 repo: string;
                 asset_id: number;
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<never, 204>>;
+            defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
+            endpoint: import("@octokit/types").EndpointInterface<{
+                url: string;
+            }>;
+        };
+        deleteTagProtection: {
+            (params?: (RequestParameters & Omit<any, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<any>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
                 url: string;
@@ -18336,6 +18357,13 @@ export declare class GithubClient {
                     rocket: number;
                 } | undefined;
             }[], 200>>;
+            defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
+            endpoint: import("@octokit/types").EndpointInterface<{
+                url: string;
+            }>;
+        };
+        listTagProtection: {
+            (params?: (RequestParameters & Omit<any, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<any>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
                 url: string;

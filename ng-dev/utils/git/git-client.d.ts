@@ -89,6 +89,4 @@ export declare class GitClient {
      */
     static get(): Promise<GitClient>;
 }
-/** Determines the repository base directory from the current working directory. */
-export declare function determineRepoBaseDirFromCwd(): string;
 export {};

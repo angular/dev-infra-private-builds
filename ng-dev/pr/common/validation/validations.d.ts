@@ -42,5 +42,3 @@ export declare function assertMergeReady(pullRequest: PullRequestFromGithub, con
  * @throws {PullRequestFailure} if the pull request is missing the merge ready label.
  */
 export declare function assertPassingCi(pullRequest: PullRequestFromGithub): void;
-/** Checks whether the specified value matches the given pattern. */
-export declare function matchesPattern(value: string, pattern: RegExp | string): boolean;

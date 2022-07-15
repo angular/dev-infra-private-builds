@@ -18,7 +18,9 @@ async function fetchAndCreateLinkerEsbuildPlugin() {
   const {createLinkerEsbuildPlugin} = await import(
     '@angular/dev-infra-private/shared-scripts/angular-linker/esbuild-plugin.mjs'
   );
-  return await createLinkerEsbuildPlugin(/.*/, /* ensureNoPartialDeclaration */ true);
+  return await createLinkerEsbuildPlugin(/.*/, /* ensureNoPartialDeclaration */ true, {
+    unknownDeclarationVersionHandling: TMPL_LINKER_UNKNOWN_DECLARATION_HANDLING,
+  });
 }
 
 // Based on the Bazel action and its substitutions, we run the linker for all inputs.
@@ -29,5 +31,7 @@ export default {
   conditions: ['es2020', 'es2015', 'module'],
   // This ensures that we prioritize ES2020. RxJS would otherwise use the ESM5 output.
   mainFields: ['es2020', 'es2015', 'module', 'main'],
+  // Addition of `.mjs` to the non-jsx defaults. https://esbuild.github.io/api/#resolve-extensions
+  resolveExtensions: ['.mjs', '.js', '.json'],
   plugins,
 };

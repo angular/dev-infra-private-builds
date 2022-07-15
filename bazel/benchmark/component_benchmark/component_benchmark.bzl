@@ -1,4 +1,4 @@
-load("@npm//@angular/dev-infra-private/bazel/benchmark/app_bundling:index.bzl", "app_bundle")
+load("@npm//@angular/dev-infra-private/bazel/app-bundling:index.bzl", "app_bundle")
 load("@npm//@angular/dev-infra-private/bazel/http-server:index.bzl", "http_server")
 load("@npm//@angular/dev-infra-private/bazel:expand_template.bzl", "expand_template")
 load("@npm//@angular/bazel:index.bzl", "ng_module")

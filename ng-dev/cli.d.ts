@@ -1,2 +1,2 @@
-#!/usr/bin/env -S node --loader ts-node/esm --no-warnings
+#!/usr/bin/env node
 export {};

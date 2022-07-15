@@ -13,6 +13,7 @@ import { ReleaseAction } from '../actions.js';
  */
 export declare class CutStableAction extends ReleaseAction {
     private _newVersion;
+    private _isNewMajor;
     getDescription(): Promise<string>;
     perform(): Promise<void>;
     /** Gets the new stable version of the release candidate release-train. */
