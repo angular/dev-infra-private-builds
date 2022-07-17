@@ -64505,7 +64505,6 @@ function getReleaseNoteCherryPickCommitMessage(newVersion) {
 }
 
 // bazel-out/k8-fastbuild/bin/ng-dev/release/publish/constants.js
-var waitForPullRequestInterval = 1e4;
 var githubReleaseBodyLimit = 125e3;
 
 // bazel-out/k8-fastbuild/bin/ng-dev/release/publish/external-commands.js
@@ -64594,16 +64593,12 @@ var ExternalCommands = class {
 };
 
 // bazel-out/k8-fastbuild/bin/ng-dev/release/publish/pull-request-state.js
-var THIRTY_SECONDS_IN_MS = 3e4;
-async function getPullRequestState(api, id) {
+async function isPullRequestMerged(api, id) {
   const { data } = await api.github.pulls.get({ ...api.remoteParams, pull_number: id });
   if (data.merged) {
-    return "merged";
+    return true;
   }
-  if (data.closed_at !== null && new Date(data.closed_at).getTime() < Date.now() - THIRTY_SECONDS_IN_MS) {
-    return await isPullRequestClosedWithAssociatedCommit(api, id) ? "merged" : "closed";
-  }
-  return "open";
+  return await isPullRequestClosedWithAssociatedCommit(api, id);
 }
 async function isPullRequestClosedWithAssociatedCommit(api, id) {
   const events = await api.github.paginate(api.github.issues.listEvents, {
@@ -64627,6 +64622,64 @@ async function isPullRequestClosedWithAssociatedCommit(api, id) {
 async function isCommitClosingPullRequest(api, sha, id) {
   const { data } = await api.github.repos.getCommit({ ...api.remoteParams, ref: sha });
   return data.commit.message.match(new RegExp(`(?:close[sd]?|fix(?:e[sd]?)|resolve[sd]?):? #${id}(?!\\d)`, "i"));
+}
+
+// bazel-out/k8-fastbuild/bin/ng-dev/release/publish/prompt-merge.js
+async function promptToInitiatePullRequestMerge(git, { id, url }) {
+  Log.info();
+  Log.info();
+  Log.info(green(bold(`      Pull request #${id} is sent out for review: ${url}`)));
+  Log.warn(bold(`      Do not merge it manually. The tool will automatically merge it.`));
+  Log.info("");
+  Log.warn(`      The tool is ${bold("not")} ensuring that all tests pass. Branch protection`);
+  Log.warn("      rules always apply, but other non-required checks can be skipped.");
+  Log.info("");
+  Log.info(`      If you think it is ready (i.e. has the necessary approvals), you can continue`);
+  Log.info(`      by confirming the prompt. The tool will then auto-merge the PR if possible.`);
+  Log.info("");
+  while (true) {
+    if (!await Prompt.confirm(`Do you want to continue with merging PR #${id}?`)) {
+      continue;
+    }
+    Log.info(`      Attempting to merge pull request #${id}..`);
+    Log.info(``);
+    try {
+      if (await gracefulCheckIfPullRequestIsMerged(git, id)) {
+        break;
+      }
+      const { data, status, headers } = await git.github.pulls.merge({
+        ...git.remoteParams,
+        pull_number: id,
+        merge_method: "rebase"
+      });
+      if (data.merged) {
+        break;
+      }
+      Log.error(`  \u2718   Pull request #${id} could not be merged.`);
+      Log.error(`      ${data.message} (${status})`);
+      Log.debug(data, status, headers);
+    } catch (e) {
+      if (!(e instanceof import_request_error.RequestError)) {
+        throw e;
+      }
+      Log.error(`  \u2718   Pull request #${id} could not be merged.`);
+      Log.error(`      ${e.message} (${e.status})`);
+      Log.debug(e);
+    }
+  }
+  Log.info(green(`  \u2713   Pull request #${id} has been merged.`));
+}
+async function gracefulCheckIfPullRequestIsMerged(git, id) {
+  try {
+    return await isPullRequestMerged(git, id);
+  } catch (e) {
+    if (e instanceof import_request_error.RequestError) {
+      Log.debug(`Unable to determine if pull request #${id} has been merged.`);
+      Log.debug(e);
+      return false;
+    }
+    throw e;
+  }
 }
 
 // bazel-out/k8-fastbuild/bin/ng-dev/release/publish/actions.js
@@ -64771,26 +64824,6 @@ var ReleaseAction = class {
       forkBranch: branchName
     };
   }
-  async waitForPullRequestToBeMerged({ id }, interval = waitForPullRequestInterval) {
-    return new Promise((resolve13, reject) => {
-      Log.debug(`Waiting for pull request #${id} to be merged.`);
-      const spinner = new Spinner(`Waiting for pull request #${id} to be merged.`);
-      const intervalId = setInterval(async () => {
-        const prState = await getPullRequestState(this.git, id);
-        if (prState === "merged") {
-          spinner.complete();
-          Log.info(green(`  \u2713   Pull request #${id} has been merged.`));
-          clearInterval(intervalId);
-          resolve13();
-        } else if (prState === "closed") {
-          spinner.complete();
-          Log.warn(`  \u2718   Pull request #${id} has been closed.`);
-          clearInterval(intervalId);
-          reject(new UserAbortedReleaseActionError());
-        }
-      }, interval);
-    });
-  }
   async prependReleaseNotesToChangelog(releaseNotes) {
     await releaseNotes.prependEntryToChangelogFile();
     Log.info(green(`  \u2713   Updated the changelog to capture changes for "${releaseNotes.version}".`));
@@ -64831,7 +64864,6 @@ var ReleaseAction = class {
     await this._verifyPackageVersions(releaseNotes.version, builtPackagesWithInfo);
     const pullRequest = await this.pushChangesToForkAndCreatePullRequest(pullRequestTargetBranch, `release-stage-${newVersion}`, `Bump version to "v${newVersion}" with changelog.`);
     Log.info(green("  \u2713   Release staging pull request has been created."));
-    Log.info(yellow(`      Please ask team members to review: ${pullRequest.url}.`));
     return { releaseNotes, pullRequest, builtPackagesWithInfo };
   }
   async checkoutBranchAndStageVersion(newVersion, compareVersionForReleaseNotes, stagingBranch) {
@@ -64853,9 +64885,11 @@ var ReleaseAction = class {
     Log.info(green(`  \u2713   Created changelog cherry-pick commit for: "${releaseNotes.version}".`));
     const pullRequest = await this.pushChangesToForkAndCreatePullRequest(nextBranch, `changelog-cherry-pick-${releaseNotes.version}`, commitMessage, `Cherry-picks the changelog from the "${stagingBranch}" branch to the next branch (${nextBranch}).`);
     Log.info(green(`  \u2713   Pull request for cherry-picking the changelog into "${nextBranch}" has been created.`));
-    Log.info(yellow(`      Please ask team members to review: ${pullRequest.url}.`));
-    await this.waitForPullRequestToBeMerged(pullRequest);
+    await this.promptAndWaitForPullRequestMerged(pullRequest);
     return true;
+  }
+  async promptAndWaitForPullRequestMerged(pullRequest) {
+    await promptToInitiatePullRequestMerge(this.git, pullRequest);
   }
   async _createGithubReleaseForVersion(releaseNotes, versionBumpCommitSha, isPrerelease) {
     const tagName = getReleaseTagForVersion(releaseNotes.version);
@@ -64955,7 +64989,7 @@ var CutLongTermSupportPatchAction = class extends ReleaseAction {
     const newVersion = semverInc(ltsBranch.version, "patch");
     const compareVersionForReleaseNotes = ltsBranch.version;
     const { pullRequest, releaseNotes, builtPackagesWithInfo, beforeStagingSha } = await this.checkoutBranchAndStageVersion(newVersion, compareVersionForReleaseNotes, ltsBranch.name);
-    await this.waitForPullRequestToBeMerged(pullRequest);
+    await this.promptAndWaitForPullRequestMerged(pullRequest);
     await this.publish(builtPackagesWithInfo, releaseNotes, beforeStagingSha, ltsBranch.name, ltsBranch.npmDistTag);
     await this.cherryPickChangelogIntoNextBranch(releaseNotes, ltsBranch.name);
   }
@@ -65007,7 +65041,7 @@ var CutNewPatchAction = class extends ReleaseAction {
     const newVersion = this._newVersion;
     const compareVersionForReleaseNotes = this._previousVersion;
     const { pullRequest, releaseNotes, builtPackagesWithInfo, beforeStagingSha } = await this.checkoutBranchAndStageVersion(newVersion, compareVersionForReleaseNotes, branchName);
-    await this.waitForPullRequestToBeMerged(pullRequest);
+    await this.promptAndWaitForPullRequestMerged(pullRequest);
     await this.publish(builtPackagesWithInfo, releaseNotes, beforeStagingSha, branchName, "latest");
     await this.cherryPickChangelogIntoNextBranch(releaseNotes, branchName);
   }
@@ -65049,7 +65083,7 @@ var CutNextPrereleaseAction = class extends ReleaseAction {
     const newVersion = await this._newVersion;
     const compareVersionForReleaseNotes = await this._getCompareVersionForReleaseNotes();
     const { pullRequest, releaseNotes, builtPackagesWithInfo, beforeStagingSha } = await this.checkoutBranchAndStageVersion(newVersion, compareVersionForReleaseNotes, branchName);
-    await this.waitForPullRequestToBeMerged(pullRequest);
+    await this.promptAndWaitForPullRequestMerged(pullRequest);
     await this.publish(builtPackagesWithInfo, releaseNotes, beforeStagingSha, branchName, "next");
     if (releaseTrain !== this.active.next) {
       await this.cherryPickChangelogIntoNextBranch(releaseNotes, branchName);
@@ -65095,7 +65129,7 @@ var CutReleaseCandidateForFeatureFreezeAction = class extends ReleaseAction {
     const newVersion = this._newVersion;
     const compareVersionForReleaseNotes = this.active.releaseCandidate.version;
     const { pullRequest, releaseNotes, builtPackagesWithInfo, beforeStagingSha } = await this.checkoutBranchAndStageVersion(newVersion, compareVersionForReleaseNotes, branchName);
-    await this.waitForPullRequestToBeMerged(pullRequest);
+    await this.promptAndWaitForPullRequestMerged(pullRequest);
     await this.publish(builtPackagesWithInfo, releaseNotes, beforeStagingSha, branchName, "next");
     await this.cherryPickChangelogIntoNextBranch(releaseNotes, branchName);
   }
@@ -65124,7 +65158,7 @@ var CutStableAction = class extends ReleaseAction {
     const newVersion = this._newVersion;
     const compareVersionForReleaseNotes = this.active.latest.version;
     const { pullRequest, releaseNotes, builtPackagesWithInfo, beforeStagingSha } = await this.checkoutBranchAndStageVersion(newVersion, compareVersionForReleaseNotes, branchName);
-    await this.waitForPullRequestToBeMerged(pullRequest);
+    await this.promptAndWaitForPullRequestMerged(pullRequest);
     await this.publish(builtPackagesWithInfo, releaseNotes, beforeStagingSha, branchName, this._isNewMajor ? "next" : "latest");
     if (this._isNewMajor) {
       const previousPatch = this.active.latest;
@@ -65163,10 +65197,10 @@ var BranchOffNextBranchBaseAction = class extends ReleaseAction {
     await this.assertPassingGithubStatus(beforeStagingSha, nextBranchName);
     await this._createNewVersionBranchFromNext(newBranch);
     const { pullRequest, releaseNotes, builtPackagesWithInfo } = await this.stageVersionForBranchAndCreatePullRequest(newVersion, compareVersionForReleaseNotes, newBranch);
-    await this.waitForPullRequestToBeMerged(pullRequest);
+    await this.promptAndWaitForPullRequestMerged(pullRequest);
     await this.publish(builtPackagesWithInfo, releaseNotes, beforeStagingSha, newBranch, "next");
     const branchOffPullRequest = await this._createNextBranchUpdatePullRequest(releaseNotes, newVersion);
-    await this.waitForPullRequestToBeMerged(branchOffPullRequest);
+    await this.promptAndWaitForPullRequestMerged(branchOffPullRequest);
   }
   async _computeNewVersion() {
     if (this.newPhaseName === "feature-freeze") {
@@ -65197,7 +65231,6 @@ var BranchOffNextBranchBaseAction = class extends ReleaseAction {
 Also this PR cherry-picks the changelog for v${newVersion} into the ${nextBranch} branch so that the changelog is up to date.`;
     const nextUpdatePullRequest = await this.pushChangesToForkAndCreatePullRequest(nextBranch, `next-release-train-${newNextVersion}`, `Update next branch to reflect new release-train "v${newNextVersion}".`, nextPullRequestMessage);
     Log.info(green(`  \u2713   Pull request for updating the "${nextBranch}" branch has been created.`));
-    Log.info(yellow(`      Please ask team members to review: ${nextUpdatePullRequest.url}.`));
     return nextUpdatePullRequest;
   }
 };
@@ -65276,7 +65309,7 @@ import * as fs3 from "fs";
 import lockfile2 from "@yarnpkg/lockfile";
 async function verifyNgDevToolIsUpToDate(workspacePath) {
   var _a, _b, _c;
-  const localVersion = `0.0.0-a57fec07f76e8893a5fe7a1d0128721b54d72a96`;
+  const localVersion = `0.0.0-bdc8532d815f9056874f839751d7554bf64d6617`;
   const workspacePackageJsonFile = path2.join(workspacePath, workspaceRelativePackageJsonPath);
   const workspaceDirLockFile = path2.join(workspacePath, workspaceRelativeYarnLockFilePath);
   try {

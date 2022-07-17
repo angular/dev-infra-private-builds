@@ -107,12 +107,6 @@ export declare abstract class ReleaseAction {
      */
     protected pushChangesToForkAndCreatePullRequest(targetBranch: string, proposedForkBranchName: string, title: string, body?: string): Promise<PullRequest>;
     /**
-     * Waits for the given pull request to be merged. Default interval for checking the Github
-     * API is 10 seconds (to not exceed any rate limits). If the pull request is closed without
-     * merge, the script will abort gracefully (considering a manual user abort).
-     */
-    protected waitForPullRequestToBeMerged({ id }: PullRequest, interval?: number): Promise<void>;
-    /**
      * Prepend releases notes for a version published in a given branch to the changelog in
      * the current Git `HEAD`. This is useful for cherry-picking the changelog.
      * @returns A boolean indicating whether the release notes have been prepended.
@@ -174,6 +168,8 @@ export declare abstract class ReleaseAction {
      * @returns a boolean indicating successful creation of the cherry-pick pull request.
      */
     protected cherryPickChangelogIntoNextBranch(releaseNotes: ReleaseNotes, stagingBranch: string): Promise<boolean>;
+    /** Prompts the user for merging the pull request, and waits for it to be merged. */
+    protected promptAndWaitForPullRequestMerged(pullRequest: PullRequest): Promise<void>;
     /**
      * Creates a Github release for the specified version. The release is created
      * by tagging the version bump commit, and by creating the release entry.
