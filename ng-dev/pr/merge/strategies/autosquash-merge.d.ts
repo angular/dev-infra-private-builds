@@ -5,7 +5,6 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { PullRequestFailure } from '../../common/validation/failures.js';
 import { PullRequest } from '../pull-request.js';
 import { MergeStrategy } from './strategy.js';
 /**
@@ -23,7 +22,8 @@ export declare class AutosquashMergeStrategy extends MergeStrategy {
      * would causes unnecessary multiple fetch requests when multiple PRs are merged.
      * @throws {GitCommandError} An unknown Git command error occurred that is not
      *   specific to the pull request merge.
-     * @returns A pull request failure or null in case of success.
+     * @throws {PullRequestFailure} A pull request failure if the the pull request could not
+     *   be merged and the pull request is misconfigured.
      */
-    merge(pullRequest: PullRequest): Promise<PullRequestFailure | null>;
+    merge(pullRequest: PullRequest): Promise<void>;
 }

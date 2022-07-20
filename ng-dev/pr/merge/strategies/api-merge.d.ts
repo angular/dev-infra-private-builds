@@ -7,7 +7,6 @@
  */
 import { AuthenticatedGitClient } from '../../../utils/git/authenticated-git-client.js';
 import { GithubApiMergeStrategyConfig } from '../../config/index.js';
-import { PullRequestFailure } from '../../common/validation/failures.js';
 import { PullRequest } from '../pull-request.js';
 import { MergeStrategy } from './strategy.js';
 /**
@@ -20,7 +19,7 @@ import { MergeStrategy } from './strategy.js';
 export declare class GithubApiMergeStrategy extends MergeStrategy {
     private _config;
     constructor(git: AuthenticatedGitClient, _config: GithubApiMergeStrategyConfig);
-    merge(pullRequest: PullRequest): Promise<PullRequestFailure | null>;
+    merge(pullRequest: PullRequest): Promise<void>;
     /**
      * Prompts the user for the commit message changes. Unlike as in the autosquash merge
      * strategy, we cannot start an interactive rebase because we merge using the Github API.
@@ -36,10 +35,9 @@ export declare class GithubApiMergeStrategy extends MergeStrategy {
     /** Gets all commit messages of commits in the pull request. */
     private _getPullRequestCommitMessages;
     /**
-     * Checks if given pull request could be merged into its target branches.
-     * @returns A pull request failure if it the PR could not be merged.
+     * Asserts that given pull request could be merged into its target branches.
      */
-    private _checkMergability;
+    private _assertMergeableOrThrow;
     /** Determines the merge action from the given pull request. */
     private _getMergeActionFromPullRequest;
 }

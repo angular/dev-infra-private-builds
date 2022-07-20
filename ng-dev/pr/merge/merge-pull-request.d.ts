@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { PullRequestMergeTaskFlags } from './task.js';
+import { PullRequestMergeFlags } from './merge-tool.js';
 /**
  * Merges a given pull request based on labels configured in the given merge configuration.
  * Pull requests can be merged with different strategies such as the Github API merge
@@ -17,4 +17,4 @@ import { PullRequestMergeTaskFlags } from './task.js';
  * @param prNumber Number of the pull request that should be merged.
  * @param flags Configuration options for merging pull requests.
  */
-export declare function mergePullRequest(prNumber: number, flags: PullRequestMergeTaskFlags): Promise<void>;
+export declare function mergePullRequest(prNumber: number, flags: PullRequestMergeFlags): Promise<void>;

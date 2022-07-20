@@ -62093,11 +62093,11 @@ async function getTargetLabelsForActiveReleaseTrains({ latest, releaseCandidate,
   return targetLabels;
 }
 
-// bazel-out/k8-fastbuild/bin/ng-dev/pr/common/validation/failures.js
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/common/validation/pull-request-failure.js
 var PullRequestFailure = class {
-  constructor(message, nonFatal = false) {
+  constructor(message, canBeIgnoredNonFatal = false) {
     this.message = message;
-    this.nonFatal = nonFatal;
+    this.canBeIgnoredNonFatal = canBeIgnoredNonFatal;
   }
   static claUnsigned() {
     return new this(`CLA has not been signed. Please make sure the PR author has signed the CLA.`);
@@ -62134,12 +62134,6 @@ var PullRequestFailure = class {
   }
   static unableToFixupCommitMessageSquashOnly() {
     return new this(`Unable to fixup commit message of pull request. Commit message can only be modified if the PR is merged using squash.`);
-  }
-  static notFound() {
-    return new this(`Pull request could not be found upstream.`);
-  }
-  static insufficientPermissionsToMerge(message = `Insufficient Github API permissions to merge pull request. Please ensure that your auth token has write access.`) {
-    return new this(message);
   }
   static hasBreakingChanges(label) {
     const message = `Cannot merge into branch for "${label.name}" as the pull request has breaking changes. Breaking changes can only be merged with the "target: major" label.`;
@@ -62750,7 +62744,7 @@ var DiscoverNewConflictsCommandModule = {
   describe: "Check if a pending PR causes new conflicts for other pending PRs"
 };
 
-// bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/task.js
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/merge-tool.js
 var import_inquirer4 = __toESM(require_inquirer());
 
 // bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/messages.js
@@ -62759,7 +62753,7 @@ function getCaretakerNotePromptMessage(pullRequest) {
 Quick link to PR: ${pullRequest.url}
 Do you want to proceed merging?`;
 }
-function getTargettedBranchesConfirmationPromptMessage(pullRequest) {
+function getTargetedBranchesConfirmationPromptMessage(pullRequest) {
   const targetBranchListAsString = pullRequest.targetBranches.map((b) => ` - ${b}
 `).join("");
   return `Pull request #${pullRequest.prNumber} will merge into:
@@ -62767,29 +62761,31 @@ ${targetBranchListAsString}
 Do you want to proceed merging?`;
 }
 
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/failures.js
+var FatalMergeToolError = class extends Error {
+  constructor(message) {
+    super(message);
+  }
+};
+var UserAbortedMergeToolError = class extends Error {
+};
+
 // bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/pull-request.js
 async function loadAndValidatePullRequest({ git, config }, prNumber, ignoreNonFatalFailures = false) {
   const prData = await fetchPullRequestFromGithub(git, prNumber);
   if (prData === null) {
-    return PullRequestFailure.notFound();
+    throw new FatalMergeToolError("Pull request could not be found.");
   }
   const labels = prData.labels.nodes.map((l) => l.name);
   const commitsInPr = prData.commits.nodes.map((n) => parseCommitMessage(n.commit.message));
   const githubTargetBranch = prData.baseRefName;
   const targetBranches = await getTargetBranchesForPullRequest(git.github, config, labels, githubTargetBranch, commitsInPr);
-  try {
-    assertMergeReady(prData, config.pullRequest);
-    assertSignedCla(prData);
-    assertPendingState(prData);
-    assertCorrectBreakingChangeLabeling(commitsInPr, labels);
-    if (!ignoreNonFatalFailures) {
-      assertPassingCi(prData);
-    }
-  } catch (error) {
-    if (error instanceof PullRequestFailure) {
-      return error;
-    }
-    throw error;
+  assertMergeReady(prData, config.pullRequest);
+  assertSignedCla(prData);
+  assertPendingState(prData);
+  assertCorrectBreakingChangeLabeling(commitsInPr, labels);
+  if (!ignoreNonFatalFailures) {
+    assertPassingCi(prData);
   }
   const requiredBaseSha = config.pullRequest.requiredBaseCommits && config.pullRequest.requiredBaseCommits[githubTargetBranch];
   const needsCommitMessageFixup = !!config.pullRequest.commitMessageFixupLabel && labels.includes(config.pullRequest.commitMessageFixupLabel);
@@ -62806,9 +62802,6 @@ async function loadAndValidatePullRequest({ git, config }, prNumber, ignoreNonFa
     title: prData.title,
     commitCount: prData.commits.totalCount
   };
-}
-function isPullRequest(v) {
-  return v.targetBranches !== void 0;
 }
 
 // bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/strategies/api-merge.js
@@ -62891,17 +62884,14 @@ var GithubApiMergeStrategy = class extends MergeStrategy {
   async merge(pullRequest) {
     const { githubTargetBranch, prNumber, targetBranches, requiredBaseSha, needsCommitMessageFixup } = pullRequest;
     if (targetBranches.every((t) => t !== githubTargetBranch)) {
-      return PullRequestFailure.mismatchingTargetBranch(targetBranches);
+      throw PullRequestFailure.mismatchingTargetBranch(targetBranches);
     }
     if (requiredBaseSha && !this.git.hasCommit(TEMP_PR_HEAD_BRANCH, requiredBaseSha)) {
-      return PullRequestFailure.unsatisfiedBaseSha();
+      throw PullRequestFailure.unsatisfiedBaseSha();
     }
     const method = this._getMergeActionFromPullRequest(pullRequest);
     const cherryPickTargetBranches = targetBranches.filter((b) => b !== githubTargetBranch);
-    const failure = await this._checkMergability(pullRequest, cherryPickTargetBranches);
-    if (failure !== null) {
-      return failure;
-    }
+    await this._assertMergeableOrThrow(pullRequest, cherryPickTargetBranches);
     const mergeOptions = {
       pull_number: prNumber,
       merge_method: method,
@@ -62909,7 +62899,7 @@ var GithubApiMergeStrategy = class extends MergeStrategy {
     };
     if (needsCommitMessageFixup) {
       if (method !== "squash") {
-        return PullRequestFailure.unableToFixupCommitMessageSquashOnly();
+        throw PullRequestFailure.unableToFixupCommitMessageSquashOnly();
       }
       await this._promptCommitMessageEdit(pullRequest, mergeOptions);
     }
@@ -62921,18 +62911,18 @@ var GithubApiMergeStrategy = class extends MergeStrategy {
       targetSha = result.data.sha;
     } catch (e) {
       if (e instanceof import_request_error.RequestError && (e.status === 403 || e.status === 404)) {
-        return PullRequestFailure.insufficientPermissionsToMerge();
+        throw new FatalMergeToolError("Insufficient Github API permissions to merge pull request.");
       }
       throw e;
     }
     if (mergeStatusCode === 405) {
-      return PullRequestFailure.mergeConflicts([githubTargetBranch]);
+      throw PullRequestFailure.mergeConflicts([githubTargetBranch]);
     }
     if (mergeStatusCode !== 200) {
-      return PullRequestFailure.unknownMergeError();
+      throw PullRequestFailure.unknownMergeError();
     }
     if (!cherryPickTargetBranches.length) {
-      return null;
+      return;
     }
     this.fetchTargetBranches([githubTargetBranch]);
     const targetCommitsCount = method === "squash" ? 1 : pullRequest.commitCount;
@@ -62940,10 +62930,9 @@ var GithubApiMergeStrategy = class extends MergeStrategy {
       linkToOriginalCommits: true
     });
     if (failedBranches.length) {
-      return PullRequestFailure.mergeConflicts(failedBranches);
+      throw PullRequestFailure.mergeConflicts(failedBranches);
     }
     this.pushTargetBranchesUpstream(cherryPickTargetBranches);
-    return null;
   }
   async _promptCommitMessageEdit(pullRequest, mergeOptions) {
     const commitMessage = await this._getDefaultSquashCommitMessage(pullRequest);
@@ -62976,13 +62965,13 @@ var GithubApiMergeStrategy = class extends MergeStrategy {
     });
     return allCommits.map(({ commit }) => commit.message);
   }
-  async _checkMergability(pullRequest, targetBranches) {
+  async _assertMergeableOrThrow(pullRequest, targetBranches) {
     const revisionRange = this.getPullRequestRevisionRange(pullRequest);
     const failedBranches = this.cherryPickIntoTargetBranches(revisionRange, targetBranches, {
       dryRun: true
     });
     if (failedBranches.length) {
-      return PullRequestFailure.mergeConflicts(failedBranches);
+      throw PullRequestFailure.mergeConflicts(failedBranches);
     }
     return null;
   }
@@ -63004,7 +62993,7 @@ var AutosquashMergeStrategy = class extends MergeStrategy {
   async merge(pullRequest) {
     const { prNumber, targetBranches, requiredBaseSha, needsCommitMessageFixup, githubTargetBranch } = pullRequest;
     if (requiredBaseSha && !this.git.hasCommit(TEMP_PR_HEAD_BRANCH, requiredBaseSha)) {
-      return PullRequestFailure.unsatisfiedBaseSha();
+      throw PullRequestFailure.unsatisfiedBaseSha();
     }
     const baseSha = this.git.run(["rev-parse", this.getPullRequestBaseRevision(pullRequest)]).stdout.trim();
     const revisionRange = `${baseSha}..${TEMP_PR_HEAD_BRANCH}`;
@@ -63024,7 +63013,7 @@ var AutosquashMergeStrategy = class extends MergeStrategy {
     ]);
     const failedBranches = this.cherryPickIntoTargetBranches(revisionRange, targetBranches);
     if (failedBranches.length) {
-      return PullRequestFailure.mergeConflicts(failedBranches);
+      throw PullRequestFailure.mergeConflicts(failedBranches);
     }
     this.pushTargetBranchesUpstream(targetBranches);
     const localBranch = this.getLocalTargetBranchName(githubTargetBranch);
@@ -63041,7 +63030,6 @@ var AutosquashMergeStrategy = class extends MergeStrategy {
         state: "closed"
       });
     }
-    return null;
   }
 };
 function getCommitMessageFilterScriptPath() {
@@ -63049,23 +63037,25 @@ function getCommitMessageFilterScriptPath() {
   return join9(bundlesDir, "./pr/merge/strategies/commit-message-filter.mjs");
 }
 
-// bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/task.js
-var defaultPullRequestMergeTaskFlags = {
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/merge-tool.js
+var defaultPullRequestMergeFlags = {
   branchPrompt: true,
   forceManualBranches: false
 };
-var PullRequestMergeTask = class {
+var MergeTool = class {
   constructor(config, git, flags) {
     this.config = config;
     this.git = git;
-    this.flags = { ...defaultPullRequestMergeTaskFlags, ...flags };
+    this.flags = { ...defaultPullRequestMergeFlags, ...flags };
   }
   async merge(prNumber, force = false) {
     if (this.git.hasUncommittedChanges()) {
-      return { status: 1 };
+      throw new FatalMergeToolError("Local working repository not clean. Please make sure there are no uncommitted changes.");
     }
     if (this.git.isShallowRepo()) {
-      return { status: 2 };
+      throw new FatalMergeToolError(`Unable to perform merge in a local repository that is configured as shallow.
+Please convert the repository to a complete one by syncing with upstream.
+https://git-scm.com/docs/git-fetch#Documentation/git-fetch.txt---unshallow`);
     }
     const hasOauthScopes = await this.git.hasOauthScopes((scopes, missing) => {
       if (!scopes.includes("repo")) {
@@ -63080,47 +63070,29 @@ var PullRequestMergeTask = class {
       }
     });
     if (hasOauthScopes !== true) {
-      return {
-        status: 6,
-        failure: PullRequestFailure.insufficientPermissionsToMerge(hasOauthScopes.error)
-      };
+      throw new FatalMergeToolError(hasOauthScopes.error);
     }
     const pullRequest = await loadAndValidatePullRequest(this, prNumber, force);
-    if (!isPullRequest(pullRequest)) {
-      return { status: 4, failure: pullRequest };
-    }
     if (this.flags.forceManualBranches) {
-      const forceManualBranchesFailure = await this.setTargetedBranchesManually(pullRequest);
-      if (forceManualBranchesFailure) {
-        return forceManualBranchesFailure;
-      }
+      await this.updatePullRequestTargetedBranchesFromPrompt(pullRequest);
     }
-    if (!this.flags.forceManualBranches && this.flags.branchPrompt && !await Prompt.confirm(getTargettedBranchesConfirmationPromptMessage(pullRequest))) {
-      return { status: 5 };
+    if (!this.flags.forceManualBranches && this.flags.branchPrompt && !await Prompt.confirm(getTargetedBranchesConfirmationPromptMessage(pullRequest))) {
+      throw new UserAbortedMergeToolError();
     }
     if (pullRequest.hasCaretakerNote && !await Prompt.confirm(getCaretakerNotePromptMessage(pullRequest))) {
-      return { status: 5 };
+      throw new UserAbortedMergeToolError();
     }
     const strategy = this.config.pullRequest.githubApiMerge ? new GithubApiMergeStrategy(this.git, this.config.pullRequest.githubApiMerge) : new AutosquashMergeStrategy(this.git);
     const previousBranchOrRevision = this.git.getCurrentBranchOrRevision();
     try {
       await strategy.prepare(pullRequest);
-      const failure = await strategy.merge(pullRequest);
-      if (failure !== null) {
-        return { status: 4, failure };
-      }
-      return { status: 3 };
-    } catch (e) {
-      if (e instanceof GitCommandError) {
-        return { status: 0 };
-      }
-      throw e;
+      await strategy.merge(pullRequest);
     } finally {
       this.git.run(["checkout", "-f", previousBranchOrRevision]);
       await strategy.cleanup(pullRequest);
     }
   }
-  async setTargetedBranchesManually(pullRequest) {
+  async updatePullRequestTargetedBranchesFromPrompt(pullRequest) {
     const { name: repoName, owner } = this.config.github;
     let ltsBranches = [];
     try {
@@ -63170,35 +63142,54 @@ var PullRequestMergeTask = class {
       }
     ]);
     if (confirm === false) {
-      return { status: 5 };
+      throw new UserAbortedMergeToolError();
     }
     if (!selectedBranches.includes(pullRequest.githubTargetBranch)) {
-      return {
-        status: 4,
-        failure: PullRequestFailure.failedToManualSelectGithubTargetBranch(pullRequest.githubTargetBranch)
-      };
+      throw PullRequestFailure.failedToManualSelectGithubTargetBranch(pullRequest.githubTargetBranch);
     }
     pullRequest.targetBranches = selectedBranches;
   }
 };
 
-// bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/index.js
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/merge-pull-request.js
 async function mergePullRequest(prNumber, flags) {
   process.env["HUSKY"] = "0";
-  const api = await createPullRequestMergeTask(flags);
+  const tool = await createPullRequestMergeTool(flags);
   if (!await performMerge(false)) {
     process.exit(1);
   }
   async function performMerge(ignoreFatalErrors) {
     try {
-      const result = await api.merge(prNumber, ignoreFatalErrors);
-      return await handleMergeResult(result, ignoreFatalErrors);
+      await tool.merge(prNumber, ignoreFatalErrors);
+      Log.info(green(`Successfully merged the pull request: #${prNumber}`));
+      return true;
     } catch (e) {
       if (e instanceof import_request_error.RequestError && e.status === 401) {
         Log.error("Github API request failed. " + e.message);
         Log.error("Please ensure that your provided token is valid.");
         Log.warn(`You can generate a token here: ${GITHUB_TOKEN_GENERATE_URL}`);
-        process.exit(1);
+        return false;
+      }
+      if (e instanceof UserAbortedMergeToolError) {
+        Log.warn("Manually aborted merging..");
+        return false;
+      }
+      if (e instanceof FatalMergeToolError) {
+        Log.error(`Could not merge the specified pull request.`);
+        Log.error(e.message);
+        return false;
+      }
+      if (e instanceof PullRequestFailure) {
+        Log.error(`Could not merge the specified pull request.`);
+        Log.error(e.message);
+        if (e.canBeIgnoredNonFatal && !ignoreFatalErrors) {
+          Log.info();
+          Log.info(yellow("The pull request above failed due to non-critical errors."));
+          Log.info(yellow(`This error can be forcibly ignored if desired.`));
+          return await promptAndPerformForceMerge();
+        } else {
+          return false;
+        }
       }
       throw e;
     }
@@ -63209,53 +63200,14 @@ async function mergePullRequest(prNumber, flags) {
     }
     return false;
   }
-  async function handleMergeResult(result, disableForceMergePrompt = false) {
-    const { failure, status } = result;
-    const canForciblyMerge = failure && failure.nonFatal;
-    switch (status) {
-      case 3:
-        Log.info(green(`Successfully merged the pull request: #${prNumber}`));
-        return true;
-      case 1:
-        Log.error(`Local working repository not clean. Please make sure there are no uncommitted changes.`);
-        return false;
-      case 2:
-        Log.error(`Unable to perform merge in a local repository that is configured as shallow.`);
-        Log.error(`Please convert the repository to a complete one by syncing with upstream.`);
-        Log.error(`https://git-scm.com/docs/git-fetch#Documentation/git-fetch.txt---unshallow`);
-        return false;
-      case 0:
-        Log.error("An unknown Git error has been thrown. Please check the output above for details.");
-        return false;
-      case 6:
-        Log.error("An error related to interacting with Github has been discovered.");
-        Log.error(failure.message);
-        return false;
-      case 5:
-        Log.info(`Merge of pull request has been aborted manually: #${prNumber}`);
-        return true;
-      case 4:
-        Log.error(`Could not merge the specified pull request.`);
-        Log.error(failure.message);
-        if (canForciblyMerge && !disableForceMergePrompt) {
-          Log.info();
-          Log.info(yellow("The pull request above failed due to non-critical errors."));
-          Log.info(yellow(`This error can be forcibly ignored if desired.`));
-          return await promptAndPerformForceMerge();
-        }
-        return false;
-      default:
-        throw Error(`Unexpected merge result: ${status}`);
-    }
-  }
 }
-async function createPullRequestMergeTask(flags) {
+async function createPullRequestMergeTool(flags) {
   try {
     const config = await getConfig();
     assertValidGithubConfig(config);
     assertValidPullRequestConfig(config);
     const git = await AuthenticatedGitClient.get();
-    return new PullRequestMergeTask(config, git, flags);
+    return new MergeTool(config, git, flags);
   } catch (e) {
     if (e instanceof ConfigValidationError) {
       if (e.errors.length) {
@@ -65309,7 +65261,7 @@ import * as fs3 from "fs";
 import lockfile2 from "@yarnpkg/lockfile";
 async function verifyNgDevToolIsUpToDate(workspacePath) {
   var _a, _b, _c;
-  const localVersion = `0.0.0-cd02891231926b56e403fa94849a6638899e98ce`;
+  const localVersion = `0.0.0-3eeb5452f4e35bdaae0b4ef5280171e270bc9862`;
   const workspacePackageJsonFile = path2.join(workspacePath, workspaceRelativePackageJsonPath);
   const workspaceDirLockFile = path2.join(workspacePath, workspaceRelativeYarnLockFilePath);
   try {

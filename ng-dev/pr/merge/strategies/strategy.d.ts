@@ -6,7 +6,6 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { AuthenticatedGitClient } from '../../../utils/git/authenticated-git-client.js';
-import { PullRequestFailure } from '../../common/validation/failures.js';
 import { PullRequest } from '../pull-request.js';
 /**
  * Name of a temporary branch that contains the head of a currently-processed PR. Note
@@ -29,8 +28,13 @@ export declare abstract class MergeStrategy {
     /**
      * Performs the merge of the given pull request. This needs to be implemented
      * by individual merge strategies.
+     *
+     * @throws {PullRequestFailure} A pull request failure if the the pull request could not
+     *   be merged and the pull request is misconfigured.
+     * @throws {FatalMergeToolError} A fatal error has occurred when attempting to merge the
+     *   pull request.
      */
-    abstract merge(pullRequest: PullRequest): Promise<null | PullRequestFailure>;
+    abstract merge(pullRequest: PullRequest): Promise<void>;
     /** Cleans up the pull request merge. e.g. deleting temporary local branches. */
     cleanup(pullRequest: PullRequest): Promise<void>;
     /** Gets the revision range for all commits in the given pull request. */
