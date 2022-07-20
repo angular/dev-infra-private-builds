@@ -95,13 +95,13 @@ export declare class GithubClient {
                 } | null;
                 body: string | null;
                 labels: {
-                    id?: number | undefined;
-                    node_id?: string | undefined;
-                    url?: string | undefined;
-                    name?: string | undefined;
-                    description?: string | null | undefined;
-                    color?: string | undefined;
-                    default?: boolean | undefined;
+                    id: number;
+                    node_id: string;
+                    url: string;
+                    name: string;
+                    description: string | null;
+                    color: string;
+                    default: boolean;
                 }[];
                 milestone: {
                     url: string;
@@ -1028,13 +1028,13 @@ export declare class GithubClient {
                 } | null;
                 body: string | null;
                 labels: {
-                    id?: number | undefined;
-                    node_id?: string | undefined;
-                    url?: string | undefined;
-                    name?: string | undefined;
-                    description?: string | null | undefined;
-                    color?: string | undefined;
-                    default?: boolean | undefined;
+                    id: number;
+                    node_id: string;
+                    url: string;
+                    name: string;
+                    description: string | null;
+                    color: string;
+                    default: boolean;
                 }[];
                 milestone: {
                     url: string;
@@ -1736,13 +1736,13 @@ export declare class GithubClient {
                 } | null;
                 body: string | null;
                 labels: {
-                    id?: number | undefined;
-                    node_id?: string | undefined;
-                    url?: string | undefined;
-                    name?: string | undefined;
-                    description?: string | undefined;
-                    color?: string | undefined;
-                    default?: boolean | undefined;
+                    id: number;
+                    node_id: string;
+                    url: string;
+                    name: string;
+                    description: string;
+                    color: string;
+                    default: boolean;
                 }[];
                 milestone: {
                     url: string;
@@ -2135,6 +2135,8 @@ export declare class GithubClient {
                             allow_squash_merge?: boolean | undefined;
                             allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
+                            allow_update_branch?: boolean | undefined;
+                            use_squash_pr_title_as_default?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
                             subscribers_count?: number | undefined;
                             network_count?: number | undefined;
@@ -2143,6 +2145,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         allow_forking?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -2419,6 +2423,8 @@ export declare class GithubClient {
                             allow_squash_merge?: boolean | undefined;
                             allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
+                            allow_update_branch?: boolean | undefined;
+                            use_squash_pr_title_as_default?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
                             subscribers_count?: number | undefined;
                             network_count?: number | undefined;
@@ -2427,6 +2433,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         allow_forking?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -2706,16 +2714,16 @@ export declare class GithubClient {
                     total?: number | undefined;
                 } | undefined;
                 files?: {
-                    filename?: string | undefined;
-                    additions?: number | undefined;
-                    deletions?: number | undefined;
-                    changes?: number | undefined;
-                    status?: string | undefined;
-                    raw_url?: string | undefined;
-                    blob_url?: string | undefined;
+                    sha: string;
+                    filename: string;
+                    status: "added" | "removed" | "modified" | "renamed" | "copied" | "changed" | "unchanged";
+                    additions: number;
+                    deletions: number;
+                    changes: number;
+                    blob_url: string;
+                    raw_url: string;
+                    contents_url: string;
                     patch?: string | undefined;
-                    sha?: string | undefined;
-                    contents_url?: string | undefined;
                     previous_filename?: string | undefined;
                 }[] | undefined;
             }[], 200>>;
@@ -3126,13 +3134,13 @@ export declare class GithubClient {
                 } | null;
                 body: string | null;
                 labels: {
-                    id?: number | undefined;
-                    node_id?: string | undefined;
-                    url?: string | undefined;
-                    name?: string | undefined;
-                    description?: string | undefined;
-                    color?: string | undefined;
-                    default?: boolean | undefined;
+                    id: number;
+                    node_id: string;
+                    url: string;
+                    name: string;
+                    description: string;
+                    color: string;
+                    default: boolean;
                 }[];
                 milestone: {
                     url: string;
@@ -3525,6 +3533,8 @@ export declare class GithubClient {
                             allow_squash_merge?: boolean | undefined;
                             allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
+                            allow_update_branch?: boolean | undefined;
+                            use_squash_pr_title_as_default?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
                             subscribers_count?: number | undefined;
                             network_count?: number | undefined;
@@ -3533,6 +3543,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         allow_forking?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -3809,6 +3821,8 @@ export declare class GithubClient {
                             allow_squash_merge?: boolean | undefined;
                             allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
+                            allow_update_branch?: boolean | undefined;
+                            use_squash_pr_title_as_default?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
                             subscribers_count?: number | undefined;
                             network_count?: number | undefined;
@@ -3817,6 +3831,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         allow_forking?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -3963,13 +3979,13 @@ export declare class GithubClient {
                 } | null;
                 body: string | null;
                 labels: {
-                    id?: number | undefined;
-                    node_id?: string | undefined;
-                    url?: string | undefined;
-                    name?: string | undefined;
-                    description?: string | undefined;
-                    color?: string | undefined;
-                    default?: boolean | undefined;
+                    id: number;
+                    node_id: string;
+                    url: string;
+                    name: string;
+                    description: string;
+                    color: string;
+                    default: boolean;
                 }[];
                 milestone: {
                     url: string;
@@ -4362,6 +4378,8 @@ export declare class GithubClient {
                             allow_squash_merge?: boolean | undefined;
                             allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
+                            allow_update_branch?: boolean | undefined;
+                            use_squash_pr_title_as_default?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
                             subscribers_count?: number | undefined;
                             network_count?: number | undefined;
@@ -4370,6 +4388,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         allow_forking?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -4646,6 +4666,8 @@ export declare class GithubClient {
                             allow_squash_merge?: boolean | undefined;
                             allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
+                            allow_update_branch?: boolean | undefined;
+                            use_squash_pr_title_as_default?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
                             subscribers_count?: number | undefined;
                             network_count?: number | undefined;
@@ -4654,6 +4676,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         allow_forking?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -4861,13 +4885,13 @@ export declare class GithubClient {
                 } | null;
                 body: string | null;
                 labels: {
-                    id?: number | undefined;
-                    node_id?: string | undefined;
-                    url?: string | undefined;
-                    name?: string | undefined;
-                    description?: string | null | undefined;
-                    color?: string | undefined;
-                    default?: boolean | undefined;
+                    id: number;
+                    node_id: string;
+                    url: string;
+                    name: string;
+                    description: string | null;
+                    color: string;
+                    default: boolean;
                 }[];
                 milestone: {
                     url: string;
@@ -5623,7 +5647,6 @@ export declare class GithubClient {
                 username: string;
             } & {
                 permission?: "push" | "pull" | "admin" | "maintain" | "triage" | undefined;
-                permissions?: string | undefined;
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 id: number;
                 repository: {
@@ -5728,6 +5751,7 @@ export declare class GithubClient {
                         triage?: boolean | undefined;
                         pull?: boolean | undefined;
                     } | undefined;
+                    role_name?: string | undefined;
                     template_repository?: {
                         id: number;
                         node_id: string;
@@ -5967,6 +5991,8 @@ export declare class GithubClient {
                             allow_squash_merge?: boolean | undefined;
                             allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
+                            allow_update_branch?: boolean | undefined;
+                            use_squash_pr_title_as_default?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
                             subscribers_count?: number | undefined;
                             network_count?: number | undefined;
@@ -5975,6 +6001,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         allow_forking?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -6181,7 +6209,22 @@ export declare class GithubClient {
             }>;
         };
         codeownersErrors: {
-            (params?: (RequestParameters & Omit<any, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<any>;
+            (params?: (RequestParameters & Omit<{
+                owner: string;
+                repo: string;
+            } & {
+                ref?: string | undefined;
+            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
+                errors: {
+                    line: number;
+                    column: number;
+                    source?: string | undefined;
+                    kind: string;
+                    suggestion?: string | null | undefined;
+                    message: string;
+                    path: string;
+                }[];
+            }, 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
                 url: string;
@@ -6290,16 +6333,16 @@ export declare class GithubClient {
                         total?: number | undefined;
                     } | undefined;
                     files?: {
-                        filename?: string | undefined;
-                        additions?: number | undefined;
-                        deletions?: number | undefined;
-                        changes?: number | undefined;
-                        status?: string | undefined;
-                        raw_url?: string | undefined;
-                        blob_url?: string | undefined;
+                        sha: string;
+                        filename: string;
+                        status: "added" | "removed" | "modified" | "renamed" | "copied" | "changed" | "unchanged";
+                        additions: number;
+                        deletions: number;
+                        changes: number;
+                        blob_url: string;
+                        raw_url: string;
+                        contents_url: string;
                         patch?: string | undefined;
-                        sha?: string | undefined;
-                        contents_url?: string | undefined;
                         previous_filename?: string | undefined;
                     }[] | undefined;
                 };
@@ -6391,16 +6434,16 @@ export declare class GithubClient {
                         total?: number | undefined;
                     } | undefined;
                     files?: {
-                        filename?: string | undefined;
-                        additions?: number | undefined;
-                        deletions?: number | undefined;
-                        changes?: number | undefined;
-                        status?: string | undefined;
-                        raw_url?: string | undefined;
-                        blob_url?: string | undefined;
+                        sha: string;
+                        filename: string;
+                        status: "added" | "removed" | "modified" | "renamed" | "copied" | "changed" | "unchanged";
+                        additions: number;
+                        deletions: number;
+                        changes: number;
+                        blob_url: string;
+                        raw_url: string;
+                        contents_url: string;
                         patch?: string | undefined;
-                        sha?: string | undefined;
-                        contents_url?: string | undefined;
                         previous_filename?: string | undefined;
                     }[] | undefined;
                 };
@@ -6496,16 +6539,16 @@ export declare class GithubClient {
                         total?: number | undefined;
                     } | undefined;
                     files?: {
-                        filename?: string | undefined;
-                        additions?: number | undefined;
-                        deletions?: number | undefined;
-                        changes?: number | undefined;
-                        status?: string | undefined;
-                        raw_url?: string | undefined;
-                        blob_url?: string | undefined;
+                        sha: string;
+                        filename: string;
+                        status: "added" | "removed" | "modified" | "renamed" | "copied" | "changed" | "unchanged";
+                        additions: number;
+                        deletions: number;
+                        changes: number;
+                        blob_url: string;
+                        raw_url: string;
+                        contents_url: string;
                         patch?: string | undefined;
-                        sha?: string | undefined;
-                        contents_url?: string | undefined;
                         previous_filename?: string | undefined;
                     }[] | undefined;
                 }[];
@@ -6630,16 +6673,16 @@ export declare class GithubClient {
                         total?: number | undefined;
                     } | undefined;
                     files?: {
-                        filename?: string | undefined;
-                        additions?: number | undefined;
-                        deletions?: number | undefined;
-                        changes?: number | undefined;
-                        status?: string | undefined;
-                        raw_url?: string | undefined;
-                        blob_url?: string | undefined;
+                        sha: string;
+                        filename: string;
+                        status: "added" | "removed" | "modified" | "renamed" | "copied" | "changed" | "unchanged";
+                        additions: number;
+                        deletions: number;
+                        changes: number;
+                        blob_url: string;
+                        raw_url: string;
+                        contents_url: string;
                         patch?: string | undefined;
-                        sha?: string | undefined;
-                        contents_url?: string | undefined;
                         previous_filename?: string | undefined;
                     }[] | undefined;
                 };
@@ -6731,16 +6774,16 @@ export declare class GithubClient {
                         total?: number | undefined;
                     } | undefined;
                     files?: {
-                        filename?: string | undefined;
-                        additions?: number | undefined;
-                        deletions?: number | undefined;
-                        changes?: number | undefined;
-                        status?: string | undefined;
-                        raw_url?: string | undefined;
-                        blob_url?: string | undefined;
+                        sha: string;
+                        filename: string;
+                        status: "added" | "removed" | "modified" | "renamed" | "copied" | "changed" | "unchanged";
+                        additions: number;
+                        deletions: number;
+                        changes: number;
+                        blob_url: string;
+                        raw_url: string;
+                        contents_url: string;
                         patch?: string | undefined;
-                        sha?: string | undefined;
-                        contents_url?: string | undefined;
                         previous_filename?: string | undefined;
                     }[] | undefined;
                 };
@@ -6836,16 +6879,16 @@ export declare class GithubClient {
                         total?: number | undefined;
                     } | undefined;
                     files?: {
-                        filename?: string | undefined;
-                        additions?: number | undefined;
-                        deletions?: number | undefined;
-                        changes?: number | undefined;
-                        status?: string | undefined;
-                        raw_url?: string | undefined;
-                        blob_url?: string | undefined;
+                        sha: string;
+                        filename: string;
+                        status: "added" | "removed" | "modified" | "renamed" | "copied" | "changed" | "unchanged";
+                        additions: number;
+                        deletions: number;
+                        changes: number;
+                        blob_url: string;
+                        raw_url: string;
+                        contents_url: string;
                         patch?: string | undefined;
-                        sha?: string | undefined;
-                        contents_url?: string | undefined;
                         previous_filename?: string | undefined;
                     }[] | undefined;
                 }[];
@@ -6879,6 +6922,7 @@ export declare class GithubClient {
                 id: number;
                 key_prefix: string;
                 url_template: string;
+                is_alphanumeric?: boolean | undefined;
             }, 201>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
@@ -7529,6 +7573,8 @@ export declare class GithubClient {
                     allow_squash_merge?: boolean | undefined;
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
+                    allow_update_branch?: boolean | undefined;
+                    use_squash_pr_title_as_default?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;
                     network_count?: number | undefined;
@@ -7537,6 +7583,8 @@ export declare class GithubClient {
                 allow_squash_merge?: boolean | undefined;
                 allow_auto_merge?: boolean | undefined;
                 delete_branch_on_merge?: boolean | undefined;
+                allow_update_branch?: boolean | undefined;
+                use_squash_pr_title_as_default?: boolean | undefined;
                 allow_merge_commit?: boolean | undefined;
                 allow_forking?: boolean | undefined;
                 subscribers_count?: number | undefined;
@@ -7557,6 +7605,7 @@ export declare class GithubClient {
                 repo: string;
             } & {
                 organization?: string | undefined;
+                name?: string | undefined;
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 id: number;
                 node_id: string;
@@ -7899,6 +7948,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
@@ -7907,6 +7958,8 @@ export declare class GithubClient {
                     allow_squash_merge?: boolean | undefined;
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
+                    allow_update_branch?: boolean | undefined;
+                    use_squash_pr_title_as_default?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -7921,6 +7974,8 @@ export declare class GithubClient {
                 allow_auto_merge?: boolean | undefined;
                 delete_branch_on_merge?: boolean | undefined;
                 allow_merge_commit?: boolean | undefined;
+                allow_update_branch?: boolean | undefined;
+                use_squash_pr_title_as_default?: boolean | undefined;
                 allow_forking?: boolean | undefined;
                 subscribers_count: number;
                 network_count: number;
@@ -8194,6 +8249,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
@@ -8202,6 +8259,8 @@ export declare class GithubClient {
                     allow_squash_merge?: boolean | undefined;
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
+                    allow_update_branch?: boolean | undefined;
+                    use_squash_pr_title_as_default?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -8450,6 +8509,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
@@ -8458,6 +8519,8 @@ export declare class GithubClient {
                     allow_squash_merge?: boolean | undefined;
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
+                    allow_update_branch?: boolean | undefined;
+                    use_squash_pr_title_as_default?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -8485,6 +8548,9 @@ export declare class GithubClient {
                     secret_scanning?: {
                         status?: "enabled" | "disabled" | undefined;
                     } | undefined;
+                    secret_scanning_push_protection?: {
+                        status?: "enabled" | "disabled" | undefined;
+                    } | undefined;
                 } | null | undefined;
             }, 202>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
@@ -8500,7 +8566,7 @@ export declare class GithubClient {
                 description?: string | undefined;
                 homepage?: string | undefined;
                 private?: boolean | undefined;
-                visibility?: "private" | "visibility" | "public" | "internal" | undefined;
+                visibility?: "private" | "public" | "internal" | undefined;
                 has_issues?: boolean | undefined;
                 has_projects?: boolean | undefined;
                 has_wiki?: boolean | undefined;
@@ -8514,6 +8580,7 @@ export declare class GithubClient {
                 allow_rebase_merge?: boolean | undefined;
                 allow_auto_merge?: boolean | undefined;
                 delete_branch_on_merge?: boolean | undefined;
+                use_squash_pr_title_as_default?: boolean | undefined;
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 id: number;
                 node_id: string;
@@ -8753,6 +8820,8 @@ export declare class GithubClient {
                     allow_squash_merge?: boolean | undefined;
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
+                    allow_update_branch?: boolean | undefined;
+                    use_squash_pr_title_as_default?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;
                     network_count?: number | undefined;
@@ -8761,6 +8830,8 @@ export declare class GithubClient {
                 allow_squash_merge?: boolean | undefined;
                 allow_auto_merge?: boolean | undefined;
                 delete_branch_on_merge?: boolean | undefined;
+                allow_update_branch?: boolean | undefined;
+                use_squash_pr_title_as_default?: boolean | undefined;
                 allow_merge_commit?: boolean | undefined;
                 allow_forking?: boolean | undefined;
                 subscribers_count?: number | undefined;
@@ -9010,10 +9081,10 @@ export declare class GithubClient {
                 owner: string;
                 repo: string;
             } & {
-                source: {
+                source?: {
                     branch: string;
                     path?: "/" | "/docs" | undefined;
-                };
+                } | undefined;
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 url: string;
                 status: "built" | "building" | "errored" | null;
@@ -9022,6 +9093,7 @@ export declare class GithubClient {
                 pending_domain_unverified_at?: string | null | undefined;
                 custom_404: boolean;
                 html_url?: string | undefined;
+                build_type?: "legacy" | "workflow" | null | undefined;
                 source?: {
                     branch: string;
                     path: string;
@@ -9030,7 +9102,7 @@ export declare class GithubClient {
                 https_certificate?: {
                     state: "errored" | "new" | "authorization_created" | "authorization_pending" | "authorized" | "authorization_revoked" | "issued" | "uploaded" | "approved" | "bad_authz" | "destroy_pending" | "dns_changed";
                     description: string;
-                    domains: unknown[];
+                    domains: string[];
                     expires_at?: string | undefined;
                 } | undefined;
                 https_enforced?: boolean | undefined;
@@ -9153,7 +9225,18 @@ export declare class GithubClient {
             }>;
         };
         createTagProtection: {
-            (params?: (RequestParameters & Omit<any, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<any>;
+            (params?: (RequestParameters & Omit<{
+                owner: string;
+                repo: string;
+            } & {
+                pattern: string;
+            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
+                id?: number | undefined;
+                created_at?: string | undefined;
+                updated_at?: string | undefined;
+                enabled?: boolean | undefined;
+                pattern: string;
+            }, 201>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
                 url: string;
@@ -9408,6 +9491,8 @@ export declare class GithubClient {
                     allow_squash_merge?: boolean | undefined;
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
+                    allow_update_branch?: boolean | undefined;
+                    use_squash_pr_title_as_default?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;
                     network_count?: number | undefined;
@@ -9416,6 +9501,8 @@ export declare class GithubClient {
                 allow_squash_merge?: boolean | undefined;
                 allow_auto_merge?: boolean | undefined;
                 delete_branch_on_merge?: boolean | undefined;
+                allow_update_branch?: boolean | undefined;
+                use_squash_pr_title_as_default?: boolean | undefined;
                 allow_merge_commit?: boolean | undefined;
                 allow_forking?: boolean | undefined;
                 subscribers_count?: number | undefined;
@@ -9735,7 +9822,11 @@ export declare class GithubClient {
             }>;
         };
         deleteTagProtection: {
-            (params?: (RequestParameters & Omit<any, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<any>;
+            (params?: (RequestParameters & Omit<{
+                owner: string;
+                repo: string;
+                tag_protection_id: number;
+            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<never, 204>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
                 url: string;
@@ -10211,6 +10302,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
@@ -10219,6 +10312,8 @@ export declare class GithubClient {
                     allow_squash_merge?: boolean | undefined;
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
+                    allow_update_branch?: boolean | undefined;
+                    use_squash_pr_title_as_default?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -10233,6 +10328,8 @@ export declare class GithubClient {
                 allow_auto_merge?: boolean | undefined;
                 delete_branch_on_merge?: boolean | undefined;
                 allow_merge_commit?: boolean | undefined;
+                allow_update_branch?: boolean | undefined;
+                use_squash_pr_title_as_default?: boolean | undefined;
                 allow_forking?: boolean | undefined;
                 subscribers_count: number;
                 network_count: number;
@@ -10506,6 +10603,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
@@ -10514,6 +10613,8 @@ export declare class GithubClient {
                     allow_squash_merge?: boolean | undefined;
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
+                    allow_update_branch?: boolean | undefined;
+                    use_squash_pr_title_as_default?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -10762,6 +10863,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
@@ -10770,6 +10873,8 @@ export declare class GithubClient {
                     allow_squash_merge?: boolean | undefined;
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
+                    allow_update_branch?: boolean | undefined;
+                    use_squash_pr_title_as_default?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -10795,6 +10900,9 @@ export declare class GithubClient {
                         status?: "enabled" | "disabled" | undefined;
                     } | undefined;
                     secret_scanning?: {
+                        status?: "enabled" | "disabled" | undefined;
+                    } | undefined;
+                    secret_scanning_push_protection?: {
                         status?: "enabled" | "disabled" | undefined;
                     } | undefined;
                 } | null | undefined;
@@ -10915,6 +11023,9 @@ export declare class GithubClient {
             (params?: (RequestParameters & Omit<{
                 owner: string;
                 repo: string;
+            } & {
+                per_page?: number | undefined;
+                page?: number | undefined;
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 total_count?: number | undefined;
                 environments?: {
@@ -11027,10 +11138,6 @@ export declare class GithubClient {
             } & {
                 page?: number | undefined;
                 per_page?: number | undefined;
-            } & {
-                mediaType: {
-                    previews: ["mercy", ...string[]];
-                };
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 names: string[];
             }, 200>>;
@@ -11107,6 +11214,7 @@ export declare class GithubClient {
                 id: number;
                 key_prefix: string;
                 url_template: string;
+                is_alphanumeric?: boolean | undefined;
             }, 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
@@ -11208,16 +11316,16 @@ export declare class GithubClient {
                         total?: number | undefined;
                     } | undefined;
                     files?: {
-                        filename?: string | undefined;
-                        additions?: number | undefined;
-                        deletions?: number | undefined;
-                        changes?: number | undefined;
-                        status?: string | undefined;
-                        raw_url?: string | undefined;
-                        blob_url?: string | undefined;
+                        sha: string;
+                        filename: string;
+                        status: "added" | "removed" | "modified" | "renamed" | "copied" | "changed" | "unchanged";
+                        additions: number;
+                        deletions: number;
+                        changes: number;
+                        blob_url: string;
+                        raw_url: string;
+                        contents_url: string;
                         patch?: string | undefined;
-                        sha?: string | undefined;
-                        contents_url?: string | undefined;
                         previous_filename?: string | undefined;
                     }[] | undefined;
                 };
@@ -11233,6 +11341,10 @@ export declare class GithubClient {
                         url?: string | undefined;
                         enforcement_level?: string | undefined;
                         contexts: string[];
+                        checks: {
+                            context: string;
+                            app_id: number | null;
+                        }[];
                         contexts_url?: string | undefined;
                         strict?: boolean | undefined;
                     } | undefined;
@@ -11300,9 +11412,166 @@ export declare class GithubClient {
                                     ldap_dn?: string | undefined;
                                 } | null;
                             }[] | undefined;
+                            apps?: {
+                                id: number;
+                                slug?: string | undefined;
+                                node_id: string;
+                                owner: {
+                                    name?: string | null | undefined;
+                                    email?: string | null | undefined;
+                                    login: string;
+                                    id: number;
+                                    node_id: string;
+                                    avatar_url: string;
+                                    gravatar_id: string | null;
+                                    url: string;
+                                    html_url: string;
+                                    followers_url: string;
+                                    following_url: string;
+                                    gists_url: string;
+                                    starred_url: string;
+                                    subscriptions_url: string;
+                                    organizations_url: string;
+                                    repos_url: string;
+                                    events_url: string;
+                                    received_events_url: string;
+                                    type: string;
+                                    site_admin: boolean;
+                                    starred_at?: string | undefined;
+                                } | null;
+                                name: string;
+                                description: string | null;
+                                external_url: string;
+                                html_url: string;
+                                created_at: string;
+                                updated_at: string;
+                                permissions: {
+                                    issues?: string | undefined;
+                                    checks?: string | undefined;
+                                    metadata?: string | undefined;
+                                    contents?: string | undefined;
+                                    deployments?: string | undefined;
+                                } & {
+                                    [key: string]: string;
+                                };
+                                events: string[];
+                                installations_count?: number | undefined;
+                                client_id?: string | undefined;
+                                client_secret?: string | undefined;
+                                webhook_secret?: string | null | undefined;
+                                pem?: string | undefined;
+                            }[] | undefined;
                             url?: string | undefined;
                             users_url?: string | undefined;
                             teams_url?: string | undefined;
+                        } | undefined;
+                        bypass_pull_request_allowances?: {
+                            users?: {
+                                name?: string | null | undefined;
+                                email?: string | null | undefined;
+                                login: string;
+                                id: number;
+                                node_id: string;
+                                avatar_url: string;
+                                gravatar_id: string | null;
+                                url: string;
+                                html_url: string;
+                                followers_url: string;
+                                following_url: string;
+                                gists_url: string;
+                                starred_url: string;
+                                subscriptions_url: string;
+                                organizations_url: string;
+                                repos_url: string;
+                                events_url: string;
+                                received_events_url: string;
+                                type: string;
+                                site_admin: boolean;
+                                starred_at?: string | undefined;
+                            }[] | undefined;
+                            teams?: {
+                                id: number;
+                                node_id: string;
+                                name: string;
+                                slug: string;
+                                description: string | null;
+                                privacy?: string | undefined;
+                                permission: string;
+                                permissions?: {
+                                    pull: boolean;
+                                    triage: boolean;
+                                    push: boolean;
+                                    maintain: boolean;
+                                    admin: boolean;
+                                } | undefined;
+                                url: string;
+                                html_url: string;
+                                members_url: string;
+                                repositories_url: string;
+                                parent: {
+                                    id: number;
+                                    node_id: string;
+                                    url: string;
+                                    members_url: string;
+                                    name: string;
+                                    description: string | null;
+                                    permission: string;
+                                    privacy?: string | undefined;
+                                    html_url: string;
+                                    repositories_url: string;
+                                    slug: string;
+                                    ldap_dn?: string | undefined;
+                                } | null;
+                            }[] | undefined;
+                            apps?: {
+                                id: number;
+                                slug?: string | undefined;
+                                node_id: string;
+                                owner: {
+                                    name?: string | null | undefined;
+                                    email?: string | null | undefined;
+                                    login: string;
+                                    id: number;
+                                    node_id: string;
+                                    avatar_url: string;
+                                    gravatar_id: string | null;
+                                    url: string;
+                                    html_url: string;
+                                    followers_url: string;
+                                    following_url: string;
+                                    gists_url: string;
+                                    starred_url: string;
+                                    subscriptions_url: string;
+                                    organizations_url: string;
+                                    repos_url: string;
+                                    events_url: string;
+                                    received_events_url: string;
+                                    type: string;
+                                    site_admin: boolean;
+                                    starred_at?: string | undefined;
+                                } | null;
+                                name: string;
+                                description: string | null;
+                                external_url: string;
+                                html_url: string;
+                                created_at: string;
+                                updated_at: string;
+                                permissions: {
+                                    issues?: string | undefined;
+                                    checks?: string | undefined;
+                                    metadata?: string | undefined;
+                                    contents?: string | undefined;
+                                    deployments?: string | undefined;
+                                } & {
+                                    [key: string]: string;
+                                };
+                                events: string[];
+                                installations_count?: number | undefined;
+                                client_id?: string | undefined;
+                                client_secret?: string | undefined;
+                                webhook_secret?: string | null | undefined;
+                                pem?: string | undefined;
+                            }[] | undefined;
                         } | undefined;
                         dismiss_stale_reviews: boolean;
                         require_code_owner_reviews: boolean;
@@ -11400,6 +11669,9 @@ export declare class GithubClient {
                     allow_deletions?: {
                         enabled?: boolean | undefined;
                     } | undefined;
+                    block_creations?: {
+                        enabled?: boolean | undefined;
+                    } | undefined;
                     required_conversation_resolution?: {
                         enabled?: boolean | undefined;
                     } | undefined;
@@ -11431,6 +11703,10 @@ export declare class GithubClient {
                     url?: string | undefined;
                     enforcement_level?: string | undefined;
                     contexts: string[];
+                    checks: {
+                        context: string;
+                        app_id: number | null;
+                    }[];
                     contexts_url?: string | undefined;
                     strict?: boolean | undefined;
                 } | undefined;
@@ -11498,9 +11774,166 @@ export declare class GithubClient {
                                 ldap_dn?: string | undefined;
                             } | null;
                         }[] | undefined;
+                        apps?: {
+                            id: number;
+                            slug?: string | undefined;
+                            node_id: string;
+                            owner: {
+                                name?: string | null | undefined;
+                                email?: string | null | undefined;
+                                login: string;
+                                id: number;
+                                node_id: string;
+                                avatar_url: string;
+                                gravatar_id: string | null;
+                                url: string;
+                                html_url: string;
+                                followers_url: string;
+                                following_url: string;
+                                gists_url: string;
+                                starred_url: string;
+                                subscriptions_url: string;
+                                organizations_url: string;
+                                repos_url: string;
+                                events_url: string;
+                                received_events_url: string;
+                                type: string;
+                                site_admin: boolean;
+                                starred_at?: string | undefined;
+                            } | null;
+                            name: string;
+                            description: string | null;
+                            external_url: string;
+                            html_url: string;
+                            created_at: string;
+                            updated_at: string;
+                            permissions: {
+                                issues?: string | undefined;
+                                checks?: string | undefined;
+                                metadata?: string | undefined;
+                                contents?: string | undefined;
+                                deployments?: string | undefined;
+                            } & {
+                                [key: string]: string;
+                            };
+                            events: string[];
+                            installations_count?: number | undefined;
+                            client_id?: string | undefined;
+                            client_secret?: string | undefined;
+                            webhook_secret?: string | null | undefined;
+                            pem?: string | undefined;
+                        }[] | undefined;
                         url?: string | undefined;
                         users_url?: string | undefined;
                         teams_url?: string | undefined;
+                    } | undefined;
+                    bypass_pull_request_allowances?: {
+                        users?: {
+                            name?: string | null | undefined;
+                            email?: string | null | undefined;
+                            login: string;
+                            id: number;
+                            node_id: string;
+                            avatar_url: string;
+                            gravatar_id: string | null;
+                            url: string;
+                            html_url: string;
+                            followers_url: string;
+                            following_url: string;
+                            gists_url: string;
+                            starred_url: string;
+                            subscriptions_url: string;
+                            organizations_url: string;
+                            repos_url: string;
+                            events_url: string;
+                            received_events_url: string;
+                            type: string;
+                            site_admin: boolean;
+                            starred_at?: string | undefined;
+                        }[] | undefined;
+                        teams?: {
+                            id: number;
+                            node_id: string;
+                            name: string;
+                            slug: string;
+                            description: string | null;
+                            privacy?: string | undefined;
+                            permission: string;
+                            permissions?: {
+                                pull: boolean;
+                                triage: boolean;
+                                push: boolean;
+                                maintain: boolean;
+                                admin: boolean;
+                            } | undefined;
+                            url: string;
+                            html_url: string;
+                            members_url: string;
+                            repositories_url: string;
+                            parent: {
+                                id: number;
+                                node_id: string;
+                                url: string;
+                                members_url: string;
+                                name: string;
+                                description: string | null;
+                                permission: string;
+                                privacy?: string | undefined;
+                                html_url: string;
+                                repositories_url: string;
+                                slug: string;
+                                ldap_dn?: string | undefined;
+                            } | null;
+                        }[] | undefined;
+                        apps?: {
+                            id: number;
+                            slug?: string | undefined;
+                            node_id: string;
+                            owner: {
+                                name?: string | null | undefined;
+                                email?: string | null | undefined;
+                                login: string;
+                                id: number;
+                                node_id: string;
+                                avatar_url: string;
+                                gravatar_id: string | null;
+                                url: string;
+                                html_url: string;
+                                followers_url: string;
+                                following_url: string;
+                                gists_url: string;
+                                starred_url: string;
+                                subscriptions_url: string;
+                                organizations_url: string;
+                                repos_url: string;
+                                events_url: string;
+                                received_events_url: string;
+                                type: string;
+                                site_admin: boolean;
+                                starred_at?: string | undefined;
+                            } | null;
+                            name: string;
+                            description: string | null;
+                            external_url: string;
+                            html_url: string;
+                            created_at: string;
+                            updated_at: string;
+                            permissions: {
+                                issues?: string | undefined;
+                                checks?: string | undefined;
+                                metadata?: string | undefined;
+                                contents?: string | undefined;
+                                deployments?: string | undefined;
+                            } & {
+                                [key: string]: string;
+                            };
+                            events: string[];
+                            installations_count?: number | undefined;
+                            client_id?: string | undefined;
+                            client_secret?: string | undefined;
+                            webhook_secret?: string | null | undefined;
+                            pem?: string | undefined;
+                        }[] | undefined;
                     } | undefined;
                     dismiss_stale_reviews: boolean;
                     require_code_owner_reviews: boolean;
@@ -11598,6 +12031,9 @@ export declare class GithubClient {
                 allow_deletions?: {
                     enabled?: boolean | undefined;
                 } | undefined;
+                block_creations?: {
+                    enabled?: boolean | undefined;
+                } | undefined;
                 required_conversation_resolution?: {
                     enabled?: boolean | undefined;
                 } | undefined;
@@ -11652,11 +12088,12 @@ export declare class GithubClient {
                 username: string;
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 permission: string;
+                role_name: string;
                 user: {
-                    name?: string | null | undefined;
-                    email?: string | null | undefined;
                     login: string;
                     id: number;
+                    email?: string | null | undefined;
+                    name?: string | null | undefined;
                     node_id: string;
                     avatar_url: string;
                     gravatar_id: string | null;
@@ -11673,7 +12110,14 @@ export declare class GithubClient {
                     received_events_url: string;
                     type: string;
                     site_admin: boolean;
-                    starred_at?: string | undefined;
+                    permissions?: {
+                        pull: boolean;
+                        triage?: boolean | undefined;
+                        push: boolean;
+                        maintain?: boolean | undefined;
+                        admin: boolean;
+                    } | undefined;
+                    role_name: string;
                 } | null;
             }, 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
@@ -11808,6 +12252,7 @@ export declare class GithubClient {
                         triage?: boolean | undefined;
                         pull?: boolean | undefined;
                     } | undefined;
+                    role_name?: string | undefined;
                     template_repository?: {
                         id: number;
                         node_id: string;
@@ -12047,6 +12492,8 @@ export declare class GithubClient {
                             allow_squash_merge?: boolean | undefined;
                             allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
+                            allow_update_branch?: boolean | undefined;
+                            use_squash_pr_title_as_default?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
                             subscribers_count?: number | undefined;
                             network_count?: number | undefined;
@@ -12055,6 +12502,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         allow_forking?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -12191,16 +12640,16 @@ export declare class GithubClient {
                     total?: number | undefined;
                 } | undefined;
                 files?: {
-                    filename?: string | undefined;
-                    additions?: number | undefined;
-                    deletions?: number | undefined;
-                    changes?: number | undefined;
-                    status?: string | undefined;
-                    raw_url?: string | undefined;
-                    blob_url?: string | undefined;
+                    sha: string;
+                    filename: string;
+                    status: "added" | "removed" | "modified" | "renamed" | "copied" | "changed" | "unchanged";
+                    additions: number;
+                    deletions: number;
+                    changes: number;
+                    blob_url: string;
+                    raw_url: string;
+                    contents_url: string;
                     patch?: string | undefined;
-                    sha?: string | undefined;
-                    contents_url?: string | undefined;
                     previous_filename?: string | undefined;
                 }[] | undefined;
             }, 200>>;
@@ -12946,6 +13395,7 @@ export declare class GithubClient {
                 pending_domain_unverified_at?: string | null | undefined;
                 custom_404: boolean;
                 html_url?: string | undefined;
+                build_type?: "legacy" | "workflow" | null | undefined;
                 source?: {
                     branch: string;
                     path: string;
@@ -12954,7 +13404,7 @@ export declare class GithubClient {
                 https_certificate?: {
                     state: "errored" | "new" | "authorization_created" | "authorization_pending" | "authorized" | "authorization_revoked" | "issued" | "uploaded" | "approved" | "bad_authz" | "destroy_pending" | "dns_changed";
                     description: string;
-                    domains: unknown[];
+                    domains: string[];
                     expires_at?: string | undefined;
                 } | undefined;
                 https_enforced?: boolean | undefined;
@@ -13159,9 +13609,166 @@ export declare class GithubClient {
                             ldap_dn?: string | undefined;
                         } | null;
                     }[] | undefined;
+                    apps?: {
+                        id: number;
+                        slug?: string | undefined;
+                        node_id: string;
+                        owner: {
+                            name?: string | null | undefined;
+                            email?: string | null | undefined;
+                            login: string;
+                            id: number;
+                            node_id: string;
+                            avatar_url: string;
+                            gravatar_id: string | null;
+                            url: string;
+                            html_url: string;
+                            followers_url: string;
+                            following_url: string;
+                            gists_url: string;
+                            starred_url: string;
+                            subscriptions_url: string;
+                            organizations_url: string;
+                            repos_url: string;
+                            events_url: string;
+                            received_events_url: string;
+                            type: string;
+                            site_admin: boolean;
+                            starred_at?: string | undefined;
+                        } | null;
+                        name: string;
+                        description: string | null;
+                        external_url: string;
+                        html_url: string;
+                        created_at: string;
+                        updated_at: string;
+                        permissions: {
+                            issues?: string | undefined;
+                            checks?: string | undefined;
+                            metadata?: string | undefined;
+                            contents?: string | undefined;
+                            deployments?: string | undefined;
+                        } & {
+                            [key: string]: string;
+                        };
+                        events: string[];
+                        installations_count?: number | undefined;
+                        client_id?: string | undefined;
+                        client_secret?: string | undefined;
+                        webhook_secret?: string | null | undefined;
+                        pem?: string | undefined;
+                    }[] | undefined;
                     url?: string | undefined;
                     users_url?: string | undefined;
                     teams_url?: string | undefined;
+                } | undefined;
+                bypass_pull_request_allowances?: {
+                    users?: {
+                        name?: string | null | undefined;
+                        email?: string | null | undefined;
+                        login: string;
+                        id: number;
+                        node_id: string;
+                        avatar_url: string;
+                        gravatar_id: string | null;
+                        url: string;
+                        html_url: string;
+                        followers_url: string;
+                        following_url: string;
+                        gists_url: string;
+                        starred_url: string;
+                        subscriptions_url: string;
+                        organizations_url: string;
+                        repos_url: string;
+                        events_url: string;
+                        received_events_url: string;
+                        type: string;
+                        site_admin: boolean;
+                        starred_at?: string | undefined;
+                    }[] | undefined;
+                    teams?: {
+                        id: number;
+                        node_id: string;
+                        name: string;
+                        slug: string;
+                        description: string | null;
+                        privacy?: string | undefined;
+                        permission: string;
+                        permissions?: {
+                            pull: boolean;
+                            triage: boolean;
+                            push: boolean;
+                            maintain: boolean;
+                            admin: boolean;
+                        } | undefined;
+                        url: string;
+                        html_url: string;
+                        members_url: string;
+                        repositories_url: string;
+                        parent: {
+                            id: number;
+                            node_id: string;
+                            url: string;
+                            members_url: string;
+                            name: string;
+                            description: string | null;
+                            permission: string;
+                            privacy?: string | undefined;
+                            html_url: string;
+                            repositories_url: string;
+                            slug: string;
+                            ldap_dn?: string | undefined;
+                        } | null;
+                    }[] | undefined;
+                    apps?: {
+                        id: number;
+                        slug?: string | undefined;
+                        node_id: string;
+                        owner: {
+                            name?: string | null | undefined;
+                            email?: string | null | undefined;
+                            login: string;
+                            id: number;
+                            node_id: string;
+                            avatar_url: string;
+                            gravatar_id: string | null;
+                            url: string;
+                            html_url: string;
+                            followers_url: string;
+                            following_url: string;
+                            gists_url: string;
+                            starred_url: string;
+                            subscriptions_url: string;
+                            organizations_url: string;
+                            repos_url: string;
+                            events_url: string;
+                            received_events_url: string;
+                            type: string;
+                            site_admin: boolean;
+                            starred_at?: string | undefined;
+                        } | null;
+                        name: string;
+                        description: string | null;
+                        external_url: string;
+                        html_url: string;
+                        created_at: string;
+                        updated_at: string;
+                        permissions: {
+                            issues?: string | undefined;
+                            checks?: string | undefined;
+                            metadata?: string | undefined;
+                            contents?: string | undefined;
+                            deployments?: string | undefined;
+                        } & {
+                            [key: string]: string;
+                        };
+                        events: string[];
+                        installations_count?: number | undefined;
+                        client_id?: string | undefined;
+                        client_secret?: string | undefined;
+                        webhook_secret?: string | null | undefined;
+                        pem?: string | undefined;
+                    }[] | undefined;
                 } | undefined;
                 dismiss_stale_reviews: boolean;
                 require_code_owner_reviews: boolean;
@@ -13509,6 +14116,10 @@ export declare class GithubClient {
                 url: string;
                 strict: boolean;
                 contexts: string[];
+                checks: {
+                    context: string;
+                    app_id: number | null;
+                }[];
                 contexts_url: string;
             }, 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
@@ -13747,6 +14358,7 @@ export declare class GithubClient {
                 id: number;
                 key_prefix: string;
                 url_template: string;
+                is_alphanumeric?: boolean | undefined;
             }[], 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
@@ -13775,6 +14387,10 @@ export declare class GithubClient {
                         url?: string | undefined;
                         enforcement_level?: string | undefined;
                         contexts: string[];
+                        checks: {
+                            context: string;
+                            app_id: number | null;
+                        }[];
                         contexts_url?: string | undefined;
                         strict?: boolean | undefined;
                     } | undefined;
@@ -13842,9 +14458,166 @@ export declare class GithubClient {
                                     ldap_dn?: string | undefined;
                                 } | null;
                             }[] | undefined;
+                            apps?: {
+                                id: number;
+                                slug?: string | undefined;
+                                node_id: string;
+                                owner: {
+                                    name?: string | null | undefined;
+                                    email?: string | null | undefined;
+                                    login: string;
+                                    id: number;
+                                    node_id: string;
+                                    avatar_url: string;
+                                    gravatar_id: string | null;
+                                    url: string;
+                                    html_url: string;
+                                    followers_url: string;
+                                    following_url: string;
+                                    gists_url: string;
+                                    starred_url: string;
+                                    subscriptions_url: string;
+                                    organizations_url: string;
+                                    repos_url: string;
+                                    events_url: string;
+                                    received_events_url: string;
+                                    type: string;
+                                    site_admin: boolean;
+                                    starred_at?: string | undefined;
+                                } | null;
+                                name: string;
+                                description: string | null;
+                                external_url: string;
+                                html_url: string;
+                                created_at: string;
+                                updated_at: string;
+                                permissions: {
+                                    issues?: string | undefined;
+                                    checks?: string | undefined;
+                                    metadata?: string | undefined;
+                                    contents?: string | undefined;
+                                    deployments?: string | undefined;
+                                } & {
+                                    [key: string]: string;
+                                };
+                                events: string[];
+                                installations_count?: number | undefined;
+                                client_id?: string | undefined;
+                                client_secret?: string | undefined;
+                                webhook_secret?: string | null | undefined;
+                                pem?: string | undefined;
+                            }[] | undefined;
                             url?: string | undefined;
                             users_url?: string | undefined;
                             teams_url?: string | undefined;
+                        } | undefined;
+                        bypass_pull_request_allowances?: {
+                            users?: {
+                                name?: string | null | undefined;
+                                email?: string | null | undefined;
+                                login: string;
+                                id: number;
+                                node_id: string;
+                                avatar_url: string;
+                                gravatar_id: string | null;
+                                url: string;
+                                html_url: string;
+                                followers_url: string;
+                                following_url: string;
+                                gists_url: string;
+                                starred_url: string;
+                                subscriptions_url: string;
+                                organizations_url: string;
+                                repos_url: string;
+                                events_url: string;
+                                received_events_url: string;
+                                type: string;
+                                site_admin: boolean;
+                                starred_at?: string | undefined;
+                            }[] | undefined;
+                            teams?: {
+                                id: number;
+                                node_id: string;
+                                name: string;
+                                slug: string;
+                                description: string | null;
+                                privacy?: string | undefined;
+                                permission: string;
+                                permissions?: {
+                                    pull: boolean;
+                                    triage: boolean;
+                                    push: boolean;
+                                    maintain: boolean;
+                                    admin: boolean;
+                                } | undefined;
+                                url: string;
+                                html_url: string;
+                                members_url: string;
+                                repositories_url: string;
+                                parent: {
+                                    id: number;
+                                    node_id: string;
+                                    url: string;
+                                    members_url: string;
+                                    name: string;
+                                    description: string | null;
+                                    permission: string;
+                                    privacy?: string | undefined;
+                                    html_url: string;
+                                    repositories_url: string;
+                                    slug: string;
+                                    ldap_dn?: string | undefined;
+                                } | null;
+                            }[] | undefined;
+                            apps?: {
+                                id: number;
+                                slug?: string | undefined;
+                                node_id: string;
+                                owner: {
+                                    name?: string | null | undefined;
+                                    email?: string | null | undefined;
+                                    login: string;
+                                    id: number;
+                                    node_id: string;
+                                    avatar_url: string;
+                                    gravatar_id: string | null;
+                                    url: string;
+                                    html_url: string;
+                                    followers_url: string;
+                                    following_url: string;
+                                    gists_url: string;
+                                    starred_url: string;
+                                    subscriptions_url: string;
+                                    organizations_url: string;
+                                    repos_url: string;
+                                    events_url: string;
+                                    received_events_url: string;
+                                    type: string;
+                                    site_admin: boolean;
+                                    starred_at?: string | undefined;
+                                } | null;
+                                name: string;
+                                description: string | null;
+                                external_url: string;
+                                html_url: string;
+                                created_at: string;
+                                updated_at: string;
+                                permissions: {
+                                    issues?: string | undefined;
+                                    checks?: string | undefined;
+                                    metadata?: string | undefined;
+                                    contents?: string | undefined;
+                                    deployments?: string | undefined;
+                                } & {
+                                    [key: string]: string;
+                                };
+                                events: string[];
+                                installations_count?: number | undefined;
+                                client_id?: string | undefined;
+                                client_secret?: string | undefined;
+                                webhook_secret?: string | null | undefined;
+                                pem?: string | undefined;
+                            }[] | undefined;
                         } | undefined;
                         dismiss_stale_reviews: boolean;
                         require_code_owner_reviews: boolean;
@@ -13942,6 +14715,9 @@ export declare class GithubClient {
                     allow_deletions?: {
                         enabled?: boolean | undefined;
                     } | undefined;
+                    block_creations?: {
+                        enabled?: boolean | undefined;
+                    } | undefined;
                     required_conversation_resolution?: {
                         enabled?: boolean | undefined;
                     } | undefined;
@@ -14013,6 +14789,7 @@ export declare class GithubClient {
                     maintain?: boolean | undefined;
                     admin: boolean;
                 } | undefined;
+                role_name: string;
             }[], 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
@@ -14290,16 +15067,16 @@ export declare class GithubClient {
                     total?: number | undefined;
                 } | undefined;
                 files?: {
-                    filename?: string | undefined;
-                    additions?: number | undefined;
-                    deletions?: number | undefined;
-                    changes?: number | undefined;
-                    status?: string | undefined;
-                    raw_url?: string | undefined;
-                    blob_url?: string | undefined;
+                    sha: string;
+                    filename: string;
+                    status: "added" | "removed" | "modified" | "renamed" | "copied" | "changed" | "unchanged";
+                    additions: number;
+                    deletions: number;
+                    changes: number;
+                    blob_url: string;
+                    raw_url: string;
+                    contents_url: string;
                     patch?: string | undefined;
-                    sha?: string | undefined;
-                    contents_url?: string | undefined;
                     previous_filename?: string | undefined;
                 }[] | undefined;
             }[], 200>>;
@@ -14823,6 +15600,8 @@ export declare class GithubClient {
                     allow_squash_merge?: boolean | undefined;
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
+                    allow_update_branch?: boolean | undefined;
+                    use_squash_pr_title_as_default?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     subscribers_count?: number | undefined;
                     network_count?: number | undefined;
@@ -14831,6 +15610,8 @@ export declare class GithubClient {
                 allow_squash_merge?: boolean | undefined;
                 allow_auto_merge?: boolean | undefined;
                 delete_branch_on_merge?: boolean | undefined;
+                allow_update_branch?: boolean | undefined;
+                use_squash_pr_title_as_default?: boolean | undefined;
                 allow_merge_commit?: boolean | undefined;
                 allow_forking?: boolean | undefined;
                 subscribers_count?: number | undefined;
@@ -14956,6 +15737,7 @@ export declare class GithubClient {
                     triage?: boolean | undefined;
                     pull?: boolean | undefined;
                 } | undefined;
+                role_name?: string | undefined;
                 template_repository?: {
                     id: number;
                     node_id: string;
@@ -15195,6 +15977,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
@@ -15203,6 +15987,8 @@ export declare class GithubClient {
                     allow_squash_merge?: boolean | undefined;
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
+                    allow_update_branch?: boolean | undefined;
+                    use_squash_pr_title_as_default?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -15351,6 +16137,7 @@ export declare class GithubClient {
                     triage?: boolean | undefined;
                     pull?: boolean | undefined;
                 } | undefined;
+                role_name?: string | undefined;
                 template_repository?: {
                     id: number;
                     node_id: string;
@@ -15590,6 +16377,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
@@ -15598,6 +16387,8 @@ export declare class GithubClient {
                     allow_squash_merge?: boolean | undefined;
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
+                    allow_update_branch?: boolean | undefined;
+                    use_squash_pr_title_as_default?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -15745,6 +16536,7 @@ export declare class GithubClient {
                     triage?: boolean | undefined;
                     pull?: boolean | undefined;
                 } | undefined;
+                role_name?: string | undefined;
                 template_repository?: {
                     id: number;
                     node_id: string;
@@ -15984,6 +16776,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
@@ -15992,6 +16786,8 @@ export declare class GithubClient {
                     allow_squash_merge?: boolean | undefined;
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
+                    allow_update_branch?: boolean | undefined;
+                    use_squash_pr_title_as_default?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -16140,6 +16936,7 @@ export declare class GithubClient {
                         triage?: boolean | undefined;
                         pull?: boolean | undefined;
                     } | undefined;
+                    role_name?: string | undefined;
                     template_repository?: {
                         id: number;
                         node_id: string;
@@ -16379,6 +17176,8 @@ export declare class GithubClient {
                             allow_squash_merge?: boolean | undefined;
                             allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
+                            allow_update_branch?: boolean | undefined;
+                            use_squash_pr_title_as_default?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
                             subscribers_count?: number | undefined;
                             network_count?: number | undefined;
@@ -16387,6 +17186,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         allow_forking?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -16585,6 +17386,7 @@ export declare class GithubClient {
                         triage?: boolean | undefined;
                         pull?: boolean | undefined;
                     } | undefined;
+                    role_name?: string | undefined;
                     template_repository?: {
                         id: number;
                         node_id: string;
@@ -16824,6 +17626,8 @@ export declare class GithubClient {
                             allow_squash_merge?: boolean | undefined;
                             allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
+                            allow_update_branch?: boolean | undefined;
+                            use_squash_pr_title_as_default?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
                             subscribers_count?: number | undefined;
                             network_count?: number | undefined;
@@ -16832,6 +17636,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         allow_forking?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -17085,6 +17891,7 @@ export declare class GithubClient {
                     triage?: boolean | undefined;
                     pull?: boolean | undefined;
                 } | undefined;
+                role_name?: string | undefined;
                 template_repository?: {
                     id: number;
                     node_id: string;
@@ -17324,6 +18131,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
@@ -17332,6 +18141,8 @@ export declare class GithubClient {
                     allow_squash_merge?: boolean | undefined;
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
+                    allow_update_branch?: boolean | undefined;
+                    use_squash_pr_title_as_default?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -17419,13 +18230,13 @@ export declare class GithubClient {
                 } | null;
                 body: string | null;
                 labels: {
-                    id?: number | undefined;
-                    node_id?: string | undefined;
-                    url?: string | undefined;
-                    name?: string | undefined;
-                    description?: string | undefined;
-                    color?: string | undefined;
-                    default?: boolean | undefined;
+                    id: number;
+                    node_id: string;
+                    url: string;
+                    name: string;
+                    description: string;
+                    color: string;
+                    default: boolean;
                 }[];
                 milestone: {
                     url: string;
@@ -17818,6 +18629,8 @@ export declare class GithubClient {
                             allow_squash_merge?: boolean | undefined;
                             allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
+                            allow_update_branch?: boolean | undefined;
+                            use_squash_pr_title_as_default?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
                             subscribers_count?: number | undefined;
                             network_count?: number | undefined;
@@ -17826,6 +18639,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         allow_forking?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -18102,6 +18917,8 @@ export declare class GithubClient {
                             allow_squash_merge?: boolean | undefined;
                             allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
+                            allow_update_branch?: boolean | undefined;
+                            use_squash_pr_title_as_default?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
                             subscribers_count?: number | undefined;
                             network_count?: number | undefined;
@@ -18110,6 +18927,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         allow_forking?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -18363,7 +19182,16 @@ export declare class GithubClient {
             }>;
         };
         listTagProtection: {
-            (params?: (RequestParameters & Omit<any, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<any>;
+            (params?: (RequestParameters & Omit<{
+                owner: string;
+                repo: string;
+            }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
+                id?: number | undefined;
+                created_at?: string | undefined;
+                updated_at?: string | undefined;
+                enabled?: boolean | undefined;
+                pattern: string;
+            }[], 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
                 url: string;
@@ -18601,16 +19429,16 @@ export declare class GithubClient {
                     total?: number | undefined;
                 } | undefined;
                 files?: {
-                    filename?: string | undefined;
-                    additions?: number | undefined;
-                    deletions?: number | undefined;
-                    changes?: number | undefined;
-                    status?: string | undefined;
-                    raw_url?: string | undefined;
-                    blob_url?: string | undefined;
+                    sha: string;
+                    filename: string;
+                    status: "added" | "removed" | "modified" | "renamed" | "copied" | "changed" | "unchanged";
+                    additions: number;
+                    deletions: number;
+                    changes: number;
+                    blob_url: string;
+                    raw_url: string;
+                    contents_url: string;
                     patch?: string | undefined;
-                    sha?: string | undefined;
-                    contents_url?: string | undefined;
                     previous_filename?: string | undefined;
                 }[] | undefined;
             }, 201>>;
@@ -18934,16 +19762,16 @@ export declare class GithubClient {
                         total?: number | undefined;
                     } | undefined;
                     files?: {
-                        filename?: string | undefined;
-                        additions?: number | undefined;
-                        deletions?: number | undefined;
-                        changes?: number | undefined;
-                        status?: string | undefined;
-                        raw_url?: string | undefined;
-                        blob_url?: string | undefined;
+                        sha: string;
+                        filename: string;
+                        status: "added" | "removed" | "modified" | "renamed" | "copied" | "changed" | "unchanged";
+                        additions: number;
+                        deletions: number;
+                        changes: number;
+                        blob_url: string;
+                        raw_url: string;
+                        contents_url: string;
                         patch?: string | undefined;
-                        sha?: string | undefined;
-                        contents_url?: string | undefined;
                         previous_filename?: string | undefined;
                     }[] | undefined;
                 };
@@ -18959,6 +19787,10 @@ export declare class GithubClient {
                         url?: string | undefined;
                         enforcement_level?: string | undefined;
                         contexts: string[];
+                        checks: {
+                            context: string;
+                            app_id: number | null;
+                        }[];
                         contexts_url?: string | undefined;
                         strict?: boolean | undefined;
                     } | undefined;
@@ -19026,9 +19858,166 @@ export declare class GithubClient {
                                     ldap_dn?: string | undefined;
                                 } | null;
                             }[] | undefined;
+                            apps?: {
+                                id: number;
+                                slug?: string | undefined;
+                                node_id: string;
+                                owner: {
+                                    name?: string | null | undefined;
+                                    email?: string | null | undefined;
+                                    login: string;
+                                    id: number;
+                                    node_id: string;
+                                    avatar_url: string;
+                                    gravatar_id: string | null;
+                                    url: string;
+                                    html_url: string;
+                                    followers_url: string;
+                                    following_url: string;
+                                    gists_url: string;
+                                    starred_url: string;
+                                    subscriptions_url: string;
+                                    organizations_url: string;
+                                    repos_url: string;
+                                    events_url: string;
+                                    received_events_url: string;
+                                    type: string;
+                                    site_admin: boolean;
+                                    starred_at?: string | undefined;
+                                } | null;
+                                name: string;
+                                description: string | null;
+                                external_url: string;
+                                html_url: string;
+                                created_at: string;
+                                updated_at: string;
+                                permissions: {
+                                    issues?: string | undefined;
+                                    checks?: string | undefined;
+                                    metadata?: string | undefined;
+                                    contents?: string | undefined;
+                                    deployments?: string | undefined;
+                                } & {
+                                    [key: string]: string;
+                                };
+                                events: string[];
+                                installations_count?: number | undefined;
+                                client_id?: string | undefined;
+                                client_secret?: string | undefined;
+                                webhook_secret?: string | null | undefined;
+                                pem?: string | undefined;
+                            }[] | undefined;
                             url?: string | undefined;
                             users_url?: string | undefined;
                             teams_url?: string | undefined;
+                        } | undefined;
+                        bypass_pull_request_allowances?: {
+                            users?: {
+                                name?: string | null | undefined;
+                                email?: string | null | undefined;
+                                login: string;
+                                id: number;
+                                node_id: string;
+                                avatar_url: string;
+                                gravatar_id: string | null;
+                                url: string;
+                                html_url: string;
+                                followers_url: string;
+                                following_url: string;
+                                gists_url: string;
+                                starred_url: string;
+                                subscriptions_url: string;
+                                organizations_url: string;
+                                repos_url: string;
+                                events_url: string;
+                                received_events_url: string;
+                                type: string;
+                                site_admin: boolean;
+                                starred_at?: string | undefined;
+                            }[] | undefined;
+                            teams?: {
+                                id: number;
+                                node_id: string;
+                                name: string;
+                                slug: string;
+                                description: string | null;
+                                privacy?: string | undefined;
+                                permission: string;
+                                permissions?: {
+                                    pull: boolean;
+                                    triage: boolean;
+                                    push: boolean;
+                                    maintain: boolean;
+                                    admin: boolean;
+                                } | undefined;
+                                url: string;
+                                html_url: string;
+                                members_url: string;
+                                repositories_url: string;
+                                parent: {
+                                    id: number;
+                                    node_id: string;
+                                    url: string;
+                                    members_url: string;
+                                    name: string;
+                                    description: string | null;
+                                    permission: string;
+                                    privacy?: string | undefined;
+                                    html_url: string;
+                                    repositories_url: string;
+                                    slug: string;
+                                    ldap_dn?: string | undefined;
+                                } | null;
+                            }[] | undefined;
+                            apps?: {
+                                id: number;
+                                slug?: string | undefined;
+                                node_id: string;
+                                owner: {
+                                    name?: string | null | undefined;
+                                    email?: string | null | undefined;
+                                    login: string;
+                                    id: number;
+                                    node_id: string;
+                                    avatar_url: string;
+                                    gravatar_id: string | null;
+                                    url: string;
+                                    html_url: string;
+                                    followers_url: string;
+                                    following_url: string;
+                                    gists_url: string;
+                                    starred_url: string;
+                                    subscriptions_url: string;
+                                    organizations_url: string;
+                                    repos_url: string;
+                                    events_url: string;
+                                    received_events_url: string;
+                                    type: string;
+                                    site_admin: boolean;
+                                    starred_at?: string | undefined;
+                                } | null;
+                                name: string;
+                                description: string | null;
+                                external_url: string;
+                                html_url: string;
+                                created_at: string;
+                                updated_at: string;
+                                permissions: {
+                                    issues?: string | undefined;
+                                    checks?: string | undefined;
+                                    metadata?: string | undefined;
+                                    contents?: string | undefined;
+                                    deployments?: string | undefined;
+                                } & {
+                                    [key: string]: string;
+                                };
+                                events: string[];
+                                installations_count?: number | undefined;
+                                client_id?: string | undefined;
+                                client_secret?: string | undefined;
+                                webhook_secret?: string | null | undefined;
+                                pem?: string | undefined;
+                            }[] | undefined;
                         } | undefined;
                         dismiss_stale_reviews: boolean;
                         require_code_owner_reviews: boolean;
@@ -19126,6 +20115,9 @@ export declare class GithubClient {
                     allow_deletions?: {
                         enabled?: boolean | undefined;
                     } | undefined;
+                    block_creations?: {
+                        enabled?: boolean | undefined;
+                    } | undefined;
                     required_conversation_resolution?: {
                         enabled?: boolean | undefined;
                     } | undefined;
@@ -19151,10 +20143,6 @@ export declare class GithubClient {
                 repo: string;
             } & {
                 names: string[];
-            } & {
-                mediaType: {
-                    previews: ["mercy", ...string[]];
-                };
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 names: string[];
             }, 200>>;
@@ -19465,6 +20453,7 @@ export declare class GithubClient {
                     triage?: boolean | undefined;
                     pull?: boolean | undefined;
                 } | undefined;
+                role_name?: string | undefined;
                 template_repository?: {
                     id: number;
                     node_id: string;
@@ -19704,6 +20693,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
@@ -19712,6 +20703,8 @@ export declare class GithubClient {
                     allow_squash_merge?: boolean | undefined;
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
+                    allow_update_branch?: boolean | undefined;
+                    use_squash_pr_title_as_default?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -19758,12 +20751,15 @@ export declare class GithubClient {
                 description?: string | undefined;
                 homepage?: string | undefined;
                 private?: boolean | undefined;
-                visibility?: "private" | "visibility" | "public" | "internal" | undefined;
+                visibility?: "private" | "public" | "internal" | undefined;
                 security_and_analysis?: {
                     advanced_security?: {
                         status?: string | undefined;
                     } | undefined;
                     secret_scanning?: {
+                        status?: string | undefined;
+                    } | undefined;
+                    secret_scanning_push_protection?: {
                         status?: string | undefined;
                     } | undefined;
                 } | null | undefined;
@@ -19777,6 +20773,8 @@ export declare class GithubClient {
                 allow_rebase_merge?: boolean | undefined;
                 allow_auto_merge?: boolean | undefined;
                 delete_branch_on_merge?: boolean | undefined;
+                allow_update_branch?: boolean | undefined;
+                use_squash_pr_title_as_default?: boolean | undefined;
                 archived?: boolean | undefined;
                 allow_forking?: boolean | undefined;
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
@@ -20121,6 +21119,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
@@ -20129,6 +21129,8 @@ export declare class GithubClient {
                     allow_squash_merge?: boolean | undefined;
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
+                    allow_update_branch?: boolean | undefined;
+                    use_squash_pr_title_as_default?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -20143,6 +21145,8 @@ export declare class GithubClient {
                 allow_auto_merge?: boolean | undefined;
                 delete_branch_on_merge?: boolean | undefined;
                 allow_merge_commit?: boolean | undefined;
+                allow_update_branch?: boolean | undefined;
+                use_squash_pr_title_as_default?: boolean | undefined;
                 allow_forking?: boolean | undefined;
                 subscribers_count: number;
                 network_count: number;
@@ -20416,6 +21420,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
@@ -20424,6 +21430,8 @@ export declare class GithubClient {
                     allow_squash_merge?: boolean | undefined;
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
+                    allow_update_branch?: boolean | undefined;
+                    use_squash_pr_title_as_default?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -20672,6 +21680,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
@@ -20680,6 +21690,8 @@ export declare class GithubClient {
                     allow_squash_merge?: boolean | undefined;
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
+                    allow_update_branch?: boolean | undefined;
+                    use_squash_pr_title_as_default?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -20707,6 +21719,9 @@ export declare class GithubClient {
                     secret_scanning?: {
                         status?: "enabled" | "disabled" | undefined;
                     } | undefined;
+                    secret_scanning_push_protection?: {
+                        status?: "enabled" | "disabled" | undefined;
+                    } | undefined;
                 } | null | undefined;
             }, 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
@@ -20723,16 +21738,26 @@ export declare class GithubClient {
                 required_status_checks: {
                     strict: boolean;
                     contexts: string[];
+                    checks?: {
+                        context: string;
+                        app_id?: number | undefined;
+                    }[] | undefined;
                 } | null;
                 enforce_admins: boolean | null;
                 required_pull_request_reviews: {
                     dismissal_restrictions?: {
                         users?: string[] | undefined;
                         teams?: string[] | undefined;
+                        apps?: string[] | undefined;
                     } | undefined;
                     dismiss_stale_reviews?: boolean | undefined;
                     require_code_owner_reviews?: boolean | undefined;
                     required_approving_review_count?: number | undefined;
+                    bypass_pull_request_allowances?: {
+                        users?: string[] | undefined;
+                        teams?: string[] | undefined;
+                        apps?: string[] | undefined;
+                    } | undefined;
                 } | null;
                 restrictions: {
                     users: string[];
@@ -20742,6 +21767,7 @@ export declare class GithubClient {
                 required_linear_history?: boolean | undefined;
                 allow_force_pushes?: boolean | null | undefined;
                 allow_deletions?: boolean | undefined;
+                block_creations?: boolean | undefined;
                 required_conversation_resolution?: boolean | undefined;
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 url: string;
@@ -20749,6 +21775,10 @@ export declare class GithubClient {
                     url: string;
                     strict: boolean;
                     contexts: string[];
+                    checks: {
+                        context: string;
+                        app_id: number | null;
+                    }[];
                     contexts_url: string;
                 } | undefined;
                 required_pull_request_reviews?: {
@@ -20817,6 +21847,163 @@ export declare class GithubClient {
                                 ldap_dn?: string | undefined;
                             } | null;
                         }[];
+                        apps?: {
+                            id: number;
+                            slug?: string | undefined;
+                            node_id: string;
+                            owner: {
+                                name?: string | null | undefined;
+                                email?: string | null | undefined;
+                                login: string;
+                                id: number;
+                                node_id: string;
+                                avatar_url: string;
+                                gravatar_id: string | null;
+                                url: string;
+                                html_url: string;
+                                followers_url: string;
+                                following_url: string;
+                                gists_url: string;
+                                starred_url: string;
+                                subscriptions_url: string;
+                                organizations_url: string;
+                                repos_url: string;
+                                events_url: string;
+                                received_events_url: string;
+                                type: string;
+                                site_admin: boolean;
+                                starred_at?: string | undefined;
+                            } | null;
+                            name: string;
+                            description: string | null;
+                            external_url: string;
+                            html_url: string;
+                            created_at: string;
+                            updated_at: string;
+                            permissions: {
+                                issues?: string | undefined;
+                                checks?: string | undefined;
+                                metadata?: string | undefined;
+                                contents?: string | undefined;
+                                deployments?: string | undefined;
+                            } & {
+                                [key: string]: string;
+                            };
+                            events: string[];
+                            installations_count?: number | undefined;
+                            client_id?: string | undefined;
+                            client_secret?: string | undefined;
+                            webhook_secret?: string | null | undefined;
+                            pem?: string | undefined;
+                        }[] | undefined;
+                    } | undefined;
+                    bypass_pull_request_allowances?: {
+                        users: {
+                            name?: string | null | undefined;
+                            email?: string | null | undefined;
+                            login: string;
+                            id: number;
+                            node_id: string;
+                            avatar_url: string;
+                            gravatar_id: string | null;
+                            url: string;
+                            html_url: string;
+                            followers_url: string;
+                            following_url: string;
+                            gists_url: string;
+                            starred_url: string;
+                            subscriptions_url: string;
+                            organizations_url: string;
+                            repos_url: string;
+                            events_url: string;
+                            received_events_url: string;
+                            type: string;
+                            site_admin: boolean;
+                            starred_at?: string | undefined;
+                        }[];
+                        teams: {
+                            id: number;
+                            node_id: string;
+                            name: string;
+                            slug: string;
+                            description: string | null;
+                            privacy?: string | undefined;
+                            permission: string;
+                            permissions?: {
+                                pull: boolean;
+                                triage: boolean;
+                                push: boolean;
+                                maintain: boolean;
+                                admin: boolean;
+                            } | undefined;
+                            url: string;
+                            html_url: string;
+                            members_url: string;
+                            repositories_url: string;
+                            parent: {
+                                id: number;
+                                node_id: string;
+                                url: string;
+                                members_url: string;
+                                name: string;
+                                description: string | null;
+                                permission: string;
+                                privacy?: string | undefined;
+                                html_url: string;
+                                repositories_url: string;
+                                slug: string;
+                                ldap_dn?: string | undefined;
+                            } | null;
+                        }[];
+                        apps?: {
+                            id: number;
+                            slug?: string | undefined;
+                            node_id: string;
+                            owner: {
+                                name?: string | null | undefined;
+                                email?: string | null | undefined;
+                                login: string;
+                                id: number;
+                                node_id: string;
+                                avatar_url: string;
+                                gravatar_id: string | null;
+                                url: string;
+                                html_url: string;
+                                followers_url: string;
+                                following_url: string;
+                                gists_url: string;
+                                starred_url: string;
+                                subscriptions_url: string;
+                                organizations_url: string;
+                                repos_url: string;
+                                events_url: string;
+                                received_events_url: string;
+                                type: string;
+                                site_admin: boolean;
+                                starred_at?: string | undefined;
+                            } | null;
+                            name: string;
+                            description: string | null;
+                            external_url: string;
+                            html_url: string;
+                            created_at: string;
+                            updated_at: string;
+                            permissions: {
+                                issues?: string | undefined;
+                                checks?: string | undefined;
+                                metadata?: string | undefined;
+                                contents?: string | undefined;
+                                deployments?: string | undefined;
+                            } & {
+                                [key: string]: string;
+                            };
+                            events: string[];
+                            installations_count?: number | undefined;
+                            client_id?: string | undefined;
+                            client_secret?: string | undefined;
+                            webhook_secret?: string | null | undefined;
+                            pem?: string | undefined;
+                        }[] | undefined;
                     } | undefined;
                 } | undefined;
                 required_signatures?: {
@@ -20921,6 +22108,9 @@ export declare class GithubClient {
                 } | undefined;
                 required_conversation_resolution?: {
                     enabled?: boolean | undefined;
+                } | undefined;
+                block_creations?: {
+                    enabled: boolean;
                 } | undefined;
             }, 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
@@ -21118,6 +22308,7 @@ export declare class GithubClient {
                         triage?: boolean | undefined;
                         pull?: boolean | undefined;
                     } | undefined;
+                    role_name?: string | undefined;
                     template_repository?: {
                         id: number;
                         node_id: string;
@@ -21357,6 +22548,8 @@ export declare class GithubClient {
                             allow_squash_merge?: boolean | undefined;
                             allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
+                            allow_update_branch?: boolean | undefined;
+                            use_squash_pr_title_as_default?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
                             subscribers_count?: number | undefined;
                             network_count?: number | undefined;
@@ -21365,6 +22558,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         allow_forking?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -21464,10 +22659,16 @@ export declare class GithubClient {
                 dismissal_restrictions?: {
                     users?: string[] | undefined;
                     teams?: string[] | undefined;
+                    apps?: string[] | undefined;
                 } | undefined;
                 dismiss_stale_reviews?: boolean | undefined;
                 require_code_owner_reviews?: boolean | undefined;
                 required_approving_review_count?: number | undefined;
+                bypass_pull_request_allowances?: {
+                    users?: string[] | undefined;
+                    teams?: string[] | undefined;
+                    apps?: string[] | undefined;
+                } | undefined;
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 url?: string | undefined;
                 dismissal_restrictions?: {
@@ -21528,9 +22729,166 @@ export declare class GithubClient {
                             ldap_dn?: string | undefined;
                         } | null;
                     }[] | undefined;
+                    apps?: {
+                        id: number;
+                        slug?: string | undefined;
+                        node_id: string;
+                        owner: {
+                            name?: string | null | undefined;
+                            email?: string | null | undefined;
+                            login: string;
+                            id: number;
+                            node_id: string;
+                            avatar_url: string;
+                            gravatar_id: string | null;
+                            url: string;
+                            html_url: string;
+                            followers_url: string;
+                            following_url: string;
+                            gists_url: string;
+                            starred_url: string;
+                            subscriptions_url: string;
+                            organizations_url: string;
+                            repos_url: string;
+                            events_url: string;
+                            received_events_url: string;
+                            type: string;
+                            site_admin: boolean;
+                            starred_at?: string | undefined;
+                        } | null;
+                        name: string;
+                        description: string | null;
+                        external_url: string;
+                        html_url: string;
+                        created_at: string;
+                        updated_at: string;
+                        permissions: {
+                            issues?: string | undefined;
+                            checks?: string | undefined;
+                            metadata?: string | undefined;
+                            contents?: string | undefined;
+                            deployments?: string | undefined;
+                        } & {
+                            [key: string]: string;
+                        };
+                        events: string[];
+                        installations_count?: number | undefined;
+                        client_id?: string | undefined;
+                        client_secret?: string | undefined;
+                        webhook_secret?: string | null | undefined;
+                        pem?: string | undefined;
+                    }[] | undefined;
                     url?: string | undefined;
                     users_url?: string | undefined;
                     teams_url?: string | undefined;
+                } | undefined;
+                bypass_pull_request_allowances?: {
+                    users?: {
+                        name?: string | null | undefined;
+                        email?: string | null | undefined;
+                        login: string;
+                        id: number;
+                        node_id: string;
+                        avatar_url: string;
+                        gravatar_id: string | null;
+                        url: string;
+                        html_url: string;
+                        followers_url: string;
+                        following_url: string;
+                        gists_url: string;
+                        starred_url: string;
+                        subscriptions_url: string;
+                        organizations_url: string;
+                        repos_url: string;
+                        events_url: string;
+                        received_events_url: string;
+                        type: string;
+                        site_admin: boolean;
+                        starred_at?: string | undefined;
+                    }[] | undefined;
+                    teams?: {
+                        id: number;
+                        node_id: string;
+                        name: string;
+                        slug: string;
+                        description: string | null;
+                        privacy?: string | undefined;
+                        permission: string;
+                        permissions?: {
+                            pull: boolean;
+                            triage: boolean;
+                            push: boolean;
+                            maintain: boolean;
+                            admin: boolean;
+                        } | undefined;
+                        url: string;
+                        html_url: string;
+                        members_url: string;
+                        repositories_url: string;
+                        parent: {
+                            id: number;
+                            node_id: string;
+                            url: string;
+                            members_url: string;
+                            name: string;
+                            description: string | null;
+                            permission: string;
+                            privacy?: string | undefined;
+                            html_url: string;
+                            repositories_url: string;
+                            slug: string;
+                            ldap_dn?: string | undefined;
+                        } | null;
+                    }[] | undefined;
+                    apps?: {
+                        id: number;
+                        slug?: string | undefined;
+                        node_id: string;
+                        owner: {
+                            name?: string | null | undefined;
+                            email?: string | null | undefined;
+                            login: string;
+                            id: number;
+                            node_id: string;
+                            avatar_url: string;
+                            gravatar_id: string | null;
+                            url: string;
+                            html_url: string;
+                            followers_url: string;
+                            following_url: string;
+                            gists_url: string;
+                            starred_url: string;
+                            subscriptions_url: string;
+                            organizations_url: string;
+                            repos_url: string;
+                            events_url: string;
+                            received_events_url: string;
+                            type: string;
+                            site_admin: boolean;
+                            starred_at?: string | undefined;
+                        } | null;
+                        name: string;
+                        description: string | null;
+                        external_url: string;
+                        html_url: string;
+                        created_at: string;
+                        updated_at: string;
+                        permissions: {
+                            issues?: string | undefined;
+                            checks?: string | undefined;
+                            metadata?: string | undefined;
+                            contents?: string | undefined;
+                            deployments?: string | undefined;
+                        } & {
+                            [key: string]: string;
+                        };
+                        events: string[];
+                        installations_count?: number | undefined;
+                        client_id?: string | undefined;
+                        client_secret?: string | undefined;
+                        webhook_secret?: string | null | undefined;
+                        pem?: string | undefined;
+                    }[] | undefined;
                 } | undefined;
                 dismiss_stale_reviews: boolean;
                 require_code_owner_reviews: boolean;
@@ -21712,10 +23070,18 @@ export declare class GithubClient {
             } & {
                 strict?: boolean | undefined;
                 contexts?: string[] | undefined;
+                checks?: {
+                    context: string;
+                    app_id?: number | undefined;
+                }[] | undefined;
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 url: string;
                 strict: boolean;
                 contexts: string[];
+                checks: {
+                    context: string;
+                    app_id: number | null;
+                }[];
                 contexts_url: string;
             }, 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
@@ -21731,10 +23097,18 @@ export declare class GithubClient {
             } & {
                 strict?: boolean | undefined;
                 contexts?: string[] | undefined;
+                checks?: {
+                    context: string;
+                    app_id?: number | undefined;
+                }[] | undefined;
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 url: string;
                 strict: boolean;
                 contexts: string[];
+                checks: {
+                    context: string;
+                    app_id: number | null;
+                }[];
                 contexts_url: string;
             }, 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
@@ -21888,6 +23262,7 @@ export declare class GithubClient {
                 html_url: string;
                 number: number;
                 state: string;
+                state_reason?: string | null | undefined;
                 title: string;
                 body?: string | null | undefined;
                 user: {
@@ -22021,6 +23396,7 @@ export declare class GithubClient {
                 closed_at: string | null;
                 created_at: string;
                 updated_at: string;
+                draft?: boolean | undefined;
                 closed_by?: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
@@ -22286,6 +23662,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
@@ -22294,6 +23672,8 @@ export declare class GithubClient {
                     allow_squash_merge?: boolean | undefined;
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
+                    allow_update_branch?: boolean | undefined;
+                    use_squash_pr_title_as_default?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -22434,6 +23814,7 @@ export declare class GithubClient {
                 html_url: string;
                 number: number;
                 state: string;
+                state_reason?: string | null | undefined;
                 title: string;
                 body?: string | null | undefined;
                 user: {
@@ -22567,6 +23948,7 @@ export declare class GithubClient {
                 closed_at: string | null;
                 created_at: string;
                 updated_at: string;
+                draft?: boolean | undefined;
                 closed_by?: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
@@ -22832,6 +24214,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
@@ -22840,6 +24224,8 @@ export declare class GithubClient {
                     allow_squash_merge?: boolean | undefined;
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
+                    allow_update_branch?: boolean | undefined;
+                    use_squash_pr_title_as_default?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -23151,6 +24537,7 @@ export declare class GithubClient {
                 html_url: string;
                 number: number;
                 state: string;
+                state_reason?: string | null | undefined;
                 title: string;
                 body?: string | null | undefined;
                 user: {
@@ -23284,6 +24671,7 @@ export declare class GithubClient {
                 closed_at: string | null;
                 created_at: string;
                 updated_at: string;
+                draft?: boolean | undefined;
                 closed_by?: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
@@ -23549,6 +24937,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
@@ -23557,6 +24947,8 @@ export declare class GithubClient {
                     allow_squash_merge?: boolean | undefined;
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
+                    allow_update_branch?: boolean | undefined;
+                    use_squash_pr_title_as_default?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -23788,6 +25180,7 @@ export declare class GithubClient {
                     html_url: string;
                     number: number;
                     state: string;
+                    state_reason?: string | null | undefined;
                     title: string;
                     body?: string | null | undefined;
                     user: {
@@ -23921,6 +25314,7 @@ export declare class GithubClient {
                     closed_at: string | null;
                     created_at: string;
                     updated_at: string;
+                    draft?: boolean | undefined;
                     closed_by?: {
                         name?: string | null | undefined;
                         email?: string | null | undefined;
@@ -24186,6 +25580,8 @@ export declare class GithubClient {
                             allow_squash_merge?: boolean | undefined;
                             allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
+                            allow_update_branch?: boolean | undefined;
+                            use_squash_pr_title_as_default?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
                             subscribers_count?: number | undefined;
                             network_count?: number | undefined;
@@ -24194,6 +25590,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         allow_forking?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -24265,7 +25663,7 @@ export declare class GithubClient {
                         eyes: number;
                         rocket: number;
                     } | undefined;
-                } | undefined;
+                } | null | undefined;
                 label?: {
                     name: string | null;
                     color: string | null;
@@ -24568,6 +25966,7 @@ export declare class GithubClient {
                 html_url: string;
                 number: number;
                 state: string;
+                state_reason?: string | null | undefined;
                 title: string;
                 body?: string | null | undefined;
                 user: {
@@ -24701,6 +26100,7 @@ export declare class GithubClient {
                 closed_at: string | null;
                 created_at: string;
                 updated_at: string;
+                draft?: boolean | undefined;
                 closed_by?: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
@@ -24966,6 +26366,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
@@ -24974,6 +26376,8 @@ export declare class GithubClient {
                     allow_squash_merge?: boolean | undefined;
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
+                    allow_update_branch?: boolean | undefined;
+                    use_squash_pr_title_as_default?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -26881,6 +28285,7 @@ export declare class GithubClient {
                     html_url: string;
                     number: number;
                     state: string;
+                    state_reason?: string | null | undefined;
                     title: string;
                     body?: string | null | undefined;
                     user: {
@@ -27014,6 +28419,7 @@ export declare class GithubClient {
                     closed_at: string | null;
                     created_at: string;
                     updated_at: string;
+                    draft?: boolean | undefined;
                     closed_by?: {
                         name?: string | null | undefined;
                         email?: string | null | undefined;
@@ -27279,6 +28685,8 @@ export declare class GithubClient {
                             allow_squash_merge?: boolean | undefined;
                             allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
+                            allow_update_branch?: boolean | undefined;
+                            use_squash_pr_title_as_default?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
                             subscribers_count?: number | undefined;
                             network_count?: number | undefined;
@@ -27287,6 +28695,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         allow_forking?: boolean | undefined;
                         subscribers_count?: number | undefined;
@@ -27358,7 +28768,7 @@ export declare class GithubClient {
                         eyes: number;
                         rocket: number;
                     } | undefined;
-                } | undefined;
+                } | null | undefined;
                 label?: {
                     name: string | null;
                     color: string | null;
@@ -28992,6 +30402,7 @@ export declare class GithubClient {
                         html_url: string;
                         number: number;
                         state: string;
+                        state_reason?: string | null | undefined;
                         title: string;
                         body?: string | null | undefined;
                         user: {
@@ -29125,6 +30536,7 @@ export declare class GithubClient {
                         closed_at: string | null;
                         created_at: string;
                         updated_at: string;
+                        draft?: boolean | undefined;
                         closed_by?: {
                             name?: string | null | undefined;
                             email?: string | null | undefined;
@@ -29390,6 +30802,8 @@ export declare class GithubClient {
                                 allow_squash_merge?: boolean | undefined;
                                 allow_auto_merge?: boolean | undefined;
                                 delete_branch_on_merge?: boolean | undefined;
+                                allow_update_branch?: boolean | undefined;
+                                use_squash_pr_title_as_default?: boolean | undefined;
                                 allow_merge_commit?: boolean | undefined;
                                 subscribers_count?: number | undefined;
                                 network_count?: number | undefined;
@@ -29398,6 +30812,8 @@ export declare class GithubClient {
                             allow_squash_merge?: boolean | undefined;
                             allow_auto_merge?: boolean | undefined;
                             delete_branch_on_merge?: boolean | undefined;
+                            allow_update_branch?: boolean | undefined;
+                            use_squash_pr_title_as_default?: boolean | undefined;
                             allow_merge_commit?: boolean | undefined;
                             allow_forking?: boolean | undefined;
                             subscribers_count?: number | undefined;
@@ -29882,6 +31298,87 @@ export declare class GithubClient {
                     site_admin: boolean;
                     starred_at?: string | undefined;
                 };
+            }> & Partial<{
+                id: number;
+                node_id: string;
+                url: string;
+                actor: {
+                    name?: string | null | undefined;
+                    email?: string | null | undefined;
+                    login: string;
+                    id: number;
+                    node_id: string;
+                    avatar_url: string;
+                    gravatar_id: string | null;
+                    url: string;
+                    html_url: string;
+                    followers_url: string;
+                    following_url: string;
+                    gists_url: string;
+                    starred_url: string;
+                    subscriptions_url: string;
+                    organizations_url: string;
+                    repos_url: string;
+                    events_url: string;
+                    received_events_url: string;
+                    type: string;
+                    site_admin: boolean;
+                    starred_at?: string | undefined;
+                };
+                event: string;
+                commit_id: string | null;
+                commit_url: string | null;
+                created_at: string;
+                performed_via_github_app: {
+                    id: number;
+                    slug?: string | undefined;
+                    node_id: string;
+                    owner: {
+                        name?: string | null | undefined;
+                        email?: string | null | undefined;
+                        login: string;
+                        id: number;
+                        node_id: string;
+                        avatar_url: string;
+                        gravatar_id: string | null;
+                        url: string;
+                        html_url: string;
+                        followers_url: string;
+                        following_url: string;
+                        gists_url: string;
+                        starred_url: string;
+                        subscriptions_url: string;
+                        organizations_url: string;
+                        repos_url: string;
+                        events_url: string;
+                        received_events_url: string;
+                        type: string;
+                        site_admin: boolean;
+                        starred_at?: string | undefined;
+                    } | null;
+                    name: string;
+                    description: string | null;
+                    external_url: string;
+                    html_url: string;
+                    created_at: string;
+                    updated_at: string;
+                    permissions: {
+                        issues?: string | undefined;
+                        checks?: string | undefined;
+                        metadata?: string | undefined;
+                        contents?: string | undefined;
+                        deployments?: string | undefined;
+                    } & {
+                        [key: string]: string;
+                    };
+                    events: string[];
+                    installations_count?: number | undefined;
+                    client_id?: string | undefined;
+                    client_secret?: string | undefined;
+                    webhook_secret?: string | null | undefined;
+                    pem?: string | undefined;
+                } | null;
+                state_reason?: string | null | undefined;
             }>)[], 200>>;
             defaults: <O extends RequestParameters = RequestParameters>(newDefaults: O) => import("@octokit/types").RequestInterface<object & O>;
             endpoint: import("@octokit/types").EndpointInterface<{
@@ -29909,6 +31406,7 @@ export declare class GithubClient {
                 html_url: string;
                 number: number;
                 state: string;
+                state_reason?: string | null | undefined;
                 title: string;
                 body?: string | null | undefined;
                 user: {
@@ -30042,6 +31540,7 @@ export declare class GithubClient {
                 closed_at: string | null;
                 created_at: string;
                 updated_at: string;
+                draft?: boolean | undefined;
                 closed_by?: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
@@ -30307,6 +31806,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
@@ -30315,6 +31816,8 @@ export declare class GithubClient {
                     allow_squash_merge?: boolean | undefined;
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
+                    allow_update_branch?: boolean | undefined;
+                    use_squash_pr_title_as_default?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -30415,6 +31918,7 @@ export declare class GithubClient {
                 html_url: string;
                 number: number;
                 state: string;
+                state_reason?: string | null | undefined;
                 title: string;
                 body?: string | null | undefined;
                 user: {
@@ -30548,6 +32052,7 @@ export declare class GithubClient {
                 closed_at: string | null;
                 created_at: string;
                 updated_at: string;
+                draft?: boolean | undefined;
                 closed_by?: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
@@ -30813,6 +32318,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
@@ -30821,6 +32328,8 @@ export declare class GithubClient {
                     allow_squash_merge?: boolean | undefined;
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
+                    allow_update_branch?: boolean | undefined;
+                    use_squash_pr_title_as_default?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -30925,6 +32434,7 @@ export declare class GithubClient {
                 html_url: string;
                 number: number;
                 state: string;
+                state_reason?: string | null | undefined;
                 title: string;
                 body?: string | null | undefined;
                 user: {
@@ -31058,6 +32568,7 @@ export declare class GithubClient {
                 closed_at: string | null;
                 created_at: string;
                 updated_at: string;
+                draft?: boolean | undefined;
                 closed_by?: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
@@ -31323,6 +32834,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
@@ -31331,6 +32844,8 @@ export declare class GithubClient {
                     allow_squash_merge?: boolean | undefined;
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
+                    allow_update_branch?: boolean | undefined;
+                    use_squash_pr_title_as_default?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -31558,7 +33073,7 @@ export declare class GithubClient {
                 repo: string;
                 issue_number: number;
             } & {
-                assignees?: string[] | undefined;
+                assignees: string[];
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 id: number;
                 node_id: string;
@@ -31570,6 +33085,7 @@ export declare class GithubClient {
                 html_url: string;
                 number: number;
                 state: string;
+                state_reason?: string | null | undefined;
                 title: string;
                 body?: string | null | undefined;
                 user: {
@@ -31703,6 +33219,7 @@ export declare class GithubClient {
                 closed_at: string | null;
                 created_at: string;
                 updated_at: string;
+                draft?: boolean | undefined;
                 closed_by?: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
@@ -31968,6 +33485,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
@@ -31976,6 +33495,8 @@ export declare class GithubClient {
                     allow_squash_merge?: boolean | undefined;
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
+                    allow_update_branch?: boolean | undefined;
+                    use_squash_pr_title_as_default?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -32138,6 +33659,7 @@ export declare class GithubClient {
                 html_url: string;
                 number: number;
                 state: string;
+                state_reason?: string | null | undefined;
                 title: string;
                 body?: string | null | undefined;
                 user: {
@@ -32271,6 +33793,7 @@ export declare class GithubClient {
                 closed_at: string | null;
                 created_at: string;
                 updated_at: string;
+                draft?: boolean | undefined;
                 closed_by?: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
@@ -32536,6 +34059,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
@@ -32544,6 +34069,8 @@ export declare class GithubClient {
                     allow_squash_merge?: boolean | undefined;
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
+                    allow_update_branch?: boolean | undefined;
+                    use_squash_pr_title_as_default?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -33221,6 +34748,18 @@ export declare class GithubClient {
                         reset: number;
                         used: number;
                     } | undefined;
+                    scim?: {
+                        limit: number;
+                        remaining: number;
+                        reset: number;
+                        used: number;
+                    } | undefined;
+                    dependency_snapshots?: {
+                        limit: number;
+                        remaining: number;
+                        reset: number;
+                        used: number;
+                    } | undefined;
                 };
                 rate: {
                     limit: number;
@@ -33361,6 +34900,7 @@ export declare class GithubClient {
                     push: boolean;
                     maintain?: boolean | undefined;
                 } | undefined;
+                role_name?: string | undefined;
                 owner: {
                     name?: string | null | undefined;
                     email?: string | null | undefined;
@@ -33691,6 +35231,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
@@ -33699,6 +35241,8 @@ export declare class GithubClient {
                     allow_squash_merge?: boolean | undefined;
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
+                    allow_update_branch?: boolean | undefined;
+                    use_squash_pr_title_as_default?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -33734,7 +35278,7 @@ export declare class GithubClient {
                 maintainers?: string[] | undefined;
                 repo_names?: string[] | undefined;
                 privacy?: "closed" | "secret" | undefined;
-                permission?: "push" | "pull" | "admin" | undefined;
+                permission?: "push" | "pull" | undefined;
                 parent_team_id?: number | undefined;
             }, "headers" | "baseUrl" | "mediaType">) | undefined): Promise<import("@octokit/types").OctokitResponse<{
                 id: number;
@@ -33818,6 +35362,7 @@ export declare class GithubClient {
                     members_can_create_pages?: boolean | undefined;
                     members_can_create_public_pages?: boolean | undefined;
                     members_can_create_private_pages?: boolean | undefined;
+                    members_can_fork_private_repositories?: boolean | null | undefined;
                     updated_at: string;
                 };
                 ldap_dn?: string | undefined;
@@ -34072,6 +35617,7 @@ export declare class GithubClient {
                     members_can_create_pages?: boolean | undefined;
                     members_can_create_public_pages?: boolean | undefined;
                     members_can_create_private_pages?: boolean | undefined;
+                    members_can_fork_private_repositories?: boolean | null | undefined;
                     updated_at: string;
                 };
                 ldap_dn?: string | undefined;
@@ -34524,6 +36070,7 @@ export declare class GithubClient {
                     members_can_create_pages?: boolean | undefined;
                     members_can_create_public_pages?: boolean | undefined;
                     members_can_create_private_pages?: boolean | undefined;
+                    members_can_fork_private_repositories?: boolean | null | undefined;
                     updated_at: string;
                 };
                 ldap_dn?: string | undefined;
@@ -34781,6 +36328,7 @@ export declare class GithubClient {
                     triage?: boolean | undefined;
                     pull?: boolean | undefined;
                 } | undefined;
+                role_name?: string | undefined;
                 template_repository?: {
                     id: number;
                     node_id: string;
@@ -35020,6 +36568,8 @@ export declare class GithubClient {
                         allow_squash_merge?: boolean | undefined;
                         allow_auto_merge?: boolean | undefined;
                         delete_branch_on_merge?: boolean | undefined;
+                        allow_update_branch?: boolean | undefined;
+                        use_squash_pr_title_as_default?: boolean | undefined;
                         allow_merge_commit?: boolean | undefined;
                         subscribers_count?: number | undefined;
                         network_count?: number | undefined;
@@ -35028,6 +36578,8 @@ export declare class GithubClient {
                     allow_squash_merge?: boolean | undefined;
                     allow_auto_merge?: boolean | undefined;
                     delete_branch_on_merge?: boolean | undefined;
+                    allow_update_branch?: boolean | undefined;
+                    use_squash_pr_title_as_default?: boolean | undefined;
                     allow_merge_commit?: boolean | undefined;
                     allow_forking?: boolean | undefined;
                     subscribers_count?: number | undefined;
@@ -35318,6 +36870,7 @@ export declare class GithubClient {
                     members_can_create_pages?: boolean | undefined;
                     members_can_create_public_pages?: boolean | undefined;
                     members_can_create_private_pages?: boolean | undefined;
+                    members_can_fork_private_repositories?: boolean | null | undefined;
                     updated_at: string;
                 };
                 ldap_dn?: string | undefined;
