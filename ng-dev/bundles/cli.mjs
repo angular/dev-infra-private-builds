@@ -40,7 +40,7 @@ import {
   require_semver,
   require_tr46,
   require_wrappy
-} from "./chunk-3PBF4M22.mjs";
+} from "./chunk-6KCSWOM5.mjs";
 import {
   ChildProcess,
   ConfigValidationError,
@@ -69736,73 +69736,104 @@ async function getTargetLabelsForActiveReleaseTrains({ latest, releaseCandidate,
   return targetLabels;
 }
 
-// bazel-out/k8-fastbuild/bin/ng-dev/pr/common/validation/pull-request-failure.js
-var PullRequestFailure = class {
-  constructor(message, canBeIgnoredNonFatal = false) {
-    this.message = message;
-    this.canBeIgnoredNonFatal = canBeIgnoredNonFatal;
-  }
-  static claUnsigned() {
-    return new this(`CLA has not been signed. Please make sure the PR author has signed the CLA.`);
-  }
-  static failingCiJobs() {
-    return new this(`Failing CI jobs.`, true);
-  }
-  static pendingCiJobs() {
-    return new this(`Pending CI jobs.`, true);
-  }
-  static notMergeReady() {
-    return new this(`Not marked as merge ready.`);
-  }
-  static isDraft() {
-    return new this("Pull request is still in draft.");
-  }
-  static isClosed() {
-    return new this("Pull request is already closed.");
-  }
-  static isMerged() {
-    return new this("Pull request is already merged.");
-  }
-  static mismatchingTargetBranch(allowedBranches) {
-    return new this(`Pull request is set to wrong base branch. Please update the PR in the Github UI to one of the following branches: ${allowedBranches.join(", ")}.`);
-  }
-  static unsatisfiedBaseSha() {
-    return new this(`Pull request has not been rebased recently and could be bypassing CI checks. Please rebase the PR.`);
-  }
-  static mergeConflicts(failedBranches) {
-    return new this(`Could not merge pull request into the following branches due to merge conflicts: ${failedBranches.join(", ")}. Please rebase the PR or update the target label.`);
-  }
-  static unknownMergeError() {
-    return new this(`Unknown merge error occurred. Please see console output above for debugging.`);
-  }
-  static unableToFixupCommitMessageSquashOnly() {
-    return new this(`Unable to fixup commit message of pull request. Commit message can only be modified if the PR is merged using squash.`);
-  }
-  static hasBreakingChanges(label) {
-    const message = `Cannot merge into branch for "${label.name}" as the pull request has breaking changes. Breaking changes can only be merged with the "target: major" label.`;
-    return new this(message);
-  }
-  static hasDeprecations(label) {
-    const message = `Cannot merge into branch for "${label.name}" as the pull request contains deprecations. Deprecations can only be merged with the "target: minor" or "target: major" label.`;
-    return new this(message);
-  }
-  static hasFeatureCommits(label) {
-    const message = `Cannot merge into branch for "${label.name}" as the pull request has commits with the "feat" type. New features can only be merged with the "target: minor" or "target: major" label.`;
-    return new this(message);
-  }
-  static missingBreakingChangeLabel() {
-    const message = `Pull Request has at least one commit containing a breaking change note, but does not have a breaking change label. Make sure to apply the following label: ${breakingChangeLabel}`;
-    return new this(message);
-  }
-  static missingBreakingChangeCommit() {
-    const message = "Pull Request has a breaking change label, but does not contain any commits with breaking change notes (i.e. commits do not have a `BREAKING CHANGE: <..>` section).";
-    return new this(message);
-  }
-  static failedToManualSelectGithubTargetBranch(branch) {
-    const message = `Pull Requests must merge into their targeted Github branch. If this branch (${branch}) should not be included, please change the targeted branch via the Github UI.`;
-    return new this(message);
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/common/targeting/target-label.js
+var TargetLabelName;
+(function(TargetLabelName2) {
+  TargetLabelName2["MAJOR"] = "target: major";
+  TargetLabelName2["MINOR"] = "target: minor";
+  TargetLabelName2["PATCH"] = "target: patch";
+  TargetLabelName2["RELEASE_CANDIDATE"] = "target: rc";
+  TargetLabelName2["LONG_TERM_SUPPORT"] = "target: lts";
+})(TargetLabelName || (TargetLabelName = {}));
+var InvalidTargetBranchError = class {
+  constructor(failureMessage) {
+    this.failureMessage = failureMessage;
   }
 };
+var InvalidTargetLabelError = class {
+  constructor(failureMessage) {
+    this.failureMessage = failureMessage;
+  }
+};
+async function getMatchingTargetLabelForPullRequest(labelsOnPullRequest, allTargetLabels) {
+  const matches = [];
+  for (const label of labelsOnPullRequest) {
+    const match = allTargetLabels.find(({ name: name5 }) => label === name5);
+    if (match !== void 0) {
+      matches.push(match);
+    }
+  }
+  if (matches.length === 1) {
+    return matches[0];
+  }
+  if (matches.length === 0) {
+    throw new InvalidTargetLabelError("Unable to determine target for the PR as it has no target label.");
+  }
+  throw new InvalidTargetLabelError("Unable to determine target for the PR as it has multiple target labels.");
+}
+async function getTargetBranchesAndLabelForPullRequest(activeReleaseTrains, github, config, labelsOnPullRequest, githubTargetBranch) {
+  const targetLabels = await getTargetLabelsForActiveReleaseTrains(activeReleaseTrains, github, config);
+  const matchingLabel = await getMatchingTargetLabelForPullRequest(labelsOnPullRequest, targetLabels);
+  return {
+    branches: await getBranchesFromTargetLabel(matchingLabel, githubTargetBranch),
+    labelName: matchingLabel.name
+  };
+}
+async function getBranchesFromTargetLabel(label, githubTargetBranch) {
+  return typeof label.branches === "function" ? await label.branches(githubTargetBranch) : await label.branches;
+}
+
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/check-target-branches/check-target-branches.js
+async function getTargetBranchesForPr(prNumber, config) {
+  const { owner, name: repo } = config.github;
+  const git = await GitClient.get();
+  const prData = (await git.github.pulls.get({ owner, repo, pull_number: prNumber })).data;
+  const labels = prData.labels.map((l) => l.name);
+  const githubTargetBranch = prData.base.ref;
+  const activeReleaseTrains = await ActiveReleaseTrains.fetch({
+    name: repo,
+    owner,
+    nextBranchName: getNextBranchName(config.github),
+    api: git.github
+  });
+  return getTargetBranchesAndLabelForPullRequest(activeReleaseTrains, git.github, config, labels, githubTargetBranch);
+}
+async function printTargetBranchesForPr(prNumber) {
+  const config = await getConfig();
+  assertValidGithubConfig(config);
+  assertValidPullRequestConfig(config);
+  if (config.pullRequest.__noTargetLabeling) {
+    Log.info(`This repository does not use target labeling (special flag enabled).`);
+    Log.info(`PR #${prNumber} will merge into: ${config.github.mainBranchName}`);
+    return;
+  }
+  const target = await getTargetBranchesForPr(prNumber, config);
+  Log.info(`PR has the following target label: ${target.labelName}`);
+  Log.info.group(`PR #${prNumber} will merge into:`);
+  target.branches.forEach((name5) => Log.info(`- ${name5}`));
+  Log.info.groupEnd();
+}
+
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/check-target-branches/cli.js
+function builder9(argv) {
+  return argv.positional("pr", {
+    description: "The pull request number",
+    type: "number",
+    demandOption: true
+  });
+}
+async function handler10({ pr }) {
+  await printTargetBranchesForPr(pr);
+}
+var CheckTargetBranchesModule = {
+  handler: handler10,
+  builder: builder9,
+  command: "check-target-branches <pr>",
+  describe: "Check a PR to determine what branches it is currently targeting"
+};
+
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/common/checkout-pr.js
+var import_typed_graphqlify3 = __toESM(require_dist());
 
 // bazel-out/k8-fastbuild/bin/ng-dev/utils/github.js
 var import_typed_graphqlify2 = __toESM(require_dist());
@@ -69869,51 +69900,9 @@ async function getPendingPrs(prSchema, git) {
   return prs;
 }
 
-// bazel-out/k8-fastbuild/bin/ng-dev/pr/common/fetch-pull-request.js
-var import_typed_graphqlify3 = __toESM(require_dist());
-var PullRequestStatus;
-(function(PullRequestStatus2) {
-  PullRequestStatus2[PullRequestStatus2["PASSING"] = 0] = "PASSING";
-  PullRequestStatus2[PullRequestStatus2["FAILING"] = 1] = "FAILING";
-  PullRequestStatus2[PullRequestStatus2["PENDING"] = 2] = "PENDING";
-})(PullRequestStatus || (PullRequestStatus = {}));
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/common/checkout-pr.js
 var PR_SCHEMA = {
-  url: import_typed_graphqlify3.types.string,
-  isDraft: import_typed_graphqlify3.types.boolean,
-  state: import_typed_graphqlify3.types.custom(),
-  number: import_typed_graphqlify3.types.number,
-  mergeable: import_typed_graphqlify3.types.custom(),
-  updatedAt: import_typed_graphqlify3.types.string,
-  commits: (0, import_typed_graphqlify3.params)({ last: 100 }, {
-    totalCount: import_typed_graphqlify3.types.number,
-    nodes: [
-      {
-        commit: {
-          statusCheckRollup: (0, import_typed_graphqlify3.optional)({
-            state: import_typed_graphqlify3.types.custom(),
-            contexts: (0, import_typed_graphqlify3.params)({ last: 100 }, {
-              nodes: [
-                (0, import_typed_graphqlify3.onUnion)({
-                  CheckRun: {
-                    __typename: import_typed_graphqlify3.types.constant("CheckRun"),
-                    status: import_typed_graphqlify3.types.custom(),
-                    conclusion: import_typed_graphqlify3.types.custom(),
-                    name: import_typed_graphqlify3.types.string
-                  },
-                  StatusContext: {
-                    __typename: import_typed_graphqlify3.types.constant("StatusContext"),
-                    state: import_typed_graphqlify3.types.custom(),
-                    context: import_typed_graphqlify3.types.string
-                  }
-                })
-              ]
-            })
-          }),
-          message: import_typed_graphqlify3.types.string
-        }
-      }
-    ]
-  }),
+  state: import_typed_graphqlify3.types.string,
   maintainerCanModify: import_typed_graphqlify3.types.boolean,
   viewerDidAuthor: import_typed_graphqlify3.types.boolean,
   headRefOid: import_typed_graphqlify3.types.string,
@@ -69930,22 +69919,151 @@ var PR_SCHEMA = {
       url: import_typed_graphqlify3.types.string,
       nameWithOwner: import_typed_graphqlify3.types.string
     }
-  },
-  baseRefName: import_typed_graphqlify3.types.string,
-  title: import_typed_graphqlify3.types.string,
-  labels: (0, import_typed_graphqlify3.params)({ first: 100 }, {
+  }
+};
+var UnexpectedLocalChangesError = class extends Error {
+};
+var PullRequestNotFoundError = class extends Error {
+};
+var MaintainerModifyAccessError = class extends Error {
+};
+async function checkOutPullRequestLocally(prNumber, githubToken, opts = {}) {
+  const git = await AuthenticatedGitClient.get();
+  if (git.hasUncommittedChanges()) {
+    throw new UnexpectedLocalChangesError("Unable to checkout PR due to uncommitted changes.");
+  }
+  const previousBranchOrRevision = git.getCurrentBranchOrRevision();
+  const pr = await getPr(PR_SCHEMA, prNumber, git);
+  if (pr === null) {
+    throw new PullRequestNotFoundError(`Pull request #${prNumber} could not be found.`);
+  }
+  const headRefName = pr.headRef.name;
+  const fullHeadRef = `${pr.headRef.repository.nameWithOwner}:${headRefName}`;
+  const headRefUrl = addTokenToGitHttpsUrl(pr.headRef.repository.url, githubToken);
+  const forceWithLeaseFlag = `--force-with-lease=${headRefName}:${pr.headRefOid}`;
+  if (!pr.maintainerCanModify && !pr.viewerDidAuthor && !opts.allowIfMaintainerCannotModify) {
+    throw new MaintainerModifyAccessError("PR is not set to allow maintainers to modify the PR");
+  }
+  try {
+    Log.info(`Checking out PR #${prNumber} from ${fullHeadRef}`);
+    git.run(["fetch", "-q", headRefUrl, headRefName]);
+    git.run(["checkout", "--detach", "FETCH_HEAD"]);
+  } catch (e) {
+    git.checkout(previousBranchOrRevision, true);
+    throw e;
+  }
+  return {
+    pushToUpstream: () => {
+      git.run(["push", headRefUrl, `HEAD:${headRefName}`, forceWithLeaseFlag]);
+      return true;
+    },
+    resetGitState: () => {
+      return git.checkout(previousBranchOrRevision, true);
+    },
+    pushToUpstreamCommand: `git push ${pr.headRef.repository.url} HEAD:${headRefName} ${forceWithLeaseFlag}`,
+    resetGitStateCommand: `git rebase --abort && git reset --hard && git checkout ${previousBranchOrRevision}`
+  };
+}
+
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/checkout/cli.js
+function builder10(yargs) {
+  return addGithubTokenOption(yargs).positional("pr", { type: "number", demandOption: true });
+}
+async function handler11({ pr, githubToken }) {
+  const options = { allowIfMaintainerCannotModify: true, branchName: `pr-${pr}` };
+  const { pushToUpstreamCommand } = await checkOutPullRequestLocally(pr, githubToken, options);
+  Log.info(`Checked out the remote branch for pull request #${pr}
+`);
+  Log.info("To push the checked out branch back to its PR, run the following command:");
+  Log.info(`  $ ${pushToUpstreamCommand}`);
+}
+var CheckoutCommandModule = {
+  handler: handler11,
+  builder: builder10,
+  command: "checkout <pr>",
+  describe: "Checkout a PR from the upstream repo"
+};
+
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/discover-new-conflicts/index.js
+var import_cli_progress2 = __toESM(require_cli_progress());
+
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/common/fetch-pull-request.js
+var import_typed_graphqlify4 = __toESM(require_dist());
+var PullRequestStatus;
+(function(PullRequestStatus2) {
+  PullRequestStatus2[PullRequestStatus2["PASSING"] = 0] = "PASSING";
+  PullRequestStatus2[PullRequestStatus2["FAILING"] = 1] = "FAILING";
+  PullRequestStatus2[PullRequestStatus2["PENDING"] = 2] = "PENDING";
+})(PullRequestStatus || (PullRequestStatus = {}));
+var PR_SCHEMA2 = {
+  url: import_typed_graphqlify4.types.string,
+  isDraft: import_typed_graphqlify4.types.boolean,
+  state: import_typed_graphqlify4.types.custom(),
+  number: import_typed_graphqlify4.types.number,
+  mergeable: import_typed_graphqlify4.types.custom(),
+  updatedAt: import_typed_graphqlify4.types.string,
+  commits: (0, import_typed_graphqlify4.params)({ last: 100 }, {
+    totalCount: import_typed_graphqlify4.types.number,
     nodes: [
       {
-        name: import_typed_graphqlify3.types.string
+        commit: {
+          statusCheckRollup: (0, import_typed_graphqlify4.optional)({
+            state: import_typed_graphqlify4.types.custom(),
+            contexts: (0, import_typed_graphqlify4.params)({ last: 100 }, {
+              nodes: [
+                (0, import_typed_graphqlify4.onUnion)({
+                  CheckRun: {
+                    __typename: import_typed_graphqlify4.types.constant("CheckRun"),
+                    status: import_typed_graphqlify4.types.custom(),
+                    conclusion: import_typed_graphqlify4.types.custom(),
+                    name: import_typed_graphqlify4.types.string
+                  },
+                  StatusContext: {
+                    __typename: import_typed_graphqlify4.types.constant("StatusContext"),
+                    state: import_typed_graphqlify4.types.custom(),
+                    context: import_typed_graphqlify4.types.string
+                  }
+                })
+              ]
+            })
+          }),
+          message: import_typed_graphqlify4.types.string
+        }
+      }
+    ]
+  }),
+  maintainerCanModify: import_typed_graphqlify4.types.boolean,
+  viewerDidAuthor: import_typed_graphqlify4.types.boolean,
+  headRefOid: import_typed_graphqlify4.types.string,
+  headRef: {
+    name: import_typed_graphqlify4.types.string,
+    repository: {
+      url: import_typed_graphqlify4.types.string,
+      nameWithOwner: import_typed_graphqlify4.types.string
+    }
+  },
+  baseRef: {
+    name: import_typed_graphqlify4.types.string,
+    repository: {
+      url: import_typed_graphqlify4.types.string,
+      nameWithOwner: import_typed_graphqlify4.types.string
+    }
+  },
+  baseRefName: import_typed_graphqlify4.types.string,
+  title: import_typed_graphqlify4.types.string,
+  labels: (0, import_typed_graphqlify4.params)({ first: 100 }, {
+    nodes: [
+      {
+        name: import_typed_graphqlify4.types.string
       }
     ]
   })
 };
 async function fetchPullRequestFromGithub(git, prNumber) {
-  return await getPr(PR_SCHEMA, prNumber, git);
+  return await getPr(PR_SCHEMA2, prNumber, git);
 }
 async function fetchPendingPullRequestsFromGithub(git) {
-  return await getPendingPrs(PR_SCHEMA, git);
+  return await getPendingPrs(PR_SCHEMA2, git);
 }
 function getStatusesForPullRequest(pullRequest) {
   const nodes = pullRequest.commits.nodes;
@@ -70008,284 +70126,7 @@ function normalizeGithubCheckState(conclusion, status) {
   }
 }
 
-// bazel-out/k8-fastbuild/bin/ng-dev/pr/common/validation/validations.js
-function assertChangesAllowForTargetLabel(commits, label, config, releaseTrains, labelsOnPullRequest) {
-  if (!!config.commitMessageFixupLabel && labelsOnPullRequest.includes(config.commitMessageFixupLabel)) {
-    Log.debug("Skipping commit message target label validation because the commit message fixup label is applied.");
-    return;
-  }
-  const exemptedScopes = config.targetLabelExemptScopes || [];
-  commits = commits.filter((commit) => !exemptedScopes.includes(commit.scope));
-  const hasBreakingChanges = commits.some((commit) => commit.breakingChanges.length !== 0);
-  const hasDeprecations = commits.some((commit) => commit.deprecations.length !== 0);
-  const hasFeatureCommits = commits.some((commit) => commit.type === "feat");
-  switch (label.name) {
-    case TargetLabelName.MAJOR:
-      break;
-    case TargetLabelName.MINOR:
-      if (hasBreakingChanges) {
-        throw PullRequestFailure.hasBreakingChanges(label);
-      }
-      break;
-    case TargetLabelName.RELEASE_CANDIDATE:
-    case TargetLabelName.LONG_TERM_SUPPORT:
-    case TargetLabelName.PATCH:
-      if (hasBreakingChanges) {
-        throw PullRequestFailure.hasBreakingChanges(label);
-      }
-      if (hasFeatureCommits) {
-        throw PullRequestFailure.hasFeatureCommits(label);
-      }
-      if (hasDeprecations && !releaseTrains.isFeatureFreeze()) {
-        throw PullRequestFailure.hasDeprecations(label);
-      }
-      break;
-    default:
-      Log.warn(red("WARNING: Unable to confirm all commits in the pull request are"));
-      Log.warn(red(`eligible to be merged into the target branch: ${label.name}`));
-      break;
-  }
-}
-function assertCorrectBreakingChangeLabeling(commits, pullRequestLabels) {
-  const hasLabel = pullRequestLabels.includes(breakingChangeLabel);
-  const hasCommit = commits.some((commit) => commit.breakingChanges.length !== 0);
-  if (!hasLabel && hasCommit) {
-    throw PullRequestFailure.missingBreakingChangeLabel();
-  }
-  if (hasLabel && !hasCommit) {
-    throw PullRequestFailure.missingBreakingChangeCommit();
-  }
-}
-function assertPendingState(pullRequest) {
-  if (pullRequest.isDraft) {
-    throw PullRequestFailure.isDraft();
-  }
-  switch (pullRequest.state) {
-    case "CLOSED":
-      throw PullRequestFailure.isClosed();
-    case "MERGED":
-      throw PullRequestFailure.isMerged();
-  }
-}
-function assertSignedCla(pullRequest) {
-  const passing = getStatusesForPullRequest(pullRequest).statuses.some(({ name: name5, status }) => {
-    return name5 === "cla/google" && status === PullRequestStatus.PASSING;
-  });
-  if (passing) {
-    return;
-  }
-  throw PullRequestFailure.claUnsigned();
-}
-function assertMergeReady(pullRequest, config) {
-  if (pullRequest.labels.nodes.some(({ name: name5 }) => name5 === config.mergeReadyLabel)) {
-    return true;
-  }
-  throw PullRequestFailure.notMergeReady();
-}
-function assertPassingCi(pullRequest) {
-  const { combinedStatus } = getStatusesForPullRequest(pullRequest);
-  if (combinedStatus === PullRequestStatus.PENDING) {
-    throw PullRequestFailure.pendingCiJobs();
-  }
-  if (combinedStatus === PullRequestStatus.FAILING) {
-    throw PullRequestFailure.failingCiJobs();
-  }
-}
-
-// bazel-out/k8-fastbuild/bin/ng-dev/pr/common/targeting/target-label.js
-var TargetLabelName;
-(function(TargetLabelName2) {
-  TargetLabelName2["MAJOR"] = "target: major";
-  TargetLabelName2["MINOR"] = "target: minor";
-  TargetLabelName2["PATCH"] = "target: patch";
-  TargetLabelName2["RELEASE_CANDIDATE"] = "target: rc";
-  TargetLabelName2["LONG_TERM_SUPPORT"] = "target: lts";
-})(TargetLabelName || (TargetLabelName = {}));
-var InvalidTargetBranchError = class {
-  constructor(failureMessage) {
-    this.failureMessage = failureMessage;
-  }
-};
-var InvalidTargetLabelError = class {
-  constructor(failureMessage) {
-    this.failureMessage = failureMessage;
-  }
-};
-async function getMatchingTargetLabelForPullRequest(config, labelsOnPullRequest, allTargetLabels) {
-  if (config.noTargetLabeling) {
-    throw Error("This repository does not use target labels");
-  }
-  const matches = [];
-  for (const label of labelsOnPullRequest) {
-    const match = allTargetLabels.find(({ name: name5 }) => label === name5);
-    if (match !== void 0) {
-      matches.push(match);
-    }
-  }
-  if (matches.length === 1) {
-    return matches[0];
-  }
-  if (matches.length === 0) {
-    throw new InvalidTargetLabelError("Unable to determine target for the PR as it has no target label.");
-  }
-  throw new InvalidTargetLabelError("Unable to determine target for the PR as it has multiple target labels.");
-}
-async function getTargetBranchesForPullRequest(api, config, labelsOnPullRequest, githubTargetBranch, commits) {
-  if (config.pullRequest.noTargetLabeling) {
-    return [config.github.mainBranchName];
-  }
-  try {
-    const { mainBranchName, name: name5, owner } = config.github;
-    const releaseTrains = await ActiveReleaseTrains.fetch({
-      name: name5,
-      nextBranchName: mainBranchName,
-      owner,
-      api
-    });
-    const targetLabels = await getTargetLabelsForActiveReleaseTrains(releaseTrains, api, config);
-    const matchingLabel = await getMatchingTargetLabelForPullRequest(config.pullRequest, labelsOnPullRequest, targetLabels);
-    const targetBranches = await getBranchesFromTargetLabel(matchingLabel, githubTargetBranch);
-    assertChangesAllowForTargetLabel(commits, matchingLabel, config.pullRequest, releaseTrains, labelsOnPullRequest);
-    return targetBranches;
-  } catch (error) {
-    if (error instanceof InvalidTargetBranchError || error instanceof InvalidTargetLabelError) {
-      throw new PullRequestFailure(error.failureMessage);
-    }
-    throw error;
-  }
-}
-async function getBranchesFromTargetLabel(label, githubTargetBranch) {
-  return typeof label.branches === "function" ? await label.branches(githubTargetBranch) : await label.branches;
-}
-
-// bazel-out/k8-fastbuild/bin/ng-dev/pr/check-target-branches/check-target-branches.js
-async function getTargetBranchesForPr(prNumber, config) {
-  const { owner, name: repo } = config.github;
-  const git = await GitClient.get();
-  const prData = (await git.github.pulls.get({ owner, repo, pull_number: prNumber })).data;
-  const labels = prData.labels.map((l) => l.name);
-  const githubTargetBranch = prData.base.ref;
-  return getTargetBranchesForPullRequest(git.github, config, labels, githubTargetBranch, []);
-}
-async function printTargetBranchesForPr(prNumber) {
-  const config = await getConfig();
-  assertValidGithubConfig(config);
-  assertValidPullRequestConfig(config);
-  if (config.pullRequest.noTargetLabeling) {
-    Log.info(`PR #${prNumber} will merge into: ${config.github.mainBranchName}`);
-    return;
-  }
-  const targets = await getTargetBranchesForPr(prNumber, config);
-  Log.info.group(`PR #${prNumber} will merge into:`);
-  targets.forEach((target) => Log.info(`- ${target}`));
-  Log.info.groupEnd();
-}
-
-// bazel-out/k8-fastbuild/bin/ng-dev/pr/check-target-branches/cli.js
-function builder9(argv) {
-  return argv.positional("pr", {
-    description: "The pull request number",
-    type: "number",
-    demandOption: true
-  });
-}
-async function handler10({ pr }) {
-  await printTargetBranchesForPr(pr);
-}
-var CheckTargetBranchesModule = {
-  handler: handler10,
-  builder: builder9,
-  command: "check-target-branches <pr>",
-  describe: "Check a PR to determine what branches it is currently targeting"
-};
-
-// bazel-out/k8-fastbuild/bin/ng-dev/pr/common/checkout-pr.js
-var import_typed_graphqlify4 = __toESM(require_dist());
-var PR_SCHEMA2 = {
-  state: import_typed_graphqlify4.types.string,
-  maintainerCanModify: import_typed_graphqlify4.types.boolean,
-  viewerDidAuthor: import_typed_graphqlify4.types.boolean,
-  headRefOid: import_typed_graphqlify4.types.string,
-  headRef: {
-    name: import_typed_graphqlify4.types.string,
-    repository: {
-      url: import_typed_graphqlify4.types.string,
-      nameWithOwner: import_typed_graphqlify4.types.string
-    }
-  },
-  baseRef: {
-    name: import_typed_graphqlify4.types.string,
-    repository: {
-      url: import_typed_graphqlify4.types.string,
-      nameWithOwner: import_typed_graphqlify4.types.string
-    }
-  }
-};
-var UnexpectedLocalChangesError = class extends Error {
-};
-var PullRequestNotFoundError = class extends Error {
-};
-var MaintainerModifyAccessError = class extends Error {
-};
-async function checkOutPullRequestLocally(prNumber, githubToken, opts = {}) {
-  const git = await AuthenticatedGitClient.get();
-  if (git.hasUncommittedChanges()) {
-    throw new UnexpectedLocalChangesError("Unable to checkout PR due to uncommitted changes.");
-  }
-  const previousBranchOrRevision = git.getCurrentBranchOrRevision();
-  const pr = await getPr(PR_SCHEMA2, prNumber, git);
-  if (pr === null) {
-    throw new PullRequestNotFoundError(`Pull request #${prNumber} could not be found.`);
-  }
-  const headRefName = pr.headRef.name;
-  const fullHeadRef = `${pr.headRef.repository.nameWithOwner}:${headRefName}`;
-  const headRefUrl = addTokenToGitHttpsUrl(pr.headRef.repository.url, githubToken);
-  const forceWithLeaseFlag = `--force-with-lease=${headRefName}:${pr.headRefOid}`;
-  if (!pr.maintainerCanModify && !pr.viewerDidAuthor && !opts.allowIfMaintainerCannotModify) {
-    throw new MaintainerModifyAccessError("PR is not set to allow maintainers to modify the PR");
-  }
-  try {
-    Log.info(`Checking out PR #${prNumber} from ${fullHeadRef}`);
-    git.run(["fetch", "-q", headRefUrl, headRefName]);
-    git.run(["checkout", "--detach", "FETCH_HEAD"]);
-  } catch (e) {
-    git.checkout(previousBranchOrRevision, true);
-    throw e;
-  }
-  return {
-    pushToUpstream: () => {
-      git.run(["push", headRefUrl, `HEAD:${headRefName}`, forceWithLeaseFlag]);
-      return true;
-    },
-    resetGitState: () => {
-      return git.checkout(previousBranchOrRevision, true);
-    },
-    pushToUpstreamCommand: `git push ${pr.headRef.repository.url} HEAD:${headRefName} ${forceWithLeaseFlag}`,
-    resetGitStateCommand: `git rebase --abort && git reset --hard && git checkout ${previousBranchOrRevision}`
-  };
-}
-
-// bazel-out/k8-fastbuild/bin/ng-dev/pr/checkout/cli.js
-function builder10(yargs) {
-  return addGithubTokenOption(yargs).positional("pr", { type: "number", demandOption: true });
-}
-async function handler11({ pr, githubToken }) {
-  const options = { allowIfMaintainerCannotModify: true, branchName: `pr-${pr}` };
-  const { pushToUpstreamCommand } = await checkOutPullRequestLocally(pr, githubToken, options);
-  Log.info(`Checked out the remote branch for pull request #${pr}
-`);
-  Log.info("To push the checked out branch back to its PR, run the following command:");
-  Log.info(`  $ ${pushToUpstreamCommand}`);
-}
-var CheckoutCommandModule = {
-  handler: handler11,
-  builder: builder10,
-  command: "checkout <pr>",
-  describe: "Checkout a PR from the upstream repo"
-};
-
 // bazel-out/k8-fastbuild/bin/ng-dev/pr/discover-new-conflicts/index.js
-var import_cli_progress2 = __toESM(require_cli_progress());
 var tempWorkingBranch = "__NgDevRepoBaseAfterChange__";
 async function discoverNewConflictsForPr(newPrNumber, updatedAfter) {
   const git = await AuthenticatedGitClient.get();
@@ -70412,24 +70253,239 @@ var FatalMergeToolError = class extends Error {
 };
 var UserAbortedMergeToolError = class extends Error {
 };
+var MismatchedTargetBranchFatalError = class extends FatalMergeToolError {
+  constructor(allowedBranches) {
+    super(`Pull request is set to wrong base branch. Please update the PR in the Github UI to one of the following branches: ${allowedBranches.join(", ")}.`);
+  }
+};
+var UnsatisfiedBaseShaFatalError = class extends FatalMergeToolError {
+  constructor() {
+    super(`Pull request has not been rebased recently and could be bypassing CI checks. Please rebase the PR.`);
+  }
+};
+var MergeConflictsFatalError = class extends FatalMergeToolError {
+  constructor(failedBranches) {
+    super(`Could not merge pull request into the following branches due to merge conflicts: ${failedBranches.join(", ")}. Please rebase the PR or update the target label.`);
+  }
+};
+
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/common/validation/validation-failure.js
+var PullRequestValidationFailure = class {
+  constructor(message, validationName) {
+    this.message = message;
+    this.validationName = validationName;
+  }
+};
+
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/common/validation/validation-config.js
+var PullRequestValidationConfig = class {
+  constructor() {
+    this.assertPending = true;
+    this.assertMergeReady = true;
+    this.assertSignedCla = true;
+    this.assertChangesAllowForTargetLabel = true;
+    this.assertPassingCi = true;
+  }
+};
+var PullRequestValidation = class {
+  constructor(name5, _createError2) {
+    this.name = name5;
+    this._createError = _createError2;
+  }
+};
+function createPullRequestValidation({ name: name5, canBeForceIgnored }, getValidationCtor) {
+  return {
+    async run(validationConfig, fn) {
+      if (validationConfig[name5]) {
+        const validation2 = new (getValidationCtor())(name5, (message) => new PullRequestValidationFailure(message, name5));
+        try {
+          fn(validation2);
+        } catch (e) {
+          if (e instanceof PullRequestValidationFailure && canBeForceIgnored) {
+            Log.error(`Pull request did not pass validation check. Error:`);
+            Log.error(` -> ${bold(e.message)}`);
+            Log.info();
+            Log.info(yellow(`This validation is non-fatal and can be forcibly ignored.`));
+            if (await Prompt.confirm("Do you want to forcibly ignore this validation?")) {
+              return;
+            }
+          }
+          throw e;
+        }
+      }
+    }
+  };
+}
+
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/common/validation/assert-allowed-target-label.js
+var changesAllowForTargetLabelValidation = createPullRequestValidation({ name: "assertChangesAllowForTargetLabel", canBeForceIgnored: true }, () => Validation);
+var Validation = class extends PullRequestValidation {
+  assert(commits, labelName, config, releaseTrains, labelsOnPullRequest) {
+    if (!!config.commitMessageFixupLabel && labelsOnPullRequest.includes(config.commitMessageFixupLabel)) {
+      Log.debug("Skipping commit message target label validation because the commit message fixup label is applied.");
+      return;
+    }
+    const exemptedScopes = config.targetLabelExemptScopes || [];
+    commits = commits.filter((commit) => !exemptedScopes.includes(commit.scope));
+    const hasBreakingChanges = commits.some((commit) => commit.breakingChanges.length !== 0);
+    const hasDeprecations = commits.some((commit) => commit.deprecations.length !== 0);
+    const hasFeatureCommits = commits.some((commit) => commit.type === "feat");
+    switch (labelName) {
+      case TargetLabelName.MAJOR:
+        break;
+      case TargetLabelName.MINOR:
+        if (hasBreakingChanges) {
+          throw this._createHasBreakingChangesError(labelName);
+        }
+        break;
+      case TargetLabelName.RELEASE_CANDIDATE:
+      case TargetLabelName.LONG_TERM_SUPPORT:
+      case TargetLabelName.PATCH:
+        if (hasBreakingChanges) {
+          throw this._createHasBreakingChangesError(labelName);
+        }
+        if (hasFeatureCommits) {
+          throw this._createHasFeatureCommitsError(labelName);
+        }
+        if (hasDeprecations && !releaseTrains.isFeatureFreeze()) {
+          throw this._createHasDeprecationsError(labelName);
+        }
+        break;
+      default:
+        Log.warn(red("WARNING: Unable to confirm all commits in the pull request are"));
+        Log.warn(red(`eligible to be merged into the target branches for: ${labelName}`));
+        break;
+    }
+  }
+  _createHasBreakingChangesError(labelName) {
+    const message = `Cannot merge into branch for "${labelName}" as the pull request has breaking changes. Breaking changes can only be merged with the "target: major" label.`;
+    return this._createError(message);
+  }
+  _createHasDeprecationsError(labelName) {
+    const message = `Cannot merge into branch for "${labelName}" as the pull request contains deprecations. Deprecations can only be merged with the "target: minor" or "target: major" label.`;
+    return this._createError(message);
+  }
+  _createHasFeatureCommitsError(labelName) {
+    const message = `Cannot merge into branch for "${labelName}" as the pull request has commits with the "feat" type. New features can only be merged with the "target: minor" or "target: major" label.`;
+    return this._createError(message);
+  }
+};
+
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/common/validation/assert-breaking-change-info.js
+var breakingChangeInfoValidation = createPullRequestValidation({ name: "assertPending", canBeForceIgnored: false }, () => Validation2);
+var Validation2 = class extends PullRequestValidation {
+  assert(commits, labels) {
+    const hasLabel = labels.includes(breakingChangeLabel);
+    const hasCommit = commits.some((commit) => commit.breakingChanges.length !== 0);
+    if (!hasLabel && hasCommit) {
+      throw this._createMissingBreakingChangeLabelError();
+    }
+    if (hasLabel && !hasCommit) {
+      throw this._createMissingBreakingChangeCommitError();
+    }
+  }
+  _createMissingBreakingChangeLabelError() {
+    const message = `Pull Request has at least one commit containing a breaking change note, but does not have a breaking change label. Make sure to apply the following label: ${breakingChangeLabel}`;
+    return this._createError(message);
+  }
+  _createMissingBreakingChangeCommitError() {
+    const message = "Pull Request has a breaking change label, but does not contain any commits with breaking change notes (i.e. commits do not have a `BREAKING CHANGE: <..>` section).";
+    return this._createError(message);
+  }
+};
+
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/common/validation/assert-merge-ready.js
+var mergeReadyValidation = createPullRequestValidation({ name: "assertMergeReady", canBeForceIgnored: false }, () => Validation3);
+var Validation3 = class extends PullRequestValidation {
+  assert(pullRequest, pullRequestConfig) {
+    if (!pullRequest.labels.nodes.some(({ name: name5 }) => name5 === pullRequestConfig.mergeReadyLabel)) {
+      throw this._createError("Pull request is not marked as merge ready.");
+    }
+  }
+};
+
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/common/validation/assert-passing-ci.js
+var passingCiValidation = createPullRequestValidation({ name: "assertPassingCi", canBeForceIgnored: true }, () => Validation4);
+var Validation4 = class extends PullRequestValidation {
+  assert(pullRequest) {
+    const { combinedStatus } = getStatusesForPullRequest(pullRequest);
+    if (combinedStatus === PullRequestStatus.PENDING) {
+      throw this._createError("Pull request has pending status checks.");
+    }
+    if (combinedStatus === PullRequestStatus.FAILING) {
+      throw this._createError("Pull request has failing status checks.");
+    }
+  }
+};
+
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/common/validation/assert-pending.js
+var pendingStateValidation = createPullRequestValidation({ name: "assertPending", canBeForceIgnored: false }, () => Validation5);
+var Validation5 = class extends PullRequestValidation {
+  assert(pullRequest) {
+    if (pullRequest.isDraft) {
+      throw this._createError("Pull request is still a draft.");
+    }
+    switch (pullRequest.state) {
+      case "CLOSED":
+        throw this._createError("Pull request is already closed.");
+      case "MERGED":
+        throw this._createError("Pull request is already merged.");
+    }
+  }
+};
+
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/common/validation/assert-signed-cla.js
+var signedClaValidation = createPullRequestValidation({ name: "assertSignedCla", canBeForceIgnored: false }, () => Validation6);
+var Validation6 = class extends PullRequestValidation {
+  assert(pullRequest) {
+    const passing = getStatusesForPullRequest(pullRequest).statuses.some(({ name: name5, status }) => {
+      return name5 === "cla/google" && status === PullRequestStatus.PASSING;
+    });
+    if (!passing) {
+      throw this._createError("CLA is not signed by the contributor.");
+    }
+  }
+};
+
+// bazel-out/k8-fastbuild/bin/ng-dev/pr/common/validation/validate-pull-request.js
+async function assertValidPullRequest(pullRequest, validationConfig, ngDevConfig, activeReleaseTrains, target) {
+  const labels = pullRequest.labels.nodes.map((l) => l.name);
+  const commitsInPr = pullRequest.commits.nodes.map((n) => {
+    return parseCommitMessage(n.commit.message);
+  });
+  await mergeReadyValidation.run(validationConfig, (v) => v.assert(pullRequest, ngDevConfig.pullRequest));
+  await signedClaValidation.run(validationConfig, (v) => v.assert(pullRequest));
+  await pendingStateValidation.run(validationConfig, (v) => v.assert(pullRequest));
+  if (activeReleaseTrains !== null) {
+    await changesAllowForTargetLabelValidation.run(validationConfig, (v) => v.assert(commitsInPr, target.labelName, ngDevConfig.pullRequest, activeReleaseTrains, labels));
+  }
+  await breakingChangeInfoValidation.run(validationConfig, (v) => v.assert(commitsInPr, labels));
+  await passingCiValidation.run(validationConfig, (v) => v.assert(pullRequest));
+}
 
 // bazel-out/k8-fastbuild/bin/ng-dev/pr/merge/pull-request.js
-async function loadAndValidatePullRequest({ git, config }, prNumber, ignoreNonFatalFailures = false) {
+async function loadAndValidatePullRequest({ git, config }, prNumber, validationConfig) {
   const prData = await fetchPullRequestFromGithub(git, prNumber);
   if (prData === null) {
     throw new FatalMergeToolError("Pull request could not be found.");
   }
   const labels = prData.labels.nodes.map((l) => l.name);
-  const commitsInPr = prData.commits.nodes.map((n) => parseCommitMessage(n.commit.message));
   const githubTargetBranch = prData.baseRefName;
-  const targetBranches = await getTargetBranchesForPullRequest(git.github, config, labels, githubTargetBranch, commitsInPr);
-  assertMergeReady(prData, config.pullRequest);
-  assertSignedCla(prData);
-  assertPendingState(prData);
-  assertCorrectBreakingChangeLabeling(commitsInPr, labels);
-  if (!ignoreNonFatalFailures) {
-    assertPassingCi(prData);
+  const { mainBranchName, name: name5, owner } = config.github;
+  let activeReleaseTrains = null;
+  let target = null;
+  if (config.pullRequest.__noTargetLabeling) {
+    target = { branches: [config.github.mainBranchName], labelName: TargetLabelName.MAJOR };
+  } else {
+    activeReleaseTrains = await ActiveReleaseTrains.fetch({
+      name: name5,
+      nextBranchName: mainBranchName,
+      owner,
+      api: git.github
+    });
+    target = await getTargetBranchesAndLabelForPullRequest(activeReleaseTrains, git.github, config, labels, githubTargetBranch);
   }
+  await assertValidPullRequest(prData, validationConfig, config, activeReleaseTrains, target);
   const requiredBaseSha = config.pullRequest.requiredBaseCommits && config.pullRequest.requiredBaseCommits[githubTargetBranch];
   const needsCommitMessageFixup = !!config.pullRequest.commitMessageFixupLabel && labels.includes(config.pullRequest.commitMessageFixupLabel);
   const hasCaretakerNote = !!config.pullRequest.caretakerNoteLabel && labels.includes(config.pullRequest.caretakerNoteLabel);
@@ -70441,7 +70497,7 @@ async function loadAndValidatePullRequest({ git, config }, prNumber, ignoreNonFa
     githubTargetBranch,
     needsCommitMessageFixup,
     hasCaretakerNote,
-    targetBranches,
+    targetBranches: target.branches,
     title: prData.title,
     commitCount: prData.commits.totalCount
   };
@@ -70527,10 +70583,10 @@ var GithubApiMergeStrategy = class extends MergeStrategy {
   async merge(pullRequest) {
     const { githubTargetBranch, prNumber, targetBranches, requiredBaseSha, needsCommitMessageFixup } = pullRequest;
     if (targetBranches.every((t) => t !== githubTargetBranch)) {
-      throw PullRequestFailure.mismatchingTargetBranch(targetBranches);
+      throw new MismatchedTargetBranchFatalError(targetBranches);
     }
     if (requiredBaseSha && !this.git.hasCommit(TEMP_PR_HEAD_BRANCH, requiredBaseSha)) {
-      throw PullRequestFailure.unsatisfiedBaseSha();
+      throw new UnsatisfiedBaseShaFatalError();
     }
     const method = this._getMergeActionFromPullRequest(pullRequest);
     const cherryPickTargetBranches = targetBranches.filter((b) => b !== githubTargetBranch);
@@ -70542,15 +70598,17 @@ var GithubApiMergeStrategy = class extends MergeStrategy {
     };
     if (needsCommitMessageFixup) {
       if (method !== "squash") {
-        throw PullRequestFailure.unableToFixupCommitMessageSquashOnly();
+        throw new FatalMergeToolError(`Unable to fixup commit message of pull request. Commit message can only be modified if the PR is merged using squash.`);
       }
       await this._promptCommitMessageEdit(pullRequest, mergeOptions);
     }
     let mergeStatusCode;
+    let mergeResponseMessage;
     let targetSha;
     try {
       const result = await this.git.github.pulls.merge(mergeOptions);
       mergeStatusCode = result.status;
+      mergeResponseMessage = result.data.message;
       targetSha = result.data.sha;
     } catch (e) {
       if (e instanceof import_request_error.RequestError && (e.status === 403 || e.status === 404)) {
@@ -70559,10 +70617,10 @@ var GithubApiMergeStrategy = class extends MergeStrategy {
       throw e;
     }
     if (mergeStatusCode === 405) {
-      throw PullRequestFailure.mergeConflicts([githubTargetBranch]);
+      throw new MergeConflictsFatalError([githubTargetBranch]);
     }
     if (mergeStatusCode !== 200) {
-      throw PullRequestFailure.unknownMergeError();
+      throw new FatalMergeToolError(`Unexpected merge status code: ${mergeStatusCode}: ${mergeResponseMessage}`);
     }
     if (!cherryPickTargetBranches.length) {
       return;
@@ -70573,7 +70631,7 @@ var GithubApiMergeStrategy = class extends MergeStrategy {
       linkToOriginalCommits: true
     });
     if (failedBranches.length) {
-      throw PullRequestFailure.mergeConflicts(failedBranches);
+      throw new MergeConflictsFatalError(failedBranches);
     }
     this.pushTargetBranchesUpstream(cherryPickTargetBranches);
   }
@@ -70614,7 +70672,7 @@ var GithubApiMergeStrategy = class extends MergeStrategy {
       dryRun: true
     });
     if (failedBranches.length) {
-      throw PullRequestFailure.mergeConflicts(failedBranches);
+      throw new MergeConflictsFatalError(failedBranches);
     }
     return null;
   }
@@ -70636,7 +70694,7 @@ var AutosquashMergeStrategy = class extends MergeStrategy {
   async merge(pullRequest) {
     const { prNumber, targetBranches, requiredBaseSha, needsCommitMessageFixup, githubTargetBranch } = pullRequest;
     if (requiredBaseSha && !this.git.hasCommit(TEMP_PR_HEAD_BRANCH, requiredBaseSha)) {
-      throw PullRequestFailure.unsatisfiedBaseSha();
+      throw new UnsatisfiedBaseShaFatalError();
     }
     const baseSha = this.git.run(["rev-parse", this.getPullRequestBaseRevision(pullRequest)]).stdout.trim();
     const revisionRange = `${baseSha}..${TEMP_PR_HEAD_BRANCH}`;
@@ -70656,7 +70714,7 @@ var AutosquashMergeStrategy = class extends MergeStrategy {
     ]);
     const failedBranches = this.cherryPickIntoTargetBranches(revisionRange, targetBranches);
     if (failedBranches.length) {
-      throw PullRequestFailure.mergeConflicts(failedBranches);
+      throw new MergeConflictsFatalError(failedBranches);
     }
     this.pushTargetBranchesUpstream(targetBranches);
     const localBranch = this.getLocalTargetBranchName(githubTargetBranch);
@@ -70691,7 +70749,7 @@ var MergeTool = class {
     this.git = git;
     this.flags = { ...defaultPullRequestMergeFlags, ...flags };
   }
-  async merge(prNumber, force = false) {
+  async merge(prNumber, validationConfig) {
     if (this.git.hasUncommittedChanges()) {
       throw new FatalMergeToolError("Local working repository not clean. Please make sure there are no uncommitted changes.");
     }
@@ -70715,7 +70773,7 @@ https://git-scm.com/docs/git-fetch#Documentation/git-fetch.txt---unshallow`);
     if (hasOauthScopes !== true) {
       throw new FatalMergeToolError(hasOauthScopes.error);
     }
-    const pullRequest = await loadAndValidatePullRequest(this, prNumber, force);
+    const pullRequest = await loadAndValidatePullRequest(this, prNumber, validationConfig);
     if (this.flags.forceManualBranches) {
       await this.updatePullRequestTargetedBranchesFromPrompt(pullRequest);
     }
@@ -70788,7 +70846,7 @@ https://git-scm.com/docs/git-fetch#Documentation/git-fetch.txt---unshallow`);
       throw new UserAbortedMergeToolError();
     }
     if (!selectedBranches.includes(pullRequest.githubTargetBranch)) {
-      throw PullRequestFailure.failedToManualSelectGithubTargetBranch(pullRequest.githubTargetBranch);
+      throw new FatalMergeToolError(`Pull Requests must merge into their targeted Github branch. If this branch (${pullRequest.githubTargetBranch}) should not be included, please change the targeted branch via the Github UI.`);
     }
     pullRequest.targetBranches = selectedBranches;
   }
@@ -70798,12 +70856,12 @@ https://git-scm.com/docs/git-fetch#Documentation/git-fetch.txt---unshallow`);
 async function mergePullRequest(prNumber, flags) {
   process.env["HUSKY"] = "0";
   const tool = await createPullRequestMergeTool(flags);
-  if (!await performMerge(false)) {
+  if (!await performMerge()) {
     process.exit(1);
   }
-  async function performMerge(ignoreFatalErrors) {
+  async function performMerge(validationConfig = new PullRequestValidationConfig()) {
     try {
-      await tool.merge(prNumber, ignoreFatalErrors);
+      await tool.merge(prNumber, validationConfig);
       Log.info(green(`Successfully merged the pull request: #${prNumber}`));
       return true;
     } catch (e) {
@@ -70818,30 +70876,17 @@ async function mergePullRequest(prNumber, flags) {
         return false;
       }
       if (e instanceof FatalMergeToolError) {
-        Log.error(`Could not merge the specified pull request.`);
-        Log.error(e.message);
+        Log.error(`Could not merge the specified pull request. Error:`);
+        Log.error(` -> ${bold(e.message)}`);
         return false;
       }
-      if (e instanceof PullRequestFailure) {
-        Log.error(`Could not merge the specified pull request.`);
-        Log.error(e.message);
-        if (e.canBeIgnoredNonFatal && !ignoreFatalErrors) {
-          Log.info();
-          Log.info(yellow("The pull request above failed due to non-critical errors."));
-          Log.info(yellow(`This error can be forcibly ignored if desired.`));
-          return await promptAndPerformForceMerge();
-        } else {
-          return false;
-        }
+      if (e instanceof PullRequestValidationFailure) {
+        Log.error(`Pull request did not pass validation check. Error:`);
+        Log.error(` -> ${bold(e.message)}`);
+        return false;
       }
       throw e;
     }
-  }
-  async function promptAndPerformForceMerge() {
-    if (await Prompt.confirm("Do you want to forcibly proceed with merging?")) {
-      return performMerge(true);
-    }
-    return false;
   }
 }
 async function createPullRequestMergeTool(flags) {
@@ -72904,7 +72949,7 @@ import * as fs3 from "fs";
 import lockfile2 from "@yarnpkg/lockfile";
 async function verifyNgDevToolIsUpToDate(workspacePath) {
   var _a, _b, _c;
-  const localVersion = `0.0.0-114c5a9e0c063e65dc42ded4d2ae07a3cca5418a`;
+  const localVersion = `0.0.0-0f1cacea776de61d0ed7e187a11e1be9b0a1fe0a`;
   const workspacePackageJsonFile = path2.join(workspacePath, workspaceRelativePackageJsonPath);
   const workspaceDirLockFile = path2.join(workspacePath, workspaceRelativeYarnLockFilePath);
   try {

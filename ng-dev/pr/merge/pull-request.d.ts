@@ -6,6 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { MergeTool } from './merge-tool.js';
+import { PullRequestValidationConfig } from '../common/validation/validation-config.js';
 /** Interface that describes a pull request. */
 export interface PullRequest {
     /** URL to the pull request. */
@@ -33,9 +34,9 @@ export interface PullRequest {
  * Loads and validates the specified pull request against the given configuration.
  * If the pull requests fails, a pull request failure is returned.
  *
- * @throws {PullRequestFailure} A pull request failure if the pull request does not
+ * @throws {PullRequestValidationFailure} A pull request failure if the pull request does not
  *   pass the validation.
  * @throws {FatalMergeToolError} A fatal error might be thrown when e.g. the pull request
  *   does not exist upstream.
  */
-export declare function loadAndValidatePullRequest({ git, config }: MergeTool, prNumber: number, ignoreNonFatalFailures?: boolean): Promise<PullRequest>;
+export declare function loadAndValidatePullRequest({ git, config }: MergeTool, prNumber: number, validationConfig: PullRequestValidationConfig): Promise<PullRequest>;

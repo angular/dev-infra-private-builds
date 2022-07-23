@@ -22,8 +22,7 @@ export declare class AutosquashMergeStrategy extends MergeStrategy {
      * would causes unnecessary multiple fetch requests when multiple PRs are merged.
      * @throws {GitCommandError} An unknown Git command error occurred that is not
      *   specific to the pull request merge.
-     * @throws {PullRequestFailure} A pull request failure if the the pull request could not
-     *   be merged and the pull request is misconfigured.
+     * @throws {FatalMergeToolError} A fatal error if the merge could not be performed.
      */
     merge(pullRequest: PullRequest): Promise<void>;
 }

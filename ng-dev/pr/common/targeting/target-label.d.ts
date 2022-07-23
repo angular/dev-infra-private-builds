@@ -7,8 +7,15 @@
  */
 import { PullRequestConfig } from '../../config/index.js';
 import { GithubConfig, NgDevConfig } from '../../../utils/config.js';
-import { Commit } from '../../../commit-message/parse.js';
 import { GithubClient } from '../../../utils/git/github.js';
+import { ActiveReleaseTrains } from '../../../release/versioning/index.js';
+/** Type describing the determined target of a pull request. */
+export interface PullRequestTarget {
+    /** Branches which the pull request targets. */
+    branches: string[];
+    /** Target label applied to the pull request. */
+    labelName: TargetLabelName;
+}
 /**
  * Enum capturing available target label names in the Angular organization. A target
  * label is set on a pull request to specify where its changes should land.
@@ -57,12 +64,12 @@ export declare class InvalidTargetLabelError {
     constructor(failureMessage: string);
 }
 /** Gets the target label from the specified pull request labels. */
-export declare function getMatchingTargetLabelForPullRequest(config: Pick<PullRequestConfig, 'noTargetLabeling'>, labelsOnPullRequest: string[], allTargetLabels: TargetLabel[]): Promise<TargetLabel>;
-/** Get the branches the pull request should be merged into. */
-export declare function getTargetBranchesForPullRequest(api: GithubClient, config: NgDevConfig<{
+export declare function getMatchingTargetLabelForPullRequest(labelsOnPullRequest: string[], allTargetLabels: TargetLabel[]): Promise<TargetLabel>;
+/** Gets the target branches and label of the given pull request. */
+export declare function getTargetBranchesAndLabelForPullRequest(activeReleaseTrains: ActiveReleaseTrains, github: GithubClient, config: NgDevConfig<{
     pullRequest: PullRequestConfig;
     github: GithubConfig;
-}>, labelsOnPullRequest: string[], githubTargetBranch: string, commits: Commit[]): Promise<string[]>;
+}>, labelsOnPullRequest: string[], githubTargetBranch: string): Promise<PullRequestTarget>;
 /**
  * Gets the branches from the specified target label.
  *

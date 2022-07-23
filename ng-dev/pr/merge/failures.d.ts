@@ -12,3 +12,12 @@ export declare class FatalMergeToolError extends Error {
 /** Error class that can be thrown the user aborted the merge manually. */
 export declare class UserAbortedMergeToolError extends Error {
 }
+export declare class MismatchedTargetBranchFatalError extends FatalMergeToolError {
+    constructor(allowedBranches: string[]);
+}
+export declare class UnsatisfiedBaseShaFatalError extends FatalMergeToolError {
+    constructor();
+}
+export declare class MergeConflictsFatalError extends FatalMergeToolError {
+    constructor(failedBranches: string[]);
+}
